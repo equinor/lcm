@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  nginx:
+    restart: unless-stopped
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+  api:
+   build:
+     context: ./api
+   restart: unless-stopped
+   environment:
+     ENVIRONMENT: development
+     FLASK_ENV: development
+
+  web:
+    build:
+      context: ./web
+      target: development
+    restart: unless-stopped
+    stdin_open: true
