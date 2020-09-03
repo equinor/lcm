@@ -1,21 +1,20 @@
 # This module contains functions for
 # retrieving data from the azure tables database.
+from azure.cosmosdb.table import TableService
+from config import Config
 
-from . import Authentication
 
 METADATA_TABLE_NAME = "Metadata"
 CUMULATIVE_TABLE_NAME = "Cumulative"
 DISTRIBUTION_TABLE_NAME = "Distribution"
+
+table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
 
 
 # This function returns a dictionary of metadata
 # or all products in the database. The dict is
 # structured as such: {ID: {METADATA_CATEGORY: VALUE}}
 def getMetadata():
-    secret = Authentication.getStorageSecret()
-
-    table_service = Authentication.connectToTables(secret)
-
     products = table_service.query_entities(METADATA_TABLE_NAME)
 
     metadata_dict = {}
@@ -41,10 +40,6 @@ def getMetadata():
 # for a single product based on the input id. The
 # dictionary is structured as such: {METADATA_CATEGORY: VALUE}
 def getMetadataFromID(id):
-    secret = Authentication.getStorageSecret()
-
-    table_service = Authentication.connectToTables(secret)
-
     product = table_service.get_entity(
         table_name=METADATA_TABLE_NAME, partition_key="Metadata", row_key=id
     )
@@ -66,10 +61,6 @@ def getMetadataFromID(id):
 # This function gets the size steps of the distributions
 # of the products, and returns them as a list.
 def getSizeSteps():
-    secret = Authentication.getStorageSecret()
-
-    table_service = Authentication.connectToTables(secret)
-
     size_steps_str = table_service.get_entity(
         table_name=METADATA_TABLE_NAME, partition_key="Metadata", row_key="Size_steps"
     ).Size_steps
@@ -85,10 +76,6 @@ def getSizeSteps():
 # This function gets the cumulative distribution for a product,
 # based on its id. the cumulative distribution is returned as a list.
 def getCumulative(id):
-    secret = Authentication.getStorageSecret()
-
-    table_service = Authentication.connectToTables(secret)
-
     cumulatives = table_service.query_entities(CUMULATIVE_TABLE_NAME)
 
     cumulative = ""
@@ -108,9 +95,8 @@ def getCumulative(id):
 # This function gets the particle size distribution (PSD)
 # of a product based on its id, and returns it as a list.
 def getDistribution(id):
-    secret = Authentication.getStorageSecret()
 
-    table_service = Authentication.connectToTables(secret)
+
 
     distributions = table_service.query_entities(DISTRIBUTION_TABLE_NAME)
 
@@ -131,9 +117,8 @@ def getDistribution(id):
 # This function returns a dictionary of all products in the
 # database, as a dictionary mapping ids to the product names
 def listProducts():
-    secret = Authentication.getStorageSecret()
 
-    table_service = Authentication.connectToTables(secret)
+
 
     products = table_service.query_entities(METADATA_TABLE_NAME)
 

@@ -9,6 +9,6 @@ def getStorageSecret():
 
 # This function establishes a connection to the Azure
 # tables based on an input connection string.
-def connectToTables(conn_string):
-    table_service = TableService(connection_string=conn_string)
+def connectToTables():
+    table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
     return table_service

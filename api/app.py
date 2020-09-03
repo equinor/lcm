@@ -9,7 +9,6 @@ from flask import Flask, jsonify, request, abort, Response
 from util import DatabaseOperations as db
 from util.Classes import Product, Mode
 from calculators import Blend, Bridge, Optimizer
-from util.load_test_data import moveDataFromBlobToTable
 
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
@@ -31,42 +30,40 @@ PERMEABILITY_OPTION = "PERMEABILITY"
 
 app = Flask(__name__)
 
-@app.cli.command()
-def load_test_data_to_tabel():
-    moveDataFromBlobToTable()
-
-@app.route('/')
-def main(req):
+@app.route('/api', methods=["GET", "POST"])
+def main():
     logging.info("Python HTTP trigger function processed a request.")
-
-    request = req.params.get("request")
-    if not request:
+    requst_ = request.json.get("request")
+    if not requst_:
         try:
-            req_body = req.get_json()
+            req_body = request.json
         except ValueError:
             abort(400)
         else:
-            request = req_body.get("request")
+            print("####################")
+            print("WHY EM I HERE!")
+            print("####################")
+            requst_ = req_body.get("request")
 
-    if request == BLEND_REQUEST:
-        return blendRequestHandler(req)
+    if requst_ == BLEND_REQUEST:
+        return blendRequestHandler(request)
 
-    elif request == BRIDGE_REQUEST:
-        return bridgeRequestHandler(req)
+    elif requst_ == BRIDGE_REQUEST:
+        return bridgeRequestHandler(request)
 
-    elif request == OPTIMIZER_REQUEST:
-        return optimizerRequestHandler(req)
+    elif requst_ == OPTIMIZER_REQUEST:
+        return optimizerRequestHandler(request)
 
-    elif request == PRODUCT_LIST_REQUEST:
-        return productListRequestHandler(req)
+    elif requst_ == PRODUCT_LIST_REQUEST:
+        return productListRequestHandler(request.json.get("filters"), request.json["metadata"])
 
-    elif request == PRODUCT_ID_REQUEST:
-        return productRequestHandler(req)
+    elif requst_ == PRODUCT_ID_REQUEST:
+        return productRequestHandler(request)
 
-    elif request == SIZE_STEPS_REQUEST:
-        return sizeStepsRequestHandler(req)
+    elif requst_ == SIZE_STEPS_REQUEST:
+        return sizeStepsRequestHandler(request)
 
-    elif request:
+    elif requst_:
         abort(400)
 
     else:
@@ -187,25 +184,7 @@ def bridgeRequestHandler(req):
 # products. The returned products can be filtered based
 # on all metadata categories. Likewise, any desired
 # subset of the data can be returned.
-def productListRequestHandler(req):
-    filters = req.params.get("filters")
-    if not filters:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            filters = req_body.get("filters")
-
-    metadata_list = req.params.get("metadata")
-    if not metadata_list:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            metadata_list = req_body.get("metadata")
-
+def productListRequestHandler(filters, metadata_list):
     use_specific_metadata = True
     if not metadata_list:
         use_specific_metadata = False
@@ -662,7 +641,3 @@ def getMaxAndMinValues(metadata):
     MaxAndMinList.append(min(CO2_list))
 
     return MaxAndMinList
-
-
-if __name__ == '__main__':
-    main()

@@ -2,3 +2,5 @@ web/node_modules
 /.idea/
 /api/.venv/
 **/__pycache__/**
+log.txt
+.env

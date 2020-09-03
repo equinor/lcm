@@ -71,37 +71,6 @@ def moveDataFromBlobToTable():
             cumulative_batch,
         )
 
-    # for blob in blob_list:
-    #     if len(blob.name.split(".")) == 1:
-    #         container.delete_blob(blob, delete_snapshots="include")
-    #         continue
-    #     elif blob.name.split(".")[1] == "xlsx":
-    #
-    #         sheet = readExcelSheet(conn_string, CONTAINER_NAME, blob.name, 0)
-    #
-    #         if add_size_steps:
-    #             metadata_batch = writeSizeStepsToTables(sheet, metadata_batch)
-    #             add_size_steps = False
-    #
-    #         distribution_batch = writeDistributionToAzureTables(
-    #             sheet,
-    #             table_service,
-    #             id_dict,
-    #             blob.name.split(".")[0],
-    #             DISTRIBUTION_TABLE_NAME,
-    #             distribution_batch,
-    #         )
-    #
-    #         cumulative_batch = writeCumulativeToAzureTables(
-    #             sheet,
-    #             table_service,
-    #             id_dict,
-    #             blob.name.split(".")[0],
-    #             CUMULATIVE_TABLE_NAME,
-    #             cumulative_batch,
-    #         )
-    #
-    #     container.delete_blob(blob, delete_snapshots="include")
 
     table_service.commit_batch(
         table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch
@@ -136,31 +105,6 @@ def createMetaDataDict():
             products_metadata_dict[line["title"]] = product_meta
 
         categories = reader.fieldnames
-
-        # for i in range(len(categories)):
-        #     categories[i] = categories[i].upper()
-        #
-        # lines = removeShortLines(lines, len(categories))
-        #
-        # products_metadata_dict = {}
-        #
-        # for i in range(1, len(lines)):
-        #     metadata = lines[i].split(",")
-        #
-        #     product_name = extractProductNameFromMetadata(metadata, categories)
-        #     supplier = extractSupplierNameFromMetadata(metadata, categories)
-        #
-        #     metadata_dict = {}
-        #
-        #     for j in range(len(categories)):
-        #         if " " in categories[j]:
-        #             categories[j] = categories[j].replace(" ", "_")
-        #         metadata_dict[categories[j]] = metadata[j]
-        #
-        #     metadata_dict["TITLE"] = product_name
-        #     metadata_dict["SUPPLIER"] = supplier
-        #
-        #     products_metadata_dict[product_name] = metadata_dict
 
         return products_metadata_dict, categories
 
@@ -287,40 +231,6 @@ def writeCumulativeToAzureTables(
         batch.insert_or_replace_entity(element)
 
     return batch
-
-
-# Extracts a products name from metadata, based on "Title"'s
-# position in 'categories'.
-# def extractProductNameFromMetadata(metadata, categories):
-#     if "TITLE" in categories:
-#         title_index = categories.index("TITLE")
-#     else:
-#         title_index = 5
-#
-#     product_name = metadata[title_index].split(" #")
-#     product_name_str = ""
-#
-#     for i in range(len(product_name)):
-#         product_name_str += product_name[i]
-#
-#     return product_name_str
-#
-#
-# # Extracts a products supplier name from metadata, based on
-# # "Supplier"'s position in 'categories'.
-# def extractSupplierNameFromMetadata(metadata, categories):
-#     if "SUPPLIER" in categories:
-#         supplier_index = categories.index("SUPPLIER")
-#     else:
-#         supplier_index = 4
-#
-#     supplier = metadata[supplier_index].split(" #")
-#     supplier_str = ""
-#
-#     for i in range(len(supplier)):
-#         supplier_str += supplier[i]
-#
-#     return supplier_str
 
 
 # Sends an http post request to the callback url supplied
