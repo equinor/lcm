@@ -9,6 +9,7 @@ from flask import Flask, jsonify, request, abort, Response
 from util import DatabaseOperations as db
 from util.Classes import Product, Mode
 from calculators import Blend, Bridge, Optimizer
+from util.load_test_data import moveDataFromBlobToTable
 
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
@@ -30,6 +31,9 @@ PERMEABILITY_OPTION = "PERMEABILITY"
 
 app = Flask(__name__)
 
+@app.cli.command()
+def load_test_data_to_tabel():
+    moveDataFromBlobToTable()
 
 @app.route('/')
 def main(req):

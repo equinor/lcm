@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Accordion, SideSheet, Button, TopBar, Icon } from "@equinor/eds-core-react";
 import { account_circle, accessible, notifications, fullscreen, grid_on } from "@equinor/eds-icons";
 import SelectProducts from "../Components/Optimization/SelectProducts.js";
-import BridgeContainer from "../Components/Bridging/BridgeContainer.js";
+import BridgeContainer from "../Components/Bridging/BridgeContainer.jsx";
 import CardContainer from "../Components/Blending/CardContainer.js";
 import RefreshButton from "./RefreshButton.js";
 import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";

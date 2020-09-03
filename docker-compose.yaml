@@ -16,8 +16,11 @@ services:
     environment:
       ENVIRONMENT: development
       FLASK_ENV: development
+      TABEL_CONNECTION_STRING: "DefaultEndpointsProtocol=https;AccountName=lcmdevstorage;AccountKey=o9//wbArh+VSv8wSMTVXHwAJieAuxWG2u7orRiQGIcZ6LLKQE2qW8kOnOwGeR1qU+9m1B6psTUCGspeqJuR6Kg==;EndpointSuffix=core.windows.net"
+      TABEL_KEY: "o9//wbArh+VSv8wSMTVXHwAJieAuxWG2u7orRiQGIcZ6LLKQE2qW8kOnOwGeR1qU+9m1B6psTUCGspeqJuR6Kg=="
     volumes:
       - ./api/:/code
+    command: ["python","/code/util/load_test_data.py"]
 
   web:
     build:

@@ -1,0 +1,5 @@
+title,supplier,description,shortname,comment,cost,sack_size,environmental_impact,co2
+Product1,sup1,none,p1,none,300,25,green,1000
+Product2,sup1,none,p2,none,400,25,yellow,980
+Product3,sup2,none,p3,none,123,25,green,1300
+Product4,sup3,none,p4,none,123,25,green,1300
