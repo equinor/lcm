@@ -360,26 +360,24 @@ def productRequestHandler(req):
 
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
-def sizeStepsRequestHandler(req: func.HttpRequest):
+def sizeStepsRequestHandler(req):
     response_dict = {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
 
-    return func.HttpResponse(body=json.dumps(response_dict))
+    return response_dict
 
 
 # Optimizer handler. This function takes the HttpRequest
 # object as input and returns the best combination of products
 # aswell as the execution time, the fitness score and the
 # amount of iterations.
-def optimizerRequestHandler(req: func.HttpRequest):
+def optimizerRequestHandler(req):
     error_list = []
     blend_name = req.params.get("name")
     if not blend_name:
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             blend_name = req_body.get("name")
     if not blend_name:
@@ -390,9 +388,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             product_list = req_body.get("products")
     if not product_list:
@@ -408,9 +404,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             mass_goal = req_body.get("mass")
     if not mass_goal:
@@ -421,9 +415,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             weight_dict = req_body.get("weights")
     if not weight_dict:
@@ -449,9 +441,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             enviromental_list = req_body.get("enviromental")
 
@@ -460,9 +450,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             option = req_body.get("option")
     if not option:
@@ -473,9 +461,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             max_iterations = req_body.get("max_iterations")
     if not max_iterations:
@@ -488,9 +474,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             size_steps_filter = req_body.get("size_steps_filter")
     if (not size_steps_filter) or (size_steps_filter < 0):
@@ -503,9 +487,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
         try:
             req_body = req.get_json()
         except ValueError:
-            return func.HttpResponse(
-                body=json.dumps({"Error": "Bad Request"}), status_code=400
-            )
+            abort(400)
         else:
             value = req_body.get("value")
 
@@ -580,7 +562,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
             error_list.append("Invalid 'weights' input")
 
     if error_list:
-        return func.HttpResponse(body=json.dumps({"Error": error_list}))
+        return jsonify({"Error": error_list})
 
     try:
         (
@@ -602,22 +584,8 @@ def optimizerRequestHandler(req: func.HttpRequest):
             max_iterations,
             size_steps_filter,
         )
-    except TypeError:
-        return func.HttpResponse(
-            body=json.dumps({"Error": "Invalid inputs"}), status_code=400
-        )
-    except KeyError:
-        return func.HttpResponse(
-            body=json.dumps({"Error": "Invalid inputs"}), status_code=400
-        )
-    except IndexError:
-        return func.HttpResponse(
-            body=json.dumps({"Error": "Invalid inputs"}), status_code=400
-        )
-    except RuntimeError:
-        return func.HttpResponse(
-            body=json.dumps({"Error": "Invalid inputs"}), status_code=400
-        )
+    except Exception as e:
+        return f"Probably invalid inputs! {e}", 400
 
     mass_sum = 0
     product_list = []
@@ -670,7 +638,7 @@ def optimizerRequestHandler(req: func.HttpRequest):
 
     response_dict["fitness"] = round(fitness, ROUNDING_DECIMALS)
 
-    return func.HttpResponse(body=json.dumps(response_dict))
+    return response_dict
 
 
 # This function gets all the costs and CO2 values from the

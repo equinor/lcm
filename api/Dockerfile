@@ -1,19 +1,19 @@
-FROM python:3.8.0-alpine3.10
+FROM python:3.8-slim
 ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py PYTHONPATH=/code
 WORKDIR /code
 CMD ["flask", "run", "--host=0.0.0.0"]
 
-RUN apk update && \
-#    # Needed to compile a poetry dependecy(cryptography)
-#    apk add --no-cache \
-#        gcc \
-#        musl-dev \
-#        python3-dev \
-#        libffi-dev \
-#        openssl-dev \
-#        nodejs && \
-    pip install --upgrade pip && \
-    pip install poetry
+#RUN apk update && \
+##    # Needed to compile a poetry dependecy(cryptography)
+##    apk add --no-cache \
+##        gcc \
+##        musl-dev \
+##        python3-dev \
+##        libffi-dev \
+##        openssl-dev \
+##        nodejs && \
+#    pip install --upgrade pip && \
+RUN pip install poetry
 COPY pyproject.toml poetry.lock ./
 
 #FROM base as development

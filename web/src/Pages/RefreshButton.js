@@ -3,6 +3,7 @@ import { select } from '@storybook/addon-knobs'
 import { Dialog, Button, Icon, Scrim, Typography } from '@equinor/eds-core-react'
 import styled from "styled-components";
 import { refresh } from "@equinor/eds-icons";
+import { LogicAppAPI } from "../Api"
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -71,7 +72,7 @@ export const RefreshButton = () => {
   }
 
   const callHttpTrigger = () => {
-    fetch("https://prod-10.northeurope.logic.azure.com:443/workflows/cbc8e9fd48df4f8db2c1a32149e29af0/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qnD24LqvPoCms52pK_E4G-wslzVElxjUiaE8Cb9qPjI")
+    LogicAppAPI.getInvokeRefresh()
       .then((response) => {
         return response;
       })

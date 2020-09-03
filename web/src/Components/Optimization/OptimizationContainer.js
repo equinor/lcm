@@ -5,6 +5,7 @@ import PillInput from "./PillInput.js";
 import WeightOptions from "./WeightOptions.js";
 import SolutionData from "./SolutionData.js";
 import SolutionVisualisations from "./SolutionVisualisations.js";
+import { OptimizerAPI } from "../../Api"
 
 const WrapperHeader = styled.div`
   padding-bottom: 2rem;
@@ -79,14 +80,7 @@ export default class OptimizationContainer extends PureComponent {
       products: productIds,
       weights: weights
     }))
-
-    fetch("https://lcm-blend-backend-test.azurewebsites.net/api/BackendAPI", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    OptimizerAPI.postOptimizerApi({
         request: "OPTIMAL_MIX",
         name: "Optimal Blend",
         value: value,
@@ -95,8 +89,7 @@ export default class OptimizationContainer extends PureComponent {
         enviromental: environmental,
         products: productIds,
         weights: weights
-      }),
-    })
+      })
       .then((response) => {
         return response.json();
       })

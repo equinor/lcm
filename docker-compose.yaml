@@ -10,12 +10,14 @@ services:
       - web
 
   api:
-   build:
-     context: ./api
-   restart: unless-stopped
-   environment:
-     ENVIRONMENT: development
-     FLASK_ENV: development
+    build:
+      context: ./api
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: development
+      FLASK_ENV: development
+    volumes:
+      - ./api/:/code
 
   web:
     build:
@@ -23,3 +25,5 @@ services:
       target: development
     restart: unless-stopped
     stdin_open: true
+    volumes:
+      - ./web/src:/code/src

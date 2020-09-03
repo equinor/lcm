@@ -7,6 +7,7 @@ import BridgeContainer from "../Components/Bridging/BridgeContainer.js";
 import CardContainer from "../Components/Blending/CardContainer.js";
 import RefreshButton from "./RefreshButton.js";
 import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";
+import { OptimizerAPI } from "../Api"
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion;
 
@@ -276,18 +277,10 @@ export default class Home extends React.Component {
     tempCombination.values.forEach((value, key) => {
       tempProducts.push({ id: value.id, percents: value.percentage });
     });
-
-    fetch("https://lcm-blend-backend-test.azurewebsites.net/api/BackendAPI", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    OptimizerAPI.postOptimizerApi({
         request: "MIX_PRODUCTS",
         products: tempProducts,
-      }),
-    })
+      })
       .then((response) => {
         return response.json();
       })
@@ -318,17 +311,10 @@ export default class Home extends React.Component {
     this.setState({
       loading: true,
     });
-    fetch("https://lcm-blend-backend-test.azurewebsites.net/api/BackendAPI", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    OptimizerAPI.postOptimizerApi({
         request: "PRODUCT_LIST",
         metadata: ["SACK_SIZE"],
-      }),
-    })
+      })
       .then((response) => {
         return response.json();
       })

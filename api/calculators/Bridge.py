@@ -3,7 +3,7 @@
 # The option is either "MAXIMUM_PORESIZE",
 # "AVERAGE_PORESIZE" or "PERMEABILITY".
 
-from ..Common.Classes import Mode
+from util.Classes import Mode
 from math import sqrt
 
 DEFAULT_D_VALUE = 50
