@@ -143,7 +143,7 @@ export default () => {
     setLoadingSizeFractions(true)
     OptimizerAPI.postOptimizerApi({ "request": "SIZE_FRACTIONS" })
         .then(response => {
-          return response.json()
+          return response.data
         })
         .then(responseData => {
           console.log(responseData)
@@ -164,7 +164,7 @@ export default () => {
 
   useEffect(() => {
     getSizeFractions()
-  }, [sizeFractions])
+  }, [])
 
 
   var bridgeAndCombinations = []

@@ -2,13 +2,14 @@
 # Based on the request body, the correct data are then returned
 # from either the database or the data layer.
 
-import logging
 import json
-from flask import Flask, jsonify, request, abort, Response
+import logging
 
-from util import DatabaseOperations as db
-from util.Classes import Product, Mode
+from flask import abort, Flask, jsonify, request, Response
+
 from calculators import Blend, Bridge, Optimizer
+from util import DatabaseOperations as db
+from util.Classes import Mode, Product
 
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
@@ -30,6 +31,7 @@ PERMEABILITY_OPTION = "PERMEABILITY"
 
 app = Flask(__name__)
 
+
 @app.route('/api', methods=["GET", "POST"])
 def main():
     logging.info("Python HTTP trigger function processed a request.")
@@ -46,22 +48,32 @@ def main():
             requst_ = req_body.get("request")
 
     if requst_ == BLEND_REQUEST:
-        return blendRequestHandler(request)
+        return blendRequestHandler(request.json.get("products"))
 
     elif requst_ == BRIDGE_REQUEST:
-        return bridgeRequestHandler(request)
+        return bridgeRequestHandler(request.json.get("option"), request.json.get("value"))
 
     elif requst_ == OPTIMIZER_REQUEST:
-        return optimizerRequestHandler(request)
+        value = request.json.get("value")
+        name = request.json.get("name")
+        products = request.json.get("products")
+        mass = request.json.get("mass")
+        weights = request.json.get("weights")
+        environmental = request.json.get("environmental")
+        option = request.json.get("option")
+        iterations = request.json.get("max_iterations")
+        size_step = request.json.get("size_steps_filter")
+
+        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations, size_step)
 
     elif requst_ == PRODUCT_LIST_REQUEST:
-        return productListRequestHandler(request.json.get("filters"), request.json["metadata"])
+        return productListRequestHandler(request.json.get("filters"), request.json.get("metadata"))
 
     elif requst_ == PRODUCT_ID_REQUEST:
-        return productRequestHandler(request)
+        return productRequestHandler(request.json.get("id"), request.json.get("metadata"))
 
     elif requst_ == SIZE_STEPS_REQUEST:
-        return sizeStepsRequestHandler(request)
+        return sizeStepsRequestHandler()
 
     elif requst_:
         abort(400)
@@ -73,21 +85,17 @@ def main():
 # Blend handler. This function takes the HttpRequest
 # object as input and returns the cumulative distribution
 # of a blend, based on the given input data.
-def blendRequestHandler(req):
-    products = req.params.get("products")
+def blendRequestHandler(products):
     if not products:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            products = req_body.get("products")
+        return Response("No products given!", 400)
 
     product_list = []
     percent_sum = 0
 
     try:
         for product in products:
+            if not product.get("percents"):
+                return f"Product {product['id']} is missing percentage!", 400
             percent_sum += product["percents"]
 
             cumulative = db.getCumulative(product["id"])
@@ -128,26 +136,11 @@ def blendRequestHandler(req):
 # Bridge handler. This function takes the HttpRequest
 # object as input and returns a calculated bridge
 # distribution based on the input data and options.
-def bridgeRequestHandler(req):
+def bridgeRequestHandler(option, value):
+    if not value or not option:
+        return Response("No options or value given!", 400)
+
     error_list = []
-    option = req.params.get("option")
-    if not option:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            option = req_body.get("option")
-
-    value = req.params.get("value")
-    if not value:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            value = req_body.get("value")
-
     mode = None
     if option:
         if option == MAXIMUM_PORESIZE_OPTION:
@@ -158,11 +151,6 @@ def bridgeRequestHandler(req):
             mode = Mode.Permeability
         else:
             error_list.append("Invalid 'option' input")
-    else:
-        error_list.append("Missing 'option' input")
-
-    if not value:
-        error_list.append("Missing 'value' input")
 
     if error_list:
         return jsonify({"Error": error_list}), 400
@@ -266,31 +254,16 @@ def productListRequestHandler(filters, metadata_list):
             }
             return_list.append(data_dict)
 
-    return return_list
+    return jsonify(return_list)
 
 
 # Product handler. This function takes the HttpRequest
 # object as input and returns data about a product based
 # on its ID. The data returned can be filtered based on all
 # metadata categories. as well as distribution and cumulative.
-def productRequestHandler(req):
-    product_id = req.params.get("id")
-    if not product_id:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            product_id = req_body.get("id")
-
-    metadata_list = req.params.get("metadata")
-    if not metadata_list:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            metadata_list = req_body.get("metadata")
+def productRequestHandler(product_id, metadata_list):
+    if not product_id or not metadata_list:
+        return "Id or metadata missing!", 400
 
     use_specific_metadata = True
     if not metadata_list:
@@ -338,12 +311,12 @@ def productRequestHandler(req):
 
         data_dict["distribution"] = db.getDistribution(product_id)
 
-    return func.HttpResponse(body=json.dumps(data_dict))
+    return data_dict
 
 
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
-def sizeStepsRequestHandler(req):
+def sizeStepsRequestHandler():
     response_dict = {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
 
     return response_dict
@@ -353,54 +326,19 @@ def sizeStepsRequestHandler(req):
 # object as input and returns the best combination of products
 # aswell as the execution time, the fitness score and the
 # amount of iterations.
-def optimizerRequestHandler(req):
-    error_list = []
-    blend_name = req.params.get("name")
-    if not blend_name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            blend_name = req_body.get("name")
-    if not blend_name:
-        error_list.append("Missing 'name' input")
 
-    product_list = req.params.get("products")
-    if not product_list:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            product_list = req_body.get("products")
-    if not product_list:
-        product_list = []
+#name, products, mass, weights, environmental
+def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option, max_iterations, size_steps_filter):
+    error_list = []
+
+    if not products:
+        products = []
 
         product_names = db.listProducts()
 
         for name in product_names:
-            product_list.append(product_names[name])
+            products.append(product_names[name])
 
-    mass_goal = req.params.get("mass")
-    if not mass_goal:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            mass_goal = req_body.get("mass")
-    if not mass_goal:
-        error_list.append("Missing 'mass' input")
-
-    weight_dict = req.params.get("weights")
-    if not weight_dict:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            weight_dict = req_body.get("weights")
     if not weight_dict:
         weight_dict = {"best_fit": 100.0, "cost": 0.0, "co2": 0.0, "mass_fit": 0.0}
     else:
@@ -419,60 +357,19 @@ def optimizerRequestHandler(req):
         except ValueError:
             error_list.append("Invalid 'weights' input")
 
-    enviromental_list = req.params.get("enviromental")
-    if not enviromental_list:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            enviromental_list = req_body.get("enviromental")
 
-    option = req.params.get("option")
-    if not option:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            option = req_body.get("option")
     if not option:
         option = AVERAGE_PORESIZE_OPTION
 
-    max_iterations = req.params.get("max_iterations")
-    if not max_iterations:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            max_iterations = req_body.get("max_iterations")
     if not max_iterations:
         max_iterations = DEFAULT_MAX_ITERATIONS
     if max_iterations < 0:
         max_iterations = 0
 
-    size_steps_filter = req.params.get("size_steps_filter")
-    if not size_steps_filter:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            size_steps_filter = req_body.get("size_steps_filter")
     if (not size_steps_filter) or (size_steps_filter < 0):
         size_steps_filter = 0
     elif size_steps_filter > 1:
         size_steps_filter = 1
-
-    value = req.params.get("value")
-    if not value:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            abort(400)
-        else:
-            value = req_body.get("value")
 
     mode = None
 
@@ -501,8 +398,8 @@ def optimizerRequestHandler(req):
 
     products = []
 
-    for i in range(len(product_list)):
-        id = str(product_list[i])
+    for i in range(len(products)):
+        id = str(products[i])
 
         try:
             product_dict = {
@@ -513,8 +410,8 @@ def optimizerRequestHandler(req):
                 "enviromental": (metadata[id]["ENVIROMENTAL_IMPACT"]).upper(),
             }
 
-            if enviromental_list:
-                if product_dict["enviromental"] in enviromental_list:
+            if environmental_list:
+                if product_dict["enviromental"] in environmental_list:
                     product_dict["cumulative"] = db.getCumulative(id)
                     product_dict["distribution"] = db.getDistribution(id)
                     products.append(product_dict)
@@ -524,11 +421,7 @@ def optimizerRequestHandler(req):
                 product_dict["distribution"] = db.getDistribution(id)
                 products.append(product_dict)
 
-        except TypeError:
-            error_list.append("Invalid 'id' input")
-        except ValueError:
-            error_list.append("Invalid 'id' input")
-        except KeyError:
+        except [TypeError, ValueError, KeyError]:
             error_list.append("Invalid 'id' input")
 
     if "Invalid 'weights' input" not in error_list:
@@ -571,14 +464,14 @@ def optimizerRequestHandler(req):
         return f"Probably invalid inputs! {e}", 400
 
     mass_sum = 0
-    product_list = []
+    products = []
 
     for product in products:
         product["mass"] = int(best[product["id"]]) * product["sack_size"]
         mass_sum += product["mass"]
 
     for product in products:
-        product_list.append(
+        products.append(
             Product(
                 product["id"],
                 "",
@@ -589,7 +482,7 @@ def optimizerRequestHandler(req):
         )
 
     optimal_cumulative, optimal_distribution = Blend.calculateBlendDistribution(
-        product_list, size_steps
+        products, size_steps
     )
 
     response_dict = {}
@@ -600,9 +493,7 @@ def optimizerRequestHandler(req):
             blend_list.append({"id": id, "sacks": best[id]})
 
     response_dict["name"] = blend_name
-
     response_dict["products"] = blend_list
-
     response_dict["performance"] = {
         "best_fit": round(best_fit_score, ROUNDING_DECIMALS),
         "mass_fit": round(mass_score, ROUNDING_DECIMALS),
@@ -610,15 +501,10 @@ def optimizerRequestHandler(req):
         "co2": round(co2_score, ROUNDING_DECIMALS),
         "enviromental": round(enviromental_score, ROUNDING_DECIMALS),
     }
-
     response_dict["cumulative"] = [round(num, ROUNDING_DECIMALS) for num in optimal_cumulative]
-
     response_dict["distribution"] = [round(num, ROUNDING_DECIMALS) for num in optimal_distribution]
-
     response_dict["execution_time"] = round(exec_time, ROUNDING_DECIMALS)
-
     response_dict["iterations"] = iterations
-
     response_dict["fitness"] = round(fitness, ROUNDING_DECIMALS)
 
     return response_dict

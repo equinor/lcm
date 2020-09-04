@@ -108,6 +108,7 @@ export default class Home extends React.Component {
         combinationMap: tempCombinationMap,
       });
     } else {
+      console.log(tempCombinationMap)
       this.setState({
         productMap: tempProductMap,
       });
@@ -125,6 +126,7 @@ export default class Home extends React.Component {
       }
     })
     tempCombination.name = name
+    console.log(tempCombinationMap)
     this.setState({
       combinationMap: tempCombinationMap
     })
@@ -137,6 +139,7 @@ export default class Home extends React.Component {
     if (this.state.combinationMap.has(combinationId)) {
       var tempCombinations = this.state.combinationMap;
       tempCombinations.delete(combinationId);
+      console.log(tempCombinations)
       this.setState({
         bridgeRefreshCount: this.state.bridgeRefreshCount+1,
         combinationMap: tempCombinations
@@ -182,21 +185,25 @@ export default class Home extends React.Component {
     // Set percentages
     var tempValues = tempCombination.values;
     var massSum = 0;
-    tempValues.forEach((value, key) => {
+    tempValues.forEach((value) => {
       // Sum up the total mass
       massSum +=
         value.value *
         (tempCombination.sacks ? this.getProductById(value.id).sack_size : 1);
     });
     // Set the percentages to the value object for combination
-    tempValues.forEach((value, key) => {
-      value.percentage =
-        100 *
-        ((value.value *
-          (tempCombination.sacks
+    tempValues.forEach((value) => {
+
+      const sacks = (tempCombination.sacks
             ? this.getProductById(value.id).sack_size
-            : 1)) /
-          massSum);
+            : 1)
+
+
+      console.log(sacks)
+
+      value.percentage = 100 * ((value.value * 1) / massSum);
+
+      console.log(value.percentage)
       tempValues.set(value.id, value);
     });
 
@@ -247,7 +254,7 @@ export default class Home extends React.Component {
     var tempCombinations = this.state.combinationMap;
 
     tempCombinations.set(combination.id, combination);
-
+    console.log(tempCombinations)
     this.setState({
       bridgeRefreshCount: this.state.bridgeRefreshCount+1,
       combinationMap: tempCombinations,
@@ -257,6 +264,9 @@ export default class Home extends React.Component {
   }
 
   getProductById(productId) {
+    console.log(productId)
+    console.log(this.state.productMap)
+    console.log(this.state.productMap.get(productId))
     return this.state.productMap.get(productId);
   }
 
@@ -274,7 +284,7 @@ export default class Home extends React.Component {
     });
     // Convert to API accepted input
     var tempProducts = [];
-    tempCombination.values.forEach((value, key) => {
+    tempCombination.values.forEach((value) => {
       tempProducts.push({ id: value.id, percents: value.percentage });
     });
     OptimizerAPI.postOptimizerApi({
@@ -282,7 +292,7 @@ export default class Home extends React.Component {
         products: tempProducts,
       })
       .then((response) => {
-        return response.json();
+        return response.data;
       })
       .then((responseData) => {
         console.log(responseData);
@@ -291,6 +301,7 @@ export default class Home extends React.Component {
       .then((data) => {
         tempCombination.cumulative = data.cumulative;
         tempCombinationMap.set(tempCombination.id, tempCombination);
+        console.log(tempCombinationMap)
         this.setState({
           combinationMap: tempCombinationMap,
           loadingMix: false,
@@ -316,13 +327,7 @@ export default class Home extends React.Component {
         metadata: ["SACK_SIZE"],
       })
       .then((response) => {
-        return response.json();
-      })
-      .then((responseData) => {
-        console.log(responseData);
-        return responseData;
-      })
-      .then((data) => {
+        const data =  response.data;
         var productMap = new Map();
         for (var i = 0; i < data.length; i++) {
           // Add enabled value to all products
@@ -430,26 +435,6 @@ export default class Home extends React.Component {
             getBridgeValue={this.getBridgeValue}
             addCombination={this.addCombination}
           />
-          {/*<WrapperOptimizer>
-            <Grid>
-              <div>
-                <WrapperHeader>
-                  <Typography variant="h2">Optimizer</Typography>
-                </WrapperHeader>
-
-                <PillInput />
-              </div>
-              <div>
-                <WeightOptions />
-              </div>
-            </Grid>
-          </WrapperOptimizer>
-          <Grid>
-            <SolutionData />
-            <div>
-              <SolutionInfo />
-            </div>
-          </Grid>*/}
         </Body>
       </Wrapper>
     );

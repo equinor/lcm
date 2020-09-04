@@ -6,10 +6,13 @@
 # to tables, as specified by METADATA_TABLE_NAME, CUMULATIVE_TABLE_NAME,
 # and DISTRIBUTION_TABLE_NAME.
 import csv
+from datetime import datetime, timedelta
 from pathlib import Path
+from time import sleep
 
 import requests
 import xlrd
+from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
 
 from config import Config
@@ -31,134 +34,49 @@ def get_excel_file_list(dir):
     return [x for x in path.rglob("*") if x.is_file() and x.suffix == ".xlsx"]
 
 
-def moveDataFromBlobToTable():
-    # table_service, container, blob_list = connectToAzure(conn_string, CONTAINER_NAME)
+def create_table():
+    table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
+    timer = datetime.now()
+
+    def create_recursive():
+        try:
+            table_service.create_table(METADATA_TABLE_NAME, fail_on_exist=True)
+        except AzureConflictHttpError as e:
+            print(e)
+            if datetime.now() - timer > timedelta(minutes=2):
+                print("Could not crate table in 2 minutes")
+                print("Giving up")
+                raise Exception("Could not create Azure Table!")
+            print(f"Retrying in 10 seconds...")
+            sleep(10)
+            create_recursive()
+
+    create_recursive()
+
+
+def write_meta_data_to_tables():
+    table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
+    table_batch = TableBatch()
+
+    # Always create a fresh table
+    table_service.delete_table(METADATA_TABLE_NAME)
+    create_table()
+
+    with open("../test_data/metadata.csv") as meta_file:
+        reader = csv.DictReader(meta_file)
+        for product in reader:
+            entity = {**product, "PartitionKey": METADATA_TABLE_NAME, "RowKey": product["title"]}
+            table_batch.insert_entity(entity)
+
+    table_service.commit_batch(METADATA_TABLE_NAME, table_batch)
+
+
+# TODO: Not done
+def write_products_excel_to_tabel():
     table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
 
-    createAllTables(table_service)
-
-    deleteAllDataFromTables(table_service)
-
-    distribution_batch = TableBatch()
-    cumulative_batch = TableBatch()
-    metadata_batch = TableBatch()
-
-    products_metadata_dict, categories = createMetaDataDict()
-
-    id_dict, metadata_batch, add_size_steps = writeMetaDataToAzureTables(
-        table_service, METADATA_TABLE_NAME, products_metadata_dict, metadata_batch
-    )
     for file in get_excel_file_list("../test_data"):
         sheet = readExcelSheet(file)
-
-        if add_size_steps:
-            metadata_batch = writeSizeStepsToTables(sheet, metadata_batch)
-            add_size_steps = False
-
-        distribution_batch = writeDistributionToAzureTables(
-            sheet,
-            id_dict,
-            file.stem,
-            distribution_batch,
-        )
-
-        cumulative_batch = writeCumulativeToAzureTables(
-            sheet,
-            table_service,
-            id_dict,
-            file.stem,
-            CUMULATIVE_TABLE_NAME,
-            cumulative_batch,
-        )
-
-
-    table_service.commit_batch(
-        table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch
-    )
-    table_service.commit_batch(table_name=CUMULATIVE_TABLE_NAME, batch=cumulative_batch)
-    table_service.commit_batch(table_name=METADATA_TABLE_NAME, batch=metadata_batch)
-
-    return "succeeded"
-
-
-# Creates tables for metadata, PSD and cumulative distribution.
-def createAllTables(table_service):
-    if not table_service.exists(METADATA_TABLE_NAME, timeout=None):
-        table_service.create_table(METADATA_TABLE_NAME)
-
-    if not table_service.exists(CUMULATIVE_TABLE_NAME, timeout=None):
-        table_service.create_table(CUMULATIVE_TABLE_NAME)
-
-    if not table_service.exists(DISTRIBUTION_TABLE_NAME, timeout=None):
-        table_service.create_table(DISTRIBUTION_TABLE_NAME)
-
-
-# Creates a dictionary containing metadata mapped to product name.
-def createMetaDataDict():
-    products_metadata_dict = {}
-    with open("../test_data/metadata.csv") as meta_file:
-        reader = csv.DictReader(meta_file, )
-        for line in reader:
-            product_meta = {}
-            product_meta["TITLE"] = line["title"]
-            product_meta["SUPPLIER"] = line["supplier"]
-            products_metadata_dict[line["title"]] = product_meta
-
-        categories = reader.fieldnames
-
-        return products_metadata_dict, categories
-
-
-# Removes excessive lines, i.e lines with length shorter than length.
-# This is a helper function to remove empty lines from collected
-# metadata
-def removeShortLines(lines, length):
-    newlines = []
-
-    for line in lines:
-        if len(line) >= length:
-            newlines.append(line)
-
-    return newlines
-
-
-# Writes metadata to the corresponding azure table.
-def writeMetaDataToAzureTables(
-        table_service, table_name, products_metadata_dict, batch
-):
-    add_size_steps = True
-
-    id_dict = {}
-
-    highest_id = 0
-
-    names = table_service.query_entities(table_name)
-
-    for name in names:
-        if name["RowKey"] == "Size_steps":
-            add_size_steps = False
-        else:
-            id_dict[name["TITLE"]] = name["RowKey"]
-            if int(name["RowKey"]) > highest_id:
-                highest_id = int(name["RowKey"])
-
-    for product_name in products_metadata_dict:
-        metadata = products_metadata_dict[product_name]
-        if metadata["TITLE"] not in id_dict:
-            id_dict[metadata["TITLE"]] = str(highest_id + 1)
-            highest_id += 1
-
-        table_element = {
-            "PartitionKey": METADATA_TABLE_NAME,
-            "RowKey": str(id_dict[metadata["TITLE"]]),
-        }
-
-        for category in metadata:
-            table_element[category] = metadata[category]
-
-        batch.insert_or_replace_entity(table_element)
-
-    return id_dict, batch, add_size_steps
 
 
 # Reads an excel sheet from azure blob storage,
@@ -169,68 +87,6 @@ def readExcelSheet(file):
 
     sheet = Wb.sheet_by_index(0)
     return sheet
-
-
-# Writes the distribution of a product from an open
-# excel sheet to the corresponding azure table.
-def writeDistributionToAzureTables(sheet, id_dict, file_name, batch):
-    id = id_dict[file_name]
-
-    distribution_index = -1
-
-    for i in range(sheet.ncols):
-        if sheet.cell_value(0, i) == "Distribution":
-            distribution_index = i
-
-    distribution_list = []
-
-    for i in range(1, sheet.nrows):
-
-        if distribution_index != -1:
-            distribution_list.append(sheet.cell_value(i, distribution_index))
-
-    if distribution_list:
-        element = {
-            "PartitionKey": "Distribution",
-            "RowKey": str(id),
-            "Value": str(distribution_list),
-        }
-
-        batch.insert_or_replace_entity(element)
-
-    return batch
-
-
-# Writes the cumulative distribution of a product from an open
-# excel sheet to the corresponding azure table.
-def writeCumulativeToAzureTables(
-        sheet, table_service, id_dict, file_name, table_name, batch
-):
-    id = id_dict[file_name]
-
-    cumulative_index = -1
-
-    for i in range(sheet.ncols):
-        if sheet.cell_value(0, i) == "Cumulative":
-            cumulative_index = i
-
-    cumulative_list = []
-
-    for i in range(1, sheet.nrows):
-
-        if cumulative_index != -1:
-            cumulative_list.append(sheet.cell_value(i, cumulative_index))
-
-    if cumulative_list:
-        element = {
-            "PartitionKey": "Cumulative",
-            "RowKey": str(id),
-            "Value": str(cumulative_list),
-        }
-
-        batch.insert_or_replace_entity(element)
-
-    return batch
 
 
 # Sends an http post request to the callback url supplied
@@ -284,4 +140,4 @@ def deleteAllDataFromTables(table_service):
 
 
 if __name__ == '__main__':
-    moveDataFromBlobToTable()
+    write_meta_data_to_tables()

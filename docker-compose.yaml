@@ -21,7 +21,7 @@ services:
       - "5000:5000"
     volumes:
       - ./api/:/code
-#    command: ["python","/code/util/load_test_data.py"]
+    command: ["python","/code/util/load_test_data.py"]
 
   web:
     build:
