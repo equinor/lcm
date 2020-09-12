@@ -119,6 +119,7 @@ export default class OptimizationContainer extends PureComponent {
             })
             products.map((component) => {
               if (component.sacks !== 0) {
+                console.log(component);
                 var tempValue = {}
                 tempValue.id = component.id
                 tempValue.value = component.sacks

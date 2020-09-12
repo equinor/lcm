@@ -64,7 +64,8 @@ def main():
         iterations = request.json.get("max_iterations")
         size_step = request.json.get("size_steps_filter")
 
-        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations, size_step)
+        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations,
+                                       size_step)
 
     elif requst_ == PRODUCT_LIST_REQUEST:
         return productListRequestHandler(request.json.get("filters"), request.json.get("metadata"))
@@ -111,10 +112,12 @@ def blendRequestHandler(products):
                 )
             )
 
+        print(percent_sum)
         if percent_sum != 100:
             abort(400)
 
     except Exception as e:
+        print(e)
         return jsonify(e), 400
 
     size_steps = db.getSizeSteps()
@@ -173,10 +176,6 @@ def bridgeRequestHandler(option, value):
 # on all metadata categories. Likewise, any desired
 # subset of the data can be returned.
 def productListRequestHandler(filters, metadata_list):
-    use_specific_metadata = True
-    if not metadata_list:
-        use_specific_metadata = False
-
     metadata = db.getMetadata()
 
     try:
@@ -214,45 +213,14 @@ def productListRequestHandler(filters, metadata_list):
         return jsonify(e), 400
 
     return_list = []
-
-    if use_specific_metadata:
-        try:
-            for id in metadata:
-                data_dict = {
-                    "id": id,
-                    "name": metadata[id]["TITLE"],
-                    "supplier": metadata[id]["SUPPLIER"],
-                }
-
-                for key in metadata_list:
-                    if key == "DISTRIBUTION":
-                        data_dict[key.lower()] = [
-                            round(num, ROUNDING_DECIMALS) for num in db.getDistribution(id)
-                        ]
-                    elif key == "CUMULATIVE":
-                        data_dict[key.lower()] = [
-                            round(num, ROUNDING_DECIMALS) for num in db.getCumulative(id)
-                        ]
-                    elif (key != "TITLE") and (key != "NAME") and (key != "ID"):
-                        data_dict[key.lower()] = metadata[id][key]
-
-                return_list.append(data_dict)
-        except TypeError:
-            use_specific_metadata = False
-        except KeyError:
-            use_specific_metadata = False
-        except ValueError:
-            use_specific_metadata = False
-
-    if not use_specific_metadata:
-        return_list = []
-        for id in metadata:
-            data_dict = {
-                "id": id,
-                "name": metadata[id]["TITLE"],
-                "supplier": metadata[id]["SUPPLIER"],
-            }
-            return_list.append(data_dict)
+    for id in metadata:
+        data_dict = {
+            "id": id,
+            "name": metadata[id]["title"],
+            "supplier": metadata[id]["supplier"],
+            "sack_size": float(metadata[id]["sack_size"])
+        }
+        return_list.append(data_dict)
 
     return jsonify(return_list)
 
@@ -317,9 +285,7 @@ def productRequestHandler(product_id, metadata_list):
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
 def sizeStepsRequestHandler():
-    response_dict = {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
-
-    return response_dict
+    return {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
 
 
 # Optimizer handler. This function takes the HttpRequest
@@ -327,8 +293,9 @@ def sizeStepsRequestHandler():
 # aswell as the execution time, the fitness score and the
 # amount of iterations.
 
-#name, products, mass, weights, environmental
-def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option, max_iterations, size_steps_filter):
+# name, products, mass, weights, environmental
+def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option,
+                            max_iterations, size_steps_filter):
     error_list = []
 
     if not products:
@@ -356,7 +323,6 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
             error_list.append("Invalid 'weights' input")
         except ValueError:
             error_list.append("Invalid 'weights' input")
-
 
     if not option:
         option = AVERAGE_PORESIZE_OPTION

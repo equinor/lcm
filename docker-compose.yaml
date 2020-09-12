@@ -12,7 +12,7 @@ services:
   api:
     build:
       context: ./api
-    restart: unless-stopped
+    # restart: unless-stopped
     environment:
       ENVIRONMENT: development
       FLASK_ENV: development
@@ -21,7 +21,6 @@ services:
       - "5000:5000"
     volumes:
       - ./api/:/code
-    command: ["python","/code/util/load_test_data.py"]
 
   web:
     build:

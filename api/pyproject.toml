@@ -13,6 +13,7 @@ numpy = "^1.19.1"
 xlrd = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
+pytest = "^5.4"
 
 [build-system]
 requires = ["poetry>=0.12"]
