@@ -3,22 +3,23 @@
 from azure.cosmosdb.table import TableService
 from config import Config
 
-
 METADATA_TABLE_NAME = "Metadata"
 CUMULATIVE_TABLE_NAME = "Cumulative"
 DISTRIBUTION_TABLE_NAME = "Distribution"
 
-table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
+
+def get_service():
+    return TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
 
 
 # This function returns a dictionary of metadata
 # or all products in the database. The dict is
 # structured as such: {ID: {METADATA_CATEGORY: VALUE}}
 def getMetadata():
-    products = table_service.query_entities(METADATA_TABLE_NAME)
+    products = get_service().query_entities(METADATA_TABLE_NAME)
 
     metadata_dict = {}
-    
+
     for product in products:
         if product["RowKey"] != "Size_steps":
             product_dict = {}
@@ -42,7 +43,7 @@ def getMetadata():
 # for a single product based on the input id. The
 # dictionary is structured as such: {METADATA_CATEGORY: VALUE}
 def getMetadataFromID(id):
-    product = table_service.get_entity(
+    product = get_service().get_entity(
         table_name=METADATA_TABLE_NAME, partition_key="Metadata", row_key=id
     )
 
@@ -50,10 +51,10 @@ def getMetadataFromID(id):
 
     for category in product:
         if (
-            (category != "Timestamp")
-            and (category != "PartitionKey")
-            and (category != "RowKey")
-            and (category != "etag")
+                (category != "Timestamp")
+                and (category != "PartitionKey")
+                and (category != "RowKey")
+                and (category != "etag")
         ):
             product_dict[category] = product[category]
 
@@ -76,7 +77,7 @@ def getSizeSteps():
 # This function gets the cumulative distribution for a product,
 # based on its id. the cumulative distribution is returned as a list.
 def getCumulative(id):
-    cumulatives = table_service.query_entities(CUMULATIVE_TABLE_NAME)
+    cumulatives = get_service().query_entities(CUMULATIVE_TABLE_NAME)
 
     cumulative = ""
 
@@ -95,10 +96,7 @@ def getCumulative(id):
 # This function gets the particle size distribution (PSD)
 # of a product based on its id, and returns it as a list.
 def getDistribution(id):
-
-
-
-    distributions = table_service.query_entities(DISTRIBUTION_TABLE_NAME)
+    distributions = get_service().query_entities(DISTRIBUTION_TABLE_NAME)
 
     distribution = ""
 
@@ -117,10 +115,7 @@ def getDistribution(id):
 # This function returns a dictionary of all products in the
 # database, as a dictionary mapping ids to the product names
 def listProducts():
-
-
-
-    products = table_service.query_entities(METADATA_TABLE_NAME)
+    products = get_service().query_entities(METADATA_TABLE_NAME)
 
     product_dict = {}
 

@@ -6,7 +6,7 @@ from util.DatabaseOperations import CUMULATIVE_TABLE_NAME, DISTRIBUTION_TABLE_NA
 from xlrd.sheet import Sheet
 
 from util.azure_table import create_table
-from util.excel_files import get_excel_files, read_excel_sheet, find_column_index, get_column_values
+from util.excel import get_excel_files, read_excel_sheet, get_column_values
 
 TEST_DATA_DIRECTORY = "./test_data"
 METADATA_FILE_NAME = "metadata.csv"
@@ -31,8 +31,7 @@ def upload_metadata_file(table_service: TableService):
 
 
 def get_excel_entity(product_id: str, sheet: Sheet, column_name: str):
-    column_index = find_column_index(sheet, column_name)
-    column_values = get_column_values(sheet, column_index)
+    column_values = get_column_values(sheet, column_name)
     return {
         "PartitionKey": column_name,
         "RowKey": str(product_id),

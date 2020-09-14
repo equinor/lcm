@@ -6,23 +6,25 @@ from pathlib import Path
 from xlrd.sheet import Sheet
 
 
-def get_column_values(sheet: Sheet, column_index: int) -> List:
+def get_column_values(sheet: Sheet, column_name: str) -> List:
+    column_index = _find_column_index(sheet, column_name)
+
+    if column_index == -1:
+        raise Exception(f"Sheet does not contain column {column_name}")
+
     values = []
     for i in range(1, sheet.nrows):
         values.append(sheet.cell_value(i, column_index))
     return values
 
 
-def find_column_index(sheet: Sheet, column_name: str) -> int:
+def _find_column_index(sheet: Sheet, column_name: str) -> int:
     distribution_index = -1
 
     for i in range(sheet.ncols):
         if sheet.cell_value(0, i) == column_name:
             distribution_index = i
             break
-
-    if distribution_index == -1:
-        raise Exception(f"Sheet does not contain column {column_name}")
 
     return distribution_index
 

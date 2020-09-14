@@ -1,5 +1,7 @@
 # LCM
 
+![CI](https://github.com/equinor/lcm/workflows/CI/badge.svg)
+
 ## Azure Resources
 
 
