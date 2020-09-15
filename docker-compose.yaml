@@ -12,15 +12,16 @@ services:
   api:
     build:
       context: ./api
-    # restart: unless-stopped
+    restart: unless-stopped
     environment:
       ENVIRONMENT: development
       FLASK_ENV: development
       TABEL_KEY: ${TABEL_KEY}
+      LOAD_TEST_DATA: "False"
     ports:
       - "5000:5000"
     volumes:
-      - ./api/:/code
+      - ./api/:/app
 
   web:
     build:

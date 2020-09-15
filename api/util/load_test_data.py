@@ -56,9 +56,10 @@ def upload_excel_files(table_service: TableService):
 
 
 def upload_data_to_azure_tables():
-    table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
-    upload_metadata_file(table_service)
-    upload_excel_files(table_service)
+    if Config.LOAD_TEST_DATA:
+        table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
+        upload_metadata_file(table_service)
+        upload_excel_files(table_service)
 
 
 if __name__ == '__main__':

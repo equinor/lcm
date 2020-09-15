@@ -8,6 +8,7 @@ import CardContainer from "../Components/Blending/CardContainer.js";
 import RefreshButton from "./RefreshButton.js";
 import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";
 import { OptimizerAPI } from "../Api"
+import {ProductsApi} from "./../gen-api/src/apis/index"
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion;
 
@@ -309,6 +310,31 @@ export default class Home extends React.Component {
     this.setState({
       loading: true,
     });
+
+    const products_api = new ProductsApi();
+    products_api.getAll().then(response => {
+      const data =  response;
+        var productMap = new Map();
+        for (var i = 0; i < data.length; i++) {
+          // Add enabled value to all products
+          data[i]["enabled"] = true;
+          // Create a Map of products with id as key
+          productMap.set(data[i].id, data[i]);
+        }
+        this.setState({
+          productMap: productMap,
+          loading: false,
+          fetched: true,
+        });
+    }).catch((err) => {
+        console.log("fetch error" + err);
+        this.setState({
+          loading: false,
+          fetched: true,
+        });
+      });
+
+    /*
     OptimizerAPI.postOptimizerApi({
         request: "PRODUCT_LIST",
         metadata: ["SACK_SIZE"],
@@ -335,6 +361,7 @@ export default class Home extends React.Component {
           fetched: true,
         });
       });
+      */
   }
 
   render() {
@@ -415,7 +442,7 @@ export default class Home extends React.Component {
             </AccordionItem>
           </Accordion>
 
-          <OptimizationContainer 
+          <OptimizationContainer
             productMap={this.state.productMap}
             combinationMap={this.state.combinationMap}
             getBridgeOption={this.getBridgeOption}
