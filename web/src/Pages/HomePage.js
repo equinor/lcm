@@ -8,6 +8,7 @@ import CardContainer from "../Components/Blending/CardContainer.js";
 import RefreshButton from "./RefreshButton.js";
 import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";
 import { OptimizerAPI } from "../Api"
+import {ProductsApi} from "./../gen-api/src/apis/index"
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion;
 
@@ -108,7 +109,6 @@ export default class Home extends React.Component {
         combinationMap: tempCombinationMap,
       });
     } else {
-      console.log(tempCombinationMap)
       this.setState({
         productMap: tempProductMap,
       });
@@ -126,7 +126,6 @@ export default class Home extends React.Component {
       }
     })
     tempCombination.name = name
-    console.log(tempCombinationMap)
     this.setState({
       combinationMap: tempCombinationMap
     })
@@ -139,7 +138,6 @@ export default class Home extends React.Component {
     if (this.state.combinationMap.has(combinationId)) {
       var tempCombinations = this.state.combinationMap;
       tempCombinations.delete(combinationId);
-      console.log(tempCombinations)
       this.setState({
         bridgeRefreshCount: this.state.bridgeRefreshCount+1,
         combinationMap: tempCombinations
@@ -168,12 +166,12 @@ export default class Home extends React.Component {
         tempValues.delete(productId);
       } else {
         // Update
-        tempValue.value = value;
+        tempValue.value = parseFloat(value);
         tempValues.set(tempValue.id, tempValue);
       }
     } else {
       // Create new entry
-      tempValues.set(productId, { id: productId, value: value });
+      tempValues.set(productId, { id: productId, value: parseFloat(value) });
     }
     // Debug
     /*tempValues.forEach((value, key) => {
@@ -193,17 +191,13 @@ export default class Home extends React.Component {
     });
     // Set the percentages to the value object for combination
     tempValues.forEach((value) => {
-
-      const sacks = (tempCombination.sacks
+      value.percentage =
+        100 *
+        ((value.value *
+          (tempCombination.sacks
             ? this.getProductById(value.id).sack_size
-            : 1)
-
-
-      console.log(sacks)
-
-      value.percentage = 100 * ((value.value * 1) / massSum);
-
-      console.log(value.percentage)
+            : 1)) /
+          massSum);
       tempValues.set(value.id, value);
     });
 
@@ -254,7 +248,6 @@ export default class Home extends React.Component {
     var tempCombinations = this.state.combinationMap;
 
     tempCombinations.set(combination.id, combination);
-    console.log(tempCombinations)
     this.setState({
       bridgeRefreshCount: this.state.bridgeRefreshCount+1,
       combinationMap: tempCombinations,
@@ -264,9 +257,6 @@ export default class Home extends React.Component {
   }
 
   getProductById(productId) {
-    console.log(productId)
-    console.log(this.state.productMap)
-    console.log(this.state.productMap.get(productId))
     return this.state.productMap.get(productId);
   }
 
@@ -295,13 +285,11 @@ export default class Home extends React.Component {
         return response.data;
       })
       .then((responseData) => {
-        console.log(responseData);
         return responseData;
       })
       .then((data) => {
         tempCombination.cumulative = data.cumulative;
         tempCombinationMap.set(tempCombination.id, tempCombination);
-        console.log(tempCombinationMap)
         this.setState({
           combinationMap: tempCombinationMap,
           loadingMix: false,
@@ -322,6 +310,31 @@ export default class Home extends React.Component {
     this.setState({
       loading: true,
     });
+
+    const products_api = new ProductsApi();
+    products_api.getAll().then(response => {
+      const data =  response;
+        var productMap = new Map();
+        for (var i = 0; i < data.length; i++) {
+          // Add enabled value to all products
+          data[i]["enabled"] = true;
+          // Create a Map of products with id as key
+          productMap.set(data[i].id, data[i]);
+        }
+        this.setState({
+          productMap: productMap,
+          loading: false,
+          fetched: true,
+        });
+    }).catch((err) => {
+        console.log("fetch error" + err);
+        this.setState({
+          loading: false,
+          fetched: true,
+        });
+      });
+
+    /*
     OptimizerAPI.postOptimizerApi({
         request: "PRODUCT_LIST",
         metadata: ["SACK_SIZE"],
@@ -348,6 +361,7 @@ export default class Home extends React.Component {
           fetched: true,
         });
       });
+      */
   }
 
   render() {
@@ -428,7 +442,7 @@ export default class Home extends React.Component {
             </AccordionItem>
           </Accordion>
 
-          <OptimizationContainer 
+          <OptimizationContainer
             productMap={this.state.productMap}
             combinationMap={this.state.combinationMap}
             getBridgeOption={this.getBridgeOption}

@@ -1,0 +1,36 @@
+openapi: 3.0.1
+info:
+  title: Lost Circulation Material
+  description: API for the LCM
+  version: 0.1.0
+
+servers:
+  - url: 'http://localhost/api'
+    description: Used for local development.
+
+tags:
+  - name: products
+    description: Products
+
+paths:
+  /products:
+    get:
+      description: |
+        Request to retrieve list of all products (id, name, supplier) and their related metadata.
+        By default it will return all the metadata.
+        Names of products may change and not be unique, so use the id as the identifier in the frontend.
+      operationId: products_get
+      x-openapi-router-controller: controllers.products
+      tags:
+        - products
+      summary: Get all products
+
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object

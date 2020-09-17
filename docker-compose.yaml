@@ -17,11 +17,11 @@ services:
       ENVIRONMENT: development
       FLASK_ENV: development
       TABEL_KEY: ${TABEL_KEY}
+      LOAD_TEST_DATA: "False"
     ports:
       - "5000:5000"
     volumes:
-      - ./api/:/code
-    command: ["python","/code/util/load_test_data.py"]
+      - ./api/:/app
 
   web:
     build:

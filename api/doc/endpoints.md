@@ -1,7 +1,5 @@
-# Frontend-Backend API layout
-Restful API to pass data between the frontend and backend. Frontend fetches JSON data using a http request from the backend. JSON is sent from the frontend to request a specific backend action, which again will return JSON data to the frontend.
 ## Retrieve list of products
-Request to retrieve list of all products (id, name, supplier) and their related metadata. By default it will return all the metadata. Names of products may change and not be unique, so use the id as the identifier in the frontend.
+
 ### Request syntax
 Metadata provided in the list will be included. An empty list will return only id, name and supplier. Optional filters can be applied to retrieve a subset of all available products. Either or both of the min-max filters can be applied.
 ```yaml

@@ -2,7 +2,9 @@
 # Based on the request body, the correct data are then returned
 # from either the database or the data layer.
 
-import json
+import connexion
+from flask_cors import CORS
+
 import logging
 
 from flask import abort, Flask, jsonify, request, Response
@@ -11,13 +13,14 @@ from calculators import Blend, Bridge, Optimizer
 from util import DatabaseOperations as db
 from util.Classes import Mode, Product
 
+from config import Config
+
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
 BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
 OPTIMIZER_REQUEST = (
     "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
 )
-PRODUCT_LIST_REQUEST = "PRODUCT_LIST"  # Get all Metadata
 PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
 SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
 SPELLING_ERROR = "ENVIROMENTAL_IMPACT"  # Spelling error in SharePoint
@@ -29,8 +32,24 @@ MAXIMUM_PORESIZE_OPTION = "MAXIMUM_PORESIZE"
 AVERAGE_PORESIZE_OPTION = "AVERAGE_PORESIZE"
 PERMEABILITY_OPTION = "PERMEABILITY"
 
-app = Flask(__name__)
 
+def init_api():
+    connexion_app = connexion.App(__name__, specification_dir="./openapi/")
+
+    CORS(connexion_app.app)
+
+    flask_app = connexion_app.app
+    flask_app.config.from_object(Config)
+
+    connexion_app.add_api("api.yaml", arguments={"title": "files"})
+
+    return connexion_app.app
+
+
+app = init_api()
+
+
+# print(app.url_map)
 
 @app.route('/api', methods=["GET", "POST"])
 def main():
@@ -64,10 +83,8 @@ def main():
         iterations = request.json.get("max_iterations")
         size_step = request.json.get("size_steps_filter")
 
-        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations, size_step)
-
-    elif requst_ == PRODUCT_LIST_REQUEST:
-        return productListRequestHandler(request.json.get("filters"), request.json.get("metadata"))
+        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations,
+                                       size_step)
 
     elif requst_ == PRODUCT_ID_REQUEST:
         return productRequestHandler(request.json.get("id"), request.json.get("metadata"))
@@ -111,10 +128,12 @@ def blendRequestHandler(products):
                 )
             )
 
+        print(percent_sum)
         if percent_sum != 100:
             abort(400)
 
     except Exception as e:
+        print(e)
         return jsonify(e), 400
 
     size_steps = db.getSizeSteps()
@@ -165,96 +184,6 @@ def bridgeRequestHandler(option, value):
     response_dict = {"bridge": [round(num, ROUNDING_DECIMALS) for num in bridge]}
 
     return response_dict
-
-
-# List handler. This function takes the HttpRequest
-# object as input and returns a list of all available
-# products. The returned products can be filtered based
-# on all metadata categories. Likewise, any desired
-# subset of the data can be returned.
-def productListRequestHandler(filters, metadata_list):
-    use_specific_metadata = True
-    if not metadata_list:
-        use_specific_metadata = False
-
-    metadata = db.getMetadata()
-
-    try:
-        if filters:
-            for filter in filters:
-                filtered_key_list = []
-
-                field = filter["metadata"]
-                if field == SPELLING_ERROR:
-                    include = filter["include"]
-                    for id in metadata:
-                        if metadata[id][SPELLING_ERROR].upper() not in include:
-                            filtered_key_list.append(id)
-                else:
-                    try:
-                        min_val = filter["min"]
-                    except KeyError:
-                        min_val = 0
-
-                    try:
-                        max_val = filter["max"]
-                    except KeyError:
-                        max_val = float('inf')
-
-                    for id in metadata:
-                        if (
-                                float(metadata[id][field]) < min_val
-                                or float(metadata[id][field]) > max_val
-                        ):
-                            filtered_key_list.append(id)
-
-                for id in filtered_key_list:
-                    del metadata[id]
-    except Exception as e:
-        return jsonify(e), 400
-
-    return_list = []
-
-    if use_specific_metadata:
-        try:
-            for id in metadata:
-                data_dict = {
-                    "id": id,
-                    "name": metadata[id]["TITLE"],
-                    "supplier": metadata[id]["SUPPLIER"],
-                }
-
-                for key in metadata_list:
-                    if key == "DISTRIBUTION":
-                        data_dict[key.lower()] = [
-                            round(num, ROUNDING_DECIMALS) for num in db.getDistribution(id)
-                        ]
-                    elif key == "CUMULATIVE":
-                        data_dict[key.lower()] = [
-                            round(num, ROUNDING_DECIMALS) for num in db.getCumulative(id)
-                        ]
-                    elif (key != "TITLE") and (key != "NAME") and (key != "ID"):
-                        data_dict[key.lower()] = metadata[id][key]
-
-                return_list.append(data_dict)
-        except TypeError:
-            use_specific_metadata = False
-        except KeyError:
-            use_specific_metadata = False
-        except ValueError:
-            use_specific_metadata = False
-
-    if not use_specific_metadata:
-        return_list = []
-        for id in metadata:
-            data_dict = {
-                "id": id,
-                "name": metadata[id]["TITLE"],
-                "supplier": metadata[id]["SUPPLIER"],
-            }
-            return_list.append(data_dict)
-
-    return jsonify(return_list)
 
 
 # Product handler. This function takes the HttpRequest
@@ -317,9 +246,7 @@ def productRequestHandler(product_id, metadata_list):
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
 def sizeStepsRequestHandler():
-    response_dict = {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
-
-    return response_dict
+    return {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
 
 
 # Optimizer handler. This function takes the HttpRequest
@@ -327,8 +254,9 @@ def sizeStepsRequestHandler():
 # aswell as the execution time, the fitness score and the
 # amount of iterations.
 
-#name, products, mass, weights, environmental
-def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option, max_iterations, size_steps_filter):
+# name, products, mass, weights, environmental
+def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option,
+                            max_iterations, size_steps_filter):
     error_list = []
 
     if not products:
@@ -356,7 +284,6 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
             error_list.append("Invalid 'weights' input")
         except ValueError:
             error_list.append("Invalid 'weights' input")
-
 
     if not option:
         option = AVERAGE_PORESIZE_OPTION

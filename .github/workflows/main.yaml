@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Build API test image"
+        run: docker build --tag api-development ./api
+
+      #- name: "Black Linting"
+      #  run: docker run --rm api-development black --check --diff .
+
+      #- name: "Bandit Static Code Security Analyzis"
+      #  run: docker run --rm api-development bandit --recursive .
+
+      #- name: "Safety - Dependencies CVE Check"
+      #  run: docker run --rm api-development safety check
+
+      - name: "API UnitTests"
+        run: docker run --rm api-development pytest tests
