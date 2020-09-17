@@ -1,8 +1,10 @@
-import React from "react";
+
+import React, { uReactElement, seEffect, useState } from 'react'
 import styled from "styled-components";
+// @ts-ignore
 import { Accordion, SideSheet, Button, TopBar } from "@equinor/eds-core-react";
 
-import SelectProducts from "../Components/Optimization/SelectProducts.js";
+import SelectProducts from "../Components/Optimization/SelectProducts.tsx";
 import BridgeContainer from "../Components/Bridging/BridgeContainer.jsx";
 import CardContainer from "../Components/Blending/CardContainer.js";
 import RefreshButton from "./RefreshButton.js";
@@ -31,6 +33,48 @@ const Body = styled.div`
   font-family: "Equinor";
 `
 
+interface AppProps {
+
+}
+
+const products_api = new ProductsApi();
+
+const getProducts = () => {
+  // TODO: Enable loading?
+  products_api.getAll().then(response => {
+    const data = response;
+    let productMap = new Map();
+    for (let i = 0; i < data.length; i++) {
+      // Add enabled value to all products
+      data[i]["enabled"] = true;
+      // Create a Map of products with id as key
+      productMap.set(data[i].id, data[i]);
+    }
+    return productMap
+  }).catch((err) => {
+    // TODO: Disable loading?
+    console.log("fetch error" + err);
+  });
+}
+
+export const Main = ({} : AppProps): ReactElement => {
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const products = getProducts()
+    setProducts(products)
+  }, [])
+
+  return (
+      <Wrapper>
+        <Body>
+
+        </Body>
+      </Wrapper>
+  )
+}
+
+// @ts-ignore
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -299,39 +343,10 @@ export default class Home extends React.Component {
       });
   }
 
-  getAllProducts() {
-    this.setState({
-      loading: true,
-    });
 
-    const products_api = new ProductsApi();
-    products_api.getAll().then(response => {
-      const data =  response;
-        var productMap = new Map();
-        for (var i = 0; i < data.length; i++) {
-          // Add enabled value to all products
-          data[i]["enabled"] = true;
-          // Create a Map of products with id as key
-          productMap.set(data[i].id, data[i]);
-        }
-        this.setState({
-          productMap: productMap,
-          loading: false,
-          fetched: true,
-        });
-    }).catch((err) => {
-        console.log("fetch error" + err);
-        this.setState({
-          loading: false,
-          fetched: true,
-        });
-      });
-  }
 
   render() {
-    if (!this.state.fetched && !this.state.loading) {
-      this.getAllProducts();
-    }
+
     return (
       <Wrapper>
         <TopBar style={{height:'fit-content'}}>

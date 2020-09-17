@@ -31,6 +31,32 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: "#/components/schemas/Products"
+components:
+
+  schemas:
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        supplier:
+          type: string
+        description:
+          type: string
+        shortname:
+          type: string
+        cost:
+          type: number
+        sack_size:
+          type: number
+        co2:
+          type: number
+      required:
+        - id

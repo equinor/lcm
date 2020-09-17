@@ -8,9 +8,6 @@
     "@equinor/eds-tokens": "^0.2.0",
     "@storybook/addon-actions": "^5.3.19",
     "@storybook/addon-knobs": "^5.3.19",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.0",
     "d3-scale": "^3.2.1",
@@ -23,6 +20,20 @@
     "semantic-ui-react": "^0.88.2",
     "styled-components": "^5.1.1",
     "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+
+    "@types/jest": "^25.2.3",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/styled-components": "^5.1.0",
+
+    "source-map-explorer": "^2.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

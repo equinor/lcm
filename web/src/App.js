@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 
 import "./App.css";
-import Home from "./Pages/HomePage.js";
+import Main from "./Pages/Main.tsx";
 
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <Home/>
-      </div>
+      <>
+        <Main/>
+      </>
     );
   }
 }
