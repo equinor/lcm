@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Accordion, SideSheet, Button, TopBar, Icon } from "@equinor/eds-core-react";
-import { account_circle, accessible, notifications, fullscreen, grid_on } from "@equinor/eds-icons";
+import { Accordion, SideSheet, Button, TopBar } from "@equinor/eds-core-react";
+
 import SelectProducts from "../Components/Optimization/SelectProducts.js";
 import BridgeContainer from "../Components/Bridging/BridgeContainer.jsx";
 import CardContainer from "../Components/Blending/CardContainer.js";
@@ -9,16 +9,11 @@ import RefreshButton from "./RefreshButton.js";
 import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";
 import { OptimizerAPI } from "../Api"
 import {ProductsApi} from "./../gen-api/src/apis/index"
+import "../Components/icons"
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion;
 
-const icons = {
-  account_circle,
-  accessible,
-  notifications,
-  fullscreen,
-  grid_on,
-};
+
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -35,8 +30,6 @@ const Body = styled.div`
   justify-content: space-between;
   font-family: "Equinor";
 `
-
-Icon.add(icons);
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -333,35 +326,6 @@ export default class Home extends React.Component {
           fetched: true,
         });
       });
-
-    /*
-    OptimizerAPI.postOptimizerApi({
-        request: "PRODUCT_LIST",
-        metadata: ["SACK_SIZE"],
-      })
-      .then((response) => {
-        const data =  response.data;
-        var productMap = new Map();
-        for (var i = 0; i < data.length; i++) {
-          // Add enabled value to all products
-          data[i]["enabled"] = true;
-          // Create a Map of products with id as key
-          productMap.set(data[i].id, data[i]);
-        }
-        this.setState({
-          productMap: productMap,
-          loading: false,
-          fetched: true,
-        });
-      })
-      .catch((err) => {
-        console.log("fetch error" + err);
-        this.setState({
-          loading: false,
-          fetched: true,
-        });
-      });
-      */
   }
 
   render() {
