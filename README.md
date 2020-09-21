@@ -41,6 +41,26 @@ For the client you need to generate new stubs after changing the API code.
 
 To generate the stubs for client. The stubs are placed to `web/src/gen-api`.
 
+## Update packages
+
+### Web
+
+You need yarn installed.
+
+```
+cd web
+yarn update
+```
+
+### API
+
+You need poetry installed.
+
+```
+cd api
+poetry update
+```
+
 ## Testing
 
 ### API

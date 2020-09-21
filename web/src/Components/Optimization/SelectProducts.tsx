@@ -12,22 +12,14 @@ const UnstyledList = styled.ul`
 
 interface SelectProductsProps {
     loading: boolean
-    products: any // TODO: fix better
-    enabledProducts: any // TODO: fix better
-    setEnabledProducts: Function
+    products: any // TODO: fix better type
+    enabledProducts: Array<string>
+    updateProduct: Function
 }
 
 
-export const SelectProducts = ({loading, products, enabledProducts, setEnabledProducts}: SelectProductsProps): ReactElement => {
+export const SelectProducts = ({loading, products, enabledProducts, updateProduct}: SelectProductsProps): ReactElement => {
     if (loading) return <LinearProgress/>
-
-    const handleChange = (productId: string, isChecked: boolean) => {
-        if (isChecked) {
-            setEnabledProducts(enabledProducts.filter((enabled: string) => enabled !== productId))
-        } else {
-            setEnabledProducts([...enabledProducts, productId])
-        }
-    }
 
     const productList: Array<Product> = Object.values(products);
 
@@ -41,7 +33,7 @@ export const SelectProducts = ({loading, products, enabledProducts, setEnabledPr
                         <li key={key}>
                             <Checkbox
                                 checked={isChecked}
-                                onChange={() => handleChange(product["id"], isChecked)}
+                                onChange={() => updateProduct(product["id"], isChecked)}
                                 label={label}
                                 name="multiple"
                                 value="first"

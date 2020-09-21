@@ -111,9 +111,9 @@ def blendRequestHandler(products):
 
     try:
         for product in products:
-            if not product.get("percents"):
+            if not product.get("percentage"):
                 return f"Product {product['id']} is missing percentage!", 400
-            percent_sum += product["percents"]
+            percent_sum += product["percentage"]
 
             cumulative = db.getCumulative(product["id"])
             distribution = db.getCumulative(product["id"])
@@ -122,13 +122,14 @@ def blendRequestHandler(products):
                 Product(
                     product["id"],
                     "",
-                    float(product["percents"]) / 100,
+                    float(product["percentage"]) / 100.0,
                     cumulative,
                     distribution,
                 )
             )
 
-        print(percent_sum)
+        percent_sum = int(round(percent_sum))
+
         if percent_sum != 100:
             abort(400)
 

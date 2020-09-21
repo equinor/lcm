@@ -30,7 +30,7 @@ class SolutionData extends React.Component {
       var totalMass = 0
       if (products&&products.length !== 0) {
         products.map((product) => {
-          totalMass += product.sacks * (this.props.productMap.get(product.id)).sack_size
+          totalMass += product.sacks * (this.props.products.get(product.id)).sack_size
         })
       }
       return totalMass
@@ -55,7 +55,7 @@ class SolutionData extends React.Component {
               ((product.sacks !== 0) ?
                 <div>
                 <Grid>
-                  <Typography variant="body_short">{(this.props.productMap.get(product.id)).name}: </Typography>
+                  <Typography variant="body_short">{(this.props.products.get(product.id)).name}: </Typography>
                   <Typography variant="body_short">{product.sacks} sacks</Typography>
                 </Grid>
                 </div>
@@ -86,7 +86,7 @@ class SolutionData extends React.Component {
             fetched = {this.props.fetched}
             loading = {this.props.loading}
             optimizationData = {this.props.optimizationData} 
-            productMap = {this.props.productMap}
+            products = {this.props.products}
           />
          </div>
       );
