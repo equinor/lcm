@@ -15,6 +15,7 @@ const colors = [
   "#53C0FB"]
 
 export function BridgeGraph({bridgeAndCombinations,sizeFractions}) {
+  console.log(bridgeAndCombinations)
   var combinationsData = [];
   const graphData = () => {
     var data = []

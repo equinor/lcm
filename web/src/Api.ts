@@ -9,9 +9,13 @@ class LogicAppApi {
   }
 }
 
+export enum Requests {
+  SIZE_FRACTIONS = 'SIZE_FRACTIONS',
+  BRIDGE = 'BRIDGE'
+}
 
 class OptimizerApi {
-  async postOptimizerApi(data) {
+  async postOptimizerApi(data: any) {
     return axios.post(BASE_PATH, data)
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+// @ts-ignore
 import styled from 'styled-components'
 import ProductCard from "./ProductCard.js"
 import CombinationCard from "./CombinationCard"
