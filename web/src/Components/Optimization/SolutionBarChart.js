@@ -25,7 +25,7 @@ export default class SolutionBarChart extends PureComponent {
        {
          this.props.optimizationData.products.map((product) => {
                 var object = {}
-                object.name = (this.props.productMap.get(product.id)).name
+                object.name = (this.props.products.get(product.id)).name
                 object.sacks = product.sacks
                 data.push(object)     
          }

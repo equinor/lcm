@@ -1,0 +1,15 @@
+{
+  "name": "@equinor/lcm-api",
+  "version": "0.1.0",
+  "description": "OpenAPI client for @equinor/lcm-api",
+  "author": "OpenAPI-Generator",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^3.6"
+  }
+}

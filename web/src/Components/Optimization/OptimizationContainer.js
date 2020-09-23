@@ -50,7 +50,7 @@ export default class OptimizationContainer extends PureComponent {
       fetched: false
     })
     var mass = this.pillInputElement.current.getPillMass()
-    var option = this.props.getBridgeOption()
+    var option = this.props.mode()
     var value = this.props.getBridgeValue()
     var environmental = this.weightOptionElement.current.getEnvironmental()
     var productIds = []
@@ -115,7 +115,7 @@ export default class OptimizationContainer extends PureComponent {
           var massSum = 0
           if (products.length !== 0) {
             products.map((component) => {
-              massSum += component.sacks * (this.props.productMap.get(component.id)).sack_size
+              massSum += component.sacks * (this.props.products.get(component.id)).sack_size
             })
             products.map((component) => {
               if (component.sacks !== 0) {
@@ -123,7 +123,7 @@ export default class OptimizationContainer extends PureComponent {
                 var tempValue = {}
                 tempValue.id = component.id
                 tempValue.value = component.sacks
-                tempValue.percentage = 100*((component.sacks * (this.props.productMap.get(component.id)).sack_size) / massSum)
+                tempValue.percentage = 100*((component.sacks * (this.props.products.get(component.id)).sack_size) / massSum)
                 tempValues.set(tempValue.id, tempValue) 
               } 
             })
@@ -189,9 +189,9 @@ export default class OptimizationContainer extends PureComponent {
           (this.state.optimizationData) ?
           (<WrapperOptimizer > {/*Add constraint her - needs this section not to be shown before we run the optimizer */}
             <Grid>
-              <SolutionData productMap={this.props.productMap} combinationMap={this.props.combinationMap} loading={this.state.loading} fetched={this.state.fetched} optimizationData={this.state.optimizationData} addCombination={this.props.addCombination} />
+              <SolutionData products={this.props.products} combinationMap={this.props.combinationMap} loading={this.state.loading} fetched={this.state.fetched} optimizationData={this.state.optimizationData} addCombination={this.props.addCombination} />
               <div>
-                <SolutionVisualisations  productMap={this.props.productMap}  loading={this.state.loading} fetched={this.state.fetched} optimizationData={this.state.optimizationData} />
+                <SolutionVisualisations  products={this.props.products}  loading={this.state.loading} fetched={this.state.fetched} optimizationData={this.state.optimizationData} />
               </div>
             </Grid>
           </WrapperOptimizer>)

@@ -14,6 +14,11 @@
 
 
 import * as runtime from '../runtime';
+import {
+    Product,
+    ProductFromJSON,
+    ProductToJSON,
+} from '../models';
 
 /**
  * 
@@ -21,9 +26,10 @@ import * as runtime from '../runtime';
 export class ProductsApi extends runtime.BaseAPI {
 
     /**
+     * Request to retrieve list of all products (id, name, supplier) and their related metadata. By default it will return all the metadata. Names of products may change and not be unique, so use the id as the identifier in the frontend. 
      * Get all products
      */
-    async getAllRaw(): Promise<runtime.ApiResponse<Array<object>>> {
+    async productsGetRaw(): Promise<runtime.ApiResponse<Array<Product>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -35,14 +41,15 @@ export class ProductsApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ProductFromJSON));
     }
 
     /**
+     * Request to retrieve list of all products (id, name, supplier) and their related metadata. By default it will return all the metadata. Names of products may change and not be unique, so use the id as the identifier in the frontend. 
      * Get all products
      */
-    async getAll(): Promise<Array<object>> {
-        const response = await this.getAllRaw();
+    async productsGet(): Promise<Array<Product>> {
+        const response = await this.productsGetRaw();
         return await response.value();
     }
 

@@ -38,7 +38,7 @@ export default class SolutionVisualisations extends PureComponent {
             <Grid>
             <Typography variant="h6">Optimal blend</Typography>
             <Typography variant="h6">Scores</Typography>
-            <SolutionBarChart optimizationData={this.props.optimizationData} productMap={this.props.productMap} fetched={this.props.fetched} loading={this.props.loading}/>
+            <SolutionBarChart optimizationData={this.props.optimizationData} products={this.props.products} fetched={this.props.fetched} loading={this.props.loading}/>
             <SolutionRadarChart optimizationData={this.props.optimizationData} fetched={this.props.fetched} loading={this.props.loading}/>
             </Grid>
         </Card>
