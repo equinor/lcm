@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React from "react";
 
 import "./App.css";
-import Main from "./Pages/Main.tsx";
 import {v4 as uuidv4} from 'uuid';
+import Main from "./Pages/Main"
 
 const defaultState = new Map()
 
@@ -14,6 +14,7 @@ const sackCombination = {
     cumulative: null
 }
 defaultState.set(sackCombination.id, sackCombination)
+
 const manualCombination = {
     id: uuidv4(),
     name: "Manual combination 1",
@@ -21,16 +22,11 @@ const manualCombination = {
     values: new Map(),
     cumulative: null
 }
+
 defaultState.set(manualCombination.id, manualCombination)
 
-class App extends Component {
-    render() {
-        return (
-            <>
-                <Main defaultState={defaultState}/>
-            </>
-        );
-    }
+function App(){
+    return <Main  defaultState={defaultState}/>
 }
 
-export default App;
+export default App

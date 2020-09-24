@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Radio, TextField, Typography } from '@equinor/eds-core-react'
-import BridgeGraph from "./BridgeGraph.js"
+import BridgeGraph from "./BridgeGraph.jsx"
 import { OptimizerAPI, Requests } from "../../Api"
 import { BridgingOption } from "../../Common"
 
@@ -78,12 +78,13 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
   }
 
   function getOptimalBridge() {
+    if (!bridgeValue >= 1) return
     OptimizerAPI.postOptimizerApi({
       "request": Requests.BRIDGE,
       "option": mode,
       "value": bridgeValue,
     }).then(response => {
-      if (bridges.find(b => b.name == "Bridge")) {
+      if (bridges.find(b => b.name === "Bridge")) {
         bridges[0] = { name: "Bridge", cumulative: response.data.bridge }
         setBridges(bridges)
       } else {
@@ -155,7 +156,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
               />
             </Wrapper>
           </div>
-          <BridgeGraph bridgeAndCombinations={bridges} sizeFractions={sizeFractions}/>
+          {bridges && <BridgeGraph bridgeAndCombinations={bridges} sizeFractions={sizeFractions}/>}
         </Grid>
       </Wrapper>
   )

@@ -6,13 +6,12 @@ import styled from "styled-components"
 import { Accordion, Button, SideSheet, TopBar } from "@equinor/eds-core-react"
 
 import SelectProducts from "../Components/Optimization/SelectProducts"
-import BridgeContainer from "../Components/Bridging/BridgeContainer.jsx"
+import BridgeContainer from "../Components/Bridging/BridgeContainer"
 import CardContainer from "../Components/Blending/CardContainer"
 import RefreshButton from "./RefreshButton.js"
-import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js"
+import OptimizationContainer from "../Components/Optimization/OptimizationContainer"
 import { OptimizerAPI } from "../Api"
 import { ProductsApi } from "./../gen-api/src/apis/index"
-import "../Components/icons"
 import { Product } from "../gen-api/src/models"
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
@@ -54,7 +53,7 @@ interface CombinationValue {
   percentage: number
 }
 
-interface Combination {
+export interface Combination {
   id: string
   name: string
   sacks: boolean
@@ -70,9 +69,9 @@ function combinationsToBridges(combinationMap: any) {
   return bridges
 }
 
-export const Main = ({ defaultState }: AppProps): ReactElement => {
+export default ({ defaultState }: AppProps): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [toggle, setToggle] = useState<boolean>(true)
+  const [toggle, setToggle] = useState<boolean>(false)
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>([])
   const [combinationMap, setCombinationMap] = useState<Map<string, Combination>>(defaultState)
@@ -230,7 +229,7 @@ export const Main = ({ defaultState }: AppProps): ReactElement => {
         <div>
           <Button
             variant="outlined"
-            onClick={() => setToggle(true)}>
+            onClick={() => setToggle(!toggle)}>
             Select products
           </Button>
         </div>
@@ -305,5 +304,3 @@ export const Main = ({ defaultState }: AppProps): ReactElement => {
     </Wrapper>
   )
 }
-
-export default Main
