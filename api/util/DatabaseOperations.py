@@ -22,17 +22,16 @@ def getMetadata():
 
     for product in products:
         if product["RowKey"] != "Size_steps":
-            product_dict = {}
+            product_dict = {
+                "id": product.RowKey
+            }
             for category in product:
-                """
-                if (
-                    (category != "Timestamp")
-                    and (category != "PartitionKey")
-                    and (category != "RowKey")
-                    and (category != "etag")
-                ):
-                """
-                product_dict[category] = product[category]
+                if category in ['sack_size', 'cost', 'co2']:
+                    product_dict[category] = float(product[category])
+                elif category == 'environmental_impact':
+                    product_dict["enviromental"] = str(product["environmental_impact"]).upper()
+                else:
+                    product_dict[category] = product[category]
 
             metadata_dict[product.RowKey] = product_dict
 
@@ -121,6 +120,6 @@ def listProducts():
 
     for product in products:
         if product["RowKey"] != "Size_steps":
-            product_dict[product["TITLE"]] = int(product["RowKey"])
+            product_dict[product["title"]] = int(product["RowKey"])
 
     return product_dict

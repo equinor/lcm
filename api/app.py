@@ -18,9 +18,8 @@ from config import Config
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
 BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
-OPTIMIZER_REQUEST = (
-    "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
-)
+OPTIMIZER_REQUEST = "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
+
 PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
 SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
 SPELLING_ERROR = "ENVIROMENTAL_IMPACT"  # Spelling error in SharePoint
@@ -326,24 +325,14 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
 
     products = []
 
-    for i in range(len(products)):
-        id = str(products[i])
-
+    for id, product_dict in metadata.items():
         try:
-            product_dict = {
-                "id": id,
-                "cost": int(metadata[id]["COST"]),
-                "CO2": int(metadata[id]["CO2"]),
-                "sack_size": int(metadata[id]["SACK_SIZE"]),
-                "enviromental": (metadata[id]["ENVIROMENTAL_IMPACT"]).upper(),
-            }
 
             if environmental_list:
                 if product_dict["enviromental"] in environmental_list:
                     product_dict["cumulative"] = db.getCumulative(id)
                     product_dict["distribution"] = db.getDistribution(id)
                     products.append(product_dict)
-
             else:
                 product_dict["cumulative"] = db.getCumulative(id)
                 product_dict["distribution"] = db.getDistribution(id)
@@ -389,6 +378,8 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
             size_steps_filter,
         )
     except Exception as e:
+        import sys, traceback
+        traceback.print_exc(file=sys.stdout)
         return f"Probably invalid inputs! {e}", 400
 
     mass_sum = 0
@@ -446,8 +437,8 @@ def getMaxAndMinValues(metadata):
     MaxAndMinList = []
 
     for key in metadata:
-        Cost_list.append(int(metadata[key]["COST"]))
-        CO2_list.append(int(metadata[key]["CO2"]))
+        Cost_list.append(int(metadata[key]["cost"]))
+        CO2_list.append(int(metadata[key]["co2"]))
 
     MaxAndMinList.append(max(Cost_list))
     MaxAndMinList.append(min(Cost_list))

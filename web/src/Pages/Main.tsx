@@ -8,7 +8,7 @@ import SelectProducts from "../Components/Optimization/SelectProducts";
 import BridgeContainer from "../Components/Bridging/BridgeContainer.jsx";
 import CardContainer from "../Components/Blending/CardContainer";
 import RefreshButton from "./RefreshButton.js";
-import OptimizationContainer from "../Components/Optimization/OptimizationContainer.js";
+import OptimizationContainer from "../Components/Optimization/OptimizationContainer";
 import {OptimizerAPI} from "../Api"
 import {ProductsApi} from "./../gen-api/src/apis/index"
 import "../Components/icons"
@@ -47,13 +47,13 @@ const getProducts = async (): Promise<any> => {
         {});
 }
 
-interface CombinationValue {
+export interface CombinationValue {
     id: string
     value: number
     percentage: number
 }
 
-interface Combination {
+export interface Combination {
     id: string
     name: string
     sacks: boolean
@@ -291,6 +291,7 @@ export const Main = ({defaultState}: AppProps): ReactElement => {
 
                 <OptimizationContainer
                     products={products}
+                    enabledProducts={enabledProducts}
                     combinationMap={combinationMap}
                     mode={mode}
                     value={value}

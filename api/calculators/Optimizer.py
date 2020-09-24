@@ -219,7 +219,7 @@ def CO2OfCombination(combination):
 
     for id in combination:
         product = getProductFromID(id)
-        sum += product["CO2"] * combination[id]
+        sum += product["co2"] * combination[id]
 
     return sum
 
@@ -556,7 +556,8 @@ def environmentalOfCombination(combination):
     sum = 0
     for id in combination:
         product = getProductFromID(id)
-        sum += combination[id] * ENVIRONMENTAL_SCORE[product["enviromental"]]
+        enviromental = product["enviromental"]
+        sum += combination[id] * ENVIRONMENTAL_SCORE[enviromental]
 
     return sum
 
