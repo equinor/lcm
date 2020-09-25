@@ -1,17 +1,9 @@
 import React, {PureComponent, ReactElement, useState} from "react";
 import styled from "styled-components";
-import SolutionData from "./SolutionData.js";
-import SolutionVisualisations from "./SolutionVisualisations.js";
 import {Combination} from "../../Pages/Main";
 import {Product} from "../../gen-api/src/models";
 import OptimizationRunner from "./OptimizationRunner";
 import OptimizationResult from "./OptimizationResult";
-
-
-const WrapperOptimizer = styled.div`
-  padding-top: 4rem;
-`;
-
 
 const Grid = styled.div`
   height: auto;
@@ -33,60 +25,53 @@ interface OptimizationContainerProps {
     addCombination: Function
 }
 
+export interface ProductResult {
+    id: string
+    sacks: number
+}
 
 export const OptimizationContainer = ({products, enabledProducts, combinationMap, mode, value, addCombination}: OptimizationContainerProps): ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [optimizationData, setOptimizationData] = useState(null)
-
+    const [optimizationData, setOptimizationData] = useState()
 
 
     const handleUpdate = (optimizationData: any) => {
         setOptimizationData(optimizationData)
 
-        // Add the optimized solution to sack combinations
-        let tempValues = new Map()
-        // @ts-ignore
-        let productsInResult = optimizationData.products
-        // Find total mass sum
-        let massSum = 0
-        if (productsInResult.length !== 0) {
-            productsInResult.map((component: any) => {
-                // @ts-ignore
-                massSum += component.sacks * products[component.id].sackSize
-            })
-            productsInResult.map((component: any) => {
-                if (component.sacks !== 0) {
-                    let tempValue = {}
-                    // @ts-ignore
-                    tempValue.id = component.id
-                    // @ts-ignore
-                    tempValue.value = component.sacks
-                    // @ts-ignore
-                    tempValue.percentage = 100 * ((component.sacks * products[component.id].sackSize) / massSum)
-                    // @ts-ignore
-                    tempValues.set(tempValue.id, tempValue)
-                }
-            })
-        }
-        // Find available name
-        let n = 1
-        let taken = true
-        let next = false;
+        // TODO: Get this interface through OpenAPI
 
-        let currentName = "Optimized " + n
-        while (taken) {
-            next = false
-            combinationMap.forEach((combination: Combination, key) => {
-                if (combination.name === currentName) {
-                    n++
-                    next = true
+
+        let productResults: Array<ProductResult> = optimizationData.products
+        let values = new Map()
+        if (productResults.length !== 0) {
+            const massSum = productResults.reduce((total: number, productResult: ProductResult) =>
+                    // @ts-ignore
+                total + +productResult.sacks * +products[productResult.id].sackSize
+                , 0)
+            productResults.forEach((productResult: any) => {
+                if (productResult.sacks !== 0) {
+                    let value = {
+                        id: productResult.id,
+                        value: productResult.sacks,
+                        // @ts-ignore
+                        percentage: 100 * ((productResult.sacks * products[productResult.id].sackSize) / massSum)
+                    }
+                    values.set(value.id, value)
                 }
             })
-            if (!next) {
-                taken = false
-            }
         }
-        addCombination(currentName, true, tempValues)
+
+        const datetime = new Date();
+
+        const name = `Optimized at ${
+            (datetime.getMonth() + 1).toString().padStart(2, '0')}/${
+            datetime.getDate().toString().padStart(2, '0')}/${
+            datetime.getFullYear().toString().padStart(4, '0')} ${
+            datetime.getHours().toString().padStart(2, '0')}:${
+            datetime.getMinutes().toString().padStart(2, '0')}:${
+            datetime.getSeconds().toString().padStart(2, '0')}`;
+
+        addCombination(name, true, values)
         setIsLoading(false)
     }
 
@@ -101,18 +86,15 @@ export const OptimizationContainer = ({products, enabledProducts, combinationMap
                     mode={mode}
                     value={value}
                     combinationMap={combinationMap}
-                    handleUpdate={handleUpdate}
-                    addCombination={addCombination}/>
+                    handleUpdate={handleUpdate}/>
             </Grid>
 
             <Grid>
                 <OptimizationResult
                     isLoading={isLoading}
                     products={products}
-                    combinationMap={combinationMap}
                     mode={mode}
                     value={value}
-                    addCombination={addCombination}
                     optimizationData={optimizationData}
                 />
             </Grid>

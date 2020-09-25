@@ -26,7 +26,6 @@ interface OptimizationContainerProps {
     combinationMap: Map<string, Combination>
     mode: string
     value: number
-    addCombination: Function
     handleUpdate: Function
 }
 
@@ -72,7 +71,7 @@ const getOptimalBlend = ({enabledProducts, pill, weight, mode, value, handleUpda
         }).catch((error) => console.log("fetch error" + error));
 }
 
-const OptimizationRunner = ({isLoading, setIsLoading, products, enabledProducts, combinationMap, mode, value, handleUpdate}: OptimizationContainerProps): ReactElement => {
+const OptimizationRunner = ({isLoading, setIsLoading, enabledProducts, combinationMap, mode, value, handleUpdate}: OptimizationContainerProps): ReactElement => {
     const [pill, setPill] = useState<Pill>({
         volume: 10,
         density: 350,
