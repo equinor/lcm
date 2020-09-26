@@ -84,8 +84,9 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
       "option": mode,
       "value": bridgeValue,
     }).then(response => {
-      if (bridges.find(b => b.name === "Bridge")) {
-        bridges[0] = { name: "Bridge", cumulative: response.data.bridge }
+      const index = bridges.find(b => b.name === "Bridge")
+      if (index > 0) {
+        bridges[index] = { name: "Bridge", cumulative: response.data.bridge }
         setBridges(bridges)
       } else {
         setBridges([{ name: "Bridge", cumulative: response.data.bridge }, ...userBridges])
@@ -104,7 +105,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
           console.error("fetch error" + err)
         })
     getOptimalBridge()
-  }, [bridgeValue, mode])
+  }, [userBridges, bridgeValue, mode])
 
   return (
       <Wrapper>
