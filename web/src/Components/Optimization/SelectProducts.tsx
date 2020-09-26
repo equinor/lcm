@@ -1,6 +1,7 @@
 import React, {ReactElement} from "react";
 // @ts-ignore
 import {Checkbox, LinearProgress} from "@equinor/eds-core-react";
+// @ts-ignore
 import styled from "styled-components";
 import {Product} from "../../gen-api/src/models";
 

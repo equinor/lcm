@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tabs } from '@equinor/eds-core-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Home from "./Main.tsx";
+import Home from "./Main";
 import Bridge from "./BridgePage.js";
 import Blend from "./BlendPage.js";
 import history from './history';

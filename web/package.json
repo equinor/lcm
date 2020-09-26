@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@equinor/eds-core-react": "^0.4.0",
-    "@equinor/eds-icons": "^0.3.0",
-    "@equinor/eds-tokens": "^0.2.0",
-    "@storybook/addon-actions": "^5.3.19",
-    "@storybook/addon-knobs": "^5.3.19",
+    "@equinor/eds-core-react": "^0.6.2",
+    "@equinor/eds-icons": "^0.4.0",
+    "@equinor/eds-tokens": "^0.4.0",
+    "@storybook/addon-actions": "^6.0.21",
+    "@storybook/addon-knobs": "^6.0.21",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.0",
     "d3-scale": "^3.2.1",
@@ -18,8 +18,8 @@
     "react-scripts": "3.4.1",
     "recharts": "^1.8.5",
     "semantic-ui-react": "^0.88.2",
-    "styled-components": "^5.1.1",
-    "typescript": "^3.9.5",
+    "styled-components": "^5.2.0",
+    "typescript": "^4.0.3",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

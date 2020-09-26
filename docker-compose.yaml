@@ -30,4 +30,4 @@ services:
     restart: unless-stopped
     stdin_open: true
     volumes:
-      - ./web/src:/code/src
+      - ./web:/code
