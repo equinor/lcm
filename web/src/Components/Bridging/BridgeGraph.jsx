@@ -3,15 +3,15 @@ import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'r
 
 const colors = [
   "#000000",
-  "#8D2C5A",
-  "#265F58",
-  "#004088",
-  "#E24974",
-  "#43997C",
-  "#2A84C4",
-  "#F190A7",
-  "#62D490",
-  "#53C0FB"]
+  "#ee2e89",
+  "#21d0bb",
+  "#2077d9",
+  "#a1022f",
+  "#2bcb95",
+  "#64b3ec",
+  "#ef7895",
+  "#02953d",
+  "#044f78"]
 
 export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
@@ -47,7 +47,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
 
     {bridgeAndCombinations.map((combination, index) =>
         <Area type="monotone" dataKey={index} stroke={colors[index % colors.length]}
-              fill="transparent" name={combination.name}/>)
+              fill="transparent" name={combination.name} strokeWidth={1.5}/>)
     }
   </AreaChart>
 }

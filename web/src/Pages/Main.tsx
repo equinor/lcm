@@ -13,6 +13,7 @@ import OptimizationContainer from "../Components/Optimization/OptimizationContai
 import { OptimizerAPI } from "../Api"
 import { ProductsApi } from "./../gen-api/src/apis/index"
 import { Product } from "../gen-api/src/models"
+import { Requests} from "../Api"
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 
@@ -63,7 +64,7 @@ export interface Combination {
 
 function combinationsToBridges(combinationMap: any) {
   let bridges: any[] = []
-  combinationMap.forEach((combination: Combination) => {
+  combinationMap && combinationMap.forEach((combination: Combination) => {
     bridges.push({ name: combination.name, cumulative: combination.cumulative })
   })
   return bridges
@@ -118,13 +119,14 @@ export default ({ defaultState }: AppProps): ReactElement => {
 
   const calculateMixOfProducts = (combination: any) => {
     const combinationValues = [...combination.values.values()]
-
     if (combinationValues.length > 0) {
+      setIsLoading(true)
       OptimizerAPI.postOptimizerApi({
-        request: "MIX_PRODUCTS",
+        request: Requests.MIX_PRODUCTS,
         products: combinationValues,
       })
         .then((response) => {
+          setIsLoading(false)
           if (combination) {
             combination["cumulative"] = response.data.cumulative
             setCombination(combination)
@@ -132,6 +134,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
         })
         .catch((error) => {
           console.log("fetch error" + error)
+          setIsLoading(false)
         })
     } else {
        combination["cumulative"] = []
@@ -155,6 +158,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
     setCombinationMap(new Map([...combinationMap]))
   }
 
+  // TODO: Move this down to CombinationTabel
   const calculatePercentage = (combination: Combination): Combination => {
     const getProductMass = (combinationValue: CombinationValue): number => {
       if (combination.sacks) {
@@ -188,25 +192,18 @@ export default ({ defaultState }: AppProps): ReactElement => {
     return combination
   }
 
-  const setProductInCombination = (combinationId: string, productId: string, value: any) => {
+  const setProductsInCombination = (combinationId: string, products: any) => {
     // @ts-ignore
     let combination: Combination = combinationMap.get(combinationId)
-    if (combination) {
-      if (!value) {
-        combination.values.delete(productId)
-      } else {
-        combination.values.set(productId,
-          {
-            id: productId,
-            value: parseFloat(value),
+      for (const key in products) {
+        combination.values.set(key,{
+            id: key,
+            value: products[key],
             percentage: 0.0,
-          },
-        )
+        })
       }
-
       combination = calculatePercentage(combination)
       calculateMixOfProducts(combination)
-    }
   }
 
   const updateCombinationName = (combinationId: string, name: string) => {
@@ -257,6 +254,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
           setMode={setMode}
           bridgeValue={value}
           setValue={setValue}
+          isLoading={isLoading}
         />
 
         <Accordion>
@@ -271,7 +269,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
                 products={products}
                 addCombination={addCombination}
                 removeCombination={removeCombination}
-                updateCombination={setProductInCombination}
+                updateCombination={setProductsInCombination}
                 updateCombinationName={updateCombinationName}
               />
             </AccordionPanel>
@@ -287,7 +285,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
                 products={products}
                 addCombination={addCombination}
                 removeCombination={removeCombination}
-                updateCombination={setProductInCombination}
+                updateCombination={setProductsInCombination}
                 updateCombinationName={updateCombinationName}
               />
             </AccordionPanel>

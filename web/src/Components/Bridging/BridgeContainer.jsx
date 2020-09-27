@@ -35,7 +35,7 @@ const Grid = styled.div`
 `
 
 
-export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
+export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [bridges, setBridges] = useState([])
   const [unit, setUnit] = useState('mD')

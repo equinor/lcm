@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    // @ts-ignore
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  // @ts-ignore
 } from 'recharts';
 
 interface SolutionRadarChartProps {
