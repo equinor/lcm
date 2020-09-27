@@ -133,6 +133,9 @@ export default ({ defaultState }: AppProps): ReactElement => {
         .catch((error) => {
           console.log("fetch error" + error)
         })
+    } else {
+       combination["cumulative"] = []
+      setCombination(combination)
     }
   }
 
