@@ -67,7 +67,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
     // TODO: Setting invalid values on parent is not good
     setValue(newBridgeValue)
 
-    if (!newBridgeValue >= 1) {
+    if (Math.sign(newBridgeValue) !== 1) {
       setBridgeValueHelperText("Value must be an integer bigger than 0")
       setBridgeValueVariant("error")
       return
@@ -77,7 +77,15 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
     setBridgeValueHelperText(undefined)
   }
 
-  function getOptimalBridge() {
+  useEffect(() => {
+    OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
+        .then(response => {
+          setSizeFractions(response.data.size_fractions)
+        })
+        .catch(err => {
+          console.error("fetch error" + err)
+        })
+
     if (!bridgeValue >= 1) return
     OptimizerAPI.postOptimizerApi({
       "request": Requests.BRIDGE,
@@ -94,18 +102,9 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
     }).catch(err => {
       console.error("fetch error" + err)
     })
-  }
 
-  useEffect(() => {
-    OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
-        .then(response => {
-          setSizeFractions(response.data.size_fractions)
-        })
-        .catch(err => {
-          console.error("fetch error" + err)
-        })
-    getOptimalBridge()
-  }, [userBridges, bridgeValue, mode])
+    // getOptimalBridge()
+  }, [userBridges, bridgeValue, mode, bridges])
 
   return (
       <Wrapper>

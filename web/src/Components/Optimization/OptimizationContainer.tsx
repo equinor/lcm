@@ -58,9 +58,9 @@ export const OptimizationContainer = ({
           let value = {
             id: productResult.id,
             value: productResult.sacks,
-            // @ts-ignore
             percentage:
               100 *
+              // @ts-ignore
               ((productResult.sacks * products[productResult.id].sackSize) /
                 massSum),
           }

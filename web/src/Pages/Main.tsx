@@ -2,13 +2,14 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
-// @ts-ignore
+
 import {
   Accordion,
   Button,
   SideSheet,
   TopBar,
   Icon,
+  // @ts-ignore
 } from '@equinor/eds-core-react'
 
 import SelectProducts from '../Components/Optimization/SelectProducts'

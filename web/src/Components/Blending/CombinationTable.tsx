@@ -22,7 +22,7 @@ export const CombinationTable = ({
   updateCombination,
 }: CombinationTableProps) => {
   const [values, setValues] = useState<any>({})
-  const [invalidValue, setInvalidValue] = useState<boolean>(false)
+  const [invalidValue, setInvalidValue] = useState<boolean>(true)
   const productList: Array<Product> = Object.values(products)
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export const CombinationTable = ({
       <div className="group" style={{ display: 'flex', flexFlow: 'column' }}>
         <Table>
           <Head>
-            <Row style={{ height: '60px' }}>
+            <Row style={{ height: '40px' }}>
               <Cell as="th" scope="col">
                 {sacks ? <p>Sacks</p> : <p>Blend (ppg or kg/m3)</p>}
               </Cell>

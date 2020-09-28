@@ -46,7 +46,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
     <Legend/>
 
     {bridgeAndCombinations.map((combination, index) =>
-        <Area type="monotone" dataKey={index} stroke={colors[index % colors.length]}
+        <Area type="monotone" dataKey={index} stroke={colors[index % colors.length]} key={index}
               fill="transparent" name={combination.name} strokeWidth={1.5}/>)
     }
   </AreaChart>

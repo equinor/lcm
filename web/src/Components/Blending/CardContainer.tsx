@@ -1,11 +1,11 @@
 import React from 'react'
 // @ts-ignore
 import styled from 'styled-components'
-import ProductCard from "./ProductCard.js"
-import CombinationCard from "./CombinationCard"
+import ProductCard from './ProductCard.js'
+import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button, LinearProgress } from '@equinor/eds-core-react'
-import { Product } from "../../gen-api/src/models"
+import { Product } from '../../gen-api/src/models'
 
 const Wrapper = styled.div`
   margin: 32px;
@@ -28,37 +28,44 @@ interface CardContainerProps {
 
 const createCombinationName = (sacks: any, combinationMap: any) => {
   let combinationNames: Array<string> = []
-    // TODO: Get rid of Map everywhere
-    combinationMap.forEach((combination: any) => {
-      combinationNames.push(combination.name)})
+  // TODO: Get rid of Map everywhere
+  combinationMap.forEach((combination: any) => {
+    combinationNames.push(combination.name)
+  })
 
   let i: number = 1
   while (i < 100) {
-    const newCombinationName: string = sacks ? ("Sack combination " + i) : ("Manual combination " + i)
+    const newCombinationName: string = sacks
+      ? 'Sack combination ' + i
+      : 'Manual combination ' + i
     if (!combinationNames.includes(newCombinationName)) {
       return newCombinationName
     }
     i++
   }
-  console.error("Failed to create a new combination name")
+  console.error('Failed to create a new combination name')
 }
 
 export const CardContainer = ({
-                                sacks, products, combinationMap, enabledProducts, updateCombination,
-                                removeCombination, updateCombinationName, addCombination, loading,
-                              }: CardContainerProps) => {
-  // TODO: Remove this flashing loading behaviour
-  if (loading) return <LinearProgress/>
-
-
-    const combinationList: Array<Product> = Array.from(combinationMap.values());
+  sacks,
+  products,
+  combinationMap,
+  enabledProducts,
+  updateCombination,
+  removeCombination,
+  updateCombinationName,
+  addCombination,
+  loading,
+}: CardContainerProps) => {
+  const combinationList: Array<Product> = Array.from(combinationMap.values())
 
   return (
     <div>
-      <div style={{ width: '100%' }}>
-        <ProductCard products={products} enabledProducts={enabledProducts}/>
+      {loading && <LinearProgress />}
+      <div style={{ width: '100%', display: 'flex' }}>
+        <ProductCard products={products} enabledProducts={enabledProducts} />
         {combinationList.map((combination: any) =>
-          (combination.sacks === sacks) ? (
+          combination.sacks === sacks ? (
             <CombinationCard
               key={combination.id}
               sacks={sacks}
@@ -67,15 +74,20 @@ export const CardContainer = ({
               products={products}
               enabledProducts={enabledProducts}
               updateCombination={updateCombination}
-              updateCombinationName={updateCombinationName}/>
-          ) : null,
+              updateCombinationName={updateCombinationName}
+            />
+          ) : null
         )}
       </div>
 
       <Wrapper>
-        <Button onClick={() => {
-          addCombination(createCombinationName(sacks, combinationMap), sacks)
-        }}>Add combination</Button>
+        <Button
+          onClick={() => {
+            addCombination(createCombinationName(sacks, combinationMap), sacks)
+          }}
+        >
+          Add combination
+        </Button>
       </Wrapper>
     </div>
   )

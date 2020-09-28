@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import { select } from '@storybook/addon-knobs'
-import { Dialog, Button, Icon, Scrim, Typography } from '@equinor/eds-core-react'
-import styled from "styled-components";
-import { refresh } from "@equinor/eds-icons";
-import { LogicAppAPI } from "../Api"
+import {
+  Button,
+  Dialog,
+  Icon,
+  Scrim,
+  Typography,
+} from '@equinor/eds-core-react'
+import styled from 'styled-components'
+import { refresh } from '@equinor/eds-icons'
+import { LogicAppAPI } from '../Api'
 
 const { Actions, Title, CustomContent } = Dialog
 
-const icons = { refresh };
+const icons = { refresh }
 
-
-const COLOR = { DANGER: 'danger' };
-
-Icon.add(icons);
-
+Icon.add(icons)
 
 const TempButtonWrapper = styled.div`
   display: grid;
@@ -36,7 +38,7 @@ const Placeholder = styled.div`
 const TITLE_CHOICES = {
   none: null,
   text: 'Warning',
-  color: "danger",
+  color: 'danger',
 }
 
 const CUSTOM_CONTENT_CHOICES = {
@@ -49,9 +51,12 @@ const CUSTOM_CONTENT_CHOICES = {
     </Placeholder>
   ),
   description: (
-    <Typography variant="body_short">Use the refresh button if you have manually added new products to SharePoint. Pulling data will take a few minutes so please be patient. You will need to refresh the page to update product list.</Typography>
+    <Typography variant="body_short">
+      Use the refresh button if you have manually added new products to
+      SharePoint. Pulling data will take a few minutes so please be patient. You
+      will need to refresh the page to update product list.
+    </Typography>
   ),
-
 }
 
 const ACTION_CHOICES = {
@@ -65,30 +70,28 @@ const ACTION_CHOICES = {
 }
 
 export const RefreshButton = () => {
-
   const [visibleScrim, setVisibleScrim] = useState(false)
   const handleClose = (event, closed) => {
     setVisibleScrim(!visibleScrim)
   }
 
   const callHttpTrigger = () => {
-    LogicAppAPI.getInvokeRefresh()
-      .then((response) => {
-        return response;
-      })
+    LogicAppAPI.getInvokeRefresh().then((response) => {
+      return response
+    })
   }
 
   const titleChoice = select('Title', [...Object.keys(TITLE_CHOICES)], 'text')
   const contentChoice = select(
     'CustomContent',
     [...Object.keys(CUSTOM_CONTENT_CHOICES)],
-    'description',
+    'description'
   )
 
   const actionsChoice = select(
     'Actions',
     [...Object.keys(ACTION_CHOICES)],
-    'buttons',
+    'buttons'
   )
 
   return (
@@ -114,13 +117,19 @@ export const RefreshButton = () => {
                     onClick={() => setVisibleScrim(false)}
                   >
                     Cancel
-              </Button>
-                  <Button color="danger" variant="ghost" onClick={() => setVisibleScrim(false) + callHttpTrigger()}>Commit</Button>
+                  </Button>
+                  <Button
+                    color="danger"
+                    variant="ghost"
+                    onClick={() => setVisibleScrim(false) + callHttpTrigger()}
+                  >
+                    a Commit
+                  </Button>
                   {/*Change alert to function that triggers url */}
                 </TempButtonWrapper>
               ) : (
-                  ACTION_CHOICES[actionsChoice]
-                )}
+                ACTION_CHOICES[actionsChoice]
+              )}
             </Actions>
           </Dialog>
         </Scrim>
@@ -129,4 +138,4 @@ export const RefreshButton = () => {
   )
 }
 
-export default RefreshButton;
+export default RefreshButton
