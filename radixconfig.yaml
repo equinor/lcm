@@ -1,0 +1,39 @@
+apiVersion: radix.equinor.com/v1
+kind: RadixApplication
+metadata:
+  name: lost-circulation-material
+spec:
+  environments:
+    - name: dev
+      build:
+        from: master
+  components:
+    - name: web
+      src: ./web
+      ports:
+        - name: http
+          port: 3000
+
+    - name: api
+      src: ./api
+      environmentConfig:
+        - environment: dev
+          variables:
+            ENVIRONMENT: production
+      ports:
+        - name: flask
+          port: 5000
+      publicPort: flask
+      secrets:
+        - TABEL_KEY
+
+    - name: proxy
+      src: ./nginx/
+      ports:
+        - name: nginx
+          port: 80
+      publicPort: nginx
+      
+  dnsAppAlias:
+    environment: dev
+    component: proxy

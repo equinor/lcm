@@ -35,7 +35,7 @@ const Grid = styled.div`
 `
 
 
-export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
+export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [bridges, setBridges] = useState([])
   const [unit, setUnit] = useState('mD')
@@ -67,7 +67,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
     // TODO: Setting invalid values on parent is not good
     setValue(newBridgeValue)
 
-    if (!newBridgeValue >= 1) {
+    if (Math.sign(newBridgeValue) !== 1) {
       setBridgeValueHelperText("Value must be an integer bigger than 0")
       setBridgeValueVariant("error")
       return
@@ -77,7 +77,19 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueHelperText(undefined)
   }
 
-  function getOptimalBridge() {
+  // Load size fractions once on first render
+  useEffect(()=>{
+    OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
+        .then(response => {
+          setSizeFractions(response.data.size_fractions)
+        })
+        .catch(err => {
+          console.error("fetch error" + err)
+        })
+  },[])
+
+  // Load
+  useEffect(() => {
     if (!bridgeValue >= 1) return
     OptimizerAPI.postOptimizerApi({
       "request": Requests.BRIDGE,
@@ -94,18 +106,8 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
     }).catch(err => {
       console.error("fetch error" + err)
     })
-  }
 
-  useEffect(() => {
-    OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
-        .then(response => {
-          setSizeFractions(response.data.size_fractions)
-        })
-        .catch(err => {
-          console.error("fetch error" + err)
-        })
-    getOptimalBridge()
-  }, [userBridges, bridgeValue, mode])
+  }, [bridgeValue, mode, userBridges])
 
   return (
       <Wrapper>
@@ -150,7 +152,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue }) => {
                   type="number"
                   id="textfield-number"
                   meta={unit}
-                  value={(bridgeValue === 0) ? "" : bridgeValue}
+                  value={bridgeValue || 0}
                   onChange={onBridgeValueChange}
                   variant={bridgeValueVariant}
                   helperText={bridgeValueHelperText}

@@ -1,17 +1,18 @@
 import React from 'react'
-import { Typography, Card } from '@equinor/eds-core-react'
+import { Card } from '@equinor/eds-core-react'
 import ProductTable from './ProductTable.tsx'
-
-const { CardHeader, CardHeaderTitle } = Card
 
 export const ProductCard = ({ enabledProducts, products }) => {
   return (
-    <Card style={{ width: 'fit-content', display: 'inline-block', margin: "10px", padding: "20px" }}>
-      <CardHeader style={{ height: '50px' }}>
-        <CardHeaderTitle>
-          <Typography variant="h5" style={{ color: 'white' }}>Magnus was here</Typography>
-        </CardHeaderTitle>
-      </CardHeader>
+    <Card
+      style={{
+        width: 'fit-content',
+        display: 'inline-block',
+        margin: '10px',
+        padding: '20px',
+        height: 'auto',
+        paddingTop: '70px',
+      }}>
       <ProductTable enabledProducts={enabledProducts} products={products} />
     </Card>
   )

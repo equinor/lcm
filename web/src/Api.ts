@@ -11,7 +11,8 @@ class LogicAppApi {
 
 export enum Requests {
   SIZE_FRACTIONS = 'SIZE_FRACTIONS',
-  BRIDGE = 'BRIDGE'
+  BRIDGE = 'BRIDGE',
+  MIX_PRODUCTS = "MIX_PRODUCTS"
 }
 
 class OptimizerApi {
