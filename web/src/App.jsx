@@ -3,6 +3,7 @@ import React from "react";
 import "./App.css";
 import {v4 as uuidv4} from 'uuid';
 import Main from "./Pages/Main"
+import "./Components/icons"
 
 const defaultState = new Map()
 
