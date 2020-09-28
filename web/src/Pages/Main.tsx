@@ -1,19 +1,25 @@
 // @ts-ignore
 import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
-import styled from "styled-components"
+import styled from 'styled-components'
 // @ts-ignore
-import { Accordion, Button, SideSheet, TopBar } from "@equinor/eds-core-react"
+import {
+  Accordion,
+  Button,
+  SideSheet,
+  TopBar,
+  Icon,
+} from '@equinor/eds-core-react'
 
-import SelectProducts from "../Components/Optimization/SelectProducts"
-import BridgeContainer from "../Components/Bridging/BridgeContainer"
-import CardContainer from "../Components/Blending/CardContainer"
-import RefreshButton from "./RefreshButton.js"
-import OptimizationContainer from "../Components/Optimization/OptimizationContainer"
-import { OptimizerAPI } from "../Api"
-import { ProductsApi } from "./../gen-api/src/apis/index"
-import { Product } from "../gen-api/src/models"
-import { Requests} from "../Api"
+import SelectProducts from '../Components/Optimization/SelectProducts'
+import BridgeContainer from '../Components/Bridging/BridgeContainer'
+import CardContainer from '../Components/Blending/CardContainer'
+import RefreshButton from './RefreshButton.js'
+import OptimizationContainer from '../Components/Optimization/OptimizationContainer'
+import { OptimizerAPI } from '../Api'
+import { ProductsApi } from './../gen-api/src/apis/index'
+import { Product } from '../gen-api/src/models'
+import { Requests } from '../Api'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 
@@ -26,26 +32,23 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
   position: relative;
-  height: "fit-content";
+  height: 'fit-content';
   background: #ebebeb;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-  font-family: "Equinor";
+  font-family: 'Equinor';
 `
 
 interface AppProps {
   defaultState: any
 }
 
-
 const getProducts = async (): Promise<any> => {
   const products_api = new ProductsApi()
   const products = await products_api.productsGet()
-  return products.reduce(
-    (map, obj: Product) => ({ ...map, [obj.id]: obj }),
-    {})
+  return products.reduce((map, obj: Product) => ({ ...map, [obj.id]: obj }), {})
 }
 
 interface CombinationValue {
@@ -64,9 +67,13 @@ export interface Combination {
 
 function combinationsToBridges(combinationMap: any) {
   let bridges: any[] = []
-  combinationMap && combinationMap.forEach((combination: Combination) => {
-    bridges.push({ name: combination.name, cumulative: combination.cumulative })
-  })
+  combinationMap &&
+    combinationMap.forEach((combination: Combination) => {
+      bridges.push({
+        name: combination.name,
+        cumulative: combination.cumulative,
+      })
+    })
   return bridges
 }
 
@@ -75,13 +82,15 @@ export default ({ defaultState }: AppProps): ReactElement => {
   const [toggle, setToggle] = useState<boolean>(false)
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>([])
-  const [combinationMap, setCombinationMap] = useState<Map<string, Combination>>(defaultState)
+  const [combinationMap, setCombinationMap] = useState<
+    Map<string, Combination>
+  >(defaultState)
   const [mode, setMode] = useState<string>('PERMEABILITY')
   const [value, setValue] = useState<number>(500)
 
   useEffect(() => {
     setIsLoading(true)
-    getProducts().then(products => {
+    getProducts().then((products) => {
       setProducts(products)
       // Enable all products by default
       const productList: Array<Product> = Object.values(products)
@@ -102,7 +111,9 @@ export default ({ defaultState }: AppProps): ReactElement => {
     })
 
     if (isChecked) {
-      setEnabledProducts(enabledProducts.filter((enabled: string) => enabled !== productId))
+      setEnabledProducts(
+        enabledProducts.filter((enabled: string) => enabled !== productId)
+      )
     } else {
       setEnabledProducts([...enabledProducts, productId])
     }
@@ -128,21 +139,25 @@ export default ({ defaultState }: AppProps): ReactElement => {
         .then((response) => {
           setIsLoading(false)
           if (combination) {
-            combination["cumulative"] = response.data.cumulative
+            combination['cumulative'] = response.data.cumulative
             setCombination(combination)
           }
         })
         .catch((error) => {
-          console.log("fetch error" + error)
+          console.log('fetch error' + error)
           setIsLoading(false)
         })
     } else {
-       combination["cumulative"] = []
+      combination['cumulative'] = []
       setCombination(combination)
     }
   }
 
-  const addCombination = (name: string, sacks: boolean, defaultValues: any = null) => {
+  const addCombination = (
+    name: string,
+    sacks: boolean,
+    defaultValues: any = null
+  ) => {
     let combination = {
       id: uuidv4(),
       name: name,
@@ -182,7 +197,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
         // @ts-ignore
         const product: Product = products[value.id]
         // @ts-ignore
-        value.percentage = 100 * (value.value * product.sackSize / massSum)
+        value.percentage = 100 * ((value.value * product.sackSize) / massSum)
       } else {
         value.percentage = 100 * (value.value / massSum)
       }
@@ -195,21 +210,21 @@ export default ({ defaultState }: AppProps): ReactElement => {
   const setProductsInCombination = (combinationId: string, products: any) => {
     // @ts-ignore
     let combination: Combination = combinationMap.get(combinationId)
-      for (const key in products) {
-        combination.values.set(key,{
-            id: key,
-            value: products[key],
-            percentage: 0.0,
-        })
-      }
-      combination = calculatePercentage(combination)
-      calculateMixOfProducts(combination)
+    for (const key in products) {
+      combination.values.set(key, {
+        id: key,
+        value: products[key],
+        percentage: 0.0,
+      })
+    }
+    combination = calculatePercentage(combination)
+    calculateMixOfProducts(combination)
   }
 
   const updateCombinationName = (combinationId: string, name: string) => {
     combinationMap.forEach((combination: Combination) => {
       if (combination.name === name) {
-        alert("Name of combination already taken. Please select another one")
+        alert('Name of combination already taken. Please select another one')
         return
       }
     })
@@ -225,12 +240,11 @@ export default ({ defaultState }: AppProps): ReactElement => {
   return (
     <Wrapper>
       <TopBar style={{ height: 'fit-content' }}>
-        <RefreshButton/>
+        <RefreshButton />
         <div>
-          <Button
-            variant="outlined"
-            onClick={() => setToggle(!toggle)}>
-            Select products
+          <Button variant="outlined" onClick={() => setToggle(!toggle)}>
+            <Icon name="filter_alt" title="filter products" />
+            Product filter
           </Button>
         </div>
       </TopBar>
@@ -240,12 +254,14 @@ export default ({ defaultState }: AppProps): ReactElement => {
           variant="medium"
           title="Select products:"
           open={toggle}
-          onClose={() => setToggle(false)}>
+          onClose={() => setToggle(false)}
+        >
           <SelectProducts
             loading={isLoading}
             products={products}
             enabledProducts={enabledProducts}
-            updateProduct={updateProduct}/>
+            updateProduct={updateProduct}
+          />
         </SideSheet>
 
         <BridgeContainer
@@ -300,7 +316,6 @@ export default ({ defaultState }: AppProps): ReactElement => {
           value={value}
           addCombination={addCombination}
         />
-
       </Body>
     </Wrapper>
   )
