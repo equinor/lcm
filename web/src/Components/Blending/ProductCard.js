@@ -11,9 +11,8 @@ export const ProductCard = ({ enabledProducts, products }) => {
         margin: '10px',
         padding: '20px',
         height: 'auto',
-        paddingTop: '50px',
-      }}
-    >
+        paddingTop: '70px',
+      }}>
       <ProductTable enabledProducts={enabledProducts} products={products} />
     </Card>
   )

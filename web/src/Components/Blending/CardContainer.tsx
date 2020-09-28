@@ -35,9 +35,7 @@ const createCombinationName = (sacks: any, combinationMap: any) => {
 
   let i: number = 1
   while (i < 100) {
-    const newCombinationName: string = sacks
-      ? 'Sack combination ' + i
-      : 'Manual combination ' + i
+    const newCombinationName: string = sacks ? 'Sack combination ' + i : 'Manual combination ' + i
     if (!combinationNames.includes(newCombinationName)) {
       return newCombinationName
     }
@@ -64,19 +62,20 @@ export const CardContainer = ({
       {loading && <LinearProgress />}
       <div style={{ width: '100%', display: 'flex' }}>
         <ProductCard products={products} enabledProducts={enabledProducts} />
-        {combinationList.map((combination: any) =>
-          combination.sacks === sacks ? (
-            <CombinationCard
-              key={combination.id}
-              sacks={sacks}
-              combination={combination}
-              removeCombination={removeCombination}
-              products={products}
-              enabledProducts={enabledProducts}
-              updateCombination={updateCombination}
-              updateCombinationName={updateCombinationName}
-            />
-          ) : null
+        {combinationList.map(
+          (combination: any) =>
+            combination.sacks === sacks && (
+              <CombinationCard
+                key={combination.id}
+                sacks={sacks}
+                combination={combination}
+                removeCombination={removeCombination}
+                products={products}
+                enabledProducts={enabledProducts}
+                updateCombination={updateCombination}
+                updateCombinationName={updateCombinationName}
+              />
+            )
         )}
       </div>
 
@@ -84,8 +83,7 @@ export const CardContainer = ({
         <Button
           onClick={() => {
             addCombination(createCombinationName(sacks, combinationMap), sacks)
-          }}
-        >
+          }}>
           Add combination
         </Button>
       </Wrapper>

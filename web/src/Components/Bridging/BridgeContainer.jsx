@@ -77,7 +77,8 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
     setBridgeValueHelperText(undefined)
   }
 
-  useEffect(() => {
+  // Load size fractions once on first render
+  useEffect(()=>{
     OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
         .then(response => {
           setSizeFractions(response.data.size_fractions)
@@ -85,7 +86,10 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
         .catch(err => {
           console.error("fetch error" + err)
         })
+  },[])
 
+  // Load
+  useEffect(() => {
     if (!bridgeValue >= 1) return
     OptimizerAPI.postOptimizerApi({
       "request": Requests.BRIDGE,
@@ -103,8 +107,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
       console.error("fetch error" + err)
     })
 
-    // getOptimalBridge()
-  }, [userBridges, bridgeValue, mode, bridges])
+  }, [bridgeValue, mode, userBridges])
 
   return (
       <Wrapper>
@@ -149,7 +152,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
                   type="number"
                   id="textfield-number"
                   meta={unit}
-                  value={(bridgeValue === 0) ? "" : bridgeValue}
+                  value={bridgeValue || 0}
                   onChange={onBridgeValueChange}
                   variant={bridgeValueVariant}
                   helperText={bridgeValueHelperText}

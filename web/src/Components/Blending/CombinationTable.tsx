@@ -34,16 +34,30 @@ export const CombinationTable = ({
     setValues(newValues)
   }, [combination])
 
-  const handleValueChange = (productId: string, value: number) => {
+  const stripZeroAndUpdate = () => {
+    let noneEmptyValues: any = {}
+    for (const [key, value] of Object.entries(values)) {
+      // @ts-ignore
+      if (value > 0) {
+        noneEmptyValues[key] = value
+      }
+    }
+    console.log(noneEmptyValues)
+    updateCombination(noneEmptyValues)
+  }
+
+  const handleValueChange = (productId: string, value: string) => {
+    let newValues: any = { ...values, [productId]: parseInt(value) }
     let tempInvalid: boolean = false
+    // Check for any negative numbers
     // @ts-ignore
-    Object.values(values).forEach((val: any) => {
-      if (Math.sign(parseInt(val)) !== 1) {
+    Object.values(newValues).forEach((val: number) => {
+      if (Math.sign(val) < 0) {
         tempInvalid = true
       }
     })
-    setValues({ ...values, [productId]: value })
     setInvalidValue(tempInvalid)
+    setValues(newValues)
   }
 
   return (
@@ -62,7 +76,7 @@ export const CombinationTable = ({
           </Head>
           <Body>
             {productList.map(
-              (product) =>
+              product =>
                 enabledProducts.includes(product['id']) && (
                   <Row key={product.id}>
                     <Cell>
@@ -70,22 +84,15 @@ export const CombinationTable = ({
                         id={product.id}
                         value={values[product.id]}
                         type="number"
-                        placeholder={
-                          sacks
-                            ? 'Sacks (' + product.sackSize + 'kg)'
-                            : 'Number of units'
-                        }
-                        onChange={(event: any) =>
-                          handleValueChange(product.id, event.target.value)
-                        }
+                        placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
+                        onChange={(event: any) => handleValueChange(product.id, event.target.value)}
                         style={{ background: 'transparent' }}
                       />
                     </Cell>
                     <Cell>
-                      {(combination.values.has(product.id)
-                        ? combination.values.get(product.id).percentage
-                        : 0
-                      ).toFixed(1)}
+                      {(combination.values.has(product.id) ? combination.values.get(product.id).percentage : 0).toFixed(
+                        1
+                      )}
                     </Cell>
                   </Row>
                 )
@@ -95,10 +102,9 @@ export const CombinationTable = ({
         <Button
           variant="outlined"
           color="secondary"
-          onClick={() => updateCombination(values)}
+          onClick={() => stripZeroAndUpdate()}
           style={{ marginTop: '10px' }}
-          disabled={invalidValue}
-        >
+          disabled={invalidValue}>
           Apply
         </Button>
       </div>
