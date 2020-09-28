@@ -1,8 +1,6 @@
 server {
     listen 80;
     server_name localhost;
-    client_max_body_size 2G;
-
     access_log /dev/stdout combined;
     error_log /dev/stdout;
 
@@ -16,12 +14,9 @@ server {
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Request-Start $msec;
-
-       # proxy_read_timeout 180;
     }
     location / {
         proxy_pass http://web:3000/;
-        # Passthrough for websocket
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";

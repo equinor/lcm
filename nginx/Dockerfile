@@ -1,2 +1,2 @@
 FROM nginx:alpine
-COPY default.nginx /etc/nginx/conf.d/default.conf
+COPY config.nginx /etc/nginx/conf.d/default.conf
