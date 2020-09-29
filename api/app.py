@@ -49,9 +49,6 @@ def init_api():
 app = init_api()
 
 
-# print(app.url_map)
-
-
 @app.route("/api/products", methods=["GET"])
 def products():
     return products_get()

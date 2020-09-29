@@ -5,7 +5,7 @@ import PillInput, { Pill } from './PillInput'
 import { Environmental, Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useState } from 'react'
 // @ts-ignore
-import { Typography, StarProgress } from '@equinor/eds-core-react'
+import { Typography, CircularProgress } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 // @ts-ignore
 import { Button } from '@equinor/eds-core-react'
@@ -122,16 +122,8 @@ const OptimizationRunner = ({
         <WrapperHeader>
           <Typography variant="h2">Optimizer</Typography>
         </WrapperHeader>
-        <PillInput pill={pill} setPill={setPill} isLoading={isLoading} />
-        <Button
-          variant="outlined"
-          onClick={() => {
-            handleOptimize()
-          }}
-          disabled={isLoading}>
-          Run optimizer
-        </Button>
-        <Wrapper>{isLoading && <StarProgress />}</Wrapper>
+        <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
+        {isLoading && <CircularProgress style={{ padding: '20% 30%' }} />}
       </div>
       <div>
         <WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />
