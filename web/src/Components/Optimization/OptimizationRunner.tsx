@@ -49,14 +49,7 @@ interface getOptimalBlendProps {
   handleUpdate: Function
 }
 
-const getOptimalBlend = ({
-  enabledProducts,
-  pill,
-  weight,
-  mode,
-  value,
-  handleUpdate,
-}: getOptimalBlendProps) => {
+const getOptimalBlend = ({ enabledProducts, pill, weight, mode, value, handleUpdate }: getOptimalBlendProps) => {
   if (enabledProducts.length === 0) {
     alert('Please select at least 1 product before running the optimizer')
     return null
@@ -72,10 +65,10 @@ const getOptimalBlend = ({
     products: enabledProducts,
     weights: getWeightPercentages(weight),
   })
-    .then((response) => {
+    .then(response => {
       handleUpdate(response.data)
     })
-    .catch((error) => console.log('fetch error' + error))
+    .catch(error => console.log('fetch error' + error))
 }
 
 const OptimizationRunner = ({
@@ -98,17 +91,12 @@ const OptimizationRunner = ({
     co2: 0,
     cost: 0,
     mass: 5,
-    environmental: [
-      Environmental.GREEN,
-      Environmental.BLACK,
-      Environmental.RED,
-      Environmental.YELLOW,
-    ],
+    environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
 
   const handleOptimize = () => {
     let countSackCombinations = 0
-    combinationMap.forEach((combination, key) => {
+    combinationMap.forEach(combination => {
       if (combination.sacks) {
         countSackCombinations += 1
       }
@@ -124,9 +112,7 @@ const OptimizationRunner = ({
         handleUpdate,
       })
     } else {
-      alert(
-        'Please remove a at least 1 sack combination before running the optimizer'
-      )
+      alert('Please remove at least 1 sack combination before running the optimizer')
     }
   }
 
@@ -139,21 +125,16 @@ const OptimizationRunner = ({
         <PillInput pill={pill} setPill={setPill} isLoading={isLoading} />
         <Button
           variant="outlined"
-          onClick={(event: any) => {
+          onClick={() => {
             handleOptimize()
           }}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           Run optimizer
         </Button>
         <Wrapper>{isLoading && <StarProgress />}</Wrapper>
       </div>
       <div>
-        <WeightOptions
-          weight={weight}
-          setWeight={setWeight}
-          isLoading={isLoading}
-        />
+        <WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />
       </div>
     </>
   )

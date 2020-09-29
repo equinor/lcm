@@ -17,8 +17,7 @@ import BridgeContainer from '../Components/Bridging/BridgeContainer'
 import CardContainer from '../Components/Blending/CardContainer'
 import RefreshButton from './RefreshButton.js'
 import OptimizationContainer from '../Components/Optimization/OptimizationContainer'
-import { OptimizerAPI } from '../Api'
-import { ProductsApi } from './../gen-api/src/apis/index'
+import { OptimizerAPI, ProductsAPI } from '../Api'
 import { Product } from '../gen-api/src/models'
 import { Requests } from '../Api'
 // @ts-ignore
@@ -47,8 +46,7 @@ interface AppProps {
 }
 
 const getProducts = async (): Promise<any> => {
-  const products_api = new ProductsApi()
-  const products = await products_api.productsGet()
+  const products = await ProductsAPI.productsGet()
   return products.reduce((map, obj: Product) => ({ ...map, [obj.id]: obj }), {})
 }
 
@@ -83,15 +81,13 @@ export default ({ defaultState }: AppProps): ReactElement => {
   const [toggle, setToggle] = useState<boolean>(false)
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>([])
-  const [combinationMap, setCombinationMap] = useState<
-    Map<string, Combination>
-  >(defaultState)
+  const [combinationMap, setCombinationMap] = useState<Map<string, Combination>>(defaultState)
   const [mode, setMode] = useState<string>('PERMEABILITY')
   const [value, setValue] = useState<number>(500)
 
   useEffect(() => {
     setIsLoading(true)
-    getProducts().then((products) => {
+    getProducts().then(products => {
       setProducts(products)
       // Enable all products by default
       const productList: Array<Product> = Object.values(products)
@@ -112,9 +108,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
     })
 
     if (isChecked) {
-      setEnabledProducts(
-        enabledProducts.filter((enabled: string) => enabled !== productId)
-      )
+      setEnabledProducts(enabledProducts.filter((enabled: string) => enabled !== productId))
     } else {
       setEnabledProducts([...enabledProducts, productId])
     }
@@ -122,10 +116,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
 
   const setCombination = (combination: Combination) => {
     // Need to create new reference
-    let combinations = new Map([
-      ...combinationMap,
-      [combination.id, combination],
-    ])
+    let combinations = new Map([...combinationMap, [combination.id, combination]])
     setCombinationMap(combinations)
   }
 
@@ -137,14 +128,14 @@ export default ({ defaultState }: AppProps): ReactElement => {
         request: Requests.MIX_PRODUCTS,
         products: combinationValues,
       })
-        .then((response) => {
+        .then(response => {
           setIsLoading(false)
           if (combination) {
             combination['cumulative'] = response.data.cumulative
             setCombination(combination)
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('fetch error' + error)
           setIsLoading(false)
         })
@@ -154,11 +145,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
     }
   }
 
-  const addCombination = (
-    name: string,
-    sacks: boolean,
-    defaultValues: any = null
-  ) => {
+  const addCombination = (name: string, sacks: boolean, defaultValues: any = null) => {
     let combination = {
       id: uuidv4(),
       name: name,
@@ -251,12 +238,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
       </TopBar>
 
       <Body>
-        <SideSheet
-          variant="medium"
-          title="Select products:"
-          open={toggle}
-          onClose={() => setToggle(false)}
-        >
+        <SideSheet variant="medium" title="Select products:" open={toggle} onClose={() => setToggle(false)}>
           <SelectProducts
             loading={isLoading}
             products={products}

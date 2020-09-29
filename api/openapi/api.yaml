@@ -4,10 +4,6 @@ info:
   description: API for the LCM
   version: 0.1.0
 
-servers:
-  - url: 'http://localhost/api'
-    description: Used for local development.
-
 tags:
   - name: products
     description: Products

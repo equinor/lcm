@@ -2,23 +2,24 @@
 # Based on the request body, the correct data are then returned
 # from either the database or the data layer.
 
-import connexion
-from flask_cors import CORS
-
 import logging
 
-from flask import abort, Flask, jsonify, request, Response
+import connexion
+from flask import abort, jsonify, request, Response
+from flask_cors import CORS
 
 from calculators import Blend, Bridge, Optimizer
+from config import Config
+from controllers.products import products_get
 from util import DatabaseOperations as db
 from util.Classes import Mode, Product
-
-from config import Config
 
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
 BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
-OPTIMIZER_REQUEST = "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
+OPTIMIZER_REQUEST = (
+    "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
+)
 
 PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
 SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
@@ -50,7 +51,13 @@ app = init_api()
 
 # print(app.url_map)
 
-@app.route('/api', methods=["GET", "POST"])
+
+@app.route("/api/products", methods=["GET"])
+def products():
+    return products_get()
+
+
+@app.route("/api", methods=["GET", "POST"])
 def main():
     logging.info("Python HTTP trigger function processed a request.")
     requst_ = request.json.get("request")
@@ -69,7 +76,9 @@ def main():
         return blendRequestHandler(request.json.get("products"))
 
     elif requst_ == BRIDGE_REQUEST:
-        return bridgeRequestHandler(request.json.get("option"), request.json.get("value"))
+        return bridgeRequestHandler(
+            request.json.get("option"), request.json.get("value")
+        )
 
     elif requst_ == OPTIMIZER_REQUEST:
         value = request.json.get("value")
@@ -82,11 +91,22 @@ def main():
         iterations = request.json.get("max_iterations")
         size_step = request.json.get("size_steps_filter")
 
-        return optimizerRequestHandler(value, name, products, mass, weights, environmental, option, iterations,
-                                       size_step)
+        return optimizerRequestHandler(
+            value,
+            name,
+            products,
+            mass,
+            weights,
+            environmental,
+            option,
+            iterations,
+            size_step,
+        )
 
     elif requst_ == PRODUCT_ID_REQUEST:
-        return productRequestHandler(request.json.get("id"), request.json.get("metadata"))
+        return productRequestHandler(
+            request.json.get("id"), request.json.get("metadata")
+        )
 
     elif requst_ == SIZE_STEPS_REQUEST:
         return sizeStepsRequestHandler()
@@ -210,12 +230,14 @@ def productRequestHandler(product_id, metadata_list):
             for key in metadata_list:
                 if key == "DISTRIBUTION":
                     data_dict[key.lower()] = [
-                        round(num, ROUNDING_DECIMALS) for num in db.getDistribution(product_id)
+                        round(num, ROUNDING_DECIMALS)
+                        for num in db.getDistribution(product_id)
                     ]
 
                 elif key == "CUMULATIVE":
                     data_dict[key.lower()] = [
-                        round(num, ROUNDING_DECIMALS) for num in db.getCumulative(product_id)
+                        round(num, ROUNDING_DECIMALS)
+                        for num in db.getCumulative(product_id)
                     ]
 
                 elif key == "NAME":
@@ -246,7 +268,9 @@ def productRequestHandler(product_id, metadata_list):
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
 def sizeStepsRequestHandler():
-    return {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
+    return {
+        "size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]
+    }
 
 
 # Optimizer handler. This function takes the HttpRequest
@@ -255,8 +279,17 @@ def sizeStepsRequestHandler():
 # amount of iterations.
 
 # name, products, mass, weights, environmental
-def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict, environmental_list, option,
-                            max_iterations, size_steps_filter):
+def optimizerRequestHandler(
+    value,
+    blend_name,
+    products,
+    mass_goal,
+    weight_dict,
+    environmental_list,
+    option,
+    max_iterations,
+    size_steps_filter,
+):
     error_list = []
 
     if not products:
@@ -379,6 +412,7 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
         )
     except Exception as e:
         import sys, traceback
+
         traceback.print_exc(file=sys.stdout)
         return f"Probably invalid inputs! {e}", 400
 
@@ -420,8 +454,12 @@ def optimizerRequestHandler(value, blend_name, products, mass_goal, weight_dict,
         "co2": round(co2_score, ROUNDING_DECIMALS),
         "enviromental": round(enviromental_score, ROUNDING_DECIMALS),
     }
-    response_dict["cumulative"] = [round(num, ROUNDING_DECIMALS) for num in optimal_cumulative]
-    response_dict["distribution"] = [round(num, ROUNDING_DECIMALS) for num in optimal_distribution]
+    response_dict["cumulative"] = [
+        round(num, ROUNDING_DECIMALS) for num in optimal_cumulative
+    ]
+    response_dict["distribution"] = [
+        round(num, ROUNDING_DECIMALS) for num in optimal_distribution
+    ]
     response_dict["execution_time"] = round(exec_time, ROUNDING_DECIMALS)
     response_dict["iterations"] = iterations
     response_dict["fitness"] = round(fitness, ROUNDING_DECIMALS)
