@@ -15,13 +15,25 @@ const colors = [
 
 export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
+  const [noneEmptyCombinations, setNoneEmptyCombinations] = useState([])
 
   useEffect(() => {
     let newGraphData = []
+    const tempNoneEmpty = bridgeAndCombinations.filter(com => {
+      // This map thingy can be anything...
+      try {
+        return  com.cumulative.length >= 1
+      }
+      catch (err){
+        return false
+      }
+    })
+
+
     sizeFractions.map((fraction, sizeIndex) => {
       let temp = {}
       temp.size = fraction
-      bridgeAndCombinations.map((combination, combinationIndex) => {
+      tempNoneEmpty.map((combination, combinationIndex) => {
         if (combination.cumulative && combination.cumulative.length === sizeFractions.length) {
           temp[combinationIndex] = combination.cumulative[sizeIndex + 1]
         }
@@ -29,6 +41,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
       newGraphData.push(temp)
     })
     setGraphData(newGraphData)
+    setNoneEmptyCombinations(tempNoneEmpty)
 
   }, [bridgeAndCombinations, sizeFractions])
 
@@ -44,10 +57,8 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
     <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow/>
     < Tooltip/>
     <Legend/>
-
-    {bridgeAndCombinations.map((combination, index) =>
-        <Area type="monotone" dataKey={index} stroke={colors[index % colors.length]} key={index}
-              fill="transparent" name={combination.name} strokeWidth={1.5}/>)
+    {noneEmptyCombinations.map((combination, index) =>  <Area type="monotone" dataKey={index} stroke={colors[index % colors.length]} key={index}
+                       fill="transparent" name={combination.name} strokeWidth={1.5}/>)
     }
   </AreaChart>
 }

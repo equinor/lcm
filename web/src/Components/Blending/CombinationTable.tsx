@@ -42,7 +42,6 @@ export const CombinationTable = ({
         noneEmptyValues[key] = value
       }
     }
-    console.log(noneEmptyValues)
     updateCombination(noneEmptyValues)
   }
 

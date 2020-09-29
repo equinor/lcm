@@ -198,6 +198,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
   const setProductsInCombination = (combinationId: string, products: any) => {
     // @ts-ignore
     let combination: Combination = combinationMap.get(combinationId)
+    combination.values = new Map()
     for (const key in products) {
       combination.values.set(key, {
         id: key,

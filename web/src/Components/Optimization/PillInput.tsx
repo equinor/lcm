@@ -13,6 +13,11 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(1, fit-content(100%));
 `
 
+enum PillInputType {
+  VOLUME = 'volume',
+  DENSITY = 'density'
+}
+
 export interface Pill {
   volume: number
   density: number
@@ -31,26 +36,29 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
   const [invalidDensity, setInvalidDensity] = useState<boolean>(false)
 
   const handleChange = (type: string, value: string) => {
-    if (Math.sign(parseInt(value)) <= 0) {
-      type === 'volume' && setInvalidVolume(true)
-      type === 'density' && setInvalidDensity(true)
+    let newValue: number = 0
+    if (value !== '') newValue = parseInt(value)
+
+    if (Math.sign(newValue) <= 0) {
+      type === PillInputType.VOLUME && setInvalidVolume(true)
+      type === PillInputType.DENSITY && setInvalidDensity(true)
     } else {
-      type === 'volume' && setInvalidVolume(false)
-      type === 'density' && setInvalidDensity(false)
+      type === PillInputType.VOLUME && setInvalidVolume(false)
+      type === PillInputType.DENSITY && setInvalidDensity(false)
     }
 
-    if (type === 'volume') {
+    if (type === PillInputType.VOLUME) {
       setPill({
-        volume: parseInt(value),
-        mass: parseInt(value) * pill.density,
+        volume: newValue,
+        mass: newValue * pill.density,
         density: pill.density,
       })
     }
-    if (type === 'density') {
+    if (type === PillInputType.DENSITY) {
       setPill({
         volume: pill.volume,
-        mass: parseInt(value) * pill.volume,
-        density: parseInt(value),
+        mass: newValue * pill.volume,
+        density: newValue,
       })
     }
   }
@@ -59,7 +67,7 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
     <Wrapper>
       <TextField
         type="number"
-        helperText={invalidVolume && 'Must be a positive number'}
+        helperText={invalidVolume ? 'Must be a positive number' : undefined}
         label="Enter pill volume"
         id="pillvolume"
         value={pill.volume}
@@ -69,13 +77,13 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
           </>
         }
         variant={(invalidVolume && 'error') || undefined}
-        onChange={(event: any) => handleChange('volume', event.target.value)}
+        onChange={(event: any) => handleChange(PillInputType.VOLUME, event.target.value)}
         disabled={isLoading}
       />
       <TextField
         type="number"
         label="Enter pill density"
-        helperText={invalidDensity && 'Must be a positive number'}
+        helperText={invalidDensity ? 'Must be a positive number' : undefined}
         id="pilldensity"
         value={pill.density}
         variant={(invalidDensity && 'error') || undefined}
@@ -84,7 +92,7 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
             kg/m<sup>3</sup>
           </>
         }
-        onChange={(event: any) => handleChange('density', event.target.value)}
+        onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}
         disabled={isLoading}
       />
       <Button

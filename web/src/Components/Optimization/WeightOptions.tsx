@@ -72,16 +72,12 @@ interface WeightOptionsProps {
   isLoading: boolean
 }
 
-export const WeightOptions = ({
-  weight,
-  setWeight,
-  isLoading,
-}: WeightOptionsProps): ReactElement => {
+export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsProps): ReactElement => {
   const { fit, co2, cost, mass } = weight
 
   const handleEnvironmentChange = (type: Environmental) => {
     const environment = weight.environmental.includes(type)
-      ? weight.environmental.filter((environment) => environment !== type)
+      ? weight.environmental.filter(environment => environment !== type)
       : [...weight.environmental, type]
 
     setWeight({
@@ -94,7 +90,6 @@ export const WeightOptions = ({
     <Card style={{ width: 'fit-content' }}>
       <GridUpper>
         <Typography variant="h6">Weigthing</Typography>
-        <div></div>
       </GridUpper>
       <Grid>
         <div>
@@ -112,7 +107,6 @@ export const WeightOptions = ({
                 })
               }}
               disabled={isLoading}
-              ariaLabelledby={isLoading ? 'disabled-slider' : 'simple-slider'}
             />
           </Wrapper>
           <Wrapper>
@@ -129,7 +123,6 @@ export const WeightOptions = ({
                 })
               }}
               disabled={isLoading}
-              ariaLabelledby={isLoading ? 'disabled-slider' : 'simple-slider'}
             />
           </Wrapper>
 
@@ -147,7 +140,6 @@ export const WeightOptions = ({
                 })
               }}
               disabled={isLoading}
-              ariaLabelledby={isLoading ? 'disabled-slider' : 'simple-slider'}
             />
           </Wrapper>
           <Wrapper>
@@ -164,7 +156,6 @@ export const WeightOptions = ({
                 })
               }}
               disabled={isLoading}
-              ariaLabelledby={isLoading ? 'disabled-slider' : 'simple-slider'}
             />
           </Wrapper>
         </div>
@@ -181,9 +172,7 @@ export const WeightOptions = ({
                 <Checkbox
                   label="Green"
                   name="multiple"
-                  onChange={(event: any) =>
-                    handleEnvironmentChange(Environmental.GREEN)
-                  }
+                  onChange={(event: any) => handleEnvironmentChange(Environmental.GREEN)}
                   checked={weight.environmental.includes(Environmental.GREEN)}
                   value="Green"
                   disabled={isLoading}
@@ -193,9 +182,7 @@ export const WeightOptions = ({
                 <Checkbox
                   label="Yellow"
                   name="multiple"
-                  onChange={(event: any) =>
-                    handleEnvironmentChange(Environmental.YELLOW)
-                  }
+                  onChange={(event: any) => handleEnvironmentChange(Environmental.YELLOW)}
                   checked={weight.environmental.includes(Environmental.YELLOW)}
                   value="Yellow"
                   disabled={isLoading}
@@ -205,9 +192,7 @@ export const WeightOptions = ({
                 <Checkbox
                   label="Red"
                   name="multiple"
-                  onChange={(event: any) =>
-                    handleEnvironmentChange(Environmental.RED)
-                  }
+                  onChange={(event: any) => handleEnvironmentChange(Environmental.RED)}
                   checked={weight.environmental.includes(Environmental.RED)}
                   value="Red"
                   disabled={isLoading}
@@ -217,9 +202,7 @@ export const WeightOptions = ({
                 <Checkbox
                   label="Black"
                   name="multiple"
-                  onChange={(event: any) =>
-                    handleEnvironmentChange(Environmental.BLACK)
-                  }
+                  onChange={(event: any) => handleEnvironmentChange(Environmental.BLACK)}
                   checked={weight.environmental.includes(Environmental.BLACK)}
                   value="Black"
                   disabled={isLoading}
@@ -230,8 +213,8 @@ export const WeightOptions = ({
         </div>
       </GridFilter>
       <Typography variant="body_long" style={{ color: '#858585' }}>
-        *Note that these weightings are not well-defined, and only serve to tune
-        the optimizing algorithm based on the different categories.
+        *Note that these weightings are not well-defined, and only serve to tune the optimizing algorithm based on the
+        different categories.
       </Typography>
     </Card>
   )
