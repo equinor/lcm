@@ -2,7 +2,11 @@ import csv
 
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
 from config import Config
-from util.DatabaseOperations import CUMULATIVE_TABLE_NAME, DISTRIBUTION_TABLE_NAME, METADATA_TABLE_NAME
+from util.DatabaseOperations import (
+    CUMULATIVE_TABLE_NAME,
+    DISTRIBUTION_TABLE_NAME,
+    METADATA_TABLE_NAME,
+)
 from xlrd.sheet import Sheet
 
 from util.azure_table import create_table
@@ -17,11 +21,13 @@ def populate_metadata(table_service):
     with open(f"{TEST_DATA_DIRECTORY}/{METADATA_FILE_NAME}") as meta_file:
         reader = csv.DictReader(meta_file)
         for product in reader:
-            batch.insert_entity({
-                **product,
-                "RowKey": product["title"],
-                "PartitionKey": METADATA_TABLE_NAME,
-            })
+            batch.insert_entity(
+                {
+                    **product,
+                    "RowKey": product["title"],
+                    "PartitionKey": METADATA_TABLE_NAME,
+                }
+            )
         table_service.commit_batch(table_name=METADATA_TABLE_NAME, batch=batch)
 
 
@@ -47,20 +53,28 @@ def upload_excel_files(table_service: TableService):
     for file_path in get_excel_files(TEST_DATA_DIRECTORY):
         sheet: Sheet = read_excel_sheet(file_path)
         product_id: str = file_path.stem
-        distribution_entity: dict = get_excel_entity(product_id=product_id, sheet=sheet, column_name="Distribution")
+        distribution_entity: dict = get_excel_entity(
+            product_id=product_id, sheet=sheet, column_name="Distribution"
+        )
         distribution_batch.insert_entity(distribution_entity)
-        cumulative_entity: dict = get_excel_entity(product_id=product_id, sheet=sheet, column_name="Cumulative")
+        cumulative_entity: dict = get_excel_entity(
+            product_id=product_id, sheet=sheet, column_name="Cumulative"
+        )
         cumulative_batch.insert_entity(cumulative_entity)
-    table_service.commit_batch(table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch)
+    table_service.commit_batch(
+        table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch
+    )
     table_service.commit_batch(table_name=CUMULATIVE_TABLE_NAME, batch=cumulative_batch)
 
 
 def upload_data_to_azure_tables():
     if Config.LOAD_TEST_DATA:
-        table_service = TableService(account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY)
+        table_service = TableService(
+            account_name=Config.TABEL_ACCOUNT_NAME, account_key=Config.TABEL_KEY
+        )
         upload_metadata_file(table_service)
         upload_excel_files(table_service)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     upload_data_to_azure_tables()
