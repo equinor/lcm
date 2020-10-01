@@ -44,6 +44,46 @@
                         }
                     },
                     "actions": {
+                        "Create_CSV_table": {
+                            "runAfter": {
+                                "Select": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Table",
+                            "inputs": {
+                                "format": "CSV",
+                                "from": "@body('Select')"
+                            }
+                        },
+                        "Create_blob_2": {
+                            "runAfter": {
+                                "Create_CSV_table": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": "@body('Create_CSV_table')",
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/datasets/default/files",
+                                "queries": {
+                                    "folderPath": "lcm-file-blobs",
+                                    "name": "metadata.csv",
+                                    "queryParametersSingleEncoded": true
+                                }
+                            },
+                            "runtimeConfiguration": {
+                                "contentTransfer": {
+                                    "transferMode": "Chunked"
+                                }
+                            }
+                        },
                         "For_each": {
                             "foreach": "@body('List_folder')",
                             "actions": {
@@ -185,6 +225,19 @@
                             },
                             "type": "Foreach"
                         },
+                        "Get_items": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/tables/@{encodeURIComponent(encodeURIComponent('815be822-7a54-4589-9a0e-46c575431fb7'))}/items"
+                            }
+                        },
                         "List_folder": {
                             "runAfter": {},
                             "metadata": {
@@ -199,6 +252,25 @@
                                 },
                                 "method": "get",
                                 "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/folders/@{encodeURIComponent('%252fShared%2bDocuments')}"
+                            }
+                        },
+                        "Select": {
+                            "runAfter": {
+                                "Get_items": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Select",
+                            "inputs": {
+                                "from": "@body('Get_items')?['value']",
+                                "select": {
+                                    "co2": "@item()?['OData__x0043_O2']",
+                                    "cost": "@item()?['Cost']",
+                                    "environmental": "@item()?['Enviromental_x0020_Impact']",
+                                    "sack_size": "@item()?['Sack_x0020_Size']",
+                                    "supplier": "@item()?['Supplier']?['Value']",
+                                    "title": "@item()?['Title']"
+                                }
                             }
                         }
                     },
