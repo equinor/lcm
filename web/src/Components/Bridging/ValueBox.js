@@ -1,5 +1,5 @@
-import React from 'react';
-import { TextField } from '@equinor/eds-core-react';
+import React from 'react'
+import { TextField } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -10,14 +10,8 @@ const Wrapper = styled.div`
 `
 
 const ValueBox = () => (
-    <Wrapper>
-    <TextField
-        type="number"
-        id="textfield-number"
-        placeholder="Placeholder text"
-        label="Enter value:"
-        meta="mD"
-    />
-    </Wrapper>
+  <Wrapper>
+    <TextField type="number" id="textfield-number" placeholder="Placeholder text" label="Enter value:" meta="mD" />
+  </Wrapper>
 )
 export default ValueBox

@@ -61,8 +61,7 @@ export const OptimizationContainer = ({
             percentage:
               100 *
               // @ts-ignore
-              ((productResult.sacks * products[productResult.id].sackSize) /
-                massSum),
+              ((productResult.sacks * products[productResult.id].sackSize) / massSum),
           }
           values.set(value.id, value)
         }
@@ -73,16 +72,10 @@ export const OptimizationContainer = ({
 
     const name = `Optimized at ${(datetime.getMonth() + 1)
       .toString()
-      .padStart(2, '0')}/${datetime
-      .getDate()
-      .toString()
-      .padStart(2, '0')}/${datetime
+      .padStart(2, '0')}/${datetime.getDate().toString().padStart(2, '0')}/${datetime
       .getFullYear()
       .toString()
-      .padStart(4, '0')} ${datetime
-      .getHours()
-      .toString()
-      .padStart(2, '0')}:${datetime
+      .padStart(4, '0')} ${datetime.getHours().toString().padStart(2, '0')}:${datetime
       .getMinutes()
       .toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`

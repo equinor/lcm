@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 enum PillInputType {
   VOLUME = 'volume',
-  DENSITY = 'density'
+  DENSITY = 'density',
 }
 
 export interface Pill {

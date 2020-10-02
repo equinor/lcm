@@ -18,9 +18,7 @@ from util.load_data import sync_all
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
 BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
-OPTIMIZER_REQUEST = (
-    "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
-)
+OPTIMIZER_REQUEST = "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
 
 PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
 SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
@@ -83,9 +81,7 @@ def main():
         return blendRequestHandler(request.json.get("products"))
 
     elif requst_ == BRIDGE_REQUEST:
-        return bridgeRequestHandler(
-            request.json.get("option"), request.json.get("value")
-        )
+        return bridgeRequestHandler(request.json.get("option"), request.json.get("value"))
 
     elif requst_ == OPTIMIZER_REQUEST:
         value = request.json.get("value")
@@ -111,9 +107,7 @@ def main():
         )
 
     elif requst_ == PRODUCT_ID_REQUEST:
-        return productRequestHandler(
-            request.json.get("id"), request.json.get("metadata")
-        )
+        return productRequestHandler(request.json.get("id"), request.json.get("metadata"))
 
     elif requst_ == SIZE_STEPS_REQUEST:
         return sizeStepsRequestHandler()
@@ -165,9 +159,7 @@ def blendRequestHandler(products):
 
     size_steps = db.getSizeSteps()
     try:
-        cumulative, distribution = Blend.calculateBlendDistribution(
-            product_list, size_steps
-        )
+        cumulative, distribution = Blend.calculateBlendDistribution(product_list, size_steps)
     except Exception as e:
         return jsonify(e), 400
 
@@ -236,16 +228,10 @@ def productRequestHandler(product_id, metadata_list):
         try:
             for key in metadata_list:
                 if key == "DISTRIBUTION":
-                    data_dict[key.lower()] = [
-                        round(num, ROUNDING_DECIMALS)
-                        for num in db.getDistribution(product_id)
-                    ]
+                    data_dict[key.lower()] = [round(num, ROUNDING_DECIMALS) for num in db.getDistribution(product_id)]
 
                 elif key == "CUMULATIVE":
-                    data_dict[key.lower()] = [
-                        round(num, ROUNDING_DECIMALS)
-                        for num in db.getCumulative(product_id)
-                    ]
+                    data_dict[key.lower()] = [round(num, ROUNDING_DECIMALS) for num in db.getCumulative(product_id)]
 
                 elif key == "NAME":
                     data_dict[key.lower()] = metadata["TITLE"]
@@ -275,9 +261,7 @@ def productRequestHandler(product_id, metadata_list):
 # Size step handler. This function takes the HttpRequest
 # object as input and returns a list of the size steps.
 def sizeStepsRequestHandler():
-    return {
-        "size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]
-    }
+    return {"size_fractions": [round(num, ROUNDING_DECIMALS) for num in db.getSizeSteps()]}
 
 
 # Optimizer handler. This function takes the HttpRequest
@@ -443,9 +427,7 @@ def optimizerRequestHandler(
             )
         )
 
-    optimal_cumulative, optimal_distribution = Blend.calculateBlendDistribution(
-        products, size_steps
-    )
+    optimal_cumulative, optimal_distribution = Blend.calculateBlendDistribution(products, size_steps)
 
     response_dict = {}
     blend_list = []
@@ -463,12 +445,8 @@ def optimizerRequestHandler(
         "co2": round(co2_score, ROUNDING_DECIMALS),
         "enviromental": round(enviromental_score, ROUNDING_DECIMALS),
     }
-    response_dict["cumulative"] = [
-        round(num, ROUNDING_DECIMALS) for num in optimal_cumulative
-    ]
-    response_dict["distribution"] = [
-        round(num, ROUNDING_DECIMALS) for num in optimal_distribution
-    ]
+    response_dict["cumulative"] = [round(num, ROUNDING_DECIMALS) for num in optimal_cumulative]
+    response_dict["distribution"] = [round(num, ROUNDING_DECIMALS) for num in optimal_distribution]
     response_dict["execution_time"] = round(exec_time, ROUNDING_DECIMALS)
     response_dict["iterations"] = iterations
     response_dict["fitness"] = round(fitness, ROUNDING_DECIMALS)

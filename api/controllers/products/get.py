@@ -10,7 +10,7 @@ def products_get():
             "id": product_id,
             "name": metadata[product_id]["title"],
             "supplier": metadata[product_id]["supplier"],
-            "sack_size": float(metadata[product_id]["sack_size"])
+            "sack_size": float(metadata[product_id]["sack_size"]),
         }
         return_list.append(data_dict)
 

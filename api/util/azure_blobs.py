@@ -20,9 +20,7 @@ def get_container_client() -> ContainerClient:
     )
 
 
-def from_blobs_to_excel(
-    blobs: Iterator[BlobProperties], container_client: ContainerClient
-) -> Dict[str, Sheet]:
+def from_blobs_to_excel(blobs: Iterator[BlobProperties], container_client: ContainerClient) -> Dict[str, Sheet]:
     sheets = {}
     for blob in blobs:
         if Path(blob.name).suffix != ".xlsx":
@@ -66,12 +64,8 @@ def get_product_blobs_data() -> Dict[str, Dict]:
     sheets = from_blobs_to_excel(all_blobs, container_client)
     for filename, sheet in sheets.items():
         tabel_data[filename] = {}
-        tabel_data[filename]["cumulative"] = get_excel_entity(
-            filename, sheet, "Cumulative"
-        )
-        tabel_data[filename]["distribution"] = get_excel_entity(
-            filename, sheet, "Distribution"
-        )
+        tabel_data[filename]["cumulative"] = get_excel_entity(filename, sheet, "Cumulative")
+        tabel_data[filename]["distribution"] = get_excel_entity(filename, sheet, "Distribution")
 
     return tabel_data
 

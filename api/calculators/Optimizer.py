@@ -46,21 +46,21 @@ ENVIRONMENTAL_SCORE = {
 # The function returns the best blend as a dictionary mapping ids
 # to number of sacks, a score for each of the different weights,
 # the execution time and the number of iterations.
-def optimize(products, weights, bridge, mass, MaxAndMinList, max_iterations, size_steps_filter):  # weights = [W_B, W_C, W_E, W_M], MaxAnMinList =[MAX_COST, MIN_COS, MAX_CO2, MIN_CO2]
+def optimize(
+    products, weights, bridge, mass, MaxAndMinList, max_iterations, size_steps_filter
+):  # weights = [W_B, W_C, W_E, W_M], MaxAnMinList =[MAX_COST, MIN_COS, MAX_CO2, MIN_CO2]
     global products_list, MASS_GOAL, MAX_NUMBER_OF_SACKS, MAX_CO2, MIN_CO2, MAX_COST, MIN_COST
 
     MASS_GOAL = mass
     products_list = products
-    MAX_NUMBER_OF_SACKS = (
-        MASS_GOAL // (averageSackSize() * min(PRODUCTS_TO_BE_USED, len(products_list)))
-    ) * 2
+    MAX_NUMBER_OF_SACKS = (MASS_GOAL // (averageSackSize() * min(PRODUCTS_TO_BE_USED, len(products_list)))) * 2
 
     MAX_COST = MaxAndMinList[0]
     MIN_COST = MaxAndMinList[1]
     MAX_CO2 = MaxAndMinList[2]
     MIN_CO2 = MaxAndMinList[3]
 
-    start_index = int(size_steps_filter*len(bridge))
+    start_index = int(size_steps_filter * len(bridge))
 
     start = time.time()
     parents = []
@@ -107,7 +107,7 @@ def optimize(products, weights, bridge, mass, MaxAndMinList, max_iterations, siz
         environmental_score,
         end - start,
         iterations,
-        actual_fitness
+        actual_fitness,
     )
 
 
@@ -147,9 +147,7 @@ def initializePopulation():
         for i in range(POPULATION_SIZE):
             combo_dict = {}
             for j in range(len(products_list)):
-                combo_dict[products_list[j]["id"]] = random.randint(
-                    0, MAX_NUMBER_OF_SACKS
-                )
+                combo_dict[products_list[j]["id"]] = random.randint(0, MAX_NUMBER_OF_SACKS)
             population.append(combo_dict)
 
     for i in range(NUMBER_OF_CHILDREN):
@@ -190,12 +188,8 @@ def fitnessFunction(combination, weights, bridge, start_index):
 
     return (
         W_B * k_b * sigmoid((bridge_deviation / 10000) * 7 - 3.5)
-        + W_C
-        * K_C
-        * sigmoid((((cost / sack_sum) - MIN_COST) / (MAX_COST - MIN_COST)) * 7 - 3.5)
-        + W_E
-        * K_E
-        * sigmoid((((co2 / sack_sum) - MIN_CO2) / (MAX_CO2 - MIN_CO2)) * 7 - 3.5)
+        + W_C * K_C * sigmoid((((cost / sack_sum) - MIN_COST) / (MAX_COST - MIN_COST)) * 7 - 3.5)
+        + W_E * K_E * sigmoid((((co2 / sack_sum) - MIN_CO2) / (MAX_CO2 - MIN_CO2)) * 7 - 3.5)
         + W_M * K_M * sigmoid((mass_deviation / 15625000) * 7 - 3.5)
     )
 
@@ -312,21 +306,13 @@ def crossover(parents, children):
         for i in range(NUMBER_OF_CHILDREN // 2):
             cross_point = random.randint(1, number_of_products - 1)
 
-            first_child_id_list = (
-                first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
-            )
+            first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
 
-            second_child_id_list = (
-                second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
-            )
+            second_child_id_list = second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
 
-            first_child_sacks_list = (
-                first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-            )
+            first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
 
-            second_child_sacks_list = (
-                second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
-            )
+            second_child_sacks_list = second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
 
             first_child_dict = {}
             second_child_dict = {}
@@ -340,12 +326,8 @@ def crossover(parents, children):
         if NUMBER_OF_CHILDREN % 2 != 0:
             cross_point = random.randint(1, number_of_products - 1)
 
-            first_child_id_list = (
-                first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
-            )
-            first_child_sacks_list = (
-                first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-            )
+            first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
+            first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
 
             first_child_dict = {}
             for j in range(len(first_child_id_list)):
@@ -439,9 +421,7 @@ def flipBitMutation(child):
 def executeMutation(children):
 
     for child in children:
-        mute = random.randint(
-            0, int((NUMBER_OF_MUTATIONS / MUTATION_PROBABILITY) * 100)
-        )
+        mute = random.randint(0, int((NUMBER_OF_MUTATIONS / MUTATION_PROBABILITY) * 100))
         if mute == 1:
             child = swapBitMutation(child)
         elif mute == 2:

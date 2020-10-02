@@ -25,7 +25,7 @@ export const RefreshButton = () => {
     SyncAPI.postSyncApi()
       .then(() => {
         setLoading(false)
-        window.location.reload(false);
+        window.location.reload(false)
       })
       .catch(err => {
         console.error(err)
