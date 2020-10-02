@@ -16,24 +16,24 @@ const Wrapper = styled.div`
 
 export const FilterEnvironmental = () => {
   return (
-    <div> 
+    <div>
       {
-          <UnstyledList>
-              <Wrapper>
-              <li>
-                <Checkbox label="Green" name="multiple" value="Green" defaultChecked/>
-              </li>
-              <li>
-                <Checkbox label="Yellow" name="multiple" value="Yellow" defaultChecked/>
-              </li>
-              <li>
-                <Checkbox label="Red" name="multiple" value="Red" defaultChecked/>
-              </li>
-              <li>
-                <Checkbox label="Black" name="multiple" value="Black" defaultChecked/>
-              </li>
-              </Wrapper>
-          </UnstyledList>
+        <UnstyledList>
+          <Wrapper>
+            <li>
+              <Checkbox label="Green" name="multiple" value="Green" defaultChecked />
+            </li>
+            <li>
+              <Checkbox label="Yellow" name="multiple" value="Yellow" defaultChecked />
+            </li>
+            <li>
+              <Checkbox label="Red" name="multiple" value="Red" defaultChecked />
+            </li>
+            <li>
+              <Checkbox label="Black" name="multiple" value="Black" defaultChecked />
+            </li>
+          </Wrapper>
+        </UnstyledList>
       }
     </div>
   )

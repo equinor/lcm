@@ -16,31 +16,39 @@ interface CombinationCardProps {
 }
 
 export const CombinationCard = ({
-                                  sacks, products, enabledProducts, combination, updateCombination,
-                                  updateCombinationName, removeCombination,
-                                }: CombinationCardProps) => {
+  sacks,
+  products,
+  enabledProducts,
+  combination,
+  updateCombination,
+  updateCombinationName,
+  removeCombination,
+}: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
 
   return (
-    <Card style={{ width: 'fit-content', display: 'inline-block', margin: "10px", padding: "20px" }}>
+    <Card style={{ width: 'fit-content', display: 'inline-block', margin: '10px', padding: '20px' }}>
       <CardHeader style={{ display: 'inline-flex', height: '50px' }}>
         <CardHeaderTitle>
           <TextField
             id={`${combination.id}`}
             value={combinationName}
-            style={{ background: "transparent" }}
-            onChange={(event: any) => {setCombinationName(event.target.value)}}
-            onBlur={() => {updateCombinationName(combination.id, combinationName)}}
-            onKeyPress={(event: any) => {if (event.key === 'Enter') {
-              // @ts-ignore
-              document.activeElement.blur();
-            }}}
+            style={{ background: 'transparent' }}
+            onChange={(event: any) => {
+              setCombinationName(event.target.value)
+            }}
+            onBlur={() => {
+              updateCombinationName(combination.id, combinationName)
+            }}
+            onKeyPress={(event: any) => {
+              if (event.key === 'Enter') {
+                // @ts-ignore
+                document.activeElement.blur()
+              }
+            }}
           />
         </CardHeaderTitle>
-        <Button
-          variant="ghost_icon"
-          color="danger"
-          onClick={() => removeCombination(combination.id)}>
+        <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.id)}>
           <Icon name="close" title="close"></Icon>
         </Button>
       </CardHeader>
@@ -49,10 +57,10 @@ export const CombinationCard = ({
         products={products}
         enabledProducts={enabledProducts}
         combination={combination}
-        updateCombination={(products: any) => updateCombination(combination.id, products)}/>
+        updateCombination={(products: any) => updateCombination(combination.id, products)}
+      />
     </Card>
   )
 }
 
 export default CombinationCard
-

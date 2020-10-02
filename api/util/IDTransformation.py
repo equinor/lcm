@@ -1,4 +1,4 @@
-# This module can be used to transform between 
+# This module can be used to transform between
 # IDs and names of products in the Azure tables database.
 from . import DatabaseOperations as db
 
@@ -22,6 +22,3 @@ def IDFromName(name):
         return products_dict[name]
 
     return -1
-
-
-

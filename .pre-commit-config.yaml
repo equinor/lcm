@@ -19,7 +19,7 @@ repos:
   rev: 1.6.2
   hooks:
     - id: bandit
-      args: [-l, --recursive, -x, tests]
+      args: [-l, --recursive, -x, tests, --skip, B311]
       files: ^api/.*\.py$
 
 - repo: https://github.com/prettier/prettier

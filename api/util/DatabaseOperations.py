@@ -21,8 +21,9 @@ def getMetadata():
 
     metadata_dict = {}
     for p in products:
-        metadata_dict[p.RowKey] = {t: p[t] for t in
-                                   ("co2", "cost", "RowKey", "sack_size", "supplier", "title", "environmental")}
+        metadata_dict[p.RowKey] = {
+            t: p[t] for t in ("co2", "cost", "RowKey", "sack_size", "supplier", "title", "environmental")
+        }
 
     for id, p in metadata_dict.items():
         for key, val in p.items():
@@ -36,18 +37,16 @@ def getMetadata():
 # for a single product based on the input id. The
 # dictionary is structured as such: {METADATA_CATEGORY: VALUE}
 def getMetadataFromID(id):
-    product = get_service().get_entity(
-        table_name=METADATA_TABLE_NAME, partition_key="Metadata", row_key=id
-    )
+    product = get_service().get_entity(table_name=METADATA_TABLE_NAME, partition_key="Metadata", row_key=id)
 
     product_dict = {}
 
     for category in product:
         if (
-                (category != "Timestamp")
-                and (category != "PartitionKey")
-                and (category != "RowKey")
-                and (category != "etag")
+            (category != "Timestamp")
+            and (category != "PartitionKey")
+            and (category != "RowKey")
+            and (category != "etag")
         ):
             product_dict[category] = product[category]
 
