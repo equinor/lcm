@@ -5,14 +5,13 @@ ENV FLASK_APP=/app/app.py
 ENV PYTHONPATH=/app
 
 RUN pip install poetry
+RUN poetry config virtualenvs.create false
 
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
 
-# RUN poetry update
-
-RUN poetry export -f requirements.txt --dev | pip install -r /dev/stdin
+RUN poetry install
 
 COPY . .
 

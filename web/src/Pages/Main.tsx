@@ -15,7 +15,7 @@ import {
 import SelectProducts from '../Components/Optimization/SelectProducts'
 import BridgeContainer from '../Components/Bridging/BridgeContainer'
 import CardContainer from '../Components/Blending/CardContainer'
-import RefreshButton from './RefreshButton.js'
+import RefreshButton from './RefreshButton'
 import OptimizationContainer from '../Components/Optimization/OptimizationContainer'
 import { OptimizerAPI, ProductsAPI } from '../Api'
 import { Product } from '../gen-api/src/models'

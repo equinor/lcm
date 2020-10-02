@@ -64,9 +64,15 @@ export const CombinationTable = ({
       <div className="group" style={{ display: 'flex', flexFlow: 'column' }}>
         <Table>
           <Head>
-            <Row style={{ height: '40px' }}>
+            <Row>
               <Cell as="th" scope="col">
-                {sacks ? <p>Sacks</p> : <p>Blend (ppg or kg/m3)</p>}
+                {sacks ? (
+                  'Sacks'
+                ) : (
+                  <>
+                    Blend (ppg or kg/m<sup>3</sup>)
+                  </>
+                )}
               </Cell>
               <Cell as="th" scope="col">
                 %

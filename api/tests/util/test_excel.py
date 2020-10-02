@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from util.excel import get_column_values, get_excel_files
-from util.load_test_data import read_excel_sheet
+from util.load_data import read_excel_sheet
 from xlrd.sheet import Sheet
 import pytest
 

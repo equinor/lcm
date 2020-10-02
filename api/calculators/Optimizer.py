@@ -556,7 +556,7 @@ def environmentalOfCombination(combination):
     sum = 0
     for id in combination:
         product = getProductFromID(id)
-        enviromental = product["enviromental"]
+        enviromental = product["environmental"]
         sum += combination[id] * ENVIRONMENTAL_SCORE[enviromental]
 
     return sum

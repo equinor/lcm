@@ -13,6 +13,7 @@ from config import Config
 from controllers.products import products_get
 from util import DatabaseOperations as db
 from util.Classes import Mode, Product
+from util.load_data import sync_all
 
 METADATA_TABLE_NAME = "Metadata"
 BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
@@ -51,7 +52,16 @@ app = init_api()
 
 @app.route("/api/products", methods=["GET"])
 def products():
-    return products_get()
+    return jsonify(products_get())
+
+
+@app.route("/api/sync", methods=["POST"])
+def sync_sharepoint():
+    try:
+        sync_all()
+    except Exception as error:
+        return Response(str(error), 500)
+    return "ok"
 
 
 @app.route("/api", methods=["GET", "POST"])
@@ -287,6 +297,7 @@ def optimizerRequestHandler(
     max_iterations,
     size_steps_filter,
 ):
+    print("Started optimization request...")
     error_list = []
 
     if not products:
@@ -356,6 +367,7 @@ def optimizerRequestHandler(
     products = []
 
     for id, product_dict in metadata.items():
+        product_dict["id"] = id
         try:
 
             if environmental_list:
