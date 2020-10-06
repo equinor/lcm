@@ -54,14 +54,12 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
                 </Typography>
                 {fetched && optimizationData && optimizationData.products && optimizationData.products.length !== 0 ? (
                   optimizationData.products.map(product =>
-                    product.sacks !== 0 ? (
+                    product.sacks !== 0 &&
                       <div>
                         <Typography variant="body_short">{productMap.get(product.id).name}: </Typography>
                         <Typography variant="body_short">{product.sacks} sacks</Typography>
                       </div>
-                    ) : (
-                      console.log('sack is of size 0')
-                    )
+
                   )
                 ) : (
                   <Typography variant="body_short" style={{ color: '#EC462F' }}>

@@ -37,7 +37,6 @@ function App() {
         {({ login, logout, authenticationState, error, accountInfo }) => {
           if (authenticationState === AuthenticationState.Unauthenticated) login()
           if (error) {
-            console.error(error)
             return <span>An error occured during authentication, please try again!</span>
           }
 
