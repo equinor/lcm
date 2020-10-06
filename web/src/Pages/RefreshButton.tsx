@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon, Scrim, CircularProgress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { refresh } from '@equinor/eds-icons'
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
+import { AuthContext } from '../Auth/Auth'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -20,9 +21,10 @@ const ButtonWrapper = styled.div`
 export const RefreshButton = () => {
   const [scrim, setScrim] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const apiToken: string = useContext(AuthContext).jwtIdToken
 
   const syncSharePoint = () => {
-    SyncAPI.postSyncApi()
+    SyncAPI.postSyncApi(apiToken)
       .then(() => {
         setLoading(false)
         window.location.reload(false)

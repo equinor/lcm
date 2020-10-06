@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
 
@@ -22,6 +22,7 @@ import { Product } from '../gen-api/src/models'
 import { Requests } from '../Api'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
+import { AuthContext } from '../Auth/Auth'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -85,6 +86,9 @@ export default ({ defaultState }: AppProps): ReactElement => {
   const [mode, setMode] = useState<string>('PERMEABILITY')
   const [value, setValue] = useState<number>(500)
 
+  const user = useContext(AuthContext)
+  const apiToken: string = user.jwtIdToken
+
   useEffect(() => {
     setIsLoading(true)
     getProducts().then(products => {
@@ -124,7 +128,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
     const combinationValues = [...combination.values.values()]
     if (combinationValues.length > 0) {
       setIsLoading(true)
-      OptimizerAPI.postOptimizerApi({
+      OptimizerAPI.postOptimizerApi(apiToken, {
         request: Requests.MIX_PRODUCTS,
         products: combinationValues,
       })
@@ -236,6 +240,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
             Product filter
           </Button>
         </div>
+        <label>{user?.account.name}</label>
       </TopBar>
 
       <Body>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Radio, TextField, Typography } from '@equinor/eds-core-react'
-import BridgeGraph from "./BridgeGraph.jsx"
-import { OptimizerAPI, Requests } from "../../Api"
-import { BridgingOption } from "../../Common"
+import BridgeGraph from './BridgeGraph.jsx'
+import { OptimizerAPI, Requests } from '../../Api'
+import { BridgingOption } from '../../Common'
+import { AuthContext } from "../../Auth/Auth"
 
 const Wrapper = styled.div`
   display: grid;
@@ -34,13 +35,14 @@ const Grid = styled.div`
   grid-gap: 0px 100px;
 `
 
-
 export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [bridges, setBridges] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
+
+  const apiToken = useContext(AuthContext).jwtIdToken
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {
@@ -68,8 +70,8 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
     setValue(newBridgeValue)
 
     if (Math.sign(newBridgeValue) !== 1) {
-      setBridgeValueHelperText("Value must be an integer bigger than 0")
-      setBridgeValueVariant("error")
+      setBridgeValueHelperText('Value must be an integer bigger than 0')
+      setBridgeValueVariant('error')
       return
     }
 
@@ -78,89 +80,90 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
   }
 
   // Load size fractions once on first render
-  useEffect(()=>{
-    OptimizerAPI.postOptimizerApi({ "request": Requests.SIZE_FRACTIONS })
-        .then(response => {
-          setSizeFractions(response.data.size_fractions)
-        })
-        .catch(err => {
-          console.error("fetch error" + err)
-        })
-  },[])
+  useEffect(() => {
+    OptimizerAPI.postOptimizerApi(apiToken,{ request: Requests.SIZE_FRACTIONS })
+      .then(response => {
+        setSizeFractions(response.data.size_fractions)
+      })
+      .catch(err => {
+        console.error('fetch error' + err)
+      })
+  }, [])
 
   // Load
   useEffect(() => {
     if (!bridgeValue >= 1) return
-    OptimizerAPI.postOptimizerApi({
-      "request": Requests.BRIDGE,
-      "option": mode,
-      "value": bridgeValue,
-    }).then(response => {
-      const index = bridges.find(b => b.name === "Bridge")
-      if (index > 0) {
-        bridges[index] = { name: "Bridge", cumulative: response.data.bridge }
-        setBridges(bridges)
-      } else {
-        setBridges([{ name: "Bridge", cumulative: response.data.bridge }, ...userBridges])
-      }
-    }).catch(err => {
-      console.error("fetch error" + err)
+    OptimizerAPI.postOptimizerApi(apiToken,{
+      request: Requests.BRIDGE,
+      option: mode,
+      value: bridgeValue,
     })
-
+      .then(response => {
+        const index = bridges.find(b => b.name === 'Bridge')
+        if (index > 0) {
+          bridges[index] = { name: 'Bridge', cumulative: response.data.bridge }
+          setBridges(bridges)
+        } else {
+          setBridges([{ name: 'Bridge', cumulative: response.data.bridge }, ...userBridges])
+        }
+      })
+      .catch(err => {
+        console.error('fetch error' + err)
+      })
   }, [bridgeValue, mode, userBridges])
 
   return (
-      <Wrapper>
-        <Grid>
-          <div>
-            <WrapperHeader>
-              <Typography variant="h2">Bridging options</Typography>
-            </WrapperHeader>
-            <Wrapper>
-              <legend>Bridging based on:</legend>
-              <UnstyledList>
-                <li>
-                  <Radio
-                      label="Permeability"
-                      name="group"
-                      value={BridgingOption.PERMEABILITY}
-                      onChange={bridgingOptionChange}
-                      checked={(mode === BridgingOption.PERMEABILITY)}
-                  />
-                </li>
-                <li>
-                  <Radio
-                      label="Average poresize"
-                      name="group"
-                      value={BridgingOption.AVERAGE_PORESIZE}
-                      onChange={bridgingOptionChange}
-                      checked={(mode === BridgingOption.AVERAGE_PORESIZE)}
-                  />
-                </li>
-                <li>
-                  <Radio
-                      label="Maximum poresize"
-                      name="group"
-                      value={BridgingOption.MAXIMUM_PORESIZE}
-                      onChange={bridgingOptionChange}
-                      checked={(mode === BridgingOption.MAXIMUM_PORESIZE)}
-                  />
-                </li>
-              </UnstyledList>
-              <legend>Enter value:</legend>
-              <TextField
-                  type="number"
-                  id="textfield-number"
-                  meta={unit}
-                  value={bridgeValue || 0}
-                  onChange={onBridgeValueChange}
-                  variant={bridgeValueVariant}
-                  helperText={bridgeValueHelperText}
-              />
-            </Wrapper>
-          </div>
-          {bridges && <BridgeGraph bridgeAndCombinations={bridges} sizeFractions={sizeFractions}/>}
-        </Grid>
-      </Wrapper>
+    <Wrapper>
+      <Grid>
+        <div>
+          <WrapperHeader>
+            <Typography variant="h2">Bridging options</Typography>
+          </WrapperHeader>
+          <Wrapper>
+            <legend>Bridging based on:</legend>
+            <UnstyledList>
+              <li>
+                <Radio
+                  label="Permeability"
+                  name="group"
+                  value={BridgingOption.PERMEABILITY}
+                  onChange={bridgingOptionChange}
+                  checked={mode === BridgingOption.PERMEABILITY}
+                />
+              </li>
+              <li>
+                <Radio
+                  label="Average poresize"
+                  name="group"
+                  value={BridgingOption.AVERAGE_PORESIZE}
+                  onChange={bridgingOptionChange}
+                  checked={mode === BridgingOption.AVERAGE_PORESIZE}
+                />
+              </li>
+              <li>
+                <Radio
+                  label="Maximum poresize"
+                  name="group"
+                  value={BridgingOption.MAXIMUM_PORESIZE}
+                  onChange={bridgingOptionChange}
+                  checked={mode === BridgingOption.MAXIMUM_PORESIZE}
+                />
+              </li>
+            </UnstyledList>
+            <legend>Enter value:</legend>
+            <TextField
+              type="number"
+              id="textfield-number"
+              meta={unit}
+              value={bridgeValue || 0}
+              onChange={onBridgeValueChange}
+              variant={bridgeValueVariant}
+              helperText={bridgeValueHelperText}
+            />
+          </Wrapper>
+        </div>
+        {bridges && <BridgeGraph bridgeAndCombinations={bridges} sizeFractions={sizeFractions} />}
+      </Grid>
+    </Wrapper>
   )
 }

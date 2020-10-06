@@ -3,7 +3,7 @@ import { ProductsApi } from './gen-api/src/apis'
 import { Configuration } from './gen-api/src'
 
 const BASE_PATH = '/api'
-const APIConfiguration = new Configuration({ basePath: BASE_PATH })
+const APIConfiguration = new Configuration({ basePath: BASE_PATH, accessToken: '' })
 
 export enum Requests {
   SIZE_FRACTIONS = 'SIZE_FRACTIONS',
@@ -12,14 +12,14 @@ export enum Requests {
 }
 
 class OptimizerApi {
-  async postOptimizerApi(data: any) {
-    return axios.post(BASE_PATH, data)
+  async postOptimizerApi(token: string, data: any) {
+    return axios.post(BASE_PATH, data, { headers: { Authorization: `Bearer ${token}` } })
   }
 }
 
 class SyncApi {
-  async postSyncApi() {
-    return axios.post(`${BASE_PATH}/sync`)
+  async postSyncApi(token: string) {
+    return axios.post(`${BASE_PATH}/sync`, {}, { headers: { Authorization: `Bearer ${token}` } })
   }
 }
 

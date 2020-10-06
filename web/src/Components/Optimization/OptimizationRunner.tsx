@@ -3,9 +3,10 @@ import { Combination } from '../../Pages/Main'
 import { OptimizerAPI } from '../../Api'
 import PillInput, { Pill } from './PillInput'
 import { Environmental, Weight, WeightOptions } from './WeightOptions'
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { CircularProgress, Typography } from '@equinor/eds-core-react'
+import { AuthContext } from '../../Auth/Auth'
 
 interface OptimizationContainerProps {
   isLoading: boolean
@@ -30,6 +31,7 @@ const getWeightPercentages = (weight: Weight) => {
 }
 
 interface getOptimalBlendProps {
+  apiToken: string
   enabledProducts: Array<string>
   mode: string
   value: number
@@ -38,13 +40,21 @@ interface getOptimalBlendProps {
   handleUpdate: Function
 }
 
-const getOptimalBlend = ({ enabledProducts, pill, weight, mode, value, handleUpdate }: getOptimalBlendProps) => {
+const getOptimalBlend = ({
+  apiToken,
+  enabledProducts,
+  pill,
+  weight,
+  mode,
+  value,
+  handleUpdate,
+}: getOptimalBlendProps) => {
   if (enabledProducts.length === 0) {
     alert('Please select at least 1 product before running the optimizer')
     return null
   }
 
-  OptimizerAPI.postOptimizerApi({
+  OptimizerAPI.postOptimizerApi(apiToken, {
     request: 'OPTIMAL_MIX',
     name: 'Optimal Blend',
     value: value,
@@ -83,6 +93,8 @@ const OptimizationRunner = ({
     environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
 
+  const apiToken: string = useContext(AuthContext).jwtIdToken
+
   const handleOptimize = () => {
     let countSackCombinations = 0
     combinationMap.forEach(combination => {
@@ -93,6 +105,7 @@ const OptimizationRunner = ({
     if (countSackCombinations < 5) {
       setIsLoading(true)
       getOptimalBlend({
+        apiToken,
         enabledProducts,
         pill,
         weight,
