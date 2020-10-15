@@ -1,6 +1,7 @@
 import logging
 
 import connexion
+from azure.common import AzureMissingResourceHttpError
 from flask import abort, jsonify, request, Response
 from flask_cors import CORS
 
@@ -52,6 +53,7 @@ def products():
 
 
 @app.route("/api/sync", methods=["POST"])
+@authorize
 def sync_sharepoint():
     try:
         sync_all()
@@ -129,6 +131,7 @@ def blendRequestHandler(products):
         return Response("No products given!", 400)
 
     product_list = []
+    missing_products = []
     percent_sum = 0
 
     try:
@@ -137,8 +140,13 @@ def blendRequestHandler(products):
                 return f"Product {product['id']} is missing percentage!", 400
             percent_sum += product["percentage"]
 
-            cumulative = db.getCumulative(product["id"])
-            distribution = db.getCumulative(product["id"])
+            try:
+                cumulative = db.getCumulative(product["id"])
+                distribution = db.getCumulative(product["id"])
+            except AzureMissingResourceHttpError as e:
+                print(e)
+                missing_products.append(product["id"])
+                continue
 
             product_list.append(
                 Product(
@@ -168,6 +176,7 @@ def blendRequestHandler(products):
     response_dict = {
         "cumulative": [round(num, ROUNDING_DECIMALS) for num in cumulative],
         "distribution": [round(num, ROUNDING_DECIMALS) for num in distribution],
+        "missing": missing_products
     }
 
     return response_dict

@@ -129,6 +129,12 @@ export default ({ defaultState }: AppProps): ReactElement => {
           setIsLoading(false)
           if (combination) {
             combination['cumulative'] = response.data.cumulative
+            if(response.data.missing){
+              alert("Some requested products where missing. See console log for details.")
+              // @ts-ignore
+              console.error(`These products could not be found in the storage backend;${response.data.missing}\n
+              There is likely is mismatch between the filename in the PSD folder, and the products list.`)
+            }
             setCombination(combination)
           }
         })
@@ -155,7 +161,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
     setCombinationMap(new Map([...combinationMap]))
   }
 
-  // TODO: Move this down to CombinationTabel
+  // TODO: Move this down to CombinationTable
   const calculatePercentage = (combination: Combination): Combination => {
     const getProductMass = (combinationValue: CombinationValue): number => {
       if (combination.sacks) {
