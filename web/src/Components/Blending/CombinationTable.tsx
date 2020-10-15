@@ -27,12 +27,12 @@ export const CombinationTable = ({
 
   useEffect(() => {
     let newValues: any = {}
-    // Deconstruct combination Map
-    combination.values.forEach((i: any) => {
-      newValues[i.id] = i.value
+    // Filter out disabled products
+    enabledProducts.forEach((p: string) => {
+      newValues[p] = values[p]
     })
     setValues(newValues)
-  }, [combination])
+  }, [enabledProducts])
 
   const stripZeroAndUpdate = () => {
     let noneEmptyValues: any = {}

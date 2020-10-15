@@ -50,7 +50,7 @@ const getOptimalBlend = ({
   handleUpdate,
 }: getOptimalBlendProps) => {
   if (enabledProducts.length === 0) {
-    alert('Please select at least 1 product before running the optimizer')
+    alert('Select at least 1 product before running the optimizer')
     return null
   }
 
@@ -103,7 +103,7 @@ const OptimizationRunner = ({
       }
     })
     if (countSackCombinations < 5) {
-      setIsLoading(true)
+      // setIsLoading(true)
       getOptimalBlend({
         apiToken,
         enabledProducts,
@@ -113,6 +113,7 @@ const OptimizationRunner = ({
         value,
         handleUpdate,
       })
+
     } else {
       alert('Please remove at least 1 sack combination before running the optimizer')
     }

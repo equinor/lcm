@@ -1,5 +1,3 @@
-# This module contains functions for
-# retrieving data from the azure tables database.
 from azure.cosmosdb.table import TableService
 
 from config import Config
@@ -42,12 +40,7 @@ def getMetadataFromID(id):
     product_dict = {}
 
     for category in product:
-        if (
-            (category != "Timestamp")
-            and (category != "PartitionKey")
-            and (category != "RowKey")
-            and (category != "etag")
-        ):
+        if (category != "Timestamp") and (category != "PartitionKey") and (category != "etag"):
             product_dict[category] = product[category]
 
     return product_dict

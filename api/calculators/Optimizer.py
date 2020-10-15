@@ -5,6 +5,8 @@ import random
 import time
 import numpy as np
 
+from util.utils import get_min_max_diff
+
 POPULATION_SIZE = 20
 MAX_NUMBER_OF_SACKS = 60
 NUMBER_OF_CHILDREN = 18
@@ -188,8 +190,8 @@ def fitnessFunction(combination, weights, bridge, start_index):
 
     return (
         W_B * k_b * sigmoid((bridge_deviation / 10000) * 7 - 3.5)
-        + W_C * K_C * sigmoid((((cost / sack_sum) - MIN_COST) / (MAX_COST - MIN_COST)) * 7 - 3.5)
-        + W_E * K_E * sigmoid((((co2 / sack_sum) - MIN_CO2) / (MAX_CO2 - MIN_CO2)) * 7 - 3.5)
+        + W_C * K_C * sigmoid((((cost / sack_sum) - MIN_COST) / get_min_max_diff(MAX_COST, MIN_COST)) * 7 - 3.5)
+        + W_E * K_E * sigmoid((((co2 / sack_sum) - MIN_CO2) / get_min_max_diff(MAX_CO2, MIN_CO2)) * 7 - 3.5)
         + W_M * K_M * sigmoid((mass_deviation / 15625000) * 7 - 3.5)
     )
 
@@ -487,13 +489,13 @@ def calculate_scores(combination, bridge, start_index):
         elif mass_score > 100:
             mass_score = 100
 
-        cost_score = 100 - ((cost / sack_sum - MIN_COST) / (MAX_COST - MIN_COST)) * 100
+        cost_score = 100 - ((cost / sack_sum - MIN_COST) / get_min_max_diff(MAX_COST, MIN_COST)) * 100
         if cost_score < 0:
             cost_score = 0
         elif cost_score > 100:
             cost_score = 100
 
-        co2_score = 100 - ((co2 / sack_sum - MIN_CO2) / (MAX_CO2 - MIN_CO2)) * 100
+        co2_score = 100 - ((co2 / sack_sum - MIN_CO2) / get_min_max_diff(MAX_CO2,MIN_CO2)) * 100
         if co2_score < 0:
             co2_score = 0
         elif co2_score > 100:
@@ -536,7 +538,7 @@ def environmentalOfCombination(combination):
     sum = 0
     for id in combination:
         product = getProductFromID(id)
-        enviromental = product["environmental"]
+        enviromental = product["environmental"].upper()
         sum += combination[id] * ENVIRONMENTAL_SCORE[enviromental]
 
     return sum

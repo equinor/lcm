@@ -82,9 +82,6 @@ export default ({ defaultState }: AppProps): ReactElement => {
       .then(response => {
         let products = response.data.reduce((map: any, obj: Product) => ({ ...map, [obj.id]: obj }), {})
         setProducts(products)
-        // Enable all products by default
-        const productList: Array<Product> = Object.values(products)
-        setEnabledProducts(productList.map((product: Product) => product.id))
         setIsLoading(false)
       })
       .catch(e => {
@@ -129,11 +126,10 @@ export default ({ defaultState }: AppProps): ReactElement => {
           setIsLoading(false)
           if (combination) {
             combination['cumulative'] = response.data.cumulative
-            if(response.data.missing){
-              alert("Some requested products where missing. See console log for details.")
-              // @ts-ignore
-              console.error(`These products could not be found in the storage backend;${response.data.missing}\n
-              There is likely is mismatch between the filename in the PSD folder, and the products list.`)
+            if (response.data.missing.length) {
+              let message = 'Some requested products where missing or has a name mismatch;'
+              response.data.missing.forEach((missingProd: string) => (message += `\n - ${missingProd}`))
+              alert(message)
             }
             setCombination(combination)
           }
