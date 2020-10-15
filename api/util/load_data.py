@@ -2,8 +2,8 @@ import csv
 from time import sleep
 
 import requests
-from azure.cosmosdb.table import Entity
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
+from urllib3.exceptions import HeaderParsingError
 from xlrd.sheet import Sheet
 
 from config import Config
@@ -83,24 +83,27 @@ def sync_excel_blobs_and_az_tables():
     metadata = get_metadata_blob_data()
     for p in metadata:
         meta_batch.insert_entity(p)
-    table_service.commit_batch(table_name=METADATA_TABLE_NAME, batch=meta_batch)
-    print(
-        f"Uploaded products metadata to '{METADATA_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
-    )
+    try:
+        table_service.commit_batch(table_name=METADATA_TABLE_NAME, batch=meta_batch)
+        print(
+            f"Uploaded products metadata to '{METADATA_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
+        )
 
-    products_data = get_product_blobs_data()
-    for product, values in products_data.items():
-        distribution_batch.insert_entity(values["distribution"])
-        cumulative_batch.insert_entity(values["cumulative"])
+        products_data = get_product_blobs_data()
+        for product, values in products_data.items():
+            distribution_batch.insert_entity(values["distribution"])
+            cumulative_batch.insert_entity(values["cumulative"])
 
-    table_service.commit_batch(table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch)
-    print(
-        f"Uploaded products distribution data to '{DISTRIBUTION_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
-    )
-    table_service.commit_batch(table_name=CUMULATIVE_TABLE_NAME, batch=cumulative_batch)
-    print(
-        f"Uploaded cumulative data to '{CUMULATIVE_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
-    )
+        table_service.commit_batch(table_name=DISTRIBUTION_TABLE_NAME, batch=distribution_batch)
+        print(
+            f"Uploaded products distribution data to '{DISTRIBUTION_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
+        )
+        table_service.commit_batch(table_name=CUMULATIVE_TABLE_NAME, batch=cumulative_batch)
+        print(
+            f"Uploaded cumulative data to '{CUMULATIVE_TABLE_NAME}' table in '{Config.TABEL_ACCOUNT_NAME}' storage account"
+        )
+    except HeaderParsingError as e:
+        print(e)
 
 
 def upload_test_excel_files(table_service: TableService):
@@ -129,9 +132,11 @@ def upload_data_to_azure_tables():
 def sync_all():
     sync_sharepoint_and_az_blobs()
     # TODO: Use callBack from LogicApp to know when done/succeeded
-    sleep(40)
+    sleep(30)
     sync_excel_blobs_and_az_tables()
 
 
 if __name__ == "__main__":
-    get_metadata_blob_data()
+    # get_metadata_blob_data()
+    sync_excel_blobs_and_az_tables()
+    # upload_data_to_azure_tables()

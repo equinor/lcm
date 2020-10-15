@@ -42,14 +42,19 @@ def get_metadata_blob_data() -> List[Dict]:
 
     products = []
     for row in reader:
-        # TODO: Why is 'environmental' read so strange from SharePoint?
-        environment = json.loads(row["environmental"])["Value"].upper()
         products.append(
             {
                 "PartitionKey": "Metadata",
                 "RowKey": sanitize_row_key(row["title"]),
                 **row,
-                "environmental": environment,
+                # TODO: Prod data is missing co2 impact
+                "co2": row["co2"] if row["co2"] else 1000,
+                # TODO: Prod data is missing cost
+                "cost": row["cost"] if row["cost"] else 100,
+                # TODO: Prod data is missing Sack_size
+                "sack_size": row["sack_size"] if row["sack_size"] else 25,
+                # TODO: Why is 'environmental' read so strange from SharePoint?
+                "environmental": json.loads(row["environmental"])["Value"].upper() if row["environmental"] else "Green",
             }
         )
 
