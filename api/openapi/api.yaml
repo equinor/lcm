@@ -8,6 +8,10 @@ tags:
   - name: products
     description: Products
 
+# Enables authentication for all paths
+security:
+      - jwt: []
+
 paths:
   /products:
     get:
@@ -29,7 +33,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/Products"
 components:
-
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: util.authentication.decode_jwt
   schemas:
     Products:
       type: array

@@ -2,24 +2,16 @@
 import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
-
-import {
-  Accordion,
-  Button,
-  SideSheet,
-  TopBar,
-  Icon,
-  // @ts-ignore
-} from '@equinor/eds-core-react'
+// @ts-ignore
+import { Accordion, Button, Icon, SideSheet, TopBar } from '@equinor/eds-core-react'
 
 import SelectProducts from '../Components/Optimization/SelectProducts'
 import BridgeContainer from '../Components/Bridging/BridgeContainer'
 import CardContainer from '../Components/Blending/CardContainer'
 import RefreshButton from './RefreshButton'
 import OptimizationContainer from '../Components/Optimization/OptimizationContainer'
-import { OptimizerAPI, ProductsAPI } from '../Api'
+import { OptimizerAPI, ProductsAPI, Requests } from '../Api'
 import { Product } from '../gen-api/src/models'
-import { Requests } from '../Api'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 import { AuthContext } from '../Auth/Auth'
@@ -44,11 +36,6 @@ const Body = styled.div`
 
 interface AppProps {
   defaultState: any
-}
-
-const getProducts = async (): Promise<any> => {
-  const products = await ProductsAPI.productsGet()
-  return products.reduce((map, obj: Product) => ({ ...map, [obj.id]: obj }), {})
 }
 
 interface CombinationValue {
@@ -91,13 +78,19 @@ export default ({ defaultState }: AppProps): ReactElement => {
 
   useEffect(() => {
     setIsLoading(true)
-    getProducts().then(products => {
-      setProducts(products)
-      // Enable all products by default
-      const productList: Array<Product> = Object.values(products)
-      setEnabledProducts(productList.map((product: Product) => product.id))
-      setIsLoading(false)
-    })
+    ProductsAPI.getProductsApi(apiToken)
+      .then(response => {
+        let products = response.data.reduce((map: any, obj: Product) => ({ ...map, [obj.id]: obj }), {})
+        setProducts(products)
+        // Enable all products by default
+        const productList: Array<Product> = Object.values(products)
+        setEnabledProducts(productList.map((product: Product) => product.id))
+        setIsLoading(false)
+      })
+      .catch(e => {
+        console.error(e)
+        setIsLoading(false)
+      })
   }, [])
 
   const updateProduct = (productId: string, isChecked: boolean) => {
@@ -139,10 +132,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
             setCombination(combination)
           }
         })
-        .catch(error => {
-          console.log('fetch error' + error)
-          setIsLoading(false)
-        })
+        .catch(() => setIsLoading(false))
     } else {
       combination['cumulative'] = []
       setCombination(combination)

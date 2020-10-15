@@ -16,7 +16,7 @@ const config = {
 
 // Authentication Parameters
 const authenticationParameters = {
-  scopes: [],
+  scopes: ['api://lost-circulation-material-api/Optimization.All.All'],
 }
 
 // Options

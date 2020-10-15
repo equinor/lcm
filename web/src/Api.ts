@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { ProductsApi } from './gen-api/src/apis'
 import { Configuration } from './gen-api/src'
 
 const BASE_PATH = '/api'
@@ -23,6 +22,12 @@ class SyncApi {
   }
 }
 
-export const ProductsAPI = new ProductsApi(APIConfiguration)
+class ProductsApi {
+  async getProductsApi(token: string) {
+    return axios.get(`${BASE_PATH}/products`, { headers: { Authorization: `Bearer ${token}` } })
+  }
+}
+
+export const ProductsAPI = new ProductsApi()
 export const OptimizerAPI = new OptimizerApi()
 export const SyncAPI = new SyncApi()

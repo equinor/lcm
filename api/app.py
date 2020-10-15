@@ -1,7 +1,3 @@
-# This module is triggered by an HTTP request from the front-end.
-# Based on the request body, the correct data are then returned
-# from either the database or the data layer.
-
 import logging
 
 import connexion
@@ -12,6 +8,7 @@ from calculators import Blend, Bridge, Optimizer
 from config import Config
 from controllers.products import products_get
 from util import DatabaseOperations as db
+from util.authentication import authorize
 from util.Classes import Mode, Product
 from util.load_data import sync_all
 
@@ -49,6 +46,7 @@ app = init_api()
 
 
 @app.route("/api/products", methods=["GET"])
+@authorize
 def products():
     return jsonify(products_get())
 
@@ -63,8 +61,12 @@ def sync_sharepoint():
 
 
 @app.route("/api", methods=["GET", "POST"])
+@authorize
 def main():
     logging.info("Python HTTP trigger function processed a request.")
+    if not request.json:
+        abort(400, "No data was send with the request")
+
     requst_ = request.json.get("request")
     if not requst_:
         try:
