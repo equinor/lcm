@@ -9,7 +9,9 @@ class CustomizedAxisTick extends PureComponent {
     const {
       // @ts-ignore
       x,
+      // @ts-ignore
       y,
+      // @ts-ignore
       payload,
     } = this.props
 
