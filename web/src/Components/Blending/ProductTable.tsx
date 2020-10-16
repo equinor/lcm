@@ -32,7 +32,8 @@ export const ProductTable = ({ enabledProducts, products }: ProductTableProps): 
               {productList.map(product =>
                 enabledProducts.includes(product['id']) ? (
                   <Row key={`${product.id}-${product.supplier}`}>
-                    <Cell>{product.id}</Cell>
+                    {/*// @ts-ignore*/}
+                    <Cell>{product.name}</Cell>
                     <Cell>{product.supplier}</Cell>
                   </Row>
                 ) : null

@@ -1,34 +1,14 @@
 from azure.common import AzureMissingResourceHttpError
-from flask import jsonify
+from flask import Response
 
+from config import Config
+from util.enums import BridgeOption
 from util.utils import getMaxAndMinValues
 from calculators import Blend, Bridge, Optimizer
 from util import DatabaseOperations as db
 from util.Classes import Mode, Product
 
-METADATA_TABLE_NAME = "Metadata"
-BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
-BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
-OPTIMIZER_REQUEST = "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
 
-PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
-SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
-SPELLING_ERROR = "ENVIROMENTAL_IMPACT"  # Spelling error in SharePoint
-ROUNDING_DECIMALS = 3
-DEFAULT_MAX_ITERATIONS = 100
-
-# These are all the options for the Bridge calculator
-MAXIMUM_PORESIZE_OPTION = "MAXIMUM_PORESIZE"
-AVERAGE_PORESIZE_OPTION = "AVERAGE_PORESIZE"
-PERMEABILITY_OPTION = "PERMEABILITY"
-
-
-# Optimizer handler. This function takes the HttpRequest
-# object as input and returns the best combination of products
-# aswell as the execution time, the fitness score and the
-# amount of iterations.
-
-# name, products, mass, weights, environmental
 def optimizerRequestHandler(
     value,
     blend_name,
@@ -58,10 +38,10 @@ def optimizerRequestHandler(
             raise e
 
     if not option:
-        option = AVERAGE_PORESIZE_OPTION
+        option = BridgeOption.AVERAGE_PORESIZE_OPTION
 
     if not max_iterations:
-        max_iterations = DEFAULT_MAX_ITERATIONS
+        max_iterations = Config.DEFAULT_MAX_ITERATIONS
     if max_iterations < 0:
         max_iterations = 0
 
@@ -70,11 +50,11 @@ def optimizerRequestHandler(
     elif size_steps_filter > 1:
         size_steps_filter = 1
 
-    if option == MAXIMUM_PORESIZE_OPTION:
+    if option == BridgeOption.MAXIMUM_PORESIZE_OPTION:
         mode = Mode.Maximum_Poresize
-    elif option == PERMEABILITY_OPTION:
+    elif option == BridgeOption.PERMEABILITY_OPTION:
         mode = Mode.Permeability
-    elif option == AVERAGE_PORESIZE_OPTION:
+    elif option == BridgeOption.AVERAGE_PORESIZE_OPTION:
         mode = Mode.Average_Poresize
     else:
         raise Exception("Invalid mode")
@@ -88,12 +68,11 @@ def optimizerRequestHandler(
     else:
         raise Exception("Missing 'value'")
 
-    products_metadata = {p: db.getMetadataFromID(p) for p in products}
     products_with_values = []
-
     # Add cumulative and distribution to each product
-    for id, product_dict in products_metadata.items():
+    for id in products:
         try:
+            product_dict = db.getMetadataFromID(id)
             product_dict["cumulative"] = db.getCumulative(id)
             product_dict["distribution"] = db.getDistribution(id)
             product_dict["id"] = id
@@ -104,6 +83,8 @@ def optimizerRequestHandler(
             continue
         except Exception as e:
             raise e
+    if not products_with_values:
+        return Response("No products selected or they were missing", 400)
 
     try:
         weights = [
@@ -131,7 +112,7 @@ def optimizerRequestHandler(
             weights,
             bridge,
             mass_goal,
-            getMaxAndMinValues(products_metadata),
+            getMaxAndMinValues(products_with_values),
             max_iterations,
             size_steps_filter,
         )
@@ -142,47 +123,40 @@ def optimizerRequestHandler(
         return f"Probably invalid inputs! {e}", 400
 
     mass_sum = 0
-    # TODO: This makes the next for loops useless...
-    # products = []
-
-    for product in products:
+    for product in products_with_values:
         product["mass"] = int(best[product["id"]]) * product["sack_size"]
         mass_sum += product["mass"]
 
-    for product in products:
-        products.append(
+    product_list = []
+    for product in products_with_values:
+        product_list.append(
             Product(
-                product["id"],
-                "",
-                float(product["mass"]) / mass_sum,
-                product["cumulative"],
-                product["distribution"],
+                product_id=product["id"],
+                name="",
+                share=float(product["mass"]) / mass_sum,
+                cumulative=product["cumulative"],
+                distribution=product["distribution"],
             )
         )
 
-    optimal_cumulative, optimal_distribution = Blend.calculateBlendDistribution(products, size_steps)
+    optimal_cumulative, optimal_distribution = Blend.calculateBlendDistribution(product_list, size_steps)
 
-    response_dict = {}
-    blend_list = []
-
-    for id in best:
-        if best[id] > 0:
-            blend_list.append({"id": id, "sacks": best[id]})
-
-    response_dict["name"] = blend_name
-    response_dict["products"] = blend_list
-    response_dict["performance"] = {
-        "best_fit": round(best_fit_score, ROUNDING_DECIMALS),
-        "mass_fit": round(mass_score, ROUNDING_DECIMALS),
-        "cost": round(cost_score, ROUNDING_DECIMALS),
-        "co2": round(co2_score, ROUNDING_DECIMALS),
-        "enviromental": round(enviromental_score, ROUNDING_DECIMALS),
+    response_dict = {
+        "name": blend_name,
+        "products": [{"id": id, "sacks": best[id]} for id in best if best[id] > 0],
+        "performance": {
+            "best_fit": round(best_fit_score, Config.ROUNDING_DECIMALS),
+            "mass_fit": round(mass_score, Config.ROUNDING_DECIMALS),
+            "cost": round(cost_score, Config.ROUNDING_DECIMALS),
+            "co2": round(co2_score, Config.ROUNDING_DECIMALS),
+            "enviromental": round(enviromental_score, Config.ROUNDING_DECIMALS),
+        },
+        "cumulative": [round(num, Config.ROUNDING_DECIMALS) for num in optimal_cumulative],
+        "distribution": [round(num, Config.ROUNDING_DECIMALS) for num in optimal_distribution],
+        "execution_time": round(exec_time, Config.ROUNDING_DECIMALS),
+        "iterations": iterations,
+        "fitness": round(fitness, Config.ROUNDING_DECIMALS),
+        "missingProducts": missing_product_list,
     }
-    response_dict["cumulative"] = [round(num, ROUNDING_DECIMALS) for num in optimal_cumulative]
-    response_dict["distribution"] = [round(num, ROUNDING_DECIMALS) for num in optimal_distribution]
-    response_dict["execution_time"] = round(exec_time, ROUNDING_DECIMALS)
-    response_dict["iterations"] = iterations
-    response_dict["fitness"] = round(fitness, ROUNDING_DECIMALS)
-    response_dict["missingProducts"] = missing_product_list
 
     return response_dict

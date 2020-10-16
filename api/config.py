@@ -15,3 +15,5 @@ class Config:
     AUTH_JWT_AUDIENCE = os.getenv("AUTH_JWT_AUDIENCE", "1dbc1e96-268d-41ad-894a-92a9fb85f954")
     # AUTH_JWT_AUDIENCE = os.getenv("AUTH_JWT_AUDIENCE", "a4f53185-961c-4ffa-96f9-41284348d0ec")
     AUTH_JWK_URL = os.getenv("AUTH_JWK_URL", "https://login.microsoftonline.com/common/discovery/v2.0/keys")
+    ROUNDING_DECIMALS = 3
+    DEFAULT_MAX_ITERATIONS = 100
