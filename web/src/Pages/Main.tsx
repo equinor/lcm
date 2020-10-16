@@ -66,7 +66,7 @@ function combinationsToBridges(combinationMap: any) {
 
 export default ({ defaultState }: AppProps): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [toggle, setToggle] = useState<boolean>(false)
+  const [sideSheet, setSideSheet] = useState<boolean>(true)
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>([])
   const [combinationMap, setCombinationMap] = useState<Map<string, Combination>>(defaultState)
@@ -227,7 +227,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
       <TopBar style={{ height: 'fit-content' }}>
         <RefreshButton />
         <div>
-          <Button variant="outlined" onClick={() => setToggle(!toggle)}>
+          <Button variant="outlined" onClick={() => setSideSheet(!sideSheet)}>
             <Icon name="filter_alt" title="filter products" />
             Product filter
           </Button>
@@ -236,7 +236,7 @@ export default ({ defaultState }: AppProps): ReactElement => {
       </TopBar>
 
       <Body>
-        <SideSheet variant="medium" title="Select products:" open={toggle} onClose={() => setToggle(false)}>
+        <SideSheet variant="large" title="Select products:" open={sideSheet} onClose={() => setSideSheet(false)}>
           <SelectProducts
             loading={isLoading}
             products={products}
