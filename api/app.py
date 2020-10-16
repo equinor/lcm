@@ -162,7 +162,7 @@ def blendRequestHandler(products):
         percent_sum = int(round(percent_sum))
 
         if percent_sum != 100:
-            abort(400)
+            abort(400, "The sum of percentages does not add up to 100")
 
     except Exception as e:
         print(e)
@@ -177,7 +177,7 @@ def blendRequestHandler(products):
     response_dict = {
         "cumulative": [round(num, ROUNDING_DECIMALS) for num in cumulative],
         "distribution": [round(num, ROUNDING_DECIMALS) for num in distribution],
-        "missing": missing_products
+        "missing": missing_products,
     }
 
     return response_dict

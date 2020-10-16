@@ -37,12 +37,11 @@ const Grid = styled.div`
 
 export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }) => {
   const [sizeFractions, setSizeFractions] = useState([])
-  const [bridges, setBridges] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
 
-  const apiToken = useContext(AuthContext).jwtIdToken
+  const apiToken = useContext(AuthContext)?.jwtIdToken
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {
@@ -89,28 +88,6 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
         console.error('fetch error' + err)
       })
   }, [])
-
-  // Load
-  useEffect(() => {
-    if (!bridgeValue >= 1) return
-    OptimizerAPI.postOptimizerApi(apiToken,{
-      request: Requests.BRIDGE,
-      option: mode,
-      value: bridgeValue,
-    })
-      .then(response => {
-        const index = bridges.find(b => b.name === 'Bridge')
-        if (index > 0) {
-          bridges[index] = { name: 'Bridge', cumulative: response.data.bridge }
-          setBridges(bridges)
-        } else {
-          setBridges([{ name: 'Bridge', cumulative: response.data.bridge }, ...userBridges])
-        }
-      })
-      .catch(err => {
-        console.error('fetch error' + err)
-      })
-  }, [bridgeValue, mode, userBridges])
 
   return (
     <Wrapper>
@@ -162,7 +139,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }
             />
           </Wrapper>
         </div>
-        {bridges && <BridgeGraph bridgeAndCombinations={bridges} sizeFractions={sizeFractions} />}
+        <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
       </Grid>
     </Wrapper>
   )

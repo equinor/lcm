@@ -21,7 +21,7 @@ const ButtonWrapper = styled.div`
 export const RefreshButton = () => {
   const [scrim, setScrim] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const apiToken: string = useContext(AuthContext).jwtIdToken
+  const apiToken: string = useContext(AuthContext)?.jwtIdToken
 
   const syncSharePoint = () => {
     SyncAPI.postSyncApi(apiToken)

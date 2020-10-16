@@ -56,7 +56,6 @@ export const CombinationCard = ({
         sacks={sacks}
         products={products}
         enabledProducts={enabledProducts}
-        combination={combination}
         updateCombination={(products: any) => updateCombination(combination.id, products)}
       />
     </Card>

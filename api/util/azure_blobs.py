@@ -54,7 +54,9 @@ def get_metadata_blob_data() -> List[Dict]:
                 # TODO: Prod data is missing Sack_size
                 "sack_size": row["sack_size"] if row["sack_size"] else 25,
                 # TODO: Why is 'environmental' read so strange from SharePoint?
-                "environmental": json.loads(row["environmental"])["Value"].upper() if row["environmental"] else "Green",
+                "environmental": json.loads(row["environmental"])["Value"].upper()
+                if row["environmental"]
+                else "Green",
             }
         )
 

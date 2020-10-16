@@ -6,7 +6,9 @@ import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button, LinearProgress } from '@equinor/eds-core-react'
 import { Product } from '../../gen-api/src/models'
-
+import { Combination, Combinations, ProductsInCombination } from '../CombinationsWrapper'
+// @ts-ignore
+import { v4 as uuidv4 } from 'uuid'
 const Wrapper = styled.div`
   margin: 32px;
   display: grid;
@@ -17,21 +19,14 @@ const Wrapper = styled.div`
 interface CardContainerProps {
   sacks: any
   products: any
-  combinationMap: any
+  combinations: Combinations
+  setCombinations: Function
   enabledProducts: any
-  updateCombination: any
-  removeCombination: any
-  updateCombinationName: any
-  addCombination: any
   loading: any
 }
 
-const createCombinationName = (sacks: any, combinationMap: any) => {
-  let combinationNames: Array<string> = []
-  // TODO: Get rid of Map everywhere
-  combinationMap.forEach((combination: any) => {
-    combinationNames.push(combination.name)
-  })
+const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
+  let combinationNames: Array<string> = Object.keys(combinationMap).map(id => combinationMap[id].name)
 
   let i: number = 1
   while (i < 100) {
@@ -42,33 +37,70 @@ const createCombinationName = (sacks: any, combinationMap: any) => {
     i++
   }
   console.error('Failed to create a new combination name')
+  return 'Error name....'
 }
 
 export const CardContainer = ({
   sacks,
   products,
-  combinationMap,
+  combinations,
+  setCombinations,
   enabledProducts,
-  updateCombination,
-  removeCombination,
-  updateCombinationName,
-  addCombination,
   loading,
 }: CardContainerProps) => {
-  const combinationList: Array<Product> = Array.from(combinationMap.values())
+  const addCombination = (name: string, sacks: boolean) => {
+    const combination: Combination = {
+      id: uuidv4(),
+      name: name,
+      sacks: sacks,
+      values: {},
+      cumulative: null,
+    }
+    setCombinations({ ...combinations, [combination.id]: combination })
+  }
+
+  const updateCombination = (combinationId: string, products: ProductsInCombination) => {
+    let combination: Combination = combinations[combinationId]
+    combination.values = products
+    setCombinations({ ...combinations, [combinationId]: combination })
+  }
+
+  const removeCombination = (combinationId: string) => {
+    let newCombinations: Combinations = {}
+    Object.entries(combinations).map(([id, combination]) => {
+      if (id !== combinationId) newCombinations[id] = combination
+    })
+    setCombinations(newCombinations)
+  }
+
+  const updateCombinationName = (combinationId: string, name: string) => {
+    Object.entries(combinations).forEach(([id, combination]) => {
+      if (combination.name === name) {
+        alert('Name of combination already taken. Please select another one')
+        return
+      }
+    })
+
+    let combination: Combination = combinations[combinationId]
+    if (combination) {
+      combination.name = name
+      setCombinations({ ...combinations, [combination.id]: combination })
+    }
+  }
 
   return (
     <div>
       {loading && <LinearProgress />}
       <div style={{ width: '100%', display: 'flex' }}>
         <ProductCard products={products} enabledProducts={enabledProducts} />
-        {combinationList.map(
-          (combination: any) =>
-            combination.sacks === sacks && (
+
+        {Object.keys(combinations).map(id => {
+          if (sacks == combinations[id].sacks)
+            return (
               <CombinationCard
-                key={combination.id}
+                key={combinations[id].id}
                 sacks={sacks}
-                combination={combination}
+                combination={combinations[id]}
                 removeCombination={removeCombination}
                 products={products}
                 enabledProducts={enabledProducts}
@@ -76,13 +108,12 @@ export const CardContainer = ({
                 updateCombinationName={updateCombinationName}
               />
             )
-        )}
+        })}
       </div>
-
       <Wrapper>
         <Button
           onClick={() => {
-            addCombination(createCombinationName(sacks, combinationMap), sacks)
+            addCombination(createCombinationName(sacks, combinations), sacks)
           }}>
           Add combination
         </Button>

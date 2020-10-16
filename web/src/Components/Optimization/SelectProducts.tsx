@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
 import { Checkbox, LinearProgress, Chip } from '@equinor/eds-core-react'
 // @ts-ignore
@@ -21,29 +21,52 @@ interface SelectProductsProps {
   loading: boolean
   products: any // TODO: fix better type
   enabledProducts: Array<string>
-  updateProduct: Function
+  setEnabledProducts: Function
 }
 
 export const SelectProducts = ({
   loading,
   products,
   enabledProducts,
-  updateProduct,
+  setEnabledProducts,
 }: SelectProductsProps): ReactElement => {
   const productList: Array<Product> = Object.values(products)
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
   const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
-  const [selectedSuppliers, setSelectedSuppliers] = useState<Array<string>>([])
+  const storedSelectedSuppliers = JSON.parse(localStorage.getItem('selectedSuppliers') || '[]')
+  const [selectedSuppliers, setSelectedSuppliers] = useState<Array<string>>(storedSelectedSuppliers || [])
 
-  function handleChipClick(supplier: string) {
+  // Saved selectedSuppliers in localStorage
+  useEffect(() => {
+    localStorage.setItem('selectedSuppliers', JSON.stringify(selectedSuppliers))
+  }, [selectedSuppliers])
+
+  function handleChipToggle(supplier: string) {
+    // This is a bit messy. Mainly because we have two product objects, one array and one Map. Should be just one Object
     if (selectedSuppliers.includes(supplier)) {
+      let productsWithDisabledSupplier = productList
+        .filter((p: any) => p.supplier === supplier)
+        .map((p: any) => {
+          return p.id
+        })
+      let shouldBeRemoved = enabledProducts.filter((p: any) => productsWithDisabledSupplier.includes(p))
       setSelectedSuppliers(selectedSuppliers.filter(s => s !== supplier))
-      // productList.filter((p: any) => p.supplier === supplier).forEach((p: any) => updateProduct(p.id, true))
+      let temp = enabledProducts.filter((p: any) => !shouldBeRemoved.includes(p))
+      setEnabledProducts(temp)
     } else {
       setSelectedSuppliers([supplier, ...selectedSuppliers])
     }
   }
+
+  function handleProductToggle(id: string) {
+    if (enabledProducts.includes(id)) {
+      setEnabledProducts(enabledProducts.filter((exisitingId: string) => exisitingId !== id))
+    } else {
+      setEnabledProducts([id, ...enabledProducts])
+    }
+  }
+
   if (loading) return <LinearProgress />
   return (
     <>
@@ -56,7 +79,7 @@ export const SelectProducts = ({
               key={supplier}
               variant={active}
               onClick={() => {
-                handleChipClick(supplier)
+                handleChipToggle(supplier)
               }}>
               {supplier}
             </Chip>
@@ -71,13 +94,12 @@ export const SelectProducts = ({
           if (!selectedSuppliers.includes(product.supplier)) return null
           // @ts-ignore
           const label = product.name + ', ' + product.supplier
-          console.log(enabledProducts)
           const isChecked = enabledProducts.includes(product.id)
           return (
             <li key={key}>
               <Checkbox
                 checked={isChecked}
-                onChange={() => updateProduct(product.id, isChecked)}
+                onChange={() => handleProductToggle(product.id)}
                 label={label}
                 name="multiple"
                 value="first"

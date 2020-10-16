@@ -1,8 +1,8 @@
-// @ts-ignore
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Table, TextField } from '@equinor/eds-core-react'
 import { Product } from '../../gen-api/src/models'
+import { ProductsInCombination } from '../CombinationsWrapper'
 
 const { Body, Row, Cell, Head } = Table
 
@@ -10,53 +10,59 @@ interface CombinationTableProps {
   products: any
   sacks: any
   enabledProducts: any
-  combination: any
   updateCombination: any
 }
 
-export const CombinationTable = ({
-  combination,
-  products,
-  sacks,
-  enabledProducts,
-  updateCombination,
-}: CombinationTableProps) => {
-  const [values, setValues] = useState<any>({})
+export const CombinationTable = ({ products, sacks, enabledProducts, updateCombination }: CombinationTableProps) => {
+  const [values, setValues] = useState<ProductsInCombination>({})
   const [invalidValue, setInvalidValue] = useState<boolean>(true)
   const productList: Array<Product> = Object.values(products)
 
+  // When enabledProducts changes. Removed the ones not enabled from the values.
   useEffect(() => {
-    let newValues: any = {}
-    // Filter out disabled products
-    enabledProducts.forEach((p: string) => {
-      newValues[p] = values[p]
+    let newValues = {}
+    Object.values(values).forEach(value => {
+      // @ts-ignore
+      if (enabledProducts.includes(value.id)) newValues = { ...newValues, [value.id]: value }
     })
-    setValues(newValues)
+
+    setValues(setPercentages(newValues))
   }, [enabledProducts])
 
   const stripZeroAndUpdate = () => {
-    let noneEmptyValues: any = {}
-    for (const [key, value] of Object.entries(values)) {
-      // @ts-ignore
-      if (value > 0) {
-        noneEmptyValues[key] = value
-      }
-    }
+    let noneEmptyValues: ProductsInCombination = {}
+    Object.values(values).forEach(value => {
+      if (value.value > 0) noneEmptyValues[value.id] = value
+    })
     updateCombination(noneEmptyValues)
   }
 
+  function setPercentages(newValues: ProductsInCombination): ProductsInCombination {
+    // Add up all the mass in the combination
+    let massSum = 0
+    Object.entries(newValues).forEach(([id, productValue]) => {
+      massSum += productValue.value * products[id].sackSize
+    })
+    // Set the percentages to the value object for combination
+    Object.entries(newValues).forEach(([id, productValues]) => {
+      productValues.percentage = 100 * ((productValues.value * products[id].sackSize) / massSum)
+    })
+
+    return newValues
+  }
+
   const handleValueChange = (productId: string, value: string) => {
-    let newValues: any = { ...values, [productId]: parseInt(value) }
+    let newValues: any = { ...values, [productId]: { value: parseInt(value), id: productId } }
     let tempInvalid: boolean = false
+
     // Check for any negative numbers
     // @ts-ignore
-    Object.values(newValues).forEach((val: number) => {
-      if (Math.sign(val) < 0) {
-        tempInvalid = true
-      }
-    })
+    if (Math.sign(value) < 0) {
+      tempInvalid = true
+    }
+    const newValuesWithPercentage = setPercentages(newValues)
     setInvalidValue(tempInvalid)
-    setValues(newValues)
+    setValues(newValuesWithPercentage)
   }
 
   return (
@@ -87,18 +93,14 @@ export const CombinationTable = ({
                     <Cell>
                       <TextField
                         id={product.id}
-                        value={values[product.id] || ''}
+                        value={values[product.id]?.value || ''}
                         type="number"
                         placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
                         onChange={(event: any) => handleValueChange(product.id, event.target.value)}
                         style={{ background: 'transparent' }}
                       />
                     </Cell>
-                    <Cell>
-                      {(combination.values.has(product.id) ? combination.values.get(product.id).percentage : 0).toFixed(
-                        1
-                      )}
-                    </Cell>
+                    <Cell>{values[product.id]?.percentage ? values[product.id]?.percentage.toFixed(1) : 0}</Cell>
                   </Row>
                 )
             )}

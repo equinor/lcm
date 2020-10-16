@@ -53,13 +53,14 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
                   Optimal blend:{' '}
                 </Typography>
                 {fetched && optimizationData && optimizationData.products && optimizationData.products.length !== 0 ? (
-                  optimizationData.products.map(product =>
-                    product.sacks !== 0 &&
-                      <div>
-                        <Typography variant="body_short">{productMap.get(product.id).name}: </Typography>
-                        <Typography variant="body_short">{product.sacks} sacks</Typography>
-                      </div>
-
+                  optimizationData.products.map(
+                    product =>
+                      product.sacks !== 0 && (
+                        <div>
+                          <Typography variant="body_short">{productMap.get(product.id).name}: </Typography>
+                          <Typography variant="body_short">{product.sacks} sacks</Typography>
+                        </div>
+                      )
                   )
                 ) : (
                   <Typography variant="body_short" style={{ color: '#EC462F' }}>

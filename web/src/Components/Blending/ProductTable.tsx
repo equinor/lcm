@@ -7,7 +7,7 @@ const { Body, Row, Cell, Head } = Table
 
 interface ProductTableProps {
   products: any // TODO: fix better type
-  enabledProducts: any // TODO: fix better type
+  enabledProducts: Array<string>
 }
 
 export const ProductTable = ({ enabledProducts, products }: ProductTableProps): ReactElement => {

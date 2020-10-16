@@ -107,6 +107,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
                 })
               }}
               disabled={isLoading}
+              ariaLabelledby={''}
             />
           </Wrapper>
           <Wrapper>
@@ -123,6 +124,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
                 })
               }}
               disabled={isLoading}
+              ariaLabelledby={''}
             />
           </Wrapper>
 
@@ -140,6 +142,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
                 })
               }}
               disabled={isLoading}
+              ariaLabelledby={''}
             />
           </Wrapper>
           <Wrapper>
@@ -156,6 +159,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
                 })
               }}
               disabled={isLoading}
+              ariaLabelledby={''}
             />
           </Wrapper>
         </div>
