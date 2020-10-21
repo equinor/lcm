@@ -32,7 +32,8 @@ export const SelectProducts = ({
     <div>
       <UnstyledList>
         {productList.map((product, key) => {
-          const label = product['id'] + ', ' + product['supplier']
+          // @ts-ignore
+          const label = product.name + ', ' + product.supplier
           const isChecked = enabledProducts.includes(product['id'])
           return (
             <li key={key}>

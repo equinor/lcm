@@ -30,46 +30,6 @@ const getWeightPercentages = (weight: Weight) => {
   }
 }
 
-interface getOptimalBlendProps {
-  apiToken: string
-  enabledProducts: Array<string>
-  mode: string
-  value: number
-  pill: Pill
-  weight: Weight
-  handleUpdate: Function
-}
-
-const getOptimalBlend = ({
-  apiToken,
-  enabledProducts,
-  pill,
-  weight,
-  mode,
-  value,
-  handleUpdate,
-}: getOptimalBlendProps) => {
-  if (enabledProducts.length === 0) {
-    alert('Please select at least 1 product before running the optimizer')
-    return null
-  }
-
-  OptimizerAPI.postOptimizerApi(apiToken, {
-    request: 'OPTIMAL_MIX',
-    name: 'Optimal Blend',
-    value: value,
-    option: mode,
-    mass: pill.mass,
-    enviromental: weight.environmental,
-    products: enabledProducts,
-    weights: getWeightPercentages(weight),
-  })
-    .then(response => {
-      handleUpdate(response.data)
-    })
-    .catch(error => console.log('fetch error' + error))
-}
-
 const OptimizationRunner = ({
   isLoading,
   setIsLoading,
@@ -79,6 +39,7 @@ const OptimizationRunner = ({
   value,
   handleUpdate,
 }: OptimizationContainerProps): ReactElement => {
+  const [failedRun, setFailedRun] = useState<boolean>(false)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
@@ -95,6 +56,32 @@ const OptimizationRunner = ({
 
   const apiToken: string = useContext(AuthContext).jwtIdToken
 
+  function getOptimalBlend() {
+    if (enabledProducts.length === 0) {
+      alert('Select at least 1 product before running the optimizer')
+      return null
+    }
+
+    OptimizerAPI.postOptimizerApi(apiToken, {
+      request: 'OPTIMAL_MIX',
+      name: 'Optimal Blend',
+      value: value,
+      option: mode,
+      mass: pill.mass,
+      enviromental: weight.environmental,
+      products: enabledProducts,
+      weights: getWeightPercentages(weight),
+    })
+      .then(response => {
+        setFailedRun(false)
+        handleUpdate(response.data)
+      })
+      .catch(error => {
+        setFailedRun(true)
+        console.log(error.response.data)
+      })
+  }
+
   const handleOptimize = () => {
     let countSackCombinations = 0
     combinationMap.forEach(combination => {
@@ -103,18 +90,10 @@ const OptimizationRunner = ({
       }
     })
     if (countSackCombinations < 5) {
-      setIsLoading(true)
-      getOptimalBlend({
-        apiToken,
-        enabledProducts,
-        pill,
-        weight,
-        mode,
-        value,
-        handleUpdate,
-      })
+      // setIsLoading(true)
+      getOptimalBlend()
     } else {
-      alert('Please remove at least 1 sack combination before running the optimizer')
+      alert('The optimizer can only run with a maximum of 5 sack combinations')
     }
   }
 
@@ -126,6 +105,7 @@ const OptimizationRunner = ({
         </Typography>
         <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
         {isLoading && <CircularProgress style={{ padding: '20% 30%' }} />}
+        {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
       </div>
       <div>
         <WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />

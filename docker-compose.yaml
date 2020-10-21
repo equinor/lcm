@@ -4,6 +4,8 @@ services:
   nginx:
     restart: unless-stopped
     build: ./nginx
+    logging:
+      driver: none
     ports:
       - "80:80"
     depends_on:
@@ -28,6 +30,8 @@ services:
       context: ./web
       target: development
     restart: unless-stopped
+    logging:
+      driver: none
     stdin_open: true
     volumes:
       - ./web:/code

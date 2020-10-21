@@ -42,7 +42,7 @@ def create_table(table_service: TableService, table_name: str):
 
 
 def sanitize_row_key(value: str) -> str:
-    return value.replace("/", "-").replace("\\", "-").replace("#", "").replace("?", "-").replace(" ", "").lower()
+    return value.replace("/", "-").replace("\\", "-").replace("#", "").replace("?", "-").replace(" ", "")
 
 
 def get_excel_entity(product_id: str, sheet: Sheet, column_name: str):
