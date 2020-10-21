@@ -5,9 +5,9 @@ import styled from 'styled-components'
 // @ts-ignore
 import { Button, Icon, SideSheet, TopBar } from '@equinor/eds-core-react'
 
-import SelectProducts from '../Components/Optimization/SelectProducts'
+import SelectProducts from '../Components/SelectProducts'
 import RefreshButton from './RefreshButton'
-import { OptimizerAPI, ProductsAPI, Requests } from '../Api'
+import { ProductsAPI } from '../Api'
 import { Product } from '../gen-api/src/models'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
@@ -52,7 +52,7 @@ defaultCombinations[manualCombination.id] = manualCombination
 
 export default (): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [sideSheet, setSideSheet] = useState<boolean>(true)
+  const [sideSheet, setSideSheet] = useState<boolean>(false)
   const storedEnabledProducts = JSON.parse(localStorage.getItem('enabledProducts') || '[]')
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>(storedEnabledProducts || [])
@@ -89,7 +89,6 @@ export default (): ReactElement => {
             Product filter
           </Button>
         </div>
-        <label>{user?.account.name}</label>
       </TopBar>
 
       <Body>

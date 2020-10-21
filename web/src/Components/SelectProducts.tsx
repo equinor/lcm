@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { Checkbox, LinearProgress, Chip } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
-import { Product } from '../../gen-api/src/models'
+import { Product } from '../gen-api/src/models'
 
 const List = styled.ul`
   margin: 0;
@@ -34,12 +34,16 @@ export const SelectProducts = ({
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
   const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
-  const storedSelectedSuppliers = JSON.parse(localStorage.getItem('selectedSuppliers') || '[]')
-  const [selectedSuppliers, setSelectedSuppliers] = useState<Array<string>>(storedSelectedSuppliers || [])
+  const [selectedSuppliers, setSelectedSuppliers] = useState<Array<string>>([])
+
+  // On first render with actual products, try loading selectedSuppliers from storage, or enable all
+  useEffect(() => {
+    setSelectedSuppliers(JSON.parse(localStorage.getItem('selectedSuppliers') || JSON.stringify(suppliers)))
+  }, [products])
 
   // Saved selectedSuppliers in localStorage
   useEffect(() => {
-    localStorage.setItem('selectedSuppliers', JSON.stringify(selectedSuppliers))
+    if (selectedSuppliers.length) localStorage.setItem('selectedSuppliers', JSON.stringify(selectedSuppliers))
   }, [selectedSuppliers])
 
   function handleChipToggle(supplier: string) {
