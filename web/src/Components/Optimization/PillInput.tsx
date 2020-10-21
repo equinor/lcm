@@ -71,11 +71,7 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
         label="Enter pill volume"
         id="pillvolume"
         value={pill.volume}
-        meta={
-          <>
-            m<sup>3</sup>
-          </>
-        }
+        meta="m3"
         variant={(invalidVolume && 'error') || undefined}
         onChange={(event: any) => handleChange(PillInputType.VOLUME, event.target.value)}
         disabled={isLoading}
@@ -87,11 +83,7 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
         id="pilldensity"
         value={pill.density}
         variant={(invalidDensity && 'error') || undefined}
-        meta={
-          <>
-            kg/m<sup>3</sup>
-          </>
-        }
+        meta="kg/m3"
         onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}
         disabled={isLoading}
       />

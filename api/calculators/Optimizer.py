@@ -495,7 +495,7 @@ def calculate_scores(combination, bridge, start_index):
         elif cost_score > 100:
             cost_score = 100
 
-        co2_score = 100 - ((co2 / sack_sum - MIN_CO2) / get_min_max_diff(MAX_CO2,MIN_CO2)) * 100
+        co2_score = 100 - ((co2 / sack_sum - MIN_CO2) / get_min_max_diff(MAX_CO2, MIN_CO2)) * 100
         if co2_score < 0:
             co2_score = 0
         elif co2_score > 100:

@@ -1,5 +1,4 @@
 import { Product } from '../../gen-api/src/models'
-import { Combination } from '../../Pages/Main'
 import { OptimizerAPI } from '../../Api'
 import PillInput, { Pill } from './PillInput'
 import { Environmental, Weight, WeightOptions } from './WeightOptions'
@@ -7,13 +6,14 @@ import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { CircularProgress, Typography } from '@equinor/eds-core-react'
 import { AuthContext } from '../../Auth/Auth'
+import { Combinations, Combination } from '../CombinationsWrapper'
 
 interface OptimizationContainerProps {
   isLoading: boolean
   setIsLoading: Function
   products: Map<string, Product>
   enabledProducts: Array<string>
-  combinationMap: Map<string, Combination>
+  combinationMap: Combinations
   mode: string
   value: number
   handleUpdate: Function
@@ -54,7 +54,7 @@ const OptimizationRunner = ({
     environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
 
-  const apiToken: string = useContext(AuthContext).jwtIdToken
+  const apiToken: string = useContext(AuthContext)?.jwtIdToken
 
   function getOptimalBlend() {
     if (enabledProducts.length === 0) {
@@ -84,13 +84,14 @@ const OptimizationRunner = ({
 
   const handleOptimize = () => {
     let countSackCombinations = 0
-    combinationMap.forEach(combination => {
+
+    Object.entries(combinationMap).forEach(([id, combination]) => {
       if (combination.sacks) {
         countSackCombinations += 1
       }
     })
+
     if (countSackCombinations < 5) {
-      // setIsLoading(true)
       getOptimalBlend()
     } else {
       alert('The optimizer can only run with a maximum of 5 sack combinations')
