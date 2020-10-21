@@ -112,14 +112,13 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   return (
     <>
       {/* Nice to have around for debugging */}
-      {/*<pre style={{whiteSpace: "pre-wrap", wordWrap: "break-word"}}>{JSON.stringify(combinations, null, 2)}</pre>*/}
+      {/*<pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{JSON.stringify(combinations, null, 2)}</pre>*/}
       <BridgeContainer
         userBridges={combinationBridges}
         mode={mode}
         setMode={setMode}
         bridgeValue={bridgeValue}
         setValue={setBridgeValue}
-        isLoading={isLoading}
       />
 
       <Accordion>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import './App.css'
-import Main from './Pages/Main'
+import Main from './Components/Main'
 import './Components/icons'
 import { AuthContext, authProvider } from './Auth/Auth'
 // @ts-ignore

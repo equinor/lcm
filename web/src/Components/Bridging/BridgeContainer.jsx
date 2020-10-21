@@ -35,7 +35,7 @@ const Grid = styled.div`
   grid-gap: 0px 100px;
 `
 
-export default ({ userBridges, mode, setMode, bridgeValue, setValue, isLoading }) => {
+export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)

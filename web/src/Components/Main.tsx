@@ -5,14 +5,14 @@ import styled from 'styled-components'
 // @ts-ignore
 import { Button, Icon, SideSheet, TopBar } from '@equinor/eds-core-react'
 
-import SelectProducts from '../Components/SelectProducts'
+import SelectProducts from './SelectProducts'
 import RefreshButton from './RefreshButton'
 import { ProductsAPI } from '../Api'
 import { Product } from '../gen-api/src/models'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 import { AuthContext } from '../Auth/Auth'
-import CombinationsWrapper, { Combination, Combinations } from '../Components/CombinationsWrapper'
+import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
   position: relative;
-  height: 'fit-content';
   background: #ebebeb;
   display: flex;
   flex-direction: column;

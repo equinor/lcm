@@ -18,6 +18,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
 
   useEffect(() => {
+    console.log(bridgeAndCombinations)
     let newGraphData = []
 
     sizeFractions.map((fraction, sizeIndex) => {

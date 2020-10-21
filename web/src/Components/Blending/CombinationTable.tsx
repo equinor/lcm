@@ -11,9 +11,16 @@ interface CombinationTableProps {
   sacks: any
   enabledProducts: any
   updateCombination: any
+  productsInCombination: ProductsInCombination
 }
 
-export const CombinationTable = ({ products, sacks, enabledProducts, updateCombination }: CombinationTableProps) => {
+export const CombinationTable = ({
+  products,
+  sacks,
+  enabledProducts,
+  updateCombination,
+  productsInCombination,
+}: CombinationTableProps) => {
   const [values, setValues] = useState<ProductsInCombination>({})
   const [invalidValue, setInvalidValue] = useState<boolean>(true)
   const productList: Array<Product> = Object.values(products)
@@ -28,6 +35,10 @@ export const CombinationTable = ({ products, sacks, enabledProducts, updateCombi
 
     setValues(setPercentages(newValues))
   }, [enabledProducts])
+
+  useEffect(() => {
+    setValues(setPercentages(productsInCombination))
+  }, [productsInCombination])
 
   const stripZeroAndUpdate = () => {
     let noneEmptyValues: ProductsInCombination = {}

@@ -32,7 +32,6 @@ const getWeightPercentages = (weight: Weight) => {
 
 const OptimizationRunner = ({
   isLoading,
-  setIsLoading,
   enabledProducts,
   combinationMap,
   mode,
@@ -45,7 +44,7 @@ const OptimizationRunner = ({
     density: 350,
     mass: 3500,
   })
-
+  const [loading, setLoading] = useState<boolean>(false)
   const [weight, setWeight] = useState<Weight>({
     fit: 5,
     co2: 0,
@@ -56,12 +55,24 @@ const OptimizationRunner = ({
 
   const apiToken: string = useContext(AuthContext)?.jwtIdToken
 
-  function getOptimalBlend() {
+  const handleOptimize = () => {
     if (enabledProducts.length === 0) {
       alert('Select at least 1 product before running the optimizer')
       return null
     }
 
+    let countSackCombinations = 0
+    Object.entries(combinationMap).forEach(([id, combination]) => {
+      if (combination.sacks) {
+        countSackCombinations += 1
+      }
+    })
+
+    if (countSackCombinations > 5) {
+      alert('The optimizer can only run with a maximum of 5 sack combinations')
+      return null
+    }
+    setLoading(true)
     OptimizerAPI.postOptimizerApi(apiToken, {
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
@@ -74,28 +85,14 @@ const OptimizationRunner = ({
     })
       .then(response => {
         setFailedRun(false)
+        setLoading(false)
         handleUpdate(response.data)
       })
       .catch(error => {
+        setLoading(false)
         setFailedRun(true)
         console.log(error.response.data)
       })
-  }
-
-  const handleOptimize = () => {
-    let countSackCombinations = 0
-
-    Object.entries(combinationMap).forEach(([id, combination]) => {
-      if (combination.sacks) {
-        countSackCombinations += 1
-      }
-    })
-
-    if (countSackCombinations < 5) {
-      getOptimalBlend()
-    } else {
-      alert('The optimizer can only run with a maximum of 5 sack combinations')
-    }
   }
 
   return (
@@ -105,7 +102,7 @@ const OptimizationRunner = ({
           Optimizer
         </Typography>
         <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
-        {isLoading && <CircularProgress style={{ padding: '20% 30%' }} />}
+        {loading && <CircularProgress style={{ padding: '20% 30%' }} />}
         {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
       </div>
       <div>

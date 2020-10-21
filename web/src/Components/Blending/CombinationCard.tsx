@@ -57,6 +57,7 @@ export const CombinationCard = ({
         products={products}
         enabledProducts={enabledProducts}
         updateCombination={(products: any) => updateCombination(combination.id, products)}
+        productsInCombination={combination.values}
       />
     </Card>
   )
