@@ -70,14 +70,7 @@ export const OptimizationContainer = ({
     }
 
     const datetime = new Date()
-    const name = `Optimized at ${(datetime.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}/${datetime.getDate().toString().padStart(2, '0')}/${datetime
-      .getFullYear()
-      .toString()
-      .padStart(4, '0')} ${datetime.getHours().toString().padStart(2, '0')}:${datetime
-      .getMinutes()
-      .toString()
+    const name = `Optimized at ${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
 
     addCombination(name, true, values)

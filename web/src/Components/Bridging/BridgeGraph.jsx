@@ -18,7 +18,6 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
 
   useEffect(() => {
-    console.log(bridgeAndCombinations)
     let newGraphData = []
 
     sizeFractions.map((fraction, sizeIndex) => {
@@ -41,7 +40,6 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
         domain={[0.1, 10000]}
         type="number"
         ticks={[0.1, 1, 10, 100, 1000, 10000]}
-        allowDataOverflow
       />
       <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow />
       <Tooltip />

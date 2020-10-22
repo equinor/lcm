@@ -6,6 +6,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Accordion } from '@equinor/eds-core-react'
 import { OptimizerAPI, Requests } from '../Api'
 import { AuthContext } from '../Auth/Auth'
+// @ts-ignore
+import { isEqual, cloneDeep, omit } from 'lodash'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -46,8 +48,10 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   const [mode, setMode] = useState<string>('PERMEABILITY')
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
-  const [combinationBridges, setCombinationBridges] = useState<any>({ ['Bridge']: [] })
+  const [bridges, setBridges] = useState<any>({ Bridge: [] })
   const apiToken: string = useContext(AuthContext)?.jwtIdToken
+
+  const [lastCombinations, setLastCombinations] = useState<Combinations>({})
 
   // When enabledProducts changes. Removed the ones not enabled from the combinations.
   useEffect(() => {
@@ -73,7 +77,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       value: bridgeValue,
     })
       .then(response => {
-        setCombinationBridges({ ['Bridge']: response.data.bridge })
+        setBridges({ ['Bridge']: response.data.bridge })
       })
       .catch(err => {
         console.error('fetch error' + err)
@@ -81,32 +85,40 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   }, [bridgeValue, mode])
 
   useEffect(() => {
-    // TODO: Some sort of check here on what has changed, so we dont re-fetch every combination on every change
     Object.values(combinations).forEach(combination => {
-      // Dont fetch with empty values
+      const bridgeNames = Object.keys(bridges).filter(n => n!== 'Bridge')
+      const combNames = Object.values(combinations).map(c => c.name)
+      const diff = bridgeNames.filter(b => !combNames.includes(b))
+      if(diff.length){
+        console.log(diff)
+        setBridges(omit(bridges, diff[0]))
+        return
+      }
+
+      // Don't fetch with empty values
       if (!Object.values(combination.values).length) return
 
-      // TODO
-      // Only keep bridges that has a combination
-      // @ts-ignore
-      // if(combinationBridges[combination.name]) newBridges[combination.name] = combinationBridges[combination.name]
-
-      setIsLoading(true)
-      OptimizerAPI.postOptimizerApi(apiToken, {
-        request: Requests.MIX_PRODUCTS,
-        products: Object.values(combination.values),
-      })
-        .then(response => {
-          setIsLoading(false)
-          if (response.data.missing.length) {
-            let message = 'Some requested products where missing or has a name mismatch;'
-            response.data.missing.forEach((missingProd: string) => (message += `\n - ${missingProd}`))
-            alert(message)
-          }
-          setCombinationBridges({ ...combinationBridges, [combination.name]: response.data.cumulative })
+      // If the combination changed, fetch a new bridge
+      if (!isEqual(lastCombinations[combination.id], combination)) {
+        setIsLoading(true)
+        console.log(`Fetching ${combination.name}`)
+        OptimizerAPI.postOptimizerApi(apiToken, {
+          request: Requests.MIX_PRODUCTS,
+          products: Object.values(combination.values),
         })
-        .catch(() => setIsLoading(false))
+          .then(response => {
+            setIsLoading(false)
+            if (response.data.missing.length) {
+              let message = 'Some requested products where missing or has a name mismatch;'
+              response.data.missing.forEach((missingProd: string) => (message += `\n - ${missingProd}`))
+              alert(message)
+            }
+            setBridges({ ...bridges, [combination.name]: response.data.cumulative })
+          })
+          .catch(() => setIsLoading(false))
+      }
     })
+    setLastCombinations(cloneDeep(combinations))
   }, [combinations])
 
   return (
@@ -114,7 +126,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       {/* Nice to have around for debugging */}
       {/*<pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{JSON.stringify(combinations, null, 2)}</pre>*/}
       <BridgeContainer
-        userBridges={combinationBridges}
+        userBridges={bridges}
         mode={mode}
         setMode={setMode}
         bridgeValue={bridgeValue}
