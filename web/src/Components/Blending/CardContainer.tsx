@@ -5,7 +5,6 @@ import ProductCard from './ProductCard.js'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button, LinearProgress } from '@equinor/eds-core-react'
-import { Product } from '../../gen-api/src/models'
 import { Combination, Combinations, ProductsInCombination } from '../CombinationsWrapper'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
@@ -67,7 +66,7 @@ export const CardContainer = ({
 
   const removeCombination = (combinationId: string) => {
     let newCombinations: Combinations = {}
-    Object.entries(combinations).map(([id, combination]) => {
+    Object.entries(combinations).forEach(([id, combination]) => {
       if (id !== combinationId) newCombinations[id] = combination
     })
     setCombinations(newCombinations)

@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { Configuration } from './gen-api/src'
 
 const BASE_PATH = '/api'
-const APIConfiguration = new Configuration({ basePath: BASE_PATH, accessToken: '' })
+// const APIConfiguration = new Configuration({ basePath: BASE_PATH, accessToken: '' })
 
 export enum Requests {
   SIZE_FRACTIONS = 'SIZE_FRACTIONS',

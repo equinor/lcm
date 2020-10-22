@@ -20,7 +20,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   useEffect(() => {
     let newGraphData = []
 
-    sizeFractions.map((fraction, sizeIndex) => {
+    sizeFractions.forEach((fraction, sizeIndex) => {
       let temp = {}
       temp.size = fraction
       Object.entries(bridgeAndCombinations).forEach(([name, cumulative]) => (
@@ -45,7 +45,6 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
       <Tooltip />
       <Legend />
       {Object.entries(bridgeAndCombinations).map(([name, cumulative], index) => (
-        //  @ts-ignore
           <Area
           type="monotone"
           dataKey={name}

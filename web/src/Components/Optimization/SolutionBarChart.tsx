@@ -32,21 +32,18 @@ interface SolutionBarChartProps {
 
 export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChartProps) => {
   const graphData = () => {
-    let data: any = []
-    if (optimizationData.products.length !== 0) {
-      optimizationData.products.map((productResult: ProductResult) => {
-        data.push({
+    return optimizationData.products.map((productResult: ProductResult) => {
+        return {
           // @ts-ignore
           name: products[productResult.id].id,
           sacks: productResult.sacks,
-        })
+        }
       })
-    }
-    return data
   }
 
   return (
-    <BarChart width={300} height={250} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
+    <BarChart width={300} height={250} data={graphData()
+    } margin={{ top: 15, right: 15 }} barSize={10}>
       <XAxis
         dataKey="name"
         scale="point"

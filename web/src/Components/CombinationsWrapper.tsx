@@ -77,20 +77,21 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       value: bridgeValue,
     })
       .then(response => {
-        setBridges({ ['Bridge']: response.data.bridge })
+        setBridges({ Bridge: response.data.bridge })
       })
       .catch(err => {
         console.error('fetch error' + err)
       })
-  }, [bridgeValue, mode])
+  }, [bridgeValue, mode, apiToken])
 
   useEffect(() => {
+
+    // Check for removed combinations, and update Bridges
     Object.values(combinations).forEach(combination => {
-      const bridgeNames = Object.keys(bridges).filter(n => n!== 'Bridge')
+      const bridgeNames = Object.keys(bridges).filter(b => b!== 'Bridge')
       const combNames = Object.values(combinations).map(c => c.name)
       const diff = bridgeNames.filter(b => !combNames.includes(b))
       if(diff.length){
-        console.log(diff)
         setBridges(omit(bridges, diff[0]))
         return
       }
@@ -101,7 +102,6 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       // If the combination changed, fetch a new bridge
       if (!isEqual(lastCombinations[combination.id], combination)) {
         setIsLoading(true)
-        console.log(`Fetching ${combination.name}`)
         OptimizerAPI.postOptimizerApi(apiToken, {
           request: Requests.MIX_PRODUCTS,
           products: Object.values(combination.values),

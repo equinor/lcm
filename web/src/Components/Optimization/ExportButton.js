@@ -33,7 +33,7 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
     var products = optimizationData.products
     var totalMass = 0
     if (products && products.length !== 0) {
-      products.map(product => {
+      products.forEach(product => {
         totalMass += product.sacks * productMap.get(product.id).sack_size
       })
     }

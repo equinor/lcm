@@ -5,7 +5,7 @@ import OptimizationRunner from './OptimizationRunner'
 import OptimizationResult from './OptimizationResult'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
-import { Combinations, Combination, ProductValues, ProductsInCombination } from '../CombinationsWrapper'
+import { Combinations, Combination, ProductsInCombination } from '../CombinationsWrapper'
 
 const Grid = styled.div`
   height: auto;
