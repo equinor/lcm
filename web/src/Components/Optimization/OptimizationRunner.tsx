@@ -5,8 +5,8 @@ import { Environmental, Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { CircularProgress, Typography } from '@equinor/eds-core-react'
-import { AuthContext } from '../../Auth/Auth'
-import { Combinations, Combination } from '../CombinationsWrapper'
+import { Combinations } from '../CombinationsWrapper'
+import { AuthContext } from '../../Auth/AuthProvider'
 
 interface OptimizationContainerProps {
   isLoading: boolean
@@ -53,7 +53,7 @@ const OptimizationRunner = ({
     environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
 
-  const apiToken: string = useContext(AuthContext)?.jwtIdToken
+  const apiToken: string = useContext(AuthContext)?.token
 
   const handleOptimize = () => {
     if (enabledProducts.length === 0) {

@@ -5,9 +5,9 @@ import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion } from '@equinor/eds-core-react'
 import { OptimizerAPI, Requests } from '../Api'
-import { AuthContext } from '../Auth/Auth'
 // @ts-ignore
 import { isEqual, cloneDeep, omit } from 'lodash'
+import { AuthContext } from '../Auth/AuthProvider'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -49,7 +49,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
   const [bridges, setBridges] = useState<any>({ Bridge: [] })
-  const apiToken: string = useContext(AuthContext)?.jwtIdToken
+  const apiToken: string = useContext(AuthContext).token
 
   const [lastCombinations, setLastCombinations] = useState<Combinations>({})
 
@@ -85,13 +85,12 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   }, [bridgeValue, mode, apiToken])
 
   useEffect(() => {
-
     // Check for removed combinations, and update Bridges
     Object.values(combinations).forEach(combination => {
-      const bridgeNames = Object.keys(bridges).filter(b => b!== 'Bridge')
+      const bridgeNames = Object.keys(bridges).filter(b => b !== 'Bridge')
       const combNames = Object.values(combinations).map(c => c.name)
       const diff = bridgeNames.filter(b => !combNames.includes(b))
-      if(diff.length){
+      if (diff.length) {
         setBridges(omit(bridges, diff[0]))
         return
       }

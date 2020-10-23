@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@azure/msal-browser@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.4.0.tgz#e2e34346331db9503bf5547484259d3b2efdba46"
+  integrity sha512-zZk9hPts3GtRIAf3Iny9CR3GVQgbHQXPBN3lsrqINcKL7hs4CTWClDTsKSWWjkBvZ2epZvqWIBudPVKR64kilg==
+  dependencies:
+    "@azure/msal-common" "^1.6.2"
+
+"@azure/msal-common@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-1.6.2.tgz#91f3732866d727e20f1e142e6e88a981268fbff2"
+  integrity sha512-GShzp1q7Ld8SwYiDEjQZ9PmFOY4x+2stE86maiguylE9/d/c2muqKjc8aepmEqyjbV7o/omDvEf2Sr9QcIqkSA==
+  dependencies:
+    debug "^4.1.1"
+
 "@babel/code-frame@7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"
@@ -9868,13 +9882,6 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-aad-msal@^2.3.5:
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/react-aad-msal/-/react-aad-msal-2.3.5.tgz#fccd69c0d2ed9f75fc272f1805fbcba29fd3bea6"
-  integrity sha512-QCJXk7LtAf8ssbcuLT6glFZNmqcc6d2dy1ek+GY/feiNE3RM+bCxnH53VOPytV1h7EsUP9IvwOFum2fHcITo5A==
-  dependencies:
-    redux "4.0.4"
-
 react-app-polyfill@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-1.0.6.tgz#890f8d7f2842ce6073f030b117de9130a5f385f0"
@@ -10341,14 +10348,6 @@ reduce-function-call@^1.0.1:
   integrity sha512-Hl/tuV2VDgWgCSEeWMLwxLZqX7OK59eU1guxXsRKTAyeYimivsKdtcV4fu3r710tpG5GmDKDhQ0HSZLExnNmyQ==
   dependencies:
     balanced-match "^1.0.0"
-
-redux@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"
-  integrity sha512-vKv4WdiJxOWKxK0yRoaK3Y4pxxB0ilzVx6dszU2W8wLxlb2yikRph4iV/ymtdJ6ZxpBLFbyrxklnT5yBbQSl3Q==
-  dependencies:
-    loose-envify "^1.4.0"
-    symbol-observable "^1.2.0"
 
 refractor@^2.4.1:
   version "2.10.1"
@@ -11547,11 +11546,6 @@ svgo@^1.0.0, svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
-
-symbol-observable@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
-  integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
 
 symbol-tree@^3.2.2:
   version "3.2.4"

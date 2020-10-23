@@ -11,8 +11,8 @@ import { ProductsAPI } from '../Api'
 import { Product } from '../gen-api/src/models'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
-import { AuthContext } from '../Auth/Auth'
 import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
+import { AuthContext } from '../Auth/AuthProvider'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -55,8 +55,7 @@ export default (): ReactElement => {
   const storedEnabledProducts = JSON.parse(localStorage.getItem('enabledProducts') || '[]')
   const [products, setProducts] = useState<Map<string, Product>>(new Map())
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>(storedEnabledProducts || [])
-  const user = useContext(AuthContext)
-  const apiToken: string = user?.jwtIdToken
+  const apiToken: string = useContext(AuthContext).token
 
   // On first render, fetch all products
   useEffect(() => {

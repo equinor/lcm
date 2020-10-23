@@ -4,7 +4,7 @@ import { Radio, TextField, Typography } from '@equinor/eds-core-react'
 import BridgeGraph from './BridgeGraph.jsx'
 import { OptimizerAPI, Requests } from '../../Api'
 import { BridgingOption } from '../../Common'
-import { AuthContext } from "../../Auth/Auth"
+import { AuthContext } from "../../Auth/AuthProvider"
 
 const Wrapper = styled.div`
   display: grid;
@@ -41,7 +41,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
 
-  const apiToken = useContext(AuthContext)?.jwtIdToken
+  const apiToken = useContext(AuthContext).token
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {

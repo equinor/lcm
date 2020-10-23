@@ -5,7 +5,7 @@ import { Button, Dialog, Icon, Scrim, CircularProgress } from '@equinor/eds-core
 import { refresh } from '@equinor/eds-icons'
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
-import { AuthContext } from '../Auth/Auth'
+import { AuthContext } from '../Auth/AuthProvider'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -21,7 +21,7 @@ const ButtonWrapper = styled.div`
 export const RefreshButton = () => {
   const [scrim, setScrim] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const apiToken: string = useContext(AuthContext)?.jwtIdToken
+  const apiToken: string = useContext(AuthContext)?.token
 
   const syncSharePoint = () => {
     SyncAPI.postSyncApi(apiToken)

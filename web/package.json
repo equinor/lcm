@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/msal-browser": "^2.4.0",
     "@equinor/eds-core-react": "^0.6.2",
     "@equinor/eds-icons": "^0.4.0",
     "@equinor/eds-tokens": "^0.4.0",
@@ -14,7 +15,6 @@
     "lodash": "^4.17.20",
     "msal": "^1.4.1",
     "react": "^16.13.1",
-    "react-aad-msal": "^2.3.5",
     "react-bootstrap": "^1.2.2",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
