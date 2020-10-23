@@ -94,7 +94,7 @@ export const CardContainer = ({
         <ProductCard products={products} enabledProducts={enabledProducts} />
 
         {Object.keys(combinations).map(id => {
-          if (sacks == combinations[id].sacks)
+          if (sacks === combinations[id].sacks)
             return (
               <CombinationCard
                 key={combinations[id].id}
@@ -107,6 +107,7 @@ export const CardContainer = ({
                 updateCombinationName={updateCombinationName}
               />
             )
+          return null
         })}
       </div>
       <Wrapper>
