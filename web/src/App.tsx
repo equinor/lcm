@@ -24,25 +24,25 @@ const LoginError = ({ errorMessage, hint }: any) => {
   )
 }
 
-function App({ isAuthenticated, user, getAccessToken }: AuthComponentProps) {
+function App({ isAuthenticated, getAccessToken }: AuthComponentProps) {
   const [loginError, setLoginError] = useState<LoginError>({})
-  const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     getAccessToken()
-      .then(() => {
-        setAuthenticated(true)
+      .then((token: string) => {
+        setToken(token)
         setLoginError({})
       })
       .catch((e: any) => {
         setLoginError(e)
         console.error(e)
       })
-  }, [isAuthenticated, user])
+  }, [isAuthenticated])
 
-  if (authenticated) {
+  if (token) {
     return (
-      <AuthContext.Provider value={{ token: user.accessToken }}>
+      <AuthContext.Provider value={{ token: token }}>
         <Main />
       </AuthContext.Provider>
     )

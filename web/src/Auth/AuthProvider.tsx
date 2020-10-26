@@ -18,7 +18,6 @@ interface AuthProviderState {
   user: any
 }
 
-// @ts-ignore
 const config = {
   appId: '1dbc1e96-268d-41ad-894a-92a9fb85f954',
   redirectUri: window.location.origin,
@@ -59,7 +58,6 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
       const accounts = this.publicClientApplication.getAllAccounts()
 
       if (accounts && accounts.length > 0) {
-        // Enhance user object with data from Graph
         this.getUserProfile()
       }
     }
@@ -75,7 +73,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
           user={this.state.user}
           login={() => this.login()}
           logout={() => this.logout()}
-          getAccessToken={(scopes: string[]) => this.getAccessToken(scopes)}
+          getAccessToken={() => this.getAccessToken()}
           setError={(message: string, debug: string) => this.setErrorMessage(message, debug)}
           {...this.props}
           {...this.state}
@@ -106,7 +104,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
       this.publicClientApplication.logout()
     }
 
-    async getAccessToken(scopes: string[]): Promise<string> {
+    async getAccessToken(): Promise<string> {
       try {
         const accounts = this.publicClientApplication.getAllAccounts()
 
@@ -116,7 +114,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
         // will just return the cached token. Otherwise, it will
         // make a request to the Azure OAuth endpoint to get a token
         var silentResult = await this.publicClientApplication.acquireTokenSilent({
-          scopes: scopes,
+          scopes: config.scopes,
           account: accounts[0],
         })
 
@@ -126,7 +124,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
         // to login or grant consent to one or more of the requested scopes
         if (this.isInteractionRequired(err)) {
           var interactiveResult = await this.publicClientApplication.acquireTokenPopup({
-            scopes: scopes,
+            scopes: config.scopes,
           })
 
           return interactiveResult.accessToken
@@ -138,7 +136,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
 
     async getUserProfile() {
       try {
-        var accessToken = await this.getAccessToken(config.scopes)
+        var accessToken = await this.getAccessToken()
 
         if (accessToken) {
           this.setState({
