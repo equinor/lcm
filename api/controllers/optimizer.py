@@ -84,7 +84,8 @@ def optimizerRequestHandler(
         except Exception as e:
             raise e
     if not products_with_values:
-        return Response("No products selected or they were missing", 400)
+        missing_message = f"These products where missing; {missing_product_list}" if missing_product_list else ""
+        return Response(f"No products selected or they were missing\n{missing_message}", 400)
 
     try:
         weights = [

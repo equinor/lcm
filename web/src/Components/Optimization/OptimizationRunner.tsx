@@ -86,12 +86,17 @@ const OptimizationRunner = ({
       .then(response => {
         setFailedRun(false)
         setLoading(false)
+        if (response.data.missingProducts.length) {
+          let message = 'Some requested products where missing or has a name mismatch;'
+          response.data.missingProducts.forEach((missingProd: string) => (message += `\n - ${missingProd}`))
+          alert(message)
+        }
         handleUpdate(response.data)
       })
       .catch(error => {
         setLoading(false)
         setFailedRun(true)
-        console.log(error.response.data)
+        if (error.response.status === 400) alert(error.response.data)
       })
   }
 
