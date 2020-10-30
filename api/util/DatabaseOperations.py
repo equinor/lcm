@@ -183,17 +183,3 @@ def getDistribution(id):
         distribution_list[i] = float(distribution_list[i])
 
     return distribution_list
-
-
-# This function returns a dictionary of all products in the
-# database, as a dictionary mapping ids to the product names
-def listProducts():
-    products = get_service().query_entities(METADATA_TABLE_NAME)
-
-    product_dict = {}
-
-    for product in products:
-        if product["RowKey"] != "Size_steps":
-            product_dict[product["title"]] = int(product["RowKey"])
-
-    return product_dict

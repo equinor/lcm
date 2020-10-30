@@ -18,8 +18,8 @@ jobs:
       #- name: "Bandit Static Code Security Analyzis"
       #  run: docker run --rm api-development bandit --recursive .
 
-      #- name: "Safety - Dependencies CVE Check"
-      #  run: docker run --rm api-development safety check
+      - name: "Safety - Dependencies CVE Check"
+        run: docker run --rm api-development safety check
 
       - name: "API UnitTests"
-        run: docker run --rm api-development pytest tests
+        run: docker run --rm -e TABEL_KEY="${{ secrets.TABEL_KEY }}" api-development pytest tests
