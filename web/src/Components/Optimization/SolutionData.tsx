@@ -105,7 +105,7 @@ const SolutionData = ({ products, optimizationData, isLoading }: SolutionDataPro
           <Typography variant="body_short">Iterations:</Typography>
           <Typography variant="body_short">{optimizationData.iterations}</Typography>
           <Typography variant="body_short">Time:</Typography>
-          <Typography variant="body_short">{optimizationData.execution_time.toFixed(2)} sec</Typography>
+          <Typography variant="body_short">{optimizationData.executionTime.toFixed(2)} sec</Typography>
         </Grid>
       </Wrapper>
       <ExportButton fetched={true} loading={isLoading} optimizationData={optimizationData} productMap={products} />

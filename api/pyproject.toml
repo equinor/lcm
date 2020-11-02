@@ -17,6 +17,7 @@ swagger-ui-bundle = "0.0.8"
 azure-storage-blob = "^12.5.0"
 PyJWT = "^1.7.1"
 cachetools = "^4.1.1"
+matplotlib = "^3.3.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4"
