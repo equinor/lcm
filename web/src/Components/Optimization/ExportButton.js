@@ -34,7 +34,7 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
     var totalMass = 0
     if (products && products.length !== 0) {
       products.forEach(product => {
-        totalMass += product.sacks * productMap.get(product.id).sack_size
+        totalMass += product.sacks * productMap[product.id].sack_size
       })
     }
     return totalMass
@@ -57,7 +57,7 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
                     product =>
                       product.sacks !== 0 && (
                         <div>
-                          <Typography variant="body_short">{productMap.get(product.id).name}: </Typography>
+                          <Typography variant="body_short">{productMap[product.id].name}: </Typography>
                           <Typography variant="body_short">{product.sacks} sacks</Typography>
                         </div>
                       )

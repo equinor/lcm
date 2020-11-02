@@ -1,11 +1,13 @@
 from math import sqrt
 from typing import List
 
+
 from classes.product import Product
-from util.enums import BridgeOption
+from util.enums import bridge_mode_int, BridgeOption
 
 
 def theoretical_bridge(mode: str, value: int):
+    bridge_mode_int(mode)
     bridge_list = []
     d_value = 50
     bridge_input = value
@@ -28,12 +30,12 @@ def theoretical_bridge(mode: str, value: int):
 
 
 def calculate_blend_cumulative(product_list: List[Product]):
-    cumulative_curve = [0] * len(SIZE_STEPS)
+    cumulative_curve: List[float] = [0.0 for _ in SIZE_STEPS]
 
     for product in product_list:
         if product.share > 0:
-            for i in range(len(SIZE_STEPS)):
-                cumulative_curve[i] += round(product.share * product.cumulative[i], 3)
+            for i, _ in enumerate(SIZE_STEPS):
+                cumulative_curve[i] += product.share * product.cumulative[i]
 
     return cumulative_curve
 

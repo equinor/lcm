@@ -5,6 +5,7 @@ import { Card, Typography } from '@equinor/eds-core-react'
 import SolutionBarChart from './SolutionBarChart'
 import SolutionRadarChart from './SolutionRadarChart'
 import { Product } from '../../gen-api/src/models'
+import { Products } from '../../Types'
 
 const Grid = styled.div`
   height: auto;
@@ -19,7 +20,7 @@ const Grid = styled.div`
 
 interface SolutionVisualisationsProps {
   optimizationData: any
-  products: Map<string, Product>
+  products: Products
 }
 
 export const SolutionVisualisations = ({ optimizationData, products }: SolutionVisualisationsProps) => {

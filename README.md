@@ -5,6 +5,21 @@
 This is the result from the merger of the two summer intern projects from 2020.
  - Team Blend https://github.com/equinor/LCMLibrary-Blend
  - Team Bridge https://github.com/equinor/LCMLibrary-Bridge
+ 
+## Optimizer
+
+This part is based on a genetic algorithm, using a fitness function to score results. 
+The score is calculated like this;
+```python
+for theo, blend in zip(theoretical_bridge, experimental_bridge):
+    # Only weigh particles with size in range
+    if 80 > SIZE_STEPS[i] > 1:
+        # The deviation is squared to punish larger deviations
+        diff_list.append((theo - blend) ** 2)
+
+_mean = mean(diff_list)
+score = sqrt(_mean)
+```
 
 ## Requirements
 
