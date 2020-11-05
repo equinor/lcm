@@ -23,15 +23,13 @@ def optimizerRequestHandler(
         raise Exception("Missing 'value'")
 
     all_cumulative = all_cumulatives()
-    # all_distribution = all_distributions()
     products_with_values = []
 
-    # Add cumulative and distribution to each product
+    # Add cumulative to each product
     for id in products:
         try:
             product_dict = db.getMetadataFromID(id)
             product_dict["cumulative"] = all_cumulative[id]
-            # product_dict["distribution"] = all_distribution[id]
             product_dict["id"] = id
             products_with_values.append(product_dict)
         except KeyError:

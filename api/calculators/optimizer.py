@@ -7,18 +7,15 @@ from typing import List
 from numpy import mean, sqrt
 from calculators.bridge import calculate_blend_cumulative
 from classes.product import Product
+from tabulate import tabulate
 
 POPULATION_SIZE = 20
 NUMBER_OF_CHILDREN = 18
 NUMBER_OF_PARENTS = 2
-MUTATION_PROBABILITY = 20  # percent
-NUMBER_OF_MUTATIONS = 3
+MUTATION_PROBABILITY = 50  # percent
+NUMBER_OF_MUTATIONS = 30
 PRODUCTS_TO_BE_USED = 5
 MIN_MUTATOR_VALUE = 5
-
-TOLERANCE = 0.2
-
-products = []
 
 ENVIRONMENTAL_SCORE = {
     "GREEN": 100,
@@ -48,44 +45,38 @@ def optimize(
     start = datetime.now()
     max_number_of_sacks = (mass // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
 
-    graph_data = []
+    score_progress = []
+    combination_progress = [[0] for _ in products]
     population, children = initializePopulation(products, max_number_of_sacks)
     iterations = 0
-    fittest_combo, score = {}, 0
-    while iterations < max_iterations:
+    fittest_combo, score = {}, 100
+    for _ in range(max_iterations):
+        if _ % 100 == 0:
+            print(f"At iteration {_}...")
         parents = selectParents(population, bridge, products)
         children = crossover(parents, children, products)
         children = executeMutation(children)
         population = parents + children
         fittest_combo, score = optimal(population, bridge, products)
-        graph_data.append(score)
-        if score <= TOLERANCE:
-            print(f"Found optimal solution early with a score of {score}")
-            break
+        for i, _ in enumerate(products):
+            combination_progress[i].append(list(fittest_combo.values())[i])
+        score_progress.append(score)
 
-        iterations += 1
-
+    fittest_combo = {k: v for k, v in fittest_combo.items() if v > 0}
     used_products: List[Product] = []
-    for p in products:
-        if fittest_combo[p["id"]] > 0:
-            used_products.append(
-                Product(
-                    p["id"],
-                    p["title"],
-                    None,
-                    p["cumulative"],
-                )
-            )
-    for p in used_products:
-        p.add_shares_from_combination(fittest_combo)
+    for p in fittest_combo:
+        p_dict = next(x for x in products if x["id"] == p)
+        prod = Product(p_dict["id"], p_dict["title"], None, p_dict["cumulative"])
+        prod.add_shares_from_combination(fittest_combo)
+        used_products.append(prod)
 
     cumulative_bridge = calculate_blend_cumulative(product_list=used_products)
-    # distribution_bridge = calculate_blend_distribution(product_list=used_products)
     return {
         "combination": fittest_combo,
         "cumulative_bridge": cumulative_bridge,
         # "distribution_bridge": distribution_bridge,
-        "curve": graph_data,
+        "curve": score_progress,
+        "combination_progress": combination_progress,
         # "best_fit_score": best_fit_score,
         # "cost_score": cost_score,
         # "co2_score": co2_score,
@@ -103,19 +94,13 @@ def initializePopulation(products, max_number_of_sacks):
     children = []
 
     if PRODUCTS_TO_BE_USED < len(products):
-        id_list = []
+        id_list = [p["id"] for p in products]
 
-        for product in products:
-            id_list.append(product["id"])
-
-        for i in range(POPULATION_SIZE):
-            combo_dict = {}
-            for j in range(len(products)):
-                combo_dict[products[j]["id"]] = 0
-
+        for _ in range(POPULATION_SIZE):
+            combo_dict = {id: 0 for id in id_list}
             used_id_list = []
 
-            for i in range(PRODUCTS_TO_BE_USED):
+            for _ in range(PRODUCTS_TO_BE_USED):
                 id = random.choice(id_list)
                 while id in used_id_list:
                     id = random.choice(id_list)
@@ -265,7 +250,7 @@ def crossover(parents, children, products):
             children[NUMBER_OF_CHILDREN - 1] = first_child_dict
 
     else:
-        raise Exception("Why does this happen!?")
+        raise Exception("What does this happen!?")
         for i in range(NUMBER_OF_CHILDREN // 2):
             children[2 * i] = parents[0]
             children[2 * i + 1] = parents[1]

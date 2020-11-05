@@ -24,12 +24,14 @@ class OptimizerTest(unittest.TestCase):
     def test_deviation():
         products = product_data
         mass = 3500
-        max_iterations = 100
+        max_iterations = 5000
         bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
-        fig, (bridgeplot, alg_curve) = plt.subplots(2)
+        # Crate Matplotlib figure
+        fig, (bridgeplot, alg_curve, mix_plot) = plt.subplots(3)
         fig.set_size_inches(9.4, 9.4)
 
+        # Draw optimal bridge
         bridgeplot.set_title("Bridges")
         bridgeplot.set_xscale("log")
         bridgeplot.set_xlabel("Particle Size μm")
@@ -43,15 +45,21 @@ class OptimizerTest(unittest.TestCase):
         alg_curve.set_ylabel("Fitness %")
 
         result_list = []
-        for i in range(5):
+        for i in range(1):
             result = optimize(products, bridge, mass, max_iterations)
+            result["products"] = len(result["combination"])
             label = f"{i}-{round(result['score'],1)}"
             bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
             alg_curve.plot(result["curve"], label=label)
+            for prod in result["combination_progress"]:
+                mix_plot.plot(prod)
             result_list.append(result)
             print(f"Execution time: {result_list[-1]['execution_time']} seconds")
+            print(f"Number of products: {result['products']}")
+            print(f"Combination: {result['combination']}")
             print(f"Fitness: {result_list[-1]['score']}")
 
+        # Display plots
         bridgeplot.legend(loc="right", bbox_to_anchor=(1.13, 0.5))
         alg_curve.legend(loc="right", bbox_to_anchor=(1.13, 0.5))
         plt.subplots_adjust(right=0.9)
