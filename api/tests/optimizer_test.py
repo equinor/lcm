@@ -7,7 +7,6 @@ from matplotlib.ticker import ScalarFormatter
 
 from calculators.bridge import SIZE_STEPS, theoretical_bridge
 from calculators.optimizer import optimize
-from products_data import product_data
 from util.enums import BridgeOption
 
 
@@ -21,7 +20,10 @@ def values_within_deviation(array: List, deviation: float):
 
 class OptimizerTest(unittest.TestCase):
     @staticmethod
+    @unittest.skip("Can't commit this test data set")
     def test_deviation():
+        # TODO: Create a test_data_set that can be committed
+        from products_data import product_data
         products = product_data
         mass = 3500
         max_iterations = 5000
@@ -48,7 +50,7 @@ class OptimizerTest(unittest.TestCase):
         for i in range(1):
             result = optimize(products, bridge, mass, max_iterations)
             result["products"] = len(result["combination"])
-            label = f"{i}-{round(result['score'],1)}"
+            label = f"{i}-{round(result['score'], 1)}"
             bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
             alg_curve.plot(result["curve"], label=label)
             for prod in result["combination_progress"]:
