@@ -24,6 +24,7 @@ class OptimizerTest(unittest.TestCase):
     def test_deviation():
         # TODO: Create a test_data_set that can be committed
         from products_data import product_data
+
         products = product_data
         mass = 3500
         max_iterations = 5000

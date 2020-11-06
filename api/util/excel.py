@@ -1,7 +1,6 @@
 from typing import List
 
 import xlrd
-from pathlib import Path
 
 from xlrd.sheet import Sheet
 
@@ -29,12 +28,14 @@ def _find_column_index(sheet: Sheet, column_name: str) -> int:
     return distribution_index
 
 
-def get_excel_files(directory: str) -> List[Path]:
-    return [x for x in Path(directory).rglob("*") if x.is_file() and x.suffix == ".xlsx"]
-
-
-def read_excel_sheet(file_path: Path) -> Sheet:
-    absolute_path = str(file_path.absolute())
-    workbook = xlrd.open_workbook(absolute_path)
+def excel_raw_file_to_sheet(file: bytes) -> Sheet:
+    workbook = xlrd.open_workbook(file_contents=file)
     sheet = workbook.sheet_by_index(0)
     return sheet
+
+
+def sheet_to_bridge_dict(sheet: Sheet) -> dict:
+    return {
+        "cumulative": get_column_values(sheet, "Cumulative"),
+        "distribution": get_column_values(sheet, "Distribution"),
+    }

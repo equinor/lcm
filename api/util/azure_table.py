@@ -1,11 +1,13 @@
+import csv
+import json
 from datetime import datetime, timedelta
 from time import sleep
+from typing import io, List
 
 from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableService
-from xlrd.sheet import Sheet
 
-from util.excel import get_column_values
+from config import Config
 
 
 def _wait_for_table_to_be_created(table_service: TableService, table_name: str) -> bool:
@@ -45,10 +47,31 @@ def sanitize_row_key(value: str) -> str:
     return value.replace("/", "-").replace("\\", "-").replace("#", "").replace("?", "-").replace(" ", "").lower()
 
 
-def get_excel_entity(product_id: str, sheet: Sheet, column_name: str):
-    column_values = get_column_values(sheet, column_name)
-    return {
-        "PartitionKey": column_name,
-        "RowKey": sanitize_row_key(str(product_id)),
-        "Value": str(column_values),
-    }
+def get_service():
+    return TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
+
+
+def process_meta_blob(meta_file: io.TextIO) -> List[dict]:
+    reader = csv.DictReader(meta_file)
+
+    products = []
+    for row in reader:
+        products.append(
+            {
+                "PartitionKey": Config.PRODUCT_TABLE_NAME,
+                "RowKey": sanitize_row_key(row["title"]),
+                "id": sanitize_row_key(row["title"]),
+                **row,
+                # TODO: Prod data is missing co2 impact
+                "co2": row["co2"] if row["co2"] else 1000,
+                # TODO: Prod data is missing cost
+                "cost": row["cost"] if row["cost"] else 100,
+                # TODO: Prod data is missing Sack_size
+                "sack_size": row["sack_size"] if row["sack_size"] else 25,
+                # TODO: Why is 'environmental' read so strange from SharePoint?
+                "environmental": json.loads(row["environmental"])["Value"].upper()
+                if row["environmental"]
+                else "Green",
+            }
+        )
+    return products

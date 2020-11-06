@@ -3,8 +3,8 @@ import ast
 
 
 class Config:
-    TABEL_ACCOUNT_NAME = os.getenv("TABEL_ACCOUNT_NAME", "lcmdevstorage")
-    TABEL_KEY = os.getenv("TABEL_KEY")
+    TABLE_ACCOUNT_NAME = os.getenv("TABLE_ACCOUNT_NAME", "lcmdevstorage")
+    TABLE_KEY = os.getenv("TABLE_KEY")
     BLOB_CONTAINER_NAME = "lcm-file-blobs"
     LOAD_TEST_DATA = ast.literal_eval(os.getenv("LOAD_TEST_DATA", "False"))
     SYNC_BLOBS_APP_URL = os.getenv(
@@ -16,3 +16,4 @@ class Config:
     AUTH_JWK_URL = os.getenv("AUTH_JWK_URL", "https://login.microsoftonline.com/common/discovery/v2.0/keys")
     ROUNDING_DECIMALS = 3
     DEFAULT_MAX_ITERATIONS = 100
+    PRODUCT_TABLE_NAME = "products"

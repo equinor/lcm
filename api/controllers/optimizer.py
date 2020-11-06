@@ -1,10 +1,7 @@
-from flask import Response
-
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import optimize
-from util import DatabaseOperations as db
-from util.DatabaseOperations import all_cumulatives
-from util.enums import bridge_mode_int, BridgeOption
+from controllers.products import products_get
+from util.enums import bridge_mode_int
 
 
 def optimizerRequestHandler(
@@ -15,40 +12,10 @@ def optimizerRequestHandler(
     option="AVERAGE_PORESIZE",
 ):
     print("Started optimization request...")
-    missing_product_list = []
-
-    if value:
-        bridge = theoretical_bridge(bridge_mode_int(option), value)
-    else:
-        raise Exception("Missing 'value'")
-
-    all_cumulative = all_cumulatives()
-    products_with_values = []
-
-    # Add cumulative to each product
-    for id in products:
-        try:
-            product_dict = db.getMetadataFromID(id)
-            product_dict["cumulative"] = all_cumulative[id]
-            product_dict["id"] = id
-            products_with_values.append(product_dict)
-        except KeyError:
-            print(f"Product with ID '{id}' is missing or has a different name")
-            missing_product_list.append(id)
-            continue
-
-    if not products_with_values:
-        missing_message = f"These products where missing; {missing_product_list}" if missing_product_list else ""
-        return Response(f"No products selected or they were missing\n{missing_message}", 400)
-
-    optimizer_result = optimize(products=products_with_values, bridge=bridge, mass=mass_goal)
-
+    bridge = theoretical_bridge(bridge_mode_int(option), value)
+    selected_products = [p for p in products_get().values() if p["id"] in products]
+    optimizer_result = optimize(products=selected_products, bridge=bridge, mass=mass_goal)
     combination = optimizer_result["combination"]
-
-    mass_sum = 0
-    for product in products_with_values:
-        product["mass"] = int(combination[product["id"]]) * product["sack_size"]
-        mass_sum += product["mass"]
 
     return {
         "name": blend_name,
@@ -61,9 +28,7 @@ def optimizerRequestHandler(
             # "enviromental": round(enviromental_score, Config.ROUNDING_DECIMALS),
         },
         "cumulative": optimizer_result["cumulative_bridge"],
-        # "distribution": optimizer_result["distribution_bridge"],
         "executionTime": optimizer_result["execution_time"],
         "iterations": optimizer_result["iterations"],
         "fitness": optimizer_result["score"],
-        "missingProducts": missing_product_list,
     }

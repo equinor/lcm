@@ -4,7 +4,7 @@ import OptimizationContainer from './Optimization/OptimizationContainer'
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion } from '@equinor/eds-core-react'
-import { OptimizerAPI, Requests } from '../Api'
+import { BridgeAPI, CombinationAPI, OptimizerAPI, Requests } from '../Api'
 // @ts-ignore
 import { isEqual, cloneDeep, omit } from 'lodash'
 import { AuthContext } from '../Auth/AuthProvider'
@@ -71,8 +71,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   useEffect(() => {
     // @ts-ignore
     if (!bridgeValue >= 1) return
-    OptimizerAPI.postOptimizerApi(apiToken, {
-      request: Requests.BRIDGE,
+    BridgeAPI.postBridgeApi(apiToken, {
       option: mode,
       value: bridgeValue,
     })
@@ -101,18 +100,10 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       // If the combination changed, fetch a new bridge
       if (!isEqual(lastCombinations[combination.id], combination)) {
         setIsLoading(true)
-        OptimizerAPI.postOptimizerApi(apiToken, {
-          request: Requests.MIX_PRODUCTS,
-          products: Object.values(combination.values),
-        })
+        CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
           .then(response => {
             setIsLoading(false)
-            if (response.data.missing.length) {
-              let message = 'Some requested products where missing or has a name mismatch;'
-              response.data.missing.forEach((missingProd: string) => (message += `\n - ${missingProd}`))
-              alert(message)
-            }
-            setBridges({ ...bridges, [combination.name]: response.data.cumulative })
+            setBridges({ ...bridges, [combination.name]: response.data.bridge })
           })
           .catch(() => setIsLoading(false))
       }

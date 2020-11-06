@@ -1,9 +1,12 @@
+from typing import List
+
+
 class Product:
-    def __init__(self, product_id, name, share, cumulative):
+    def __init__(self, product_id: str, share: float, cumulative: List[float], name=""):
         self.product_id = product_id
-        self.name = name
         self.share = share
         self.cumulative = cumulative
+        self.name = name
 
     def add_shares_from_combination(self, combination: dict):
         only_positive = {k: v for k, v in combination.items() if v > 0}
