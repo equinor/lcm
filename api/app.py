@@ -5,30 +5,17 @@ from azure.common import AzureMissingResourceHttpError
 from flask import abort, jsonify, request, Response
 from flask_cors import CORS
 
-from calculators import Blend, Bridge
+from calculators.bridge import calculate_blend_cumulative, theoretical_bridge
+from classes.product import Product
 from config import Config
 from controllers.optimizer import optimizerRequestHandler
 from controllers.products import products_get
 from util import DatabaseOperations as db
 from util.authentication import authorize
-from util.Classes import Mode, Product
+from util.enums import bridge_mode_int
 from util.load_data import sync_all
 
-METADATA_TABLE_NAME = "Metadata"
-BLEND_REQUEST = "MIX_PRODUCTS"  # Get Blend Mix
-BRIDGE_REQUEST = "BRIDGE"  # Get the Optimal Bridge
-OPTIMIZER_REQUEST = "OPTIMAL_MIX"  # Get the Optimal Blend Mix calculated by the Optimizer
-
-PRODUCT_ID_REQUEST = "PRODUCT"  # Get all metadata for specific product based on ID
-SIZE_STEPS_REQUEST = "SIZE_FRACTIONS"  # Get all the size steps
-SPELLING_ERROR = "ENVIROMENTAL_IMPACT"  # Spelling error in SharePoint
 ROUNDING_DECIMALS = 3
-DEFAULT_MAX_ITERATIONS = 100
-
-# These are all the options for the Bridge calculator
-MAXIMUM_PORESIZE_OPTION = "MAXIMUM_PORESIZE"
-AVERAGE_PORESIZE_OPTION = "AVERAGE_PORESIZE"
-PERMEABILITY_OPTION = "PERMEABILITY"
 
 
 def init_api():
@@ -82,39 +69,25 @@ def main():
             print("####################")
             requst_ = req_body.get("request")
 
-    if requst_ == BLEND_REQUEST:
+    if requst_ == "MIX_PRODUCTS":
         return blendRequestHandler(request.json.get("products"))
 
-    elif requst_ == BRIDGE_REQUEST:
+    elif requst_ == "BRIDGE":
         return bridgeRequestHandler(request.json.get("option"), request.json.get("value"))
 
-    elif requst_ == OPTIMIZER_REQUEST:
+    elif requst_ == "OPTIMAL_MIX":
         value = request.json.get("value")
         name = request.json.get("name")
         products = request.json.get("products")
         mass = request.json.get("mass")
-        weights = request.json.get("weights")
-        environmental = request.json.get("environmental")
         option = request.json.get("option")
-        iterations = request.json.get("max_iterations")
-        size_step = request.json.get("size_steps_filter")
 
-        return optimizerRequestHandler(
-            value,
-            name,
-            products,
-            mass,
-            weights,
-            environmental,
-            option,
-            iterations,
-            size_step,
-        )
+        return optimizerRequestHandler(value, name, products, mass, option)
 
-    elif requst_ == PRODUCT_ID_REQUEST:
+    elif requst_ == "PRODUCT":
         return productRequestHandler(request.json.get("id"), request.json.get("metadata"))
 
-    elif requst_ == SIZE_STEPS_REQUEST:
+    elif requst_ == "SIZE_FRACTIONS":
         return sizeStepsRequestHandler()
 
     elif requst_:
@@ -143,21 +116,12 @@ def blendRequestHandler(products):
 
             try:
                 cumulative = db.getCumulative(product["id"])
-                distribution = db.getCumulative(product["id"])
             except AzureMissingResourceHttpError as e:
                 print(e)
                 missing_products.append(product["id"])
                 continue
 
-            product_list.append(
-                Product(
-                    product["id"],
-                    "",
-                    float(product["percentage"]) / 100.0,
-                    cumulative,
-                    distribution,
-                )
-            )
+            product_list.append(Product(product["id"], "", float(product["percentage"]) / 100.0, cumulative))
 
         percent_sum = int(round(percent_sum))
 
@@ -168,19 +132,10 @@ def blendRequestHandler(products):
         print(e)
         return jsonify(e), 400
 
-    size_steps = db.getSizeSteps()
-    try:
-        cumulative, distribution = Blend.calculateBlendDistribution(product_list, size_steps)
-    except Exception as e:
-        return jsonify(e), 400
-
-    response_dict = {
-        "cumulative": [round(num, ROUNDING_DECIMALS) for num in cumulative],
-        "distribution": [round(num, ROUNDING_DECIMALS) for num in distribution],
+    return {
+        "cumulative": calculate_blend_cumulative(product_list),
         "missing": missing_products,
     }
-
-    return response_dict
 
 
 # Bridge handler. This function takes the HttpRequest
@@ -189,31 +144,9 @@ def blendRequestHandler(products):
 def bridgeRequestHandler(option, value):
     if not value or not option:
         return Response("No options or value given!", 400)
-
-    error_list = []
-    mode = None
-    if option:
-        if option == MAXIMUM_PORESIZE_OPTION:
-            mode = Mode.Maximum_Poresize
-        elif option == AVERAGE_PORESIZE_OPTION:
-            mode = Mode.Average_Poresize
-        elif option == PERMEABILITY_OPTION:
-            mode = Mode.Permeability
-        else:
-            error_list.append("Invalid 'option' input")
-
-    if error_list:
-        return jsonify({"Error": error_list}), 400
-
-    size_steps = db.getSizeSteps()
-
-    try:
-        bridge = Bridge.calculateBridgeDistribution(mode, value, size_steps)
-    except Exception as e:
-        return jsonify(e), 400
-
+    mode = bridge_mode_int(option)
+    bridge = theoretical_bridge(mode, value)
     response_dict = {"bridge": [round(num, ROUNDING_DECIMALS) for num in bridge]}
-
     return response_dict
 
 

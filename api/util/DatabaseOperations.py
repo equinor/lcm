@@ -166,6 +166,22 @@ def getCumulative(id):
     return [float(i) for i in as_list]
 
 
+def all_cumulatives():
+    cumulatives = {}
+    for cumulative in get_service().query_entities(CUMULATIVE_TABLE_NAME):
+        # Remove [ and ] from the str repr of the list
+        cumulatives[cumulative.RowKey] = [float(i) for i in cumulative.Value.strip("[]").split(", ")]
+    return cumulatives
+
+
+def all_distributions():
+    distributions = {}
+    for dist in get_service().query_entities(DISTRIBUTION_TABLE_NAME):
+        # Remove [ and ] from the str repr of the list
+        distributions[dist.RowKey] = [float(i) for i in dist.Value.strip("[]").split(", ")]
+    return distributions
+
+
 # This function gets the particle size distribution (PSD)
 # of a product based on its id, and returns it as a list.
 def getDistribution(id):

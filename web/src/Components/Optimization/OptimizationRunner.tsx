@@ -94,6 +94,7 @@ const OptimizationRunner = ({
         handleUpdate(response.data)
       })
       .catch(error => {
+        console.log(error)
         setLoading(false)
         setFailedRun(true)
         if (error.response.status === 400) alert(error.response.data)
@@ -111,7 +112,8 @@ const OptimizationRunner = ({
         {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
       </div>
       <div>
-        <WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />
+        {/* Disabled until supported in API and the needed data is available*/}
+        {/*<WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />*/}
       </div>
     </>
   )

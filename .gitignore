@@ -4,3 +4,4 @@ web/node_modules
 **/__pycache__/**
 log.txt
 .env
+api/tests/products_data.py

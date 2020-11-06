@@ -44,6 +44,7 @@ export const OptimizationContainer = ({
 
   const handleUpdate = (optimizationData: any) => {
     setOptimizationData(optimizationData)
+    console.log(optimizationData)
 
     // TODO: Get this interface through OpenAPI
     let productResults: Array<ProductResult> = optimizationData.products
@@ -70,7 +71,12 @@ export const OptimizationContainer = ({
     }
 
     const datetime = new Date()
-    const name = `Optimized at ${datetime.getHours().toString().padStart(2, '0')}:${datetime.getMinutes().toString()
+    const name = `Optimized at ${datetime
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${datetime
+      .getMinutes()
+      .toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
 
     addCombination(name, true, values)

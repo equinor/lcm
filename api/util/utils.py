@@ -7,3 +7,10 @@ def getMaxAndMinValues(products):
 
 def get_min_max_diff(max, min):
     return max - min if max - min != 0 else 1
+
+
+def normalize_0_100(var):
+    if var < 0:
+        return 0
+    elif var > 100:
+        return 100
