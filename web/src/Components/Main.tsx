@@ -13,6 +13,7 @@ import { Product } from '../gen-api/src/models'
 import { v4 as uuidv4 } from 'uuid'
 import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
 import { AuthContext } from '../Auth/AuthProvider'
+import { Products } from '../Types'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -53,7 +54,7 @@ export default (): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [sideSheet, setSideSheet] = useState<boolean>(false)
   const storedEnabledProducts = JSON.parse(localStorage.getItem('enabledProducts') || '[]')
-  const [products, setProducts] = useState<Map<string, Product>>(new Map())
+  const [products, setProducts] = useState<Products>({})
   const [enabledProducts, setEnabledProducts] = useState<Array<string>>(storedEnabledProducts || [])
   const apiToken: string = useContext(AuthContext).token
 
@@ -62,8 +63,7 @@ export default (): ReactElement => {
     setIsLoading(true)
     ProductsAPI.getProductsApi(apiToken)
       .then(response => {
-        let products = response.data.reduce((map: any, obj: Product) => ({ ...map, [obj.id]: obj }), {})
-        setProducts(products)
+        setProducts(response.data)
         setIsLoading(false)
       })
       .catch(e => {

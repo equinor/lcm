@@ -2,11 +2,12 @@ import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Table } from '@equinor/eds-core-react'
 import { Product } from '../../gen-api/src/models'
+import { Products } from '../../Types'
 
 const { Body, Row, Cell, Head } = Table
 
 interface ProductTableProps {
-  products: any // TODO: fix better type
+  products: Products
   enabledProducts: Array<string>
 }
 
@@ -32,8 +33,7 @@ export const ProductTable = ({ enabledProducts, products }: ProductTableProps): 
               {productList.map(product =>
                 enabledProducts.includes(product['id']) ? (
                   <Row key={`${product.id}-${product.supplier}`}>
-                    {/*// @ts-ignore*/}
-                    <Cell>{product.name}</Cell>
+                    <Cell>{product.title}</Cell>
                     <Cell>{product.supplier}</Cell>
                   </Row>
                 ) : null

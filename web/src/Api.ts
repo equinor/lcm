@@ -1,17 +1,26 @@
 import axios from 'axios'
 
 const BASE_PATH = '/api'
-// const APIConfiguration = new Configuration({ basePath: BASE_PATH, accessToken: '' })
 
 export enum Requests {
   SIZE_FRACTIONS = 'SIZE_FRACTIONS',
-  BRIDGE = 'BRIDGE',
-  MIX_PRODUCTS = 'MIX_PRODUCTS',
 }
 
 class OptimizerApi {
   async postOptimizerApi(token: string, data: any) {
     return axios.post(BASE_PATH, data, { headers: { Authorization: `Bearer ${token}` } })
+  }
+}
+
+class CombinationApi {
+  async postCombinationApi(token: string, data: any) {
+    return axios.post(`${BASE_PATH}/combination`, data, { headers: { Authorization: `Bearer ${token}` } })
+  }
+}
+
+class BridgeApi {
+  async postBridgeApi(token: string, data: any) {
+    return axios.post(`${BASE_PATH}/bridge`, data, { headers: { Authorization: `Bearer ${token}` } })
   }
 }
 
@@ -29,4 +38,6 @@ class ProductsApi {
 
 export const ProductsAPI = new ProductsApi()
 export const OptimizerAPI = new OptimizerApi()
+export const BridgeAPI = new BridgeApi()
+export const CombinationAPI = new CombinationApi()
 export const SyncAPI = new SyncApi()

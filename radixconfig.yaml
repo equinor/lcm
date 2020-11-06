@@ -25,7 +25,7 @@ spec:
           port: 5000
       publicPort: flask
       secrets:
-        - TABEL_KEY
+        - TABLE_KEY
 
     - name: proxy
       src: ./nginx/

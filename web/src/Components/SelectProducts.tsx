@@ -3,13 +3,7 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { Checkbox, LinearProgress, Chip } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
-import { Product } from '../gen-api/src/models'
-
-const List = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-`
+import { Products, Product } from '../Types'
 
 const ChipBox = styled.div`
   display: flex;
@@ -19,7 +13,7 @@ const ChipBox = styled.div`
 
 interface SelectProductsProps {
   loading: boolean
-  products: any // TODO: fix better type
+  products: Products
   enabledProducts: Array<string>
   setEnabledProducts: Function
 }
@@ -91,27 +85,30 @@ export const SelectProducts = ({
         })}
       </ChipBox>
 
-      <List>
+      <div>
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
         {productList.map((product, key) => {
-          // @ts-ignore
           if (!selectedSuppliers.includes(product.supplier)) return null
-          // @ts-ignore
-          const label = product.name + ', ' + product.supplier
+          const label = product.title + ', ' + product.supplier
           const isChecked = enabledProducts.includes(product.id)
+          const disabled = product.cumulative == null
           return (
-            <li key={key}>
+            <div key={key} style={{ display: 'flex', flexDirection: 'row' }}>
               <Checkbox
                 checked={isChecked}
                 onChange={() => handleProductToggle(product.id)}
                 label={label}
+                disabled={disabled}
                 name="multiple"
                 value="first"
               />
-            </li>
+              {disabled && (
+                <small style={{ color: 'red', alignSelf: 'center', paddingLeft: '10px' }}> Missing bridge data</small>
+              )}
+            </div>
           )
         })}
-      </List>
+      </div>
     </>
   )
 }

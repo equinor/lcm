@@ -4,10 +4,12 @@
 import random
 from datetime import datetime
 from typing import List
+
 from numpy import mean, sqrt
+
 from calculators.bridge import calculate_blend_cumulative
 from classes.product import Product
-from tabulate import tabulate
+from util.utils import print_progress
 
 POPULATION_SIZE = 20
 NUMBER_OF_CHILDREN = 18
@@ -49,32 +51,20 @@ def optimize(
     combination_progress = [[0] for _ in products]
     population, children = initializePopulation(products, max_number_of_sacks)
     iterations = 0
-    fittest_combo, score = {}, 100
-    for _ in range(max_iterations):
-        if _ % 100 == 0:
-            print(f"At iteration {_}...")
+    fittest_combo, score, experimental_bridge = {}, 100, []
+    for i in range(max_iterations):
+        print_progress(i, max_iterations)
         parents = selectParents(population, bridge, products)
         children = crossover(parents, children, products)
         children = executeMutation(children)
         population = parents + children
-        fittest_combo, score = optimal(population, bridge, products)
+        score, fittest_combo, experimental_bridge = optimal(population, bridge, products)
         for i, _ in enumerate(products):
             combination_progress[i].append(list(fittest_combo.values())[i])
         score_progress.append(score)
-
-    fittest_combo = {k: v for k, v in fittest_combo.items() if v > 0}
-    used_products: List[Product] = []
-    for p in fittest_combo:
-        p_dict = next(x for x in products if x["id"] == p)
-        prod = Product(p_dict["id"], p_dict["title"], None, p_dict["cumulative"])
-        prod.add_shares_from_combination(fittest_combo)
-        used_products.append(prod)
-
-    cumulative_bridge = calculate_blend_cumulative(product_list=used_products)
     return {
         "combination": fittest_combo,
-        "cumulative_bridge": cumulative_bridge,
-        # "distribution_bridge": distribution_bridge,
+        "cumulative_bridge": experimental_bridge,
         "curve": score_progress,
         "combination_progress": combination_progress,
         # "best_fit_score": best_fit_score,
@@ -127,28 +117,22 @@ def initializePopulation(products, max_number_of_sacks):
 def fitness_score(combination: dict, theoretical_bridge: List[float], products_list: dict):
     products: List[Product] = []
 
+    sum_sacks = 100 / sum(combination.values())
     for p in products_list:
         if combination[p["id"]] > 0:
             products.append(
-                Product(
-                    p["id"],
-                    p["title"],
-                    None,
-                    p["cumulative"],
-                )
+                Product(product_id=p["id"], share=(sum_sacks * combination[p["id"]]) / 100, cumulative=p["cumulative"])
             )
-    for p in products:
-        p.add_shares_from_combination(combination)
 
     # sum((PSD(blend)-PSD(optimal blend))^2)
-    blend_bridge_cumulative = calculate_blend_cumulative(products)
+    experimental_bridge = calculate_blend_cumulative(products)
     diff_list = []
-    for theo, blend in zip(theoretical_bridge, blend_bridge_cumulative):
+    for theo, blend in zip(theoretical_bridge, experimental_bridge):
         # Bigger deviations from ideal has a bigger penalty than smaller ones
         diff_list.append((abs(theo - blend) ** 2))
     _mean = mean(diff_list)
     score = sqrt(_mean)
-    return score
+    return score, experimental_bridge
 
 
 # # This function uses the fitnessFunction
@@ -175,17 +159,13 @@ def fitness_score(combination: dict, theoretical_bridge: List[float], products_l
 # and finds the combination with the best
 # fitness value and returns that combination.
 def optimal(population, bridge, products):
-    fitness = []
-    fit_dict = {}
-
+    results = []
     for combination in population:
-        this_fitness = fitness_score(combination, bridge, products)
-        fitness.append(this_fitness)
-        fit_dict[this_fitness] = combination
+        score, exp_bridge = fitness_score(combination, bridge, products)
+        results.append({"score": score, "combination": combination, "bridge": exp_bridge})
 
-    fitness.sort()
-
-    return fit_dict[fitness[0]], fitness[0]
+    results.sort(key=lambda r: (r["score"]))
+    return results[0]["score"], results[0]["combination"], results[0]["bridge"]
 
 
 # This function selects the 2 best combinations based
@@ -195,9 +175,9 @@ def selectParents(population, bridge, products):
     fit_dict = {}
 
     for combination in population:
-        this_fitness = fitness_score(combination, bridge, products)
-        fitness.append(this_fitness)
-        fit_dict[this_fitness] = combination
+        score, _ = fitness_score(combination, bridge, products)
+        fitness.append(score)
+        fit_dict[score] = combination
 
     fitness.sort()
 

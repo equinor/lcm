@@ -18,8 +18,7 @@ services:
     environment:
       ENVIRONMENT: development
       FLASK_ENV: development
-      TABEL_KEY: ${TABEL_KEY}
-      LOAD_TEST_DATA: "False"
+      TABLE_KEY: ${TABLE_KEY}
     ports:
       - "5000:5000"
     volumes:
