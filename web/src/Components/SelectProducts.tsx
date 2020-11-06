@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
-import { Checkbox, LinearProgress, Chip } from '@equinor/eds-core-react'
+import { Checkbox, LinearProgress, Chip, Switch } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
 import { Products, Product } from '../Types'
@@ -65,9 +65,25 @@ export const SelectProducts = ({
     }
   }
 
+  function handleAllToggle(event: any) {
+    if (event.target.checked) {
+      setSelectedSuppliers(suppliers)
+      let notMissing = productList.filter(p => p.cumulative !== null)
+      let justIds = notMissing.map(p => p.id)
+      setEnabledProducts(justIds)
+    } else {
+      setEnabledProducts([])
+      setSelectedSuppliers([])
+    }
+  }
+
   if (loading) return <LinearProgress />
+
   return (
     <>
+      <div style={{ textAlign: 'end', paddingBottom: '5px' }}>
+        <Switch label="Select all" onClick={(e: any) => handleAllToggle(e)} />
+      </div>
       <ChipBox>
         {suppliers.map((supplier: string) => {
           let active = 'default'
@@ -84,7 +100,6 @@ export const SelectProducts = ({
           )
         })}
       </ChipBox>
-
       <div>
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
         {productList.map((product, key) => {

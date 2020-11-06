@@ -61,4 +61,4 @@ def sync_all():
     sleep(30)
     sync_excel_blobs_and_az_tables()
     end = datetime.now() - start
-    print(f"The sync took {end}")
+    print(f"The sync took {end.seconds} seconds")

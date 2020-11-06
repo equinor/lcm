@@ -1,6 +1,3 @@
-# This module contains functions for performing an
-# optimization of LCM blends based on input products,
-# weights and a bridge.
 import random
 from datetime import datetime
 from typing import List
@@ -42,8 +39,6 @@ def optimize(
     mass: int,
     max_iterations: int = 100,
 ):
-    # weights = [W_B, W_C, W_E, W_M], MaxAnMinList =[MAX_COST, MIN_COS, MAX_CO2, MIN_CO2]
-
     start = datetime.now()
     max_number_of_sacks = (mass // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
 
@@ -67,10 +62,6 @@ def optimize(
         "cumulative_bridge": experimental_bridge,
         "curve": score_progress,
         "combination_progress": combination_progress,
-        # "best_fit_score": best_fit_score,
-        # "cost_score": cost_score,
-        # "co2_score": co2_score,
-        # "environmental_score": environmental_score,
         "execution_time": (datetime.now() - start).seconds,
         "iterations": iterations,
         "score": score,
@@ -133,26 +124,6 @@ def fitness_score(combination: dict, theoretical_bridge: List[float], products_l
     _mean = mean(diff_list)
     score = sqrt(_mean)
     return score, experimental_bridge
-
-
-# # This function uses the fitnessFunction
-# # to check if the current population contains
-# # a combination that has a fitness value
-# # lower than the given tolerance.
-# def optimalFound(population, bridge, products):
-#     best_fit = 0
-#     for combination in population:
-#         fitness = fitness_score(combination, bridge, products)
-#         if fitness > best_fit:
-#             best_fit = fitness
-#
-#         if best_fit <= TOLERANCE:
-#             print(f"Found optimal solution with a score of {best_fit}")
-#             return True
-#
-#     MY_TEST.append(best_fit)
-#
-#     return False
 
 
 # This function takes the population as input
