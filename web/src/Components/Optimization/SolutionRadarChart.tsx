@@ -18,7 +18,7 @@ export const SolutionRadarChart = ({ optimizationData }: SolutionRadarChartProps
     { name: 'Cost', value: optimizationData.performance['cost'] },
     { name: 'CO2', value: optimizationData.performance['co2'] },
     { name: 'Mass', value: optimizationData.performance['mass_fit'] },
-    { name: 'Env.', value: optimizationData.performance['enviromental'] },
+    { name: 'Env.', value: optimizationData.performance['environmental'] },
   ]
   return (
     <RadarChart cx={150} cy={150} outerRadius={100} width={300} height={300} data={graphData}>

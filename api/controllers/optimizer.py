@@ -1,3 +1,5 @@
+from typing import List
+
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import optimize
 from controllers.products import products_get
@@ -12,23 +14,35 @@ def optimizerRequestHandler(
     option="AVERAGE_PORESIZE",
 ):
     print("Started optimization request...")
-    bridge = theoretical_bridge(bridge_mode_int(option), value)
+    bridge = theoretical_bridge(option, value)
     selected_products = [p for p in products_get().values() if p["id"] in products]
     optimizer_result = optimize(products=selected_products, bridge=bridge, mass=mass_goal)
     combination = optimizer_result["combination"]
 
+    total_mass: float = 0.0
+    for product_name, sacks in combination.items():
+        sack_size = next((p["sack_size"] for p in selected_products))
+        total_mass += sacks * sack_size
+
     return {
         "name": blend_name,
-        "products": [{"id": id, "sacks": combination[id]} for id in combination if combination[id] > 0],
+        "config": {"iterations": optimizer_result["iterations"], "value": value, "mode": option},
+        "products": {id: {"id": id, "value": combination[id]} for id in combination},
         "performance": {
-            # "best_fit": round(best_fit_score, Config.ROUNDING_DECIMALS),
-            # "mass_fit": round(mass_score, Config.ROUNDING_DECIMALS),
-            # "cost": round(cost_score, Config.ROUNDING_DECIMALS),
-            # "co2": round(co2_score, Config.ROUNDING_DECIMALS),
-            # "enviromental": round(enviromental_score, Config.ROUNDING_DECIMALS),
+            "best_fit": 0.5,
+            "mass_fit": 0.5,
+            "cost": 0.5,
+            "co2": 0.5,
+            "environmental": 0.5,
         },
+        "totalMass": total_mass,
         "cumulative": optimizer_result["cumulative_bridge"],
-        "executionTime": optimizer_result["execution_time"],
-        "iterations": optimizer_result["iterations"],
+        "executionTime": optimizer_result["execution_time"].seconds,
         "fitness": optimizer_result["score"],
+        "weighting": {
+            "bridge": 0.5,
+            "cost": 0.5,
+            "co2": 0.5,
+            "environmental": 0.5,
+        },
     }

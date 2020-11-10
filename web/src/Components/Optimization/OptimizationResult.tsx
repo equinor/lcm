@@ -1,26 +1,21 @@
 import React, { ReactElement } from 'react'
 import SolutionData from './SolutionData'
 import SolutionVisualisations from './SolutionVisualisations'
-import { Product } from '../../gen-api/src/models'
+import { Products } from '../../Types'
 
 interface OptimizationResultProps {
-  products: Map<string, Product>
+  products: Products
   mode: string
   value: number
-  isLoading: boolean
   optimizationData: any
 }
 
-export const OptimizationResult = ({
-  products,
-  isLoading,
-  optimizationData,
-}: OptimizationResultProps): ReactElement => {
-  if (!optimizationData || isLoading) return <div></div>
+export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps): ReactElement => {
+  if (!optimizationData) return <div />
 
   return (
     <>
-      <SolutionData products={products} isLoading={isLoading} optimizationData={optimizationData} />
+      <SolutionData products={products} optimizationData={optimizationData} />
       <SolutionVisualisations products={products} optimizationData={optimizationData} />
     </>
   )

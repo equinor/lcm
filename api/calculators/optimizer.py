@@ -2,11 +2,10 @@ import random
 from datetime import datetime
 from typing import List
 
-from numpy import mean, sqrt
+import numpy as np
 
-from calculators.bridge import calculate_blend_cumulative
+from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS
 from classes.product import Product
-from util.utils import print_progress
 
 POPULATION_SIZE = 20
 NUMBER_OF_CHILDREN = 18
@@ -43,26 +42,26 @@ def optimize(
     max_number_of_sacks = (mass // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
 
     score_progress = []
-    combination_progress = [[0] for _ in products]
+    # combination_progress = [[0] for _ in products]
     population, children = initializePopulation(products, max_number_of_sacks)
     iterations = 0
     fittest_combo, score, experimental_bridge = {}, 100, []
-    for i in range(max_iterations):
-        print_progress(i, max_iterations)
+    for _ in range(max_iterations):
         parents = selectParents(population, bridge, products)
         children = crossover(parents, children, products)
         children = executeMutation(children)
         population = parents + children
         score, fittest_combo, experimental_bridge = optimal(population, bridge, products)
-        for i, _ in enumerate(products):
-            combination_progress[i].append(list(fittest_combo.values())[i])
+        # for i, _ in enumerate(products):
+        #     combination_progress[i].append(list(fittest_combo.values())[i])
         score_progress.append(score)
+
     return {
-        "combination": fittest_combo,
+        "combination": {k: v for k, v in fittest_combo.items() if v > 0},
         "cumulative_bridge": experimental_bridge,
         "curve": score_progress,
-        "combination_progress": combination_progress,
-        "execution_time": (datetime.now() - start).seconds,
+        # "combination_progress": combination_progress,
+        "execution_time": (datetime.now() - start),
         "iterations": iterations,
         "score": score,
     }
@@ -106,23 +105,29 @@ def initializePopulation(products, max_number_of_sacks):
 
 
 def fitness_score(combination: dict, theoretical_bridge: List[float], products_list: dict):
-    products: List[Product] = []
+    try:
+        # We are not in control of the combination values, so they could be zero
+        sum_sacks = 100 / sum(combination.values())
+    except ZeroDivisionError:
+        sum_sacks = 0
 
-    sum_sacks = 100 / sum(combination.values())
+    products: List[Product] = []
     for p in products_list:
         if combination[p["id"]] > 0:
             products.append(
                 Product(product_id=p["id"], share=(sum_sacks * combination[p["id"]]) / 100, cumulative=p["cumulative"])
             )
 
-    # sum((PSD(blend)-PSD(optimal blend))^2)
     experimental_bridge = calculate_blend_cumulative(products)
     diff_list = []
+    i = 0
     for theo, blend in zip(theoretical_bridge, experimental_bridge):
-        # Bigger deviations from ideal has a bigger penalty than smaller ones
-        diff_list.append((abs(theo - blend) ** 2))
-    _mean = mean(diff_list)
-    score = sqrt(_mean)
+        if 80 > SIZE_STEPS[i] > 1:
+            diff_list.append((theo - blend) ** 2)
+        i += 1
+
+    _mean = np.mean(diff_list)
+    score = np.sqrt(_mean)
     return score, experimental_bridge
 
 
@@ -170,13 +175,9 @@ def crossover(parents, children, products):
     if len(first_parent_ids) > 1:
         for i in range(NUMBER_OF_CHILDREN // 2):
             cross_point = random.randint(1, number_of_products - 1)
-
             first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
-
             second_child_id_list = second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
-
             first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-
             second_child_sacks_list = second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
 
             first_child_dict = {}
@@ -202,12 +203,12 @@ def crossover(parents, children, products):
 
     else:
         raise Exception("What does this happen!?")
-        for i in range(NUMBER_OF_CHILDREN // 2):
-            children[2 * i] = parents[0]
-            children[2 * i + 1] = parents[1]
-
-        if NUMBER_OF_CHILDREN % 2 != 0:
-            children[NUMBER_OF_CHILDREN - 1] = parents[0]
+        # for i in range(NUMBER_OF_CHILDREN // 2):
+        #     children[2 * i] = parents[0]
+        #     children[2 * i + 1] = parents[1]
+        #
+        # if NUMBER_OF_CHILDREN % 2 != 0:
+        #     children[NUMBER_OF_CHILDREN - 1] = parents[0]
 
     return children
 
@@ -247,18 +248,13 @@ def inverseMutation(child):
                 x -= 1
                 y -= 1
             child_sacks[x], child_sacks[y] = child_sacks[y], child_sacks[x]
-
         elif x < y:
             toReverse = child_sacks[x:y]
-
             toReverse.reverse()
-
             child_sacks[x:y] = toReverse
         else:
             toReverse = child_sacks[y:x]
-
             toReverse.reverse()
-
             child_sacks[y:x] = toReverse
 
         new_child = {}

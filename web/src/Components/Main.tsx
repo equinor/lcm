@@ -8,7 +8,6 @@ import { Button, Icon, SideSheet, TopBar } from '@equinor/eds-core-react'
 import SelectProducts from './SelectProducts'
 import RefreshButton from './RefreshButton'
 import { ProductsAPI } from '../Api'
-import { Product } from '../gen-api/src/models'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'

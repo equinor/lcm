@@ -1,11 +1,11 @@
 import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components'
-import { Product } from '../../gen-api/src/models'
 import OptimizationRunner from './OptimizationRunner'
 import OptimizationResult from './OptimizationResult'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 import { Combinations, Combination, ProductsInCombination } from '../CombinationsWrapper'
+import { Products } from '../../Types'
 
 const Grid = styled.div`
   height: auto;
@@ -18,7 +18,7 @@ const Grid = styled.div`
 `
 
 interface OptimizationContainerProps {
-  products: Map<string, Product>
+  products: Products
   enabledProducts: Array<string>
   combinations: Combinations
   setCombinations: Function
@@ -28,7 +28,7 @@ interface OptimizationContainerProps {
 
 export interface ProductResult {
   id: string
-  sacks: number
+  value: number
 }
 
 export const OptimizationContainer = ({
@@ -40,35 +40,10 @@ export const OptimizationContainer = ({
   value,
 }: OptimizationContainerProps): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [optimizationData, setOptimizationData] = useState()
+  const [optimizationData, setOptimizationData] = useState<any>(undefined)
 
   const handleUpdate = (optimizationData: any) => {
     setOptimizationData(optimizationData)
-    console.log(optimizationData)
-
-    // TODO: Get this interface through OpenAPI
-    let productResults: Array<ProductResult> = optimizationData.products
-    let values: ProductsInCombination = {}
-    if (productResults.length !== 0) {
-      const massSum = productResults.reduce(
-        (total: number, productResult: ProductResult) =>
-          // @ts-ignore
-          total + +productResult.sacks * +products[productResult.id].sackSize,
-        0
-      )
-      productResults.forEach((productResult: any) => {
-        if (productResult.sacks !== 0) {
-          values[productResult.id] = {
-            id: productResult.id,
-            value: productResult.sacks,
-            percentage:
-              100 *
-              // @ts-ignore
-              ((productResult.sacks * products[productResult.id].sackSize) / massSum),
-          }
-        }
-      })
-    }
 
     const datetime = new Date()
     const name = `Optimized at ${datetime
@@ -79,7 +54,7 @@ export const OptimizationContainer = ({
       .toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
 
-    addCombination(name, true, values)
+    addCombination(name, true, optimizationData.products)
     setIsLoading(false)
   }
 
@@ -110,13 +85,7 @@ export const OptimizationContainer = ({
       </Grid>
 
       <Grid>
-        <OptimizationResult
-          isLoading={isLoading}
-          products={products}
-          mode={mode}
-          value={value}
-          optimizationData={optimizationData}
-        />
+        <OptimizationResult products={products} mode={mode} value={value} optimizationData={optimizationData} />
       </Grid>
     </div>
   )

@@ -18,6 +18,15 @@ class CombinationApi {
   }
 }
 
+class ReportApi {
+  async postReportApi(token: string, data: any) {
+    return axios.post(`${BASE_PATH}/report`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: 'blob',
+    })
+  }
+}
+
 class BridgeApi {
   async postBridgeApi(token: string, data: any) {
     return axios.post(`${BASE_PATH}/bridge`, data, { headers: { Authorization: `Bearer ${token}` } })
@@ -40,4 +49,5 @@ export const ProductsAPI = new ProductsApi()
 export const OptimizerAPI = new OptimizerApi()
 export const BridgeAPI = new BridgeApi()
 export const CombinationAPI = new CombinationApi()
+export const ReportAPI = new ReportApi()
 export const SyncAPI = new SyncApi()

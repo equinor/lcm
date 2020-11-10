@@ -1,4 +1,3 @@
-import { Product } from '../../gen-api/src/models'
 import { OptimizerAPI } from '../../Api'
 import PillInput, { Pill } from './PillInput'
 import { Environmental, Weight, WeightOptions } from './WeightOptions'
@@ -7,11 +6,12 @@ import React, { ReactElement, useContext, useState } from 'react'
 import { CircularProgress, Typography } from '@equinor/eds-core-react'
 import { Combinations } from '../CombinationsWrapper'
 import { AuthContext } from '../../Auth/AuthProvider'
+import { Products } from '../../Types'
 
 interface OptimizationContainerProps {
   isLoading: boolean
   setIsLoading: Function
-  products: Map<string, Product>
+  products: Products
   enabledProducts: Array<string>
   combinationMap: Combinations
   mode: string

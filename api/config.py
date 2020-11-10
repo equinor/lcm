@@ -1,5 +1,6 @@
-import os
 import ast
+import os
+from pathlib import Path
 
 
 class Config:
@@ -16,4 +17,5 @@ class Config:
     AUTH_JWK_URL = os.getenv("AUTH_JWK_URL", "https://login.microsoftonline.com/common/discovery/v2.0/keys")
     ROUNDING_DECIMALS = 3
     DEFAULT_MAX_ITERATIONS = 100
+    HOME_DIR = str(Path(__file__).parent.absolute())
     PRODUCT_TABLE_NAME = "products"

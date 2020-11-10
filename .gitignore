@@ -5,3 +5,6 @@ web/node_modules
 log.txt
 .env
 api/tests/products_data.py
+/api/algo_test_report.png
+/api/report.html
+/api/report.pdf

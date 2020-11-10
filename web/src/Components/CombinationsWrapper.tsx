@@ -4,10 +4,11 @@ import OptimizationContainer from './Optimization/OptimizationContainer'
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion } from '@equinor/eds-core-react'
-import { BridgeAPI, CombinationAPI, OptimizerAPI, Requests } from '../Api'
+import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
-import { isEqual, cloneDeep, omit } from 'lodash'
+import { cloneDeep, isEqual, omit } from 'lodash'
 import { AuthContext } from '../Auth/AuthProvider'
+import { BridgingOption } from '../Common'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -45,7 +46,7 @@ export interface Bridge {
 
 export default ({ enabledProducts, products, defaultCombinations }: AppProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [mode, setMode] = useState<string>('PERMEABILITY')
+  const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
   const [bridges, setBridges] = useState<any>({ Bridge: [] })
@@ -69,8 +70,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   }, [enabledProducts])
 
   useEffect(() => {
-    // @ts-ignore
-    if (!bridgeValue >= 1) return
+    if (!(bridgeValue >= 1)) return
     BridgeAPI.postBridgeApi(apiToken, {
       option: mode,
       value: bridgeValue,

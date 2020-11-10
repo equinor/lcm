@@ -1,5 +1,5 @@
 import connexion
-from flask import jsonify, request, Response
+from flask import jsonify, request, Response, send_file
 from flask_cors import CORS
 
 from calculators.bridge import SIZE_STEPS
@@ -8,6 +8,7 @@ from controllers.combination import bridge_from_combination
 from controllers.optimal_bridge import bridgeRequestHandler
 from controllers.optimizer import optimizerRequestHandler
 from controllers.products import products_get
+from controllers.report import create_report
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
 
@@ -28,6 +29,13 @@ app = init_api()
 @authorize
 def products():
     return jsonify(products_get())
+
+
+@app.route("/api/report", methods=["POST"])
+@authorize
+def report():
+    create_report(request.json)
+    return send_file(f"{Config.HOME_DIR}/report.pdf", mimetype="application/pdf")
 
 
 @app.route("/api/combination", methods=["POST"])
