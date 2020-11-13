@@ -2743,12 +2743,11 @@ class OptimizerTest(unittest.TestCase):
     @staticmethod
     def _short_test_wrapper(theoretical_bridge):
         mass = 3500
-        max_iterations = 200
+        max_iterations = 500
         result_list = []
         for i in range(20):
             result = optimize(product_data, theoretical_bridge, mass, max_iterations)
             result_list.append(result)
-
         fitness = [run["score"] for run in result_list]
         values_within_deviation(fitness, 3)
 
@@ -2766,13 +2765,14 @@ class OptimizerTest(unittest.TestCase):
 
 
 def create_algorithm_report():
+    runs = 100
     mass = 3500
     max_iterations = 500
     bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
     # Crate Matplotlib figure
     # fig, (bridgeplot, alg_curve, mix_plot) = plt.subplots(3)
-    fig, (bridgeplot, alg_curve) = plt.subplots(2)
+    fig, (bridgeplot, alg_curve, massplot) = plt.subplots(3)
     fig.set_size_inches(9.4, 9.4)
 
     # Draw optimal bridge
@@ -2786,18 +2786,23 @@ def create_algorithm_report():
     bridgeplot.axes.set_ylim([0, 100])
     bridgeplot.axes.set_xlim([0.01, 10000])
 
-    alg_curve.set_title(f"Gen.Alg. Evolution ({50} runs)")
+    alg_curve.set_title(f"Fitness Evolution ({50} runs)")
     alg_curve.set_xlabel("Generations")
-    alg_curve.set_ylabel("Fitness %")
+    alg_curve.set_ylabel("Fitness")
 
-    for i in range(50):
+    massplot.set_title(f"Mass evolution")
+    massplot.set_xlabel("Generations")
+    massplot.set_ylabel("Kg")
+
+    for i in range(runs):
         result = optimize(product_data, bridge, mass, max_iterations)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
         alg_curve.plot(result["curve"], label=label)
+        massplot.plot(result["mass_progress"])
         # for prod in result["combination_progress"]:
         #     mix_plot.plot(prod)
-        print(f"{i} of {50} runs complete...")
+        print(f"{i} of {runs} runs complete...")
 
     print("Done!")
     print(f"Saving plot to {Config.HOME_DIR}/algo_test_report.png")
@@ -2805,7 +2810,7 @@ def create_algorithm_report():
     # bridgeplot.legend(loc="right", bbox_to_anchor=(1.13, 0.5))
     # alg_curve.legend(loc="right", bbox_to_anchor=(1.13, 2))
     # plt.subplots_adjust(right=0.9)
-    plt.show()
+    plt.tight_layout()
     fig.savefig(f"{Config.HOME_DIR}/algo_test_report.png", format="png")
 
 

@@ -22,7 +22,9 @@ ENVIRONMENTAL_SCORE = {
     "BLACK": 0,
 }
 
-PARENTS = []
+MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
+
+weight_progress = []
 
 
 # This function calculates an optimal blend of products,
@@ -35,26 +37,29 @@ PARENTS = []
 def optimize(
     products: List[dict],
     bridge: List[float],
-    mass: int,
+    mass_goal: int,
     max_iterations: int = 100,
 ):
     start = datetime.now()
-    max_number_of_sacks = (mass // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
+    max_number_of_sacks = (mass_goal // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
 
+    global weight_progress
+    weight_progress = []
     score_progress = []
     # combination_progress = [[0] for _ in products]
     population, children = initializePopulation(products, max_number_of_sacks)
     iterations = 0
     fittest_combo, score, experimental_bridge = {}, 100, []
     for _ in range(max_iterations):
-        parents = selectParents(population, bridge, products)
+        parents = selectParents(population, bridge, products, mass_goal)
         children = crossover(parents, children, products)
         children = executeMutation(children)
         population = parents + children
-        score, fittest_combo, experimental_bridge = optimal(population, bridge, products)
+        score, fittest_combo, experimental_bridge = optimal(population, bridge, products, mass_goal)
         # for i, _ in enumerate(products):
         #     combination_progress[i].append(list(fittest_combo.values())[i])
         score_progress.append(score)
+        weight_progress.append(sum([p * 25 for p in fittest_combo.values()]))
 
     return {
         "combination": {k: v for k, v in fittest_combo.items() if v > 0},
@@ -64,6 +69,7 @@ def optimize(
         "execution_time": (datetime.now() - start),
         "iterations": iterations,
         "score": score,
+        "mass_progress": weight_progress,
     }
 
 
@@ -104,7 +110,7 @@ def initializePopulation(products, max_number_of_sacks):
     return population, children
 
 
-def fitness_score(combination: dict, theoretical_bridge: List[float], products_list: dict):
+def fitness_score(combination: dict, theoretical_bridge: List[float], products_list: dict, mass_goal: int):
     try:
         # We are not in control of the combination values, so they could be zero
         sum_sacks = 100 / sum(combination.values())
@@ -115,7 +121,13 @@ def fitness_score(combination: dict, theoretical_bridge: List[float], products_l
     for p in products_list:
         if combination[p["id"]] > 0:
             products.append(
-                Product(product_id=p["id"], share=(sum_sacks * combination[p["id"]]) / 100, cumulative=p["cumulative"])
+                Product(
+                    product_id=p["id"],
+                    share=(sum_sacks * combination[p["id"]]) / 100,
+                    cumulative=p["cumulative"],
+                    sacks=combination[p["id"]],
+                    mass=(combination[p["id"]] * p["sack_size"]),
+                )
             )
 
     experimental_bridge = calculate_blend_cumulative(products)
@@ -128,16 +140,17 @@ def fitness_score(combination: dict, theoretical_bridge: List[float], products_l
 
     _mean = np.mean(diff_list)
     score = np.sqrt(_mean)
-    return score, experimental_bridge
+    _mass_score = mass_score(products, mass_goal)
+    return score * _mass_score, experimental_bridge
 
 
 # This function takes the population as input
 # and finds the combination with the best
 # fitness value and returns that combination.
-def optimal(population, bridge, products):
+def optimal(population, bridge, products, mass):
     results = []
     for combination in population:
-        score, exp_bridge = fitness_score(combination, bridge, products)
+        score, exp_bridge = fitness_score(combination, bridge, products, mass)
         results.append({"score": score, "combination": combination, "bridge": exp_bridge})
 
     results.sort(key=lambda r: (r["score"]))
@@ -146,19 +159,18 @@ def optimal(population, bridge, products):
 
 # This function selects the 2 best combinations based
 # on their fitness value
-def selectParents(population, bridge, products):
+def selectParents(population, bridge, products, mass_goal):
     fitness = []
     fit_dict = {}
 
     for combination in population:
-        score, _ = fitness_score(combination, bridge, products)
+        score, _ = fitness_score(combination, bridge, products, mass_goal)
         fitness.append(score)
         fit_dict[score] = combination
 
     fitness.sort()
 
     parents = [fit_dict[fitness[0]], fit_dict[fitness[1]]]
-    PARENTS.append(fitness[0])
 
     return parents
 
@@ -297,9 +309,16 @@ def executeMutation(children):
     return children
 
 
-def averageSackSize(products):
-    sum = 0
-    for product in products:
-        sum += product["sack_size"]
+def mass_score(products: List[Product], mass_goal) -> float:
+    combination_mass = sum([p.mass for p in products])
+    diff = abs(mass_goal - combination_mass)
+    percentage_diff = (100 / mass_goal) * diff
+    # If mass diff more than 10% from goal, score is 10 (
+    if percentage_diff > 10:
+        return 10
+    # If mass within 10% of goal, use percentage decimal as score
+    return (percentage_diff / MASS_IMPORTANCE) + 1
 
-    return sum / len(products)
+
+def averageSackSize(products):
+    return sum([p["sack_size"] for p in products]) / len(products)
