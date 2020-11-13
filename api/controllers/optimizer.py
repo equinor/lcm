@@ -16,7 +16,7 @@ def optimizerRequestHandler(
     print("Started optimization request...")
     bridge = theoretical_bridge(option, value)
     selected_products = [p for p in products_get().values() if p["id"] in products]
-    optimizer_result = optimize(products=selected_products, bridge=bridge, mass=mass_goal)
+    optimizer_result = optimize(products=selected_products, bridge=bridge, mass_goal=mass_goal)
     combination = optimizer_result["combination"]
 
     total_mass: float = 0.0
