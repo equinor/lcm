@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import './App.css'
 import Main from './Components/Main'
 import './Components/icons'
-import withAuthProvider, { AuthComponentProps, AuthContext } from './Auth/AuthProvider'
+import { AuthComponentProps, AuthContext } from './Auth/AuthProvider'
+import withAuthProvider from './Auth/AuthProvider'
 
 interface LoginError {
   errorCode?: string
@@ -36,7 +37,6 @@ function App({ isAuthenticated, getAccessToken }: AuthComponentProps) {
       })
       .catch((e: any) => {
         setLoginError(e)
-        console.error(e)
       })
   }, [isAuthenticated])
 
@@ -47,28 +47,13 @@ function App({ isAuthenticated, getAccessToken }: AuthComponentProps) {
       </AuthContext.Provider>
     )
   }
-  if (loginError?.errorCode === 'popup_window_error') {
-    return (
-      <LoginError errorMessage={loginError.errorMessage} hint={'The login popup window was blocked by the browser'} />
-    )
-  }
-  if (loginError?.errorCode === 'user_cancelled') {
-    return (
-      <LoginError
-        errorMessage={loginError.errorMessage}
-        hint={'The login process was cancelled. Please reload the page'}
-      />
-    )
+  if (loginError?.errorCode === 'interaction_in_progress') {
+    return null
   }
   if (loginError?.errorMessage) {
     return <LoginError errorMessage={loginError.errorMessage} hint={'Try clearing cache and reloading the page'} />
   }
-  return (
-    <div style={{ margin: '100px', textAlign: 'center' }}>
-      <p>Logging into Azure AD...</p>
-      <p>Follow directions in the popup window</p>
-    </div>
-  )
+  return null
 }
 
 // @ts-ignore

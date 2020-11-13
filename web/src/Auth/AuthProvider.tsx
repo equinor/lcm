@@ -5,23 +5,26 @@ import { PublicClientApplication } from '@azure/msal-browser'
 export interface AuthComponentProps {
   error: any
   isAuthenticated: boolean
-  user: any
-  login: Function
-  logout: Function
   getAccessToken: Function
-  setError: Function
 }
 
 interface AuthProviderState {
   error: any
   isAuthenticated: boolean
-  user: any
 }
 
+const scopes = ['api://lost-circulation-material-api/Optimization.All.All']
+
 const config = {
-  appId: '1dbc1e96-268d-41ad-894a-92a9fb85f954',
-  redirectUri: window.location.origin,
-  scopes: ['api://lost-circulation-material-api/Optimization.All.All'],
+  auth: {
+    clientId: '1dbc1e96-268d-41ad-894a-92a9fb85f954',
+    redirectUri: window.location.origin,
+    authority: 'https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/',
+  },
+  cache: {
+    cacheLocation: 'sessionStorage',
+    storeAuthStateInCookie: true,
+  },
 }
 
 export default function withAuthProvider<T extends React.Component<AuthComponentProps>>(
@@ -35,73 +38,36 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
       this.state = {
         error: null,
         isAuthenticated: false,
-        user: {},
       }
-
       // Initialize the MSAL application object
-      this.publicClientApplication = new PublicClientApplication({
-        auth: {
-          clientId: config.appId,
-          redirectUri: config.redirectUri,
-          authority: 'https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/',
-        },
-        cache: {
-          cacheLocation: 'sessionStorage',
-          storeAuthStateInCookie: true,
-        },
-      })
+      this.publicClientApplication = new PublicClientApplication(config)
+      this.publicClientApplication.handleRedirectPromise().then(this.handleResponse.bind(this))
     }
 
-    componentDidMount() {
-      // If MSAL already has an account, the user
-      // is already logged in
-      const accounts = this.publicClientApplication.getAllAccounts()
-
-      if (accounts && accounts.length > 0) {
-        this.getUserProfile()
+    handleResponse(resp: any) {
+      if (resp !== null) {
+        this.setState({ isAuthenticated: true })
       }
+      // TODO: This doesn't seem to do anything...
+      // else {
+      //   const currentAccounts = this.publicClientApplication.getAllAccounts()
+      //   if (!currentAccounts || currentAccounts.length < 1) {
+      //     return
+      //   } else if (currentAccounts.length > 1) {
+      //     // Add choose account code here
+      //   } else if (currentAccounts.length === 1) {
+      //   }
+      // }
     }
 
     render() {
       return (
         <WrappedComponent
-          // @ts-ignore
           error={this.state.error}
-          // @ts-ignore
           isAuthenticated={this.state.isAuthenticated}
-          // @ts-ignore
-          user={this.state.user}
-          login={() => this.login()}
-          logout={() => this.logout()}
           getAccessToken={() => this.getAccessToken()}
-          setError={(message: string, debug: string) => this.setErrorMessage(message, debug)}
-          {...this.props}
-          {...this.state}
         />
       )
-    }
-
-    async login() {
-      try {
-        // Login via popup
-        await this.publicClientApplication.loginPopup({
-          scopes: config.scopes,
-          prompt: 'select_account',
-        })
-
-        // After login, get the user's profile
-        await this.getUserProfile()
-      } catch (err) {
-        this.setState({
-          isAuthenticated: false,
-          user: {},
-          error: this.normalizeError(err),
-        })
-      }
-    }
-
-    logout() {
-      this.publicClientApplication.logout()
     }
 
     async getAccessToken(): Promise<string> {
@@ -113,44 +79,24 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
         // If the cache contains a non-expired token, this function
         // will just return the cached token. Otherwise, it will
         // make a request to the Azure OAuth endpoint to get a token
-        var silentResult = await this.publicClientApplication.acquireTokenSilent({
-          scopes: config.scopes,
+        let silentResult = await this.publicClientApplication.acquireTokenSilent({
+          scopes: scopes,
           account: accounts[0],
         })
-
         return silentResult.accessToken
       } catch (err) {
         // If a silent request fails, it may be because the user needs
         // to login or grant consent to one or more of the requested scopes
         if (this.isInteractionRequired(err)) {
-          var interactiveResult = await this.publicClientApplication.acquireTokenPopup({
-            scopes: config.scopes,
+          let interactiveResult = await this.publicClientApplication.acquireTokenRedirect({
+            redirectStartPage: window.location.href,
+            scopes: scopes,
           })
-
+          // @ts-ignore
           return interactiveResult.accessToken
         } else {
           throw err
         }
-      }
-    }
-
-    async getUserProfile() {
-      try {
-        var accessToken = await this.getAccessToken()
-
-        if (accessToken) {
-          this.setState({
-            isAuthenticated: true,
-            user: { accessToken: accessToken },
-            error: { message: 'Access token:', debug: accessToken },
-          })
-        }
-      } catch (err) {
-        this.setState({
-          isAuthenticated: false,
-          user: {},
-          error: this.normalizeError(err),
-        })
       }
     }
 
@@ -161,9 +107,9 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
     }
 
     normalizeError(error: string | Error): any {
-      var normalizedError = {}
+      let normalizedError = {}
       if (typeof error === 'string') {
-        var errParts = error.split('|')
+        let errParts = error.split('|')
         normalizedError = errParts.length > 1 ? { message: errParts[1], debug: errParts[0] } : { message: error }
       } else {
         normalizedError = {
