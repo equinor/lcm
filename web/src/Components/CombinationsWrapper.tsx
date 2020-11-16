@@ -6,11 +6,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Accordion } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
-import { cloneDeep, isEqual, omit } from 'lodash'
 import { AuthContext } from '../Auth/AuthProvider'
 import { BridgingOption } from '../Common'
+import styled from 'styled-components'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
+
+const MainComponentsWrapper = styled.div`
+  padding: 16px 0 16px 0;
+`
 
 interface AppProps {
   enabledProducts: Array<string>
@@ -29,7 +33,6 @@ export interface ProductsInCombination {
 }
 
 export interface Combination {
-  id: string
   name: string
   sacks: boolean
   values: ProductsInCombination
@@ -37,7 +40,7 @@ export interface Combination {
 }
 
 export interface Combinations {
-  [id: string]: Combination
+  [name: string]: Combination
 }
 
 export interface Bridge {
@@ -45,14 +48,12 @@ export interface Bridge {
 }
 
 export default ({ enabledProducts, products, defaultCombinations }: AppProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const apiToken: string = useContext(AuthContext).token
-
-  const [lastCombinations, setLastCombinations] = useState<Combinations>({})
 
   // When enabledProducts changes. Removed the ones not enabled from the combinations.
   useEffect(() => {
@@ -64,11 +65,12 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         if (enabledProducts.includes(value.id)) newValues = { ...newValues, [id]: value }
       })
       newCombination = { ...combination, values: newValues }
-      newCombinations = { ...newCombinations, [combination.id]: newCombination }
+      newCombinations = { ...newCombinations, [combination.name]: newCombination }
     })
     setCombinations(newCombinations)
   }, [enabledProducts])
 
+  // Update optimal bridge
   useEffect(() => {
     if (!(bridgeValue >= 1)) return
     BridgeAPI.postBridgeApi(apiToken, {
@@ -83,83 +85,106 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       })
   }, [bridgeValue, mode, apiToken])
 
-  useEffect(() => {
-    const bridgeNames = Object.keys(bridges).filter(b => b !== 'Bridge')
-    // Check for removed combinations, and update Bridges
-    Object.values(combinations).forEach(combination => {
-      const combNames = Object.values(combinations).map(c => c.name)
-      const diff = bridgeNames.filter(b => !combNames.includes(b))
-      if (diff.length) {
-        setBridges(omit(bridges, diff[0]))
-        return
-      }
+  function updateCombinationAndFetchBridge(combination: Combination) {
+    // Don't fetch with empty values
+    if (!Object.values(combination.values).length) return
+    setLoading(true)
+    CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
+      .then(response => {
+        setLoading(false)
+        setBridges({ ...bridges, [combination.name]: response.data.bridge })
+      })
+      .catch(() => setLoading(false))
+    setCombinations({ ...combinations, [combination.name]: combination })
+    setLoading(false)
+  }
 
-      // Don't fetch with empty values
-      if (!Object.values(combination.values).length) return
+  function addCombination(combination: Combination) {
+    if (combination.values) updateCombinationAndFetchBridge(combination)
+    setCombinations({ ...combinations, [combination.name]: combination })
+  }
 
-      // If the combination changed, fetch a new bridge
-      if (!isEqual(lastCombinations[combination.id], combination)) {
-        setIsLoading(true)
-        CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
-          .then(response => {
-            setIsLoading(false)
-            setBridges({ ...bridges, [combination.name]: response.data.bridge })
-          })
-          .catch(() => setIsLoading(false))
-      }
-    })
-    setLastCombinations(cloneDeep(combinations))
-  }, [combinations])
+  function renameCombination(newName: string, oldName: string) {
+    const oldCombo = combinations[oldName]
+    delete combinations[oldName]
+    oldCombo.name = newName
+    combinations[newName] = oldCombo
+    setCombinations({ ...combinations })
+
+    if (Object.keys(bridges).includes(oldName)) {
+      bridges[newName] = bridges[oldName]
+      delete bridges[oldName]
+      setBridges({ ...bridges })
+    }
+  }
+
+  function removeCombination(combinationName: string) {
+    let tempCombination: Combinations = combinations
+    delete tempCombination[combinationName]
+    setCombinations({ ...tempCombination })
+    delete bridges[combinationName]
+    setBridges({ ...bridges })
+  }
 
   return (
     <>
       {/* Nice to have around for debugging */}
       {/*<pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{JSON.stringify(combinations, null, 2)}</pre>*/}
-      <BridgeContainer
-        userBridges={bridges}
-        mode={mode}
-        setMode={setMode}
-        bridgeValue={bridgeValue}
-        setValue={setBridgeValue}
-        setBridges={setBridges}
-      />
-      <Accordion>
-        <AccordionItem>
-          <AccordionHeader>Sack combinations</AccordionHeader>
-          <AccordionPanel>
-            <CardContainer
-              sacks={true}
-              combinations={combinations}
-              setCombinations={setCombinations}
-              enabledProducts={enabledProducts}
-              loading={isLoading}
-              products={products}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-        <AccordionItem>
-          <AccordionHeader>Manual combinations</AccordionHeader>
-          <AccordionPanel>
-            <CardContainer
-              sacks={false}
-              combinations={combinations}
-              setCombinations={setCombinations}
-              loading={isLoading}
-              enabledProducts={enabledProducts}
-              products={products}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-
-      <OptimizationContainer
-        products={products}
-        enabledProducts={enabledProducts}
-        combinations={combinations}
-        setCombinations={setCombinations}
-        mode={mode}
-        value={bridgeValue}
-      />
+      <MainComponentsWrapper>
+        <BridgeContainer
+          userBridges={bridges}
+          mode={mode}
+          setMode={setMode}
+          bridgeValue={bridgeValue}
+          setValue={setBridgeValue}
+          setBridges={setBridges}
+        />
+      </MainComponentsWrapper>
+      <MainComponentsWrapper>
+        <Accordion>
+          <AccordionItem>
+            <AccordionHeader>Sack combinations</AccordionHeader>
+            <AccordionPanel>
+              <CardContainer
+                sacks={true}
+                combinations={combinations}
+                enabledProducts={enabledProducts}
+                loading={loading}
+                products={products}
+                updateCombination={updateCombinationAndFetchBridge}
+                renameCombination={renameCombination}
+                removeCombination={removeCombination}
+                addCombination={addCombination}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionHeader>Manual combinations</AccordionHeader>
+            <AccordionPanel>
+              <CardContainer
+                sacks={false}
+                combinations={combinations}
+                enabledProducts={enabledProducts}
+                loading={loading}
+                products={products}
+                updateCombination={updateCombinationAndFetchBridge}
+                renameCombination={renameCombination}
+                addCombination={addCombination}
+                removeCombination={removeCombination}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </MainComponentsWrapper>
+      <MainComponentsWrapper>
+        <OptimizationContainer
+          addCombination={addCombination}
+          products={products}
+          enabledProducts={enabledProducts}
+          mode={mode}
+          value={bridgeValue}
+        />
+      </MainComponentsWrapper>
     </>
   )
 }

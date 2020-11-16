@@ -5,21 +5,16 @@ import ProductCard from './ProductCard.js'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button, LinearProgress } from '@equinor/eds-core-react'
-import { Combination, Combinations, ProductsInCombination } from '../CombinationsWrapper'
-// @ts-ignore
-import { v4 as uuidv4 } from 'uuid'
-const Wrapper = styled.div`
-  margin: 32px;
-  display: grid;
-  grid-gap: 32px;
-  grid-template-columns: repeat(4, fit-content(100%));
-`
+import { Combinations } from '../CombinationsWrapper'
 
 interface CardContainerProps {
   sacks: any
   products: any
   combinations: Combinations
-  setCombinations: Function
+  updateCombination: Function
+  renameCombination: Function
+  removeCombination: Function
+  addCombination: Function
   enabledProducts: any
   loading: any
 }
@@ -43,50 +38,13 @@ export const CardContainer = ({
   sacks,
   products,
   combinations,
-  setCombinations,
+  updateCombination,
+  renameCombination,
+  removeCombination,
+  addCombination,
   enabledProducts,
   loading,
 }: CardContainerProps) => {
-  const addCombination = (name: string, sacks: boolean) => {
-    const combination: Combination = {
-      id: uuidv4(),
-      name: name,
-      sacks: sacks,
-      values: {},
-      cumulative: null,
-    }
-    setCombinations({ ...combinations, [combination.id]: combination })
-  }
-
-  const updateCombination = (combinationId: string, products: ProductsInCombination) => {
-    let combination: Combination = combinations[combinationId]
-    combination.values = products
-    setCombinations({ ...combinations, [combinationId]: combination })
-  }
-
-  const removeCombination = (combinationId: string) => {
-    let newCombinations: Combinations = {}
-    Object.entries(combinations).forEach(([id, combination]) => {
-      if (id !== combinationId) newCombinations[id] = combination
-    })
-    setCombinations(newCombinations)
-  }
-
-  const updateCombinationName = (combinationId: string, name: string) => {
-    Object.entries(combinations).forEach(([id, combination]) => {
-      if (combination.name === name) {
-        alert('Name of combination already taken. Please select another one')
-        return
-      }
-    })
-
-    let combination: Combination = combinations[combinationId]
-    if (combination) {
-      combination.name = name
-      setCombinations({ ...combinations, [combination.id]: combination })
-    }
-  }
-
   return (
     <div>
       {loading && <LinearProgress />}
@@ -97,27 +55,33 @@ export const CardContainer = ({
           if (sacks === combinations[id].sacks)
             return (
               <CombinationCard
-                key={combinations[id].id}
+                key={combinations[id].name}
                 sacks={sacks}
                 combination={combinations[id]}
                 removeCombination={removeCombination}
                 products={products}
                 enabledProducts={enabledProducts}
                 updateCombination={updateCombination}
-                updateCombinationName={updateCombinationName}
+                renameCombination={renameCombination}
               />
             )
           return null
         })}
       </div>
-      <Wrapper>
+      <div style={{ padding: '15px' }}>
         <Button
           onClick={() => {
-            addCombination(createCombinationName(sacks, combinations), sacks)
-          }}>
+            addCombination({
+              name: createCombinationName(sacks, combinations),
+              sacks: sacks,
+              values: [],
+              cumulative: null,
+            })
+          }}
+          variant="outlined">
           Add combination
         </Button>
-      </Wrapper>
+      </div>
     </div>
   )
 }

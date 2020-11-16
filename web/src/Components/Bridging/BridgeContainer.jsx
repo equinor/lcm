@@ -12,12 +12,6 @@ const InputWrapper = styled.div`
   justify-content: space-between;
 `
 
-const BridgeWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 20px;
-`
-
 const RadioWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -82,9 +76,9 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
   }, [])
 
   return (
-        <BridgeWrapper>
+        <div style={{display: 'flex'}}>
         <InputWrapper>
-            <Typography variant="h2">Bridging options</Typography>
+            <Typography variant="h3">Bridging options</Typography>
             <span>Bridging based on:</span>
               <RadioWrapper>
                 <Radio
@@ -120,10 +114,10 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
               variant={bridgeValueVariant}
               helperText={bridgeValueHelperText}
             />
-          <Button onClick={()=>clearBridges()}>Clear Bridges</Button>
+          <Button onClick={()=>clearBridges()} variant="outlined">Clear Bridges</Button>
 
         </InputWrapper>
           <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
-        </BridgeWrapper>
+        </div>
   )
 }

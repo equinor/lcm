@@ -4,13 +4,12 @@ import styled from 'styled-components'
 import { TextField, Button } from '@equinor/eds-core-react'
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-rows: min-width;
-  padding: 0px;
-  grid-gap: 2rem;
-  position: relative;
-  transition: all 0.36s;
-  grid-template-columns: repeat(1, fit-content(100%));
+  padding: 10px 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  width: fit-content;
 `
 
 enum PillInputType {
