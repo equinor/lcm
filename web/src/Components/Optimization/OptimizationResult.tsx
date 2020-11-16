@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React from 'react'
 import SolutionData from './SolutionData'
 import SolutionVisualisations from './SolutionVisualisations'
 import { Products } from '../../Types'
@@ -10,14 +10,14 @@ interface OptimizationResultProps {
   optimizationData: any
 }
 
-export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps): ReactElement => {
-  if (!optimizationData) return <div />
+export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps) => {
+  if (!optimizationData) return null
 
   return (
-    <>
+    <div style={{ display: 'flex' }}>
       <SolutionData products={products} optimizationData={optimizationData} />
       <SolutionVisualisations products={products} optimizationData={optimizationData} />
-    </>
+    </div>
   )
 }
 

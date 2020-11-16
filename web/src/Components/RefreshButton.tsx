@@ -39,7 +39,7 @@ export const RefreshButton = () => {
     <>
       <Button variant="outlined" onClick={() => setScrim(true)}>
         <Icon name="refresh" title="refresh" size={48} />
-        Syncronize SharePoint data with LCM App
+        Synchronize with SharePoint
       </Button>
       {scrim && (
         <Scrim onClose={() => setScrim(false)}>
@@ -59,7 +59,7 @@ export const RefreshButton = () => {
               </p>
               {loading && <CircularProgress />}
             </CustomContent>
-            <Actions style={{ width: '-webkit-fill-available' }}>
+            <Actions style={{ width: 'fill-available' }}>
               <ButtonWrapper>
                 <Button onClick={() => setScrim(false)} disabled={loading}>
                   Cancel

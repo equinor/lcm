@@ -4,8 +4,9 @@ import ProductTable from './ProductTable.tsx'
 
 export const ProductCard = ({ enabledProducts, products }) => {
   return (
-    <Card
+    <div
       style={{
+        backgroundColor: 'white',
         width: 'fit-content',
         display: 'inline-block',
         margin: '10px',
@@ -14,7 +15,7 @@ export const ProductCard = ({ enabledProducts, products }) => {
         paddingTop: '70px',
       }}>
       <ProductTable enabledProducts={enabledProducts} products={products} />
-    </Card>
+    </div>
   )
 }
 

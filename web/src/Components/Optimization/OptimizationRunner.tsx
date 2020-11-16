@@ -4,7 +4,6 @@ import { Environmental, Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { CircularProgress, Typography } from '@equinor/eds-core-react'
-import { Combinations } from '../CombinationsWrapper'
 import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
 
@@ -13,7 +12,6 @@ interface OptimizationContainerProps {
   setIsLoading: Function
   products: Products
   enabledProducts: Array<string>
-  combinationMap: Combinations
   mode: string
   value: number
   handleUpdate: Function
@@ -33,7 +31,6 @@ const getWeightPercentages = (weight: Weight) => {
 const OptimizationRunner = ({
   isLoading,
   enabledProducts,
-  combinationMap,
   mode,
   value,
   handleUpdate,
@@ -60,18 +57,6 @@ const OptimizationRunner = ({
       alert('Select at least 1 product before running the optimizer')
       return null
     }
-
-    let countSackCombinations = 0
-    Object.entries(combinationMap).forEach(([id, combination]) => {
-      if (combination.sacks) {
-        countSackCombinations += 1
-      }
-    })
-
-    if (countSackCombinations > 5) {
-      alert('The optimizer can only run with a maximum of 5 sack combinations')
-      return null
-    }
     setLoading(true)
     OptimizerAPI.postOptimizerApi(apiToken, {
       request: 'OPTIMAL_MIX',
@@ -79,7 +64,7 @@ const OptimizationRunner = ({
       value: value,
       option: mode,
       mass: pill.mass,
-      enviromental: weight.environmental,
+      environmental: weight.environmental,
       products: enabledProducts,
       weights: getWeightPercentages(weight),
     })
@@ -97,20 +82,16 @@ const OptimizationRunner = ({
   }
 
   return (
-    <>
-      <div>
-        <Typography variant="h2" style={{ paddingBottom: '2rem' }}>
-          Optimizer
-        </Typography>
-        <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
-        {loading && <CircularProgress style={{ padding: '20% 30%' }} />}
-        {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
-      </div>
-      <div>
-        {/* Disabled until supported in API and the needed data is available*/}
-        {/*<WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />*/}
-      </div>
-    </>
+    <div>
+      <Typography variant="h3" style={{ paddingBottom: '2rem' }}>
+        Optimizer
+      </Typography>
+      <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
+      {loading && <CircularProgress style={{ padding: '20% 30%' }} />}
+      {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
+      {/* Disabled until supported in API and the needed data is available*/}
+      {/*<WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />*/}
+    </div>
   )
 }
 

@@ -32,7 +32,8 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
   }, [bridgeAndCombinations, sizeFractions])
 
   return (
-    <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }} width={750} height={420}>
+      <div style={{paddingLeft: '5%'}}>
+        <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }} width={750} height={420}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis
         dataKey="size"
@@ -56,6 +57,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
         />
       ))}
     </AreaChart>
+      </div>
   )
 }
 

@@ -1,41 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Radio, TextField, Typography } from '@equinor/eds-core-react'
+import { Radio, TextField, Typography, Button } from '@equinor/eds-core-react'
 import BridgeGraph from './BridgeGraph.jsx'
 import { OptimizerAPI, Requests } from '../../Api'
 import { BridgingOption } from '../../Common'
 import { AuthContext } from "../../Auth/AuthProvider"
 
-const Wrapper = styled.div`
-  display: grid;
-  padding: 0px;
-  padding-bottom: 2rem;
-  grid-gap: 2rem;
-  position: relative;
-  transition: all 0.36s;
-  grid-template-columns: repeat(1, fit-content(100%));
-`
-
-const WrapperHeader = styled.div`
-  padding-bottom: 2rem;
-`
-
-const UnstyledList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-`
-
-const Grid = styled.div`
-  height: auto;
-  width: 100%;
-  padding: 32px;
-  box-sizing: border-box;
+const InputWrapper = styled.div`
   display: flex;
-  grid-gap: 0px 100px;
+  flex-direction: column;
+  justify-content: space-between;
 `
 
-export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
+const RadioWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
@@ -78,6 +60,10 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
     setBridgeValueHelperText(undefined)
   }
 
+  function clearBridges(){
+    setBridges({Bridge: userBridges.Bridge})
+  }
+
   // Load size fractions once on first render
   useEffect(() => {
     OptimizerAPI.postOptimizerApi(apiToken,{ request: Requests.SIZE_FRACTIONS })
@@ -90,16 +76,11 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
   }, [])
 
   return (
-    <Wrapper>
-      <Grid>
-        <div>
-          <WrapperHeader>
-            <Typography variant="h2">Bridging options</Typography>
-          </WrapperHeader>
-          <Wrapper>
-            <legend>Bridging based on:</legend>
-            <UnstyledList>
-              <li>
+        <div style={{display: 'flex'}}>
+        <InputWrapper>
+            <Typography variant="h3">Bridging options</Typography>
+            <span>Bridging based on:</span>
+              <RadioWrapper>
                 <Radio
                   label="Permeability"
                   name="group"
@@ -107,8 +88,6 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
                   onChange={bridgingOptionChange}
                   checked={mode === BridgingOption.PERMEABILITY}
                 />
-              </li>
-              <li>
                 <Radio
                   label="Average poresize"
                   name="group"
@@ -116,8 +95,6 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
                   onChange={bridgingOptionChange}
                   checked={mode === BridgingOption.AVERAGE_PORESIZE}
                 />
-              </li>
-              <li>
                 <Radio
                   label="Maximum poresize"
                   name="group"
@@ -125,10 +102,10 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
                   onChange={bridgingOptionChange}
                   checked={mode === BridgingOption.MAXIMUM_PORESIZE}
                 />
-              </li>
-            </UnstyledList>
-            <legend>Enter value:</legend>
+              </RadioWrapper>
+
             <TextField
+                label='Value'
               type="number"
               id="textfield-number"
               meta={unit}
@@ -137,10 +114,10 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue}) => {
               variant={bridgeValueVariant}
               helperText={bridgeValueHelperText}
             />
-          </Wrapper>
+          <Button onClick={()=>clearBridges()} variant="outlined">Clear Bridges</Button>
+
+        </InputWrapper>
+          <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
         </div>
-        <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
-      </Grid>
-    </Wrapper>
   )
 }

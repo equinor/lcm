@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 // @ts-ignore
 import { Button, Card, Icon, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
+import { Combination } from '../CombinationsWrapper'
 
 const { CardHeader, CardHeaderTitle } = Card
 
 interface CombinationCardProps {
-  sacks: any
-  combination: any
-  updateCombination: any
-  updateCombinationName: any
-  removeCombination: any
+  sacks: boolean
+  combination: Combination
+  updateCombination: Function
+  renameCombination: Function
+  removeCombination: Function
   products: any
   enabledProducts: any
 }
@@ -21,24 +22,24 @@ export const CombinationCard = ({
   enabledProducts,
   combination,
   updateCombination,
-  updateCombinationName,
+  renameCombination,
   removeCombination,
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
 
   return (
-    <Card style={{ width: 'fit-content', display: 'inline-block', margin: '10px', padding: '20px' }}>
+    <div style={{ width: 'auto', display: 'inline-block', margin: '10px', padding: '20px', backgroundColor: 'white' }}>
       <CardHeader style={{ display: 'inline-flex', height: '50px' }}>
         <CardHeaderTitle>
           <TextField
-            id={`${combination.id}`}
+            id={`${combination.name}`}
             value={combinationName}
             style={{ background: 'transparent' }}
             onChange={(event: any) => {
               setCombinationName(event.target.value)
             }}
             onBlur={() => {
-              updateCombinationName(combination.id, combinationName)
+              renameCombination(combinationName, combination.name)
             }}
             onKeyPress={(event: any) => {
               if (event.key === 'Enter') {
@@ -48,7 +49,7 @@ export const CombinationCard = ({
             }}
           />
         </CardHeaderTitle>
-        <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.id)}>
+        <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.name)}>
           <Icon name="close" title="close"></Icon>
         </Button>
       </CardHeader>
@@ -56,10 +57,11 @@ export const CombinationCard = ({
         sacks={sacks}
         products={products}
         enabledProducts={enabledProducts}
-        updateCombination={(products: any) => updateCombination(combination.id, products)}
+        updateCombination={updateCombination}
         productsInCombination={combination.values}
+        combinationName={combinationName}
       />
-    </Card>
+    </div>
   )
 }
 

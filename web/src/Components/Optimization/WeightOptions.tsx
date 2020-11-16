@@ -87,7 +87,8 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
   }
 
   return (
-    <Card style={{ width: 'fit-content' }}>
+    // @ts-ignore
+    <Card style={{ width: 'fit-content', backgroundColor: 'white' }}>
       <GridUpper>
         <Typography variant="h6">Weigthing</Typography>
       </GridUpper>

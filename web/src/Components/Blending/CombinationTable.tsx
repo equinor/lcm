@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Table, TextField } from '@equinor/eds-core-react'
+import { Table, TextField } from '@equinor/eds-core-react'
 import { Product } from '../../gen-api/src/models'
 import { ProductsInCombination } from '../CombinationsWrapper'
 
@@ -10,8 +10,9 @@ interface CombinationTableProps {
   products: any
   sacks: any
   enabledProducts: any
-  updateCombination: any
+  updateCombination: Function
   productsInCombination: ProductsInCombination
+  combinationName: string
 }
 
 export const CombinationTable = ({
@@ -20,9 +21,9 @@ export const CombinationTable = ({
   enabledProducts,
   updateCombination,
   productsInCombination,
+  combinationName,
 }: CombinationTableProps) => {
   const [values, setValues] = useState<ProductsInCombination>({})
-  const [invalidValue, setInvalidValue] = useState<boolean>(true)
   const productList: Array<Product> = Object.values(products)
 
   // When enabledProducts changes. Removed the ones not enabled from the values.
@@ -40,14 +41,6 @@ export const CombinationTable = ({
     setValues(setPercentages(productsInCombination))
   }, [productsInCombination])
 
-  const stripZeroAndUpdate = () => {
-    let noneEmptyValues: ProductsInCombination = {}
-    Object.values(values).forEach(value => {
-      if (value.value > 0) noneEmptyValues[value.id] = value
-    })
-    updateCombination(noneEmptyValues)
-  }
-
   function setPercentages(newValues: ProductsInCombination): ProductsInCombination {
     // Add up all the mass in the combination
     let massSum = 0
@@ -63,17 +56,11 @@ export const CombinationTable = ({
   }
 
   const handleValueChange = (productId: string, value: string) => {
+    if (parseInt(value) < 0) return
     let newValues: any = { ...values, [productId]: { value: parseInt(value), id: productId } }
-    let tempInvalid: boolean = false
-
-    // Check for any negative numbers
-    // @ts-ignore
-    if (Math.sign(value) < 0) {
-      tempInvalid = true
-    }
     const newValuesWithPercentage = setPercentages(newValues)
-    setInvalidValue(tempInvalid)
-    setValues(newValuesWithPercentage)
+    setValues({ ...newValuesWithPercentage })
+    updateCombination({ name: combinationName, sacks: sacks, values: newValuesWithPercentage, cumulative: null })
   }
 
   return (
@@ -117,14 +104,6 @@ export const CombinationTable = ({
             )}
           </Body>
         </Table>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => stripZeroAndUpdate()}
-          style={{ marginTop: '10px' }}
-          disabled={invalidValue}>
-          Apply
-        </Button>
       </div>
     </div>
   )
