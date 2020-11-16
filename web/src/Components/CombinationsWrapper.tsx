@@ -49,7 +49,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
-  const [bridges, setBridges] = useState<any>({ Bridge: [] })
+  const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const apiToken: string = useContext(AuthContext).token
 
   const [lastCombinations, setLastCombinations] = useState<Combinations>({})
@@ -76,7 +76,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       value: bridgeValue,
     })
       .then(response => {
-        setBridges({ Bridge: response.data.bridge })
+        setBridges({ ...bridges, Bridge: response.data.bridge })
       })
       .catch(err => {
         console.error('fetch error' + err)
@@ -84,9 +84,9 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   }, [bridgeValue, mode, apiToken])
 
   useEffect(() => {
+    const bridgeNames = Object.keys(bridges).filter(b => b !== 'Bridge')
     // Check for removed combinations, and update Bridges
     Object.values(combinations).forEach(combination => {
-      const bridgeNames = Object.keys(bridges).filter(b => b !== 'Bridge')
       const combNames = Object.values(combinations).map(c => c.name)
       const diff = bridgeNames.filter(b => !combNames.includes(b))
       if (diff.length) {
@@ -121,8 +121,8 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         setMode={setMode}
         bridgeValue={bridgeValue}
         setValue={setBridgeValue}
+        setBridges={setBridges}
       />
-
       <Accordion>
         <AccordionItem>
           <AccordionHeader>Sack combinations</AccordionHeader>
