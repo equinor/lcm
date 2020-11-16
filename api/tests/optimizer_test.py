@@ -2749,7 +2749,7 @@ class OptimizerTest(unittest.TestCase):
             result = optimize(product_data, theoretical_bridge, mass, max_iterations)
             result_list.append(result)
         fitness = [run["score"] for run in result_list]
-        values_within_deviation(fitness, 3)
+        values_within_deviation(fitness, 10)
 
     def test_deviation_short_permeability(self):
         bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)

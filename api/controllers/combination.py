@@ -13,6 +13,8 @@ def bridge_from_combination(combination: List[dict]):
     sum_sacks = sum([p["value"] for p in combination])
     product_list = []
     for p in combination:
+        if p["value"] <= 0:
+            continue
         product_list.append(
             Product(
                 product_id=p["id"],

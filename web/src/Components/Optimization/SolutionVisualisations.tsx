@@ -24,14 +24,15 @@ interface SolutionVisualisationsProps {
 
 export const SolutionVisualisations = ({ optimizationData, products }: SolutionVisualisationsProps) => {
   return (
-    <Card variant="info" style={{ width: 'fit-content' }}>
+    // @ts-ignore
+    <div variant="info" style={{ width: 'fit-content', backgroundColor: '#D5EAF4' }}>
       <Grid>
         <Typography variant="h6">Optimal blend</Typography>
         <Typography variant="h6">Scores</Typography>
         <SolutionBarChart optimizationData={optimizationData} products={products} />
         <SolutionRadarChart optimizationData={optimizationData} />
       </Grid>
-    </Card>
+    </div>
   )
 }
 

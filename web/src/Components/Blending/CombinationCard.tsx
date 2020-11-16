@@ -28,7 +28,7 @@ export const CombinationCard = ({
   const [combinationName, setCombinationName] = useState<string>(combination.name)
 
   return (
-    <Card style={{ width: 'fit-content', display: 'inline-block', margin: '10px', padding: '20px' }}>
+    <div style={{ width: 'auto', display: 'inline-block', margin: '10px', padding: '20px', backgroundColor: 'white' }}>
       <CardHeader style={{ display: 'inline-flex', height: '50px' }}>
         <CardHeaderTitle>
           <TextField
@@ -61,7 +61,7 @@ export const CombinationCard = ({
         productsInCombination={combination.values}
         combinationName={combinationName}
       />
-    </Card>
+    </div>
   )
 }
 
