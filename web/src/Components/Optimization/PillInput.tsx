@@ -1,16 +1,6 @@
-import React, { ReactElement, useState } from 'react'
-import styled from 'styled-components'
+import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
-import { TextField, Button } from '@equinor/eds-core-react'
-
-const Wrapper = styled.div`
-  padding: 10px 0 10px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 200px;
-  width: fit-content;
-`
+import { TextField } from '@equinor/eds-core-react'
 
 enum PillInputType {
   VOLUME = 'volume',
@@ -27,12 +17,18 @@ interface PillInputProps {
   isLoading: boolean
   pill: Pill
   setPill: Function
-  handleOptimize: Function
+  setInvalidInput: Function
 }
 
-const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps): ReactElement => {
+const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps): ReactElement => {
   const [invalidVolume, setInvalidVolume] = useState<boolean>(false)
   const [invalidDensity, setInvalidDensity] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (invalidDensity || invalidVolume) {
+      setInvalidInput(true)
+    } else setInvalidInput(false)
+  }, [invalidDensity, invalidVolume])
 
   const handleChange = (type: string, value: string) => {
     let newValue: number = 0
@@ -63,11 +59,12 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
   }
 
   return (
-    <Wrapper>
+    <div>
       <TextField
+        style={{ marginBottom: '16px' }}
         type="number"
         helperText={invalidVolume ? 'Must be a positive number' : undefined}
-        label="Enter pill volume"
+        label="Pill volume"
         id="pillvolume"
         value={pill.volume}
         meta="m3"
@@ -76,8 +73,9 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
         disabled={isLoading}
       />
       <TextField
+        style={{ marginBottom: '16px' }}
         type="number"
-        label="Enter pill density"
+        label="Pill density"
         helperText={invalidDensity ? 'Must be a positive number' : undefined}
         id="pilldensity"
         value={pill.density}
@@ -86,14 +84,7 @@ const PillInput = ({ pill, setPill, isLoading, handleOptimize }: PillInputProps)
         onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}
         disabled={isLoading}
       />
-      <Button
-        onClick={() => {
-          handleOptimize()
-        }}
-        disabled={isLoading || invalidDensity || invalidVolume}>
-        Run optimizer
-      </Button>
-    </Wrapper>
+    </div>
   )
 }
 

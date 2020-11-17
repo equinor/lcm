@@ -1,9 +1,6 @@
-from typing import List
-
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import optimize
 from controllers.products import products_get
-from util.enums import bridge_mode_int
 
 
 def optimizerRequestHandler(
@@ -12,11 +9,18 @@ def optimizerRequestHandler(
     products,
     mass_goal,
     option="AVERAGE_PORESIZE",
+    iterations: int = 500,
 ):
-    print("Started optimization request...")
+    int_iterations = int(iterations)
+    if int_iterations <= 0:
+        raise ValueError("Number of iterations must be a positiv integer")
+
+    print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
     selected_products = [p for p in products_get().values() if p["id"] in products]
-    optimizer_result = optimize(products=selected_products, bridge=bridge, mass_goal=mass_goal)
+    optimizer_result = optimize(
+        products=selected_products, bridge=bridge, mass_goal=mass_goal, max_iterations=int_iterations
+    )
     combination = optimizer_result["combination"]
 
     total_mass: float = 0.0

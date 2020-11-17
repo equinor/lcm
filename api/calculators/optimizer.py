@@ -38,7 +38,7 @@ def optimize(
     products: List[dict],
     bridge: List[float],
     mass_goal: int,
-    max_iterations: int = 100,
+    max_iterations: int = 500,
 ):
     start = datetime.now()
     max_number_of_sacks = (mass_goal // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2

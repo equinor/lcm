@@ -1,11 +1,12 @@
 import { OptimizerAPI } from '../../Api'
 import PillInput, { Pill } from './PillInput'
-import { Environmental, Weight, WeightOptions } from './WeightOptions'
+import { Environmental, Weight } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { CircularProgress, Typography } from '@equinor/eds-core-react'
+import { CircularProgress, Typography, Button, Switch, TextField } from '@equinor/eds-core-react'
 import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
+import styled from 'styled-components'
 
 interface OptimizationContainerProps {
   isLoading: boolean
@@ -16,6 +17,15 @@ interface OptimizationContainerProps {
   value: number
   handleUpdate: Function
 }
+
+const Wrapper = styled.div`
+  padding: 10px 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+  width: fit-content;
+`
 
 const getWeightPercentages = (weight: Weight) => {
   const { fit, co2, cost, mass } = weight
@@ -36,12 +46,16 @@ const OptimizationRunner = ({
   handleUpdate,
 }: OptimizationContainerProps): ReactElement => {
   const [failedRun, setFailedRun] = useState<boolean>(false)
+  const [invalidInput, setInvalidInput] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const apiToken: string = useContext(AuthContext)?.token
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
     mass: 3500,
   })
-  const [loading, setLoading] = useState<boolean>(false)
+  const [iterations, setIterations] = useState<number>(300)
   const [weight, setWeight] = useState<Weight>({
     fit: 5,
     co2: 0,
@@ -49,8 +63,6 @@ const OptimizationRunner = ({
     mass: 5,
     environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
-
-  const apiToken: string = useContext(AuthContext)?.token
 
   const handleOptimize = () => {
     if (enabledProducts.length === 0) {
@@ -61,6 +73,7 @@ const OptimizationRunner = ({
     OptimizerAPI.postOptimizerApi(apiToken, {
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
+      iterations: iterations,
       value: value,
       option: mode,
       mass: pill.mass,
@@ -78,20 +91,42 @@ const OptimizationRunner = ({
         setLoading(false)
         setFailedRun(true)
         if (error.response.status === 400) alert(error.response.data)
+        if (error.response.status === 401) alert(error.response.data)
       })
   }
 
   return (
-    <div>
+    <Wrapper>
       <Typography variant="h3" style={{ paddingBottom: '2rem' }}>
         Optimizer
       </Typography>
-      <PillInput pill={pill} setPill={setPill} isLoading={isLoading} handleOptimize={handleOptimize} />
+      <PillInput pill={pill} setPill={setPill} isLoading={isLoading} setInvalidInput={setInvalidInput} />
+      <Switch label={'Advanced options'} onClick={() => setShowAdvancedOptions(!showAdvancedOptions)} />
+      {showAdvancedOptions && (
+        <div style={{ paddingBottom: '10px' }}>
+          <TextField
+            type="number"
+            variant={(iterations <= 0 && 'error') || undefined}
+            label="Number of iterations"
+            id="interations"
+            value={iterations}
+            onChange={(event: any) => {
+              if (event.target.value === '') setIterations(0)
+              const newValue = parseInt(event.target.value)
+              if (Math.sign(newValue) >= 0) setIterations(newValue)
+            }}
+            disabled={isLoading}
+          />
+        </div>
+      )}
+      <Button onClick={() => handleOptimize()} disabled={isLoading || invalidInput || iterations <= 0}>
+        Run optimizer
+      </Button>
       {loading && <CircularProgress style={{ padding: '20% 30%' }} />}
       {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
       {/* Disabled until supported in API and the needed data is available*/}
       {/*<WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />*/}
-    </div>
+    </Wrapper>
   )
 }
 

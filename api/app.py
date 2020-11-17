@@ -70,8 +70,9 @@ def main():
         products = request.json.get("products")
         mass = request.json.get("mass")
         option = request.json.get("option")
+        iterations = request.json.get("iterations")
 
-        return optimizerRequestHandler(value, name, products, mass, option)
+        return optimizerRequestHandler(value, name, products, mass, option, iterations)
 
     elif req == "SIZE_FRACTIONS":
         return size_steps_handler()

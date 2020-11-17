@@ -30,6 +30,11 @@ export const OptimizationContainer = ({
   const handleUpdate = (optimizationData: any) => {
     setOptimizationData(optimizationData)
 
+    if (Object.keys(optimizationData.products).length === 0) {
+      alert('Could not find a solution. Try changing some parameters')
+      setLoading(false)
+      return
+    }
     const datetime = new Date()
     const name = `Optimized at ${datetime
       .getHours()
