@@ -89,14 +89,14 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
                   checked={mode === BridgingOption.PERMEABILITY}
                 />
                 <Radio
-                  label="Average poresize"
+                  label="Average pore size/crack opening"
                   name="group"
                   value={BridgingOption.AVERAGE_PORESIZE}
                   onChange={bridgingOptionChange}
                   checked={mode === BridgingOption.AVERAGE_PORESIZE}
                 />
                 <Radio
-                  label="Maximum poresize"
+                  label="Max pore size/crack opening"
                   name="group"
                   value={BridgingOption.MAXIMUM_PORESIZE}
                   onChange={bridgingOptionChange}
