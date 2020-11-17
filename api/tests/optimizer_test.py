@@ -2748,6 +2748,7 @@ class OptimizerTest(unittest.TestCase):
         for i in range(20):
             result = optimize(product_data, theoretical_bridge, mass, max_iterations)
             result_list.append(result)
+        products = [len(run["combination"]) for run in result_list]
         fitness = [run["score"] for run in result_list]
         values_within_deviation(fitness, 10)
 

@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from typing import List
+from typing import Dict, List
 
 import numpy as np
 
@@ -8,11 +8,10 @@ from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS
 from classes.product import Product
 
 POPULATION_SIZE = 20
-NUMBER_OF_CHILDREN = 18
+NUMBER_OF_CHILDREN = 18  # must be a multitude of 2
 NUMBER_OF_PARENTS = 2
 MUTATION_PROBABILITY = 50  # percent
 NUMBER_OF_MUTATIONS = 30
-PRODUCTS_TO_BE_USED = 5
 MIN_MUTATOR_VALUE = 5
 
 ENVIRONMENTAL_SCORE = {
@@ -23,8 +22,6 @@ ENVIRONMENTAL_SCORE = {
 }
 
 MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
-
-weight_progress = []
 
 
 # This function calculates an optimal blend of products,
@@ -39,54 +36,49 @@ def optimize(
     bridge: List[float],
     mass_goal: int,
     max_iterations: int = 500,
+    max_products: int = 999,
 ):
     start = datetime.now()
-    max_number_of_sacks = (mass_goal // (averageSackSize(products) * min(PRODUCTS_TO_BE_USED, len(products)))) * 2
+    max_number_of_sacks = (mass_goal // (averageSackSize(products) * min(max_products, len(products)))) * 2
 
-    global weight_progress
-    weight_progress = []
     score_progress = []
-    # combination_progress = [[0] for _ in products]
-    population, children = initializePopulation(products, max_number_of_sacks)
+    population, children = initializePopulation(products, max_number_of_sacks, max_products)
     iterations = 0
     fittest_combo, score, experimental_bridge = {}, 100, []
     for _ in range(max_iterations):
         parents = selectParents(population, bridge, products, mass_goal)
-        children = crossover(parents, children, products)
-        children = executeMutation(children)
+        children = crossover(parents, children, products, max_products)
+        children = executeMutation(children, max_products)
         population = parents + children
         score, fittest_combo, experimental_bridge = optimal(population, bridge, products, mass_goal)
         # for i, _ in enumerate(products):
         #     combination_progress[i].append(list(fittest_combo.values())[i])
         score_progress.append(score)
-        weight_progress.append(sum([p * 25 for p in fittest_combo.values()]))
 
     return {
         "combination": {k: v for k, v in fittest_combo.items() if v > 0},
         "cumulative_bridge": experimental_bridge,
         "curve": score_progress,
-        # "combination_progress": combination_progress,
         "execution_time": (datetime.now() - start),
         "iterations": iterations,
         "score": score,
-        "mass_progress": weight_progress,
     }
 
 
 # This function creates a random population from
 # the products_list with the available products.
-def initializePopulation(products, max_number_of_sacks):
+def initializePopulation(products, max_number_of_sacks, max_products):
     population = []
     children = []
 
-    if PRODUCTS_TO_BE_USED < len(products):
+    if max_products < len(products):
         id_list = [p["id"] for p in products]
 
         for _ in range(POPULATION_SIZE):
             combo_dict = {id: 0 for id in id_list}
             used_id_list = []
 
-            for _ in range(PRODUCTS_TO_BE_USED):
+            for _ in range(max_products):
                 id = random.choice(id_list)
                 while id in used_id_list:
                     id = random.choice(id_list)
@@ -176,7 +168,7 @@ def selectParents(population, bridge, products, mass_goal):
 
 
 # Crossover varies the combinations
-def crossover(parents, children, products):
+def crossover(parents, children, products, max_products):
     number_of_products = len(products)
 
     first_parent_ids = list(parents[0].keys())
@@ -184,43 +176,26 @@ def crossover(parents, children, products):
     first_parent_sacks = list(parents[0].values())
     second_parent_sacks = list(parents[1].values())
 
-    if len(first_parent_ids) > 1:
-        for i in range(NUMBER_OF_CHILDREN // 2):
-            cross_point = random.randint(1, number_of_products - 1)
-            first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
-            second_child_id_list = second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
-            first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-            second_child_sacks_list = second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
+    if len(first_parent_ids) <= 1:
+        raise Exception("Why does this happen!?")
 
-            first_child_dict = {}
-            second_child_dict = {}
-            for j in range(len(first_child_id_list)):
-                first_child_dict[first_child_id_list[j]] = first_child_sacks_list[j]
-                second_child_dict[second_child_id_list[j]] = second_child_sacks_list[j]
+    for i in range(NUMBER_OF_CHILDREN // 2):
+        cross_point = random.randint(1, number_of_products - 1)
+        first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
+        second_child_id_list = second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
+        first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
+        second_child_sacks_list = second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
 
-            children[2 * i] = first_child_dict
-            children[2 * i + 1] = second_child_dict
+        first_child_dict = {}
+        second_child_dict = {}
+        for j in range(len(first_child_id_list)):
+            first_child_dict[first_child_id_list[j]] = first_child_sacks_list[j]
+            second_child_dict[second_child_id_list[j]] = second_child_sacks_list[j]
 
-        if NUMBER_OF_CHILDREN % 2 != 0:
-            cross_point = random.randint(1, number_of_products - 1)
-
-            first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
-            first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-
-            first_child_dict = {}
-            for j in range(len(first_child_id_list)):
-                first_child_dict[first_child_id_list[j]] = first_child_sacks_list[j]
-
-            children[NUMBER_OF_CHILDREN - 1] = first_child_dict
-
-    else:
-        raise Exception("What does this happen!?")
-        # for i in range(NUMBER_OF_CHILDREN // 2):
-        #     children[2 * i] = parents[0]
-        #     children[2 * i + 1] = parents[1]
-        #
-        # if NUMBER_OF_CHILDREN % 2 != 0:
-        #     children[NUMBER_OF_CHILDREN - 1] = parents[0]
+        limit_number_of_products(first_child_dict, max_products)
+        children[2 * i] = first_child_dict
+        limit_number_of_products(second_child_dict, max_products)
+        children[2 * i + 1] = second_child_dict
 
     return children
 
@@ -292,7 +267,7 @@ def flipBitMutation(child):
 
 
 # This function randomly executes one of the 3 mutations
-def executeMutation(children):
+def executeMutation(children, max_products):
     for child in children:
         mute = random.randint(0, int((NUMBER_OF_MUTATIONS / MUTATION_PROBABILITY) * 100))
         if mute == 1:
@@ -305,6 +280,7 @@ def executeMutation(children):
         for id in child:
             if child[id] < 0:
                 child[id] = 0
+        limit_number_of_products(child, max_products)
 
     return children
 
@@ -322,3 +298,18 @@ def mass_score(products: List[Product], mass_goal) -> float:
 
 def averageSackSize(products):
     return sum([p["sack_size"] for p in products]) / len(products)
+
+
+# TODO: This is not very good, as it undoes a lot of the alg. work
+def limit_number_of_products(product_dict: Dict[str, int], max_number_of_products: int) -> Dict[str, int]:
+    # If no maximum number of products is set, don't filter out any
+    if max_number_of_products == 999:
+        return product_dict
+
+    prod_w_values = {k: v for k, v in product_dict.items() if v > 0}
+    products_to_remove = len(prod_w_values) - max_number_of_products
+
+    for _ in range(products_to_remove):
+        reduced = random.randint(0, len(prod_w_values) - 1)
+        key_to_remove = list(prod_w_values)[reduced]
+        product_dict[key_to_remove] = 0

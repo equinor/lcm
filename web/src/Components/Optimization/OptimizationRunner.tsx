@@ -50,12 +50,13 @@ const OptimizationRunner = ({
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
   const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false)
+  const [iterations, setIterations] = useState<number>(300)
+  const [maxProducts, setMaxProducts] = useState<number>(0)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
     mass: 3500,
   })
-  const [iterations, setIterations] = useState<number>(300)
   const [weight, setWeight] = useState<Weight>({
     fit: 5,
     co2: 0,
@@ -74,6 +75,7 @@ const OptimizationRunner = ({
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
+      maxProducts: maxProducts,
       value: value,
       option: mode,
       mass: pill.mass,
@@ -114,6 +116,18 @@ const OptimizationRunner = ({
               if (event.target.value === '') setIterations(0)
               const newValue = parseInt(event.target.value)
               if (Math.sign(newValue) >= 0) setIterations(newValue)
+            }}
+            disabled={isLoading}
+          />
+          <TextField
+            type="number"
+            label="Max number of products"
+            id="maxProducts"
+            value={maxProducts}
+            onChange={(event: any) => {
+              if (event.target.value === '') setMaxProducts(0)
+              const newValue = parseInt(event.target.value)
+              if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
             }}
             disabled={isLoading}
           />
