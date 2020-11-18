@@ -2786,7 +2786,7 @@ def create_algorithm_report():
     bridgeplot.axes.set_ylim([0, 100])
     bridgeplot.axes.set_xlim([0.01, 10000])
 
-    alg_curve.set_title(f"Fitness Evolution ({50} runs)")
+    alg_curve.set_title(f"Fitness Evolution ({runs} runs)")
     alg_curve.set_xlabel("Generations")
     alg_curve.set_ylabel("Fitness")
 
@@ -2794,24 +2794,37 @@ def create_algorithm_report():
     massplot.set_xlabel("Generations")
     massplot.set_ylabel("Kg")
 
+    result_list = []
     for i in range(runs):
         result = optimize(product_data, bridge, mass, max_iterations)
+        result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
         alg_curve.plot(result["curve"], label=label)
         massplot.plot(result["mass_progress"])
         # for prod in result["combination_progress"]:
         #     mix_plot.plot(prod)
-        print(f"{i} of {runs} runs complete...")
+        print(f"{i+1} of {runs} runs complete...")
 
     print("Done!")
-    print(f"Saving plot to {Config.HOME_DIR}/algo_test_report.png")
+    print(f"Saving plot to {Config.HOME_DIR}/test_report.png")
     # Display plots
     # bridgeplot.legend(loc="right", bbox_to_anchor=(1.13, 0.5))
     # alg_curve.legend(loc="right", bbox_to_anchor=(1.13, 2))
     # plt.subplots_adjust(right=0.9)
+
+    fitness = [run["score"] for run in result_list]
+    standard_deviation = round(float(np.std(fitness)), 4)
+    alg_curve.text(
+        0.75,
+        0.8,
+        f"Standard deviation: {standard_deviation}",
+        style="italic",
+        transform=alg_curve.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+    )
     plt.tight_layout()
-    fig.savefig(f"{Config.HOME_DIR}/algo_test_report.png", format="png")
+    fig.savefig(f"{Config.HOME_DIR}/test_report.png", format="png")
 
 
 if __name__ == "__main__":
