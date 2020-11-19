@@ -18,6 +18,13 @@ interface SelectProductsProps {
   setEnabledProducts: Function
 }
 
+const Link = styled.a`
+  color: #007079;
+  font-size: 16px;
+  line-height: 20px;
+  text-decoration-line: underline;
+`
+
 export const SelectProducts = ({
   loading,
   products,
@@ -81,7 +88,8 @@ export const SelectProducts = ({
 
   return (
     <>
-      <div style={{ textAlign: 'end', paddingBottom: '5px' }}>
+      <div style={{ paddingBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>Products summary</Link>
         <Switch label="Select all" onClick={(e: any) => handleAllToggle(e)} />
       </div>
       <ChipBox>
