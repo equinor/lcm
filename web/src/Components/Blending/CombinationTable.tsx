@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
-import { Table, TextField } from '@equinor/eds-core-react'
-import { Product } from '../../gen-api/src/models'
+import { TextField } from '@equinor/eds-core-react'
 import { ProductsInCombination } from '../CombinationsWrapper'
-
-const { Body, Row, Cell, Head } = Table
+import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
+import { Products } from '../../Types'
 
 interface CombinationTableProps {
-  products: any
-  sacks: any
+  products: Products
+  sacks: boolean
   enabledProducts: any
   updateCombination: Function
   productsInCombination: ProductsInCombination
@@ -24,7 +23,8 @@ export const CombinationTable = ({
   combinationName,
 }: CombinationTableProps) => {
   const [values, setValues] = useState<ProductsInCombination>({})
-  const productList: Array<Product> = Object.values(products)
+  const alternatingColor = ['white', '#F5F5F5']
+  const productsToList = Object.values(products).filter(p => enabledProducts.includes(p['id']))
 
   // When enabledProducts changes. Removed the ones not enabled from the values.
   useEffect(() => {
@@ -64,47 +64,32 @@ export const CombinationTable = ({
   }
 
   return (
-    <div className="container">
-      <div className="group" style={{ display: 'flex', flexFlow: 'column' }}>
-        <Table>
-          <Head>
-            <Row>
-              <Cell as="th" scope="col">
-                {sacks ? (
-                  'Sacks'
-                ) : (
-                  <>
-                    Blend (ppg or kg/m<sup>3</sup>)
-                  </>
-                )}
-              </Cell>
-              <Cell as="th" scope="col">
-                %
-              </Cell>
-            </Row>
-          </Head>
-          <Body>
-            {productList.map(
-              product =>
-                enabledProducts.includes(product['id']) && (
-                  <Row key={product.id}>
-                    <Cell>
-                      <TextField
-                        id={product.id}
-                        value={values[product.id]?.value || ''}
-                        type="number"
-                        placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
-                        onChange={(event: any) => handleValueChange(product.id, event.target.value)}
-                        style={{ background: 'transparent' }}
-                      />
-                    </Cell>
-                    <Cell>{values[product.id]?.percentage ? values[product.id]?.percentage.toFixed(1) : 0}</Cell>
-                  </Row>
-                )
-            )}
-          </Body>
-        </Table>
-      </div>
+    <div style={{ display: 'flex', flexFlow: 'column' }}>
+      <CombinationTableHeader>
+        {sacks ? (
+          <div>Sacks</div>
+        ) : (
+          <div>
+            Blend (ppb or kg/m<sup>3</sup>)
+          </div>
+        )}
+        <div>%</div>
+      </CombinationTableHeader>
+      {productsToList.map((product, index) => (
+        <CombinationTableValues style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
+          <TextField
+            id={product.id}
+            value={values[product.id]?.value || ''}
+            type="number"
+            placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
+            onChange={(event: any) => handleValueChange(product.id, event.target.value)}
+            style={{ background: 'transparent', maxWidth: '200px', height: '37px', border: 'none' }}
+          />
+          <div style={{ paddingLeft: '16px' }}>
+            {values[product.id]?.percentage ? values[product.id]?.percentage.toFixed(1) : 0}
+          </div>
+        </CombinationTableValues>
+      ))}
     </div>
   )
 }

@@ -1,11 +1,33 @@
 import React from 'react'
 // @ts-ignore
 import styled from 'styled-components'
-import ProductCard from './ProductCard.js'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
-import { Button, LinearProgress } from '@equinor/eds-core-react'
+import { Button } from '@equinor/eds-core-react'
 import { Combinations } from '../CombinationsWrapper'
+import ProductTable from './ProductTable'
+
+export const Card = styled.div`
+  margin: 10px;
+  padding: 10px;
+  background-color: white;
+  border: #cccccc solid 1px;
+  border-radius: 5px;
+`
+export const CombinationTableHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: #f7f7f7;
+  border-bottom: #bfbfbf 2px solid;
+`
+export const CombinationTableValues = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+`
 
 interface CardContainerProps {
   sacks: any
@@ -16,7 +38,6 @@ interface CardContainerProps {
   removeCombination: Function
   addCombination: Function
   enabledProducts: any
-  loading: any
 }
 
 const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
@@ -43,14 +64,13 @@ export const CardContainer = ({
   removeCombination,
   addCombination,
   enabledProducts,
-  loading,
 }: CardContainerProps) => {
   return (
-    <div>
-      {loading && <LinearProgress />}
+    <>
       <div style={{ width: '100%', display: 'flex' }}>
-        <ProductCard products={products} enabledProducts={enabledProducts} />
-
+        <Card>
+          <ProductTable products={products} enabledProducts={enabledProducts} />
+        </Card>
         {Object.keys(combinations).map(id => {
           if (sacks === combinations[id].sacks)
             return (
@@ -82,7 +102,7 @@ export const CardContainer = ({
           Add combination
         </Button>
       </div>
-    </div>
+    </>
   )
 }
 

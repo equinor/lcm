@@ -1,10 +1,6 @@
 import React, { ReactElement } from 'react'
-// @ts-ignore
-import { Table } from '@equinor/eds-core-react'
-import { Product } from '../../gen-api/src/models'
 import { Products } from '../../Types'
-
-const { Body, Row, Cell, Head } = Table
+import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
 
 interface ProductTableProps {
   products: Products
@@ -12,36 +8,27 @@ interface ProductTableProps {
 }
 
 export const ProductTable = ({ enabledProducts, products }: ProductTableProps): ReactElement => {
-  const productList: Array<Product> = Object.values(products)
+  const alternatingColor = ['white', '#F5F5F5']
+  const productsToList = Object.values(products).filter(p => enabledProducts.includes(p['id']))
 
   return (
-    <div className="container">
-      <div className="">
-        <div className="group">
-          <Table>
-            <Head>
-              <Row>
-                <Cell as="th" scope="col">
-                  Product
-                </Cell>
-                <Cell as="th" scope="col">
-                  Supplier
-                </Cell>
-              </Row>
-            </Head>
-            <Body>
-              {productList.map(product =>
-                enabledProducts.includes(product['id']) ? (
-                  <Row key={`${product.id}-${product.supplier}`}>
-                    <Cell>{product.title}</Cell>
-                    <Cell>{product.supplier}</Cell>
-                  </Row>
-                ) : null
-              )}
-            </Body>
-          </Table>
-        </div>
-      </div>
+    <div style={{ display: 'flex', flexFlow: 'column' }}>
+      <div style={{ height: '48px' }} />
+      <CombinationTableHeader>
+        <div>Product</div>
+        <div>Supplier</div>
+      </CombinationTableHeader>
+      {productsToList.map((product, index) => (
+        <CombinationTableValues
+          style={{
+            height: '36px',
+            borderBottom: '#375981 1px solid',
+            backgroundColor: `${alternatingColor[index % 2]}`,
+          }}>
+          <div style={{ paddingRight: '25px' }}>{product.title}</div>
+          <div>{product.supplier}</div>
+        </CombinationTableValues>
+      ))}
     </div>
   )
 }

@@ -144,12 +144,11 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         <Accordion>
           <AccordionItem>
             <AccordionHeader>Sack combinations</AccordionHeader>
-            <AccordionPanel>
+            <AccordionPanel style={{ overflow: 'auto' }}>
               <CardContainer
                 sacks={true}
                 combinations={combinations}
                 enabledProducts={enabledProducts}
-                loading={loading}
                 products={products}
                 updateCombination={updateCombinationAndFetchBridge}
                 renameCombination={renameCombination}
@@ -160,12 +159,11 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
           </AccordionItem>
           <AccordionItem>
             <AccordionHeader>Manual combinations</AccordionHeader>
-            <AccordionPanel>
+            <AccordionPanel style={{ overflow: 'auto' }}>
               <CardContainer
                 sacks={false}
                 combinations={combinations}
                 enabledProducts={enabledProducts}
-                loading={loading}
                 products={products}
                 updateCombination={updateCombinationAndFetchBridge}
                 renameCombination={renameCombination}

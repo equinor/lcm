@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 // @ts-ignore
-import { Button, Card, Icon, TextField } from '@equinor/eds-core-react'
+import { Button, Icon, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import { Combination } from '../CombinationsWrapper'
+import styled from 'styled-components'
+import { Card } from './CardContainer'
 
-const { CardHeader, CardHeaderTitle } = Card
+const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 
 interface CombinationCardProps {
   sacks: boolean
@@ -28,29 +33,27 @@ export const CombinationCard = ({
   const [combinationName, setCombinationName] = useState<string>(combination.name)
 
   return (
-    <div style={{ width: 'auto', display: 'inline-block', margin: '10px', padding: '20px', backgroundColor: 'white' }}>
-      <CardHeader style={{ display: 'inline-flex', height: '50px' }}>
-        <CardHeaderTitle>
-          <TextField
-            id={`${combination.name}`}
-            value={combinationName}
-            style={{ background: 'transparent' }}
-            onChange={(event: any) => {
-              setCombinationName(event.target.value)
-            }}
-            onBlur={() => {
-              renameCombination(combinationName, combination.name)
-            }}
-            onKeyPress={(event: any) => {
-              if (event.key === 'Enter') {
-                // @ts-ignore
-                document.activeElement.blur()
-              }
-            }}
-          />
-        </CardHeaderTitle>
+    <Card>
+      <CardHeader>
+        <TextField
+          id={`${combination.name}`}
+          value={combinationName}
+          style={{ background: 'transparent', paddingTop: '10px' }}
+          onChange={(event: any) => {
+            setCombinationName(event.target.value)
+          }}
+          onBlur={() => {
+            renameCombination(combinationName, combination.name)
+          }}
+          onKeyPress={(event: any) => {
+            if (event.key === 'Enter') {
+              // @ts-ignore
+              document.activeElement.blur()
+            }
+          }}
+        />
         <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.name)}>
-          <Icon name="close" title="close"></Icon>
+          <Icon name="close" title="close" />
         </Button>
       </CardHeader>
       <CombinationTable
@@ -61,7 +64,7 @@ export const CombinationCard = ({
         productsInCombination={combination.values}
         combinationName={combinationName}
       />
-    </div>
+    </Card>
   )
 }
 

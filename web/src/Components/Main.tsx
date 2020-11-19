@@ -16,6 +16,7 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   padding-left: 3%;
+  padding-right: 3%;
   font-family: 'Equinor';
 `
 
