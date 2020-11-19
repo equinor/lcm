@@ -3,7 +3,7 @@ import React, { createContext } from 'react'
 import { PublicClientApplication } from '@azure/msal-browser'
 
 export interface AuthComponentProps {
-  error: any
+  msalError: any
   isAuthenticated: boolean
   getAccessToken: Function
 }
@@ -41,7 +41,10 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
       }
       // Initialize the MSAL application object
       this.publicClientApplication = new PublicClientApplication(config)
-      this.publicClientApplication.handleRedirectPromise().then(this.handleResponse.bind(this))
+      this.publicClientApplication
+        .handleRedirectPromise()
+        .then(this.handleResponse.bind(this))
+        .catch(err => this.setState({ error: err }))
     }
 
     handleResponse(resp: any) {
@@ -63,7 +66,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
     render() {
       return (
         <WrappedComponent
-          error={this.state.error}
+          msalError={this.state.error}
           isAuthenticated={this.state.isAuthenticated}
           getAccessToken={() => this.getAccessToken()}
         />

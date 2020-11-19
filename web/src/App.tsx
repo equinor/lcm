@@ -25,7 +25,20 @@ const LoginError = ({ errorMessage, hint }: any) => {
   )
 }
 
-function App({ isAuthenticated, getAccessToken }: AuthComponentProps) {
+const AccessDenied = ({ errorMessage, hint }: any) => {
+  return (
+    <div style={{ margin: '100px', textAlign: 'center' }}>
+      <p>Access Denied</p>
+      <p>{hint}</p>
+      <small>
+        Error message:
+        <pre>{errorMessage}</pre>
+      </small>
+    </div>
+  )
+}
+
+function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps) {
   const [loginError, setLoginError] = useState<LoginError>({})
   const [token, setToken] = useState<string | null>(null)
 
@@ -40,11 +53,24 @@ function App({ isAuthenticated, getAccessToken }: AuthComponentProps) {
       })
   }, [isAuthenticated])
 
+  useEffect(() => {
+    if (!msalError) return
+    setLoginError({ ...msalError, errorCode: msalError.name })
+  }, [msalError])
+
   if (token) {
     return (
       <AuthContext.Provider value={{ token: token }}>
         <Main />
       </AuthContext.Provider>
+    )
+  }
+  if (loginError?.errorCode === 'InteractionRequiredAuthError') {
+    return (
+      <AccessDenied
+        errorMessage={loginError.errorMessage}
+        hint={'Contact the applications owner to be granted access to this site.'}
+      />
     )
   }
   if (loginError?.errorCode === 'interaction_in_progress') {
