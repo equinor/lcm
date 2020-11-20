@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Icon, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
@@ -31,6 +31,15 @@ export const CombinationCard = ({
   removeCombination,
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
+  const [totalMass, setTotalMass] = useState<number>(0)
+
+  useEffect(() => {
+    let tempMass = 0
+    Object.values(combination.values).forEach(prod => {
+      tempMass += products[prod.id].sack_size * prod.value
+    })
+    setTotalMass(tempMass)
+  }, [combination])
 
   return (
     <Card>
@@ -64,6 +73,10 @@ export const CombinationCard = ({
         productsInCombination={combination.values}
         combinationName={combinationName}
       />
+      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 5px', borderTop: '1px solid' }}>
+        <div>Total mass</div>
+        <div>{totalMass}kg</div>
+      </div>
     </Card>
   )
 }

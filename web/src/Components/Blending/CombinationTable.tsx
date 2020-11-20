@@ -77,14 +77,16 @@ export const CombinationTable = ({
       </CombinationTableHeader>
       {productsToList.map((product, index) => (
         <CombinationTableValues style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
-          <TextField
-            id={product.id}
-            value={values[product.id]?.value || ''}
-            type="number"
-            placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
-            onChange={(event: any) => handleValueChange(product.id, event.target.value)}
-            style={{ background: 'transparent', maxWidth: '200px', height: '37px', border: 'none' }}
-          />
+          <div style={{ width: '150px' }}>
+            <TextField
+              id={product.id}
+              value={values[product.id]?.value || ''}
+              type="number"
+              placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
+              onChange={(event: any) => handleValueChange(product.id, event.target.value)}
+              style={{ background: 'transparent', maxWidth: '200px', height: '37px', border: 'none' }}
+            />
+          </div>
           <div style={{ paddingLeft: '16px' }}>
             {values[product.id]?.percentage ? values[product.id]?.percentage.toFixed(1) : 0}
           </div>
