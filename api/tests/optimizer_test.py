@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib.ticker import ScalarFormatter
 
 from calculators.bridge import SIZE_STEPS, theoretical_bridge
-from calculators.optimizer import optimize
+from calculators.optimizer import Optimizer
 from config import Config
 from util.enums import BridgeOption
 
@@ -2746,9 +2746,8 @@ class OptimizerTest(unittest.TestCase):
         max_iterations = 500
         result_list = []
         for i in range(20):
-            result = optimize(product_data, theoretical_bridge, mass, max_iterations)
+            result = Optimizer(product_data, theoretical_bridge, mass, max_iterations).optimize()
             result_list.append(result)
-        products = [len(run["combination"]) for run in result_list]
         fitness = [run["score"] for run in result_list]
         values_within_deviation(fitness, 10)
 
@@ -2772,7 +2771,6 @@ def create_algorithm_report():
     bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
     # Crate Matplotlib figure
-    # fig, (bridgeplot, alg_curve, mix_plot) = plt.subplots(3)
     fig, (bridgeplot, alg_curve, massplot) = plt.subplots(3)
     fig.set_size_inches(9.4, 9.4)
 
@@ -2797,7 +2795,7 @@ def create_algorithm_report():
 
     result_list = []
     for i in range(runs):
-        result = optimize(product_data, bridge, mass, max_iterations)
+        result = Optimizer(product_data, bridge, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
@@ -2809,10 +2807,6 @@ def create_algorithm_report():
 
     print("Done!")
     print(f"Saving plot to {Config.HOME_DIR}/test_report.png")
-    # Display plots
-    # bridgeplot.legend(loc="right", bbox_to_anchor=(1.13, 0.5))
-    # alg_curve.legend(loc="right", bbox_to_anchor=(1.13, 2))
-    # plt.subplots_adjust(right=0.9)
 
     fitness = [run["score"] for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)

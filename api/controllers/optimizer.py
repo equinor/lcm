@@ -1,5 +1,5 @@
 from calculators.bridge import theoretical_bridge
-from calculators.optimizer import optimize
+from calculators.optimizer import Optimizer
 from controllers.products import products_get
 
 
@@ -16,13 +16,13 @@ def optimizerRequestHandler(
     print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
     selected_products = [p for p in products_get().values() if p["id"] in products]
-    optimizer_result = optimize(
+    optimizer_result = Optimizer(
         products=selected_products,
         bridge=bridge,
         mass_goal=mass_goal,
         max_iterations=int_iterations,
         max_products=max_products,
-    )
+    ).optimize()
     combination = optimizer_result["combination"]
 
     total_mass: float = 0.0
