@@ -20,6 +20,7 @@ export const ProductTable = ({ enabledProducts, products }: ProductTableProps): 
       </CombinationTableHeader>
       {productsToList.map((product, index) => (
         <CombinationTableValues
+          key={index}
           style={{
             height: '36px',
             borderBottom: '#375981 1px solid',

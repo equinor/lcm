@@ -76,7 +76,7 @@ export const CombinationTable = ({
         <div>%</div>
       </CombinationTableHeader>
       {productsToList.map((product, index) => (
-        <CombinationTableValues style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
+        <CombinationTableValues key={index} style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
           <div style={{ width: '150px' }}>
             <TextField
               id={product.id}

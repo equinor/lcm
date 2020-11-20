@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from typing import Dict, List
+from typing import List
 
 import numpy as np
 
@@ -31,12 +31,18 @@ class Optimizer:
         mass_goal: int,
         max_iterations: int = 500,
         max_products: int = 999,
+        particle_range=None,
     ):
         self.products = products
         self.bridge = bridge
         self.mass_goal = mass_goal
         self.max_iterations = max_iterations
         self.max_products = max_products
+        if particle_range is None:
+            particle_range = [1.0, 100]
+        if particle_range[1] <= 0:
+            particle_range[1] = 10000
+        self.particle_range = particle_range
 
     def optimize(self):
         start = datetime.now()
@@ -143,7 +149,7 @@ class Optimizer:
         diff_list = []
         i = 0
         for theo, blend in zip(self.bridge, experimental_bridge):
-            if 80 > SIZE_STEPS[i] > 1:
+            if self.particle_range[0] < SIZE_STEPS[i] < self.particle_range[1]:
                 diff_list.append((theo - blend) ** 2)
             i += 1
 

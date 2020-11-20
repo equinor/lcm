@@ -2765,6 +2765,27 @@ class OptimizerTest(unittest.TestCase):
         self._short_test_wrapper(bridge)
 
 
+def show_plot():
+    bridge = theoretical_bridge(BridgeOption.AVERAGE_PORESIZE, 500)
+    fig, bridgeplot = plt.subplots()
+    bridgeplot.set_xscale("log")
+    bridgeplot.set_xticks([0.1, 1, 10, 100, 1000])
+    bridgeplot.xaxis.set_major_formatter(ScalarFormatter())
+    bridgeplot.plot(SIZE_STEPS, bridge, color="black", label="ideal")
+    bridgeplot.axes.set_ylim([0, 100])
+    bridgeplot.axes.set_xlim([0.01, 10000])
+
+    result_list = []
+    for i in range(1):
+        result = Optimizer(
+            products=product_data, bridge=bridge, mass_goal=3500, max_iterations=1000, particle_range=(10, 100)
+        ).optimize()
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
+        result_list.append(result)
+
+    fig.show()
+
+
 def create_algorithm_report():
     runs = 100
     mass = 3500

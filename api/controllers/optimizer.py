@@ -1,14 +1,28 @@
+from typing import Tuple
+
+from flask import Response
+
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
 from controllers.products import products_get
 
 
-def optimizerRequestHandler(
-    value, blend_name, products, mass_goal, option="AVERAGE_PORESIZE", iterations: int = 500, max_products: int = 999
+def optimizer_request_handler(
+    value,
+    blend_name,
+    products,
+    mass_goal,
+    option="AVERAGE_PORESIZE",
+    iterations: int = 500,
+    max_products: int = 999,
+    particle_range: Tuple[float, float] = (1.0, 100),
 ):
     int_iterations = int(iterations)
     if int_iterations <= 0:
-        raise ValueError("Number of iterations must be a positiv integer")
+        return Response("Number of iterations must be a positiv integer", 401)
+
+    if particle_range[0] >= particle_range[1]:
+        return Response("Particle size 'from' must be smaller than 'to'", 401)
 
     if max_products == 0:
         max_products = 999
@@ -22,6 +36,7 @@ def optimizerRequestHandler(
         mass_goal=mass_goal,
         max_iterations=int_iterations,
         max_products=max_products,
+        particle_range=particle_range,
     ).optimize()
     combination = optimizer_result["combination"]
 

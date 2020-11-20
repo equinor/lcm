@@ -3,14 +3,14 @@ import PillInput, { Pill } from './PillInput'
 import { Environmental, Weight } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { CircularProgress, Typography, Button, Switch, TextField } from '@equinor/eds-core-react'
+import { CircularProgress, Typography, Button, TextField, Accordion } from '@equinor/eds-core-react'
 import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
 import styled from 'styled-components'
 
+const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
+
 interface OptimizationContainerProps {
-  isLoading: boolean
-  setIsLoading: Function
   products: Products
   enabledProducts: Array<string>
   mode: string
@@ -39,7 +39,6 @@ const getWeightPercentages = (weight: Weight) => {
 }
 
 const OptimizationRunner = ({
-  isLoading,
   enabledProducts,
   mode,
   value,
@@ -49,9 +48,9 @@ const OptimizationRunner = ({
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false)
   const [iterations, setIterations] = useState<number>(300)
   const [maxProducts, setMaxProducts] = useState<number>(0)
+  const [particleRange, setParticleRange] = useState<Array<number>>([1.0, 100])
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
@@ -75,6 +74,7 @@ const OptimizationRunner = ({
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
+      particleRange: particleRange,
       maxProducts: maxProducts,
       value: value,
       option: mode,
@@ -102,41 +102,81 @@ const OptimizationRunner = ({
       <Typography variant="h3" style={{ paddingBottom: '2rem' }}>
         Optimizer
       </Typography>
-      <PillInput pill={pill} setPill={setPill} isLoading={isLoading} setInvalidInput={setInvalidInput} />
-      <Switch label={'Advanced options'} onClick={() => setShowAdvancedOptions(!showAdvancedOptions)} />
-      {showAdvancedOptions && (
-        <div style={{ paddingBottom: '10px' }}>
-          <TextField
-            type="number"
-            variant={(iterations <= 0 && 'error') || undefined}
-            label="Number of iterations"
-            id="interations"
-            value={iterations}
-            onChange={(event: any) => {
-              if (event.target.value === '') setIterations(0)
-              const newValue = parseInt(event.target.value)
-              if (Math.sign(newValue) >= 0) setIterations(newValue)
-            }}
-            disabled={isLoading}
-          />
-          <TextField
-            type="number"
-            label="Max number of products"
-            id="maxProducts"
-            value={maxProducts}
-            onChange={(event: any) => {
-              if (event.target.value === '') setMaxProducts(0)
-              const newValue = parseInt(event.target.value)
-              if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
-            }}
-            disabled={isLoading}
-          />
-        </div>
-      )}
-      <Button onClick={() => handleOptimize()} disabled={isLoading || invalidInput || iterations <= 0}>
-        Run optimizer
-      </Button>
-      {loading && <CircularProgress style={{ padding: '20% 30%' }} />}
+      <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
+      <Accordion>
+        <AccordionItem>
+          <AccordionHeader>Advanced options</AccordionHeader>
+          <AccordionPanel>
+            <div style={{ paddingBottom: '10px' }}>
+              <TextField
+                type="number"
+                variant={(iterations <= 0 && 'error') || undefined}
+                label="Number of iterations"
+                id="interations"
+                value={iterations}
+                onChange={(event: any) => {
+                  if (event.target.value === '') setIterations(0)
+                  const newValue = parseInt(event.target.value)
+                  if (Math.sign(newValue) >= 0) setIterations(newValue)
+                }}
+                disabled={loading}
+              />
+              <TextField
+                type="number"
+                label="Max number of products"
+                id="maxProducts"
+                value={maxProducts}
+                onChange={(event: any) => {
+                  if (event.target.value === '') setMaxProducts(0)
+                  const newValue = parseInt(event.target.value)
+                  if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
+                }}
+                disabled={loading}
+              />
+              <Typography variant="body_short" style={{ padding: '10px 0' }}>
+                Particle sizes to consider (microns)
+              </Typography>
+              <div style={{ display: 'flex' }}>
+                <div style={{ padding: '0 15px', width: '100px' }}>
+                  <TextField
+                    id="part-from"
+                    type="number"
+                    label="From"
+                    value={particleRange[0]}
+                    onChange={(event: any) => {
+                      if (event.target.value === '') setParticleRange([0, particleRange[1]])
+                      const newValue = parseFloat(event.target.value)
+                      if (Math.sign(newValue) >= 0) setParticleRange([newValue, particleRange[1]])
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+                <div style={{ padding: '0 15px', width: '100px' }}>
+                  <TextField
+                    id="part-to"
+                    type="number"
+                    label="To"
+                    value={particleRange[1]}
+                    onChange={(event: any) => {
+                      if (event.target.value === '') setParticleRange([particleRange[0], 0])
+                      const newValue = parseFloat(event.target.value)
+                      if (Math.sign(newValue) >= 0) setParticleRange([particleRange[0], newValue])
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      <div style={{ display: 'flex', padding: '16px 0' }}>
+        <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
+          Run optimizer
+        </Button>
+        {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
+      </div>
+
       {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
       {/* Disabled until supported in API and the needed data is available*/}
       {/*<WeightOptions weight={weight} setWeight={setWeight} isLoading={isLoading} />*/}

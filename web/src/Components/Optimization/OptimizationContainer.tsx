@@ -24,7 +24,6 @@ export const OptimizationContainer = ({
   addCombination,
   value,
 }: OptimizationContainerProps): ReactElement => {
-  const [loading, setLoading] = useState<boolean>(false)
   const [optimizationData, setOptimizationData] = useState<any>(undefined)
 
   const handleUpdate = (optimizationData: any) => {
@@ -32,7 +31,6 @@ export const OptimizationContainer = ({
 
     if (Object.keys(optimizationData.products).length === 0) {
       alert('Could not find a solution. Try changing some parameters')
-      setLoading(false)
       return
     }
     const datetime = new Date()
@@ -51,14 +49,11 @@ export const OptimizationContainer = ({
       cumulative: null,
     }
     addCombination(combination)
-    setLoading(false)
   }
 
   return (
     <div>
       <OptimizationRunner
-        isLoading={loading}
-        setIsLoading={setLoading}
         products={products}
         enabledProducts={enabledProducts}
         mode={mode}

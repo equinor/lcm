@@ -6,7 +6,7 @@ from calculators.bridge import SIZE_STEPS
 from config import Config
 from controllers.combination import bridge_from_combination
 from controllers.optimal_bridge import bridgeRequestHandler
-from controllers.optimizer import optimizerRequestHandler
+from controllers.optimizer import optimizer_request_handler
 from controllers.products import products_get
 from controllers.report import create_report
 from util.authentication import authorize
@@ -72,8 +72,9 @@ def main():
         option = request.json.get("option")
         iterations = request.json.get("iterations")
         max_products = request.json.get("maxProducts")
+        particle_range = request.json.get("particleRange")
 
-        return optimizerRequestHandler(value, name, products, mass, option, iterations, max_products)
+        return optimizer_request_handler(value, name, products, mass, option, iterations, max_products, particle_range)
 
     elif req == "SIZE_FRACTIONS":
         return size_steps_handler()
