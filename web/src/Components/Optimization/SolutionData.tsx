@@ -95,8 +95,8 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </Spacer>
       <Typography variant="h6">Performance:</Typography>
       <Grid>
-        <Typography variant="body_short">Iterations:</Typography>
-        <Typography variant="body_short">{optimizationData.iterations}</Typography>
+        <Typography variant="body_short">Score:</Typography>
+        <Typography variant="body_short">{optimizationData.fitness.toFixed(2)}</Typography>
         <Typography variant="body_short">Time:</Typography>
         <Typography variant="body_short">{optimizationData.executionTime} seconds</Typography>
       </Grid>

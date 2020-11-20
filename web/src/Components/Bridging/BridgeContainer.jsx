@@ -78,7 +78,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
   return (
         <div style={{display: 'flex'}}>
         <InputWrapper>
-            <Typography variant="h3">Bridging options</Typography>
+            <Typography variant='h3'>Bridging options</Typography>
             <span>Bridging based on:</span>
               <RadioWrapper>
                 <Radio
@@ -103,18 +103,20 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
                   checked={mode === BridgingOption.MAXIMUM_PORESIZE}
                 />
               </RadioWrapper>
-
-            <TextField
+            <div style={{width: '150px'}}>
+              <TextField
                 label='Value'
-              type="number"
-              id="textfield-number"
+              type='number'
+              id='textfield-number'
               meta={unit}
               value={bridgeValue || 0}
               onChange={onBridgeValueChange}
               variant={bridgeValueVariant}
               helperText={bridgeValueHelperText}
             />
-          <Button onClick={()=>clearBridges()} variant="outlined">Clear Bridges</Button>
+            </div>
+
+          <Button onClick={()=>clearBridges()} variant="outlined" style={{maxWidth: '130px'}}>Clear Bridges</Button>
 
         </InputWrapper>
           <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
