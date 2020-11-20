@@ -38,15 +38,15 @@ const Sacks = ({ products, productResults, totalMass }: SacksProps): ReactElemen
       {Object.values(productResults).map((productResult: ProductResult) => {
         return (
           <Grid key={productResult.id}>
-            <Typography variant="body_short">{products[productResult.id].title}</Typography>
-            <Typography variant="body_short">{productResult.value} sacks</Typography>
+            <Typography variant='body_short'>{products[productResult.id].title}</Typography>
+            <Typography variant='body_short'>{productResult.value} sacks</Typography>
           </Grid>
         )
       })}
 
       <Grid>
-        <Typography variant="body_short">Total mass: </Typography>
-        <Typography variant="body_short">{totalMass} kg</Typography>
+        <Typography variant='body_short'>Total mass: </Typography>
+        <Typography variant='body_short'>{totalMass} kg</Typography>
       </Grid>
     </div>
   )
@@ -87,18 +87,18 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
   return (
     <div>
       <Spacer>
-        <Typography variant="h4">Optimal solution</Typography>
+        <Typography variant='h4'>Optimal solution</Typography>
       </Spacer>
       <Spacer>
-        <Typography variant="h6">Optimal blend:</Typography>
+        <Typography variant='h6'>Optimal blend:</Typography>
         <Sacks products={products} productResults={optimizationData.products} totalMass={optimizationData.totalMass} />
       </Spacer>
-      <Typography variant="h6">Performance:</Typography>
+      <Typography variant='h6'>Performance:</Typography>
       <Grid>
-        <Typography variant="body_short">Score:</Typography>
-        <Typography variant="body_short">{optimizationData.fitness.toFixed(2)}</Typography>
-        <Typography variant="body_short">Time:</Typography>
-        <Typography variant="body_short">{optimizationData.executionTime} seconds</Typography>
+        <Typography variant='body_short'>Score:</Typography>
+        <Typography variant='body_short'>{optimizationData.fitness.toFixed(2)}</Typography>
+        <Typography variant='body_short'>Time:</Typography>
+        <Typography variant='body_short'>{optimizationData.executionTime} seconds</Typography>
       </Grid>
       <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '150px' }}>

@@ -98,7 +98,7 @@ export const CardContainer = ({
               cumulative: null,
             })
           }}
-          variant="outlined">
+          variant='outlined'>
           Add combination
         </Button>
       </div>

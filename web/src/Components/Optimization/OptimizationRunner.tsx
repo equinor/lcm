@@ -7,6 +7,7 @@ import { CircularProgress, Typography, Button, TextField, Accordion } from '@equ
 import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
 import styled from 'styled-components'
+import { Tooltip } from '../../Common'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -49,8 +50,8 @@ const OptimizationRunner = ({
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
   const [iterations, setIterations] = useState<number>(300)
-  const [maxProducts, setMaxProducts] = useState<number>(0)
-  const [particleRange, setParticleRange] = useState<Array<number>>([1.0, 100])
+  const [maxProducts, setMaxProducts] = useState<number>(999)
+  const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 100])
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
@@ -99,7 +100,7 @@ const OptimizationRunner = ({
 
   return (
     <Wrapper>
-      <Typography variant="h3" style={{ paddingBottom: '2rem' }}>
+      <Typography variant='h3' style={{ paddingBottom: '2rem' }}>
         Optimizer
       </Typography>
       <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
@@ -107,41 +108,51 @@ const OptimizationRunner = ({
         <AccordionItem>
           <AccordionHeader>Advanced options</AccordionHeader>
           <AccordionPanel>
-            <div style={{ paddingBottom: '10px' }}>
-              <TextField
-                type="number"
-                variant={(iterations <= 0 && 'error') || undefined}
-                label="Number of iterations"
-                id="interations"
-                value={iterations}
-                onChange={(event: any) => {
-                  if (event.target.value === '') setIterations(0)
-                  const newValue = parseInt(event.target.value)
-                  if (Math.sign(newValue) >= 0) setIterations(newValue)
-                }}
-                disabled={loading}
-              />
-              <TextField
-                type="number"
-                label="Max number of products"
-                id="maxProducts"
-                value={maxProducts}
-                onChange={(event: any) => {
-                  if (event.target.value === '') setMaxProducts(0)
-                  const newValue = parseInt(event.target.value)
-                  if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
-                }}
-                disabled={loading}
-              />
-              <Typography variant="body_short" style={{ padding: '10px 0' }}>
-                Particle sizes to consider (microns)
-              </Typography>
+            <div>
+              <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
+                <Tooltip text={'Number of iterations the optimizer will run. Approx. 1sec/300iterations'}>
+                  <TextField
+                    type='number'
+                    variant={(iterations <= 0 && 'error') || undefined}
+                    label='Number of iterations'
+                    id='interations'
+                    value={iterations}
+                    onChange={(event: any) => {
+                      if (event.target.value === '') setIterations(0)
+                      const newValue = parseInt(event.target.value)
+                      if (Math.sign(newValue) >= 0) setIterations(newValue)
+                    }}
+                    disabled={loading}
+                  />
+                </Tooltip>
+              </div>
+              <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
+                <Tooltip text={'Maximum number of products the optimizer should try to include in the combination'}>
+                  <TextField
+                    type='number'
+                    label='Max number of products'
+                    id='maxProducts'
+                    value={maxProducts}
+                    onChange={(event: any) => {
+                      if (event.target.value === '') setMaxProducts(0)
+                      const newValue = parseInt(event.target.value)
+                      if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
+                    }}
+                    disabled={loading}
+                  />
+                </Tooltip>
+              </div>
+              <div style={{ margin: '10px 0' }}>
+                <Tooltip text={'A range in microns which should be considered in the optimization'}>
+                  <Typography variant='body_short'>Particle sizes to consider (microns)</Typography>
+                </Tooltip>
+              </div>
               <div style={{ display: 'flex' }}>
                 <div style={{ padding: '0 15px', width: '100px' }}>
                   <TextField
-                    id="part-from"
-                    type="number"
-                    label="From"
+                    id='part-from'
+                    type='number'
+                    label='From'
                     value={particleRange[0]}
                     onChange={(event: any) => {
                       if (event.target.value === '') setParticleRange([0, particleRange[1]])
@@ -153,9 +164,9 @@ const OptimizationRunner = ({
                 </div>
                 <div style={{ padding: '0 15px', width: '100px' }}>
                   <TextField
-                    id="part-to"
-                    type="number"
-                    label="To"
+                    id='part-to'
+                    type='number'
+                    label='To'
                     value={particleRange[1]}
                     onChange={(event: any) => {
                       if (event.target.value === '') setParticleRange([particleRange[0], 0])

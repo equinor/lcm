@@ -61,8 +61,8 @@ export const CombinationCard = ({
             }
           }}
         />
-        <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.name)}>
-          <Icon name="close" title="close" />
+        <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
+          <Icon name='close' title='close' />
         </Button>
       </CardHeader>
       <CombinationTable

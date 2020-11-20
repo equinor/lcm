@@ -37,8 +37,8 @@ export const RefreshButton = () => {
 
   return (
     <>
-      <Button variant="outlined" onClick={() => setScrim(true)}>
-        <Icon name="refresh" title="refresh" size={48} />
+      <Button variant='outlined' onClick={() => setScrim(true)}>
+        <Icon name='refresh' title='refresh' size={48} />
         Synchronize with SharePoint
       </Button>
       {scrim && (
@@ -48,7 +48,7 @@ export const RefreshButton = () => {
             <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
               <p>
                 This will synchronize products distribution and products metadata from SharePoint (
-                <a href="https://statoilsrm.sharepoint.com/sites/LCMTeamBlend">
+                <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
                   https://statoilsrm.sharepoint.com/sites/LCMTeamBlend
                 </a>
                 )
@@ -65,7 +65,7 @@ export const RefreshButton = () => {
                   Cancel
                 </Button>
                 <Button
-                  color="danger"
+                  color='danger'
                   disabled={loading}
                   onClick={() => {
                     setLoading(true)

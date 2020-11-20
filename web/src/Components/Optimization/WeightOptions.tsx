@@ -90,14 +90,14 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
     // @ts-ignore
     <Card style={{ width: 'fit-content', backgroundColor: 'white' }}>
       <GridUpper>
-        <Typography variant="h6">Weigthing</Typography>
+        <Typography variant='h6'>Weigthing</Typography>
       </GridUpper>
       <Grid>
         <div>
           <Wrapper>
             <span style={{ color: '#3D3D3D' }}>Fit</span>
             <Slider
-              id="Fit"
+              id='Fit'
               value={fit}
               min={0}
               max={10}
@@ -114,7 +114,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
           <Wrapper>
             <span style={{ color: '#3D3D3D' }}>Cost</span>
             <Slider
-              id="Cost"
+              id='Cost'
               value={cost}
               min={0}
               max={10}
@@ -132,7 +132,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
           <Wrapper>
             <span style={{ color: '#3D3D3D' }}>CO2</span>
             <Slider
-              id="CO2"
+              id='CO2'
               value={co2}
               min={0}
               max={10}
@@ -149,7 +149,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
           <Wrapper>
             <span style={{ color: '#3D3D3D' }}>Mass</span>
             <Slider
-              id="Mass"
+              id='Mass'
               value={mass}
               min={0}
               max={10}
@@ -167,7 +167,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
         <WeigthChart fit={fit} cost={cost} co2={co2} mass={mass} />
       </Grid>
       <GridUpper>
-        <Typography variant="h6">Environmental</Typography>
+        <Typography variant='h6'>Environmental</Typography>
       </GridUpper>
       <GridFilter>
         <div>
@@ -175,41 +175,41 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
             <EnvironmentalWrapper>
               <li>
                 <Checkbox
-                  label="Green"
-                  name="multiple"
+                  label='Green'
+                  name='multiple'
                   onChange={(event: any) => handleEnvironmentChange(Environmental.GREEN)}
                   checked={weight.environmental.includes(Environmental.GREEN)}
-                  value="Green"
+                  value='Green'
                   disabled={isLoading}
                 />
               </li>
               <li>
                 <Checkbox
-                  label="Yellow"
-                  name="multiple"
+                  label='Yellow'
+                  name='multiple'
                   onChange={(event: any) => handleEnvironmentChange(Environmental.YELLOW)}
                   checked={weight.environmental.includes(Environmental.YELLOW)}
-                  value="Yellow"
+                  value='Yellow'
                   disabled={isLoading}
                 />
               </li>
               <li>
                 <Checkbox
-                  label="Red"
-                  name="multiple"
+                  label='Red'
+                  name='multiple'
                   onChange={(event: any) => handleEnvironmentChange(Environmental.RED)}
                   checked={weight.environmental.includes(Environmental.RED)}
-                  value="Red"
+                  value='Red'
                   disabled={isLoading}
                 />
               </li>
               <li>
                 <Checkbox
-                  label="Black"
-                  name="multiple"
+                  label='Black'
+                  name='multiple'
                   onChange={(event: any) => handleEnvironmentChange(Environmental.BLACK)}
                   checked={weight.environmental.includes(Environmental.BLACK)}
-                  value="Black"
+                  value='Black'
                   disabled={isLoading}
                 />
               </li>
@@ -217,7 +217,7 @@ export const WeightOptions = ({ weight, setWeight, isLoading }: WeightOptionsPro
           </UnstyledList>
         </div>
       </GridFilter>
-      <Typography variant="body_long" style={{ color: '#858585' }}>
+      <Typography variant='body_long' style={{ color: '#858585' }}>
         *Note that these weightings are not well-defined, and only serve to tune the optimizing algorithm based on the
         different categories.
       </Typography>

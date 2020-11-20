@@ -69,7 +69,7 @@ export default (): ReactElement => {
     <>
       <TopBar>
         <TopBar.Header>
-          <Typography variant="h2">LCM Optimizer</Typography>
+          <Typography variant='h2'>LCM Optimizer</Typography>
         </TopBar.Header>
         <TopBar.Actions>
           <div
@@ -80,8 +80,8 @@ export default (): ReactElement => {
             }}>
             <RefreshButton />
             <div>
-              <Button variant="outlined" onClick={() => setSideSheet(!sideSheet)}>
-                <Icon name="filter_alt" title="filter products" />
+              <Button variant='outlined' onClick={() => setSideSheet(!sideSheet)}>
+                <Icon name='filter_alt' title='filter products' />
                 Product filter
               </Button>
             </div>
@@ -89,7 +89,7 @@ export default (): ReactElement => {
         </TopBar.Actions>
       </TopBar>
       <Body>
-        <SideSheet variant="large" title="Select products:" open={sideSheet} onClose={() => setSideSheet(false)}>
+        <SideSheet variant='large' title='Select products:' open={sideSheet} onClose={() => setSideSheet(false)}>
           <SelectProducts
             loading={isLoading}
             products={products}

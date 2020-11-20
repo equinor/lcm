@@ -16,7 +16,7 @@ class CustomizedAxisTick extends PureComponent {
 
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={8} textAnchor="end" fill="#666" transform="rotate(-60)">
+        <text x={0} y={0} dy={8} textAnchor='end' fill='#666' transform='rotate(-60)'>
           {payload.value}
         </text>
       </g>
@@ -42,8 +42,8 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
   return (
     <BarChart width={300} height={250} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
       <XAxis
-        dataKey="name"
-        scale="point"
+        dataKey='name'
+        scale='point'
         padding={{ left: 50, right: 50 }}
         height={80}
         interval={0}
@@ -52,8 +52,8 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
       <YAxis />
       <Tooltip />
       <Legend />
-      <CartesianGrid strokeDasharray="3 3" />
-      <Bar dataKey="sacks" fill="#73B1B5" background={{ fill: '#D6EAF4' }} label={{ position: 'top' }} />
+      <CartesianGrid strokeDasharray='3 3' />
+      <Bar dataKey='sacks' fill='#73B1B5' background={{ fill: '#D6EAF4' }} label={{ position: 'top' }} />
     </BarChart>
   )
 }

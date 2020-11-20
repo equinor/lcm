@@ -81,7 +81,7 @@ export const CombinationTable = ({
             <TextField
               id={product.id}
               value={values[product.id]?.value || ''}
-              type="number"
+              type='number'
               placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
               onChange={(event: any) => handleValueChange(product.id, event.target.value)}
               style={{ background: 'transparent', maxWidth: '200px', height: '37px', border: 'none' }}

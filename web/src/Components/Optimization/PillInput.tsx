@@ -62,25 +62,25 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
     <div style={{ maxWidth: '150px' }}>
       <TextField
         style={{ marginBottom: '16px' }}
-        type="number"
+        type='number'
         helperText={invalidVolume ? 'Must be a positive number' : undefined}
-        label="Pill volume"
-        id="pillvolume"
+        label='Pill volume'
+        id='pillvolume'
         value={pill.volume}
-        meta="m3"
+        meta='m3'
         variant={(invalidVolume && 'error') || undefined}
         onChange={(event: any) => handleChange(PillInputType.VOLUME, event.target.value)}
         disabled={isLoading}
       />
       <TextField
         style={{ marginBottom: '16px' }}
-        type="number"
-        label="Pill density"
+        type='number'
+        label='Pill density'
         helperText={invalidDensity ? 'Must be a positive number' : undefined}
-        id="pilldensity"
+        id='pilldensity'
         value={pill.density}
         variant={(invalidDensity && 'error') || undefined}
-        meta="kg/m3"
+        meta='kg/m3'
         onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}
         disabled={isLoading}
       />

@@ -16,7 +16,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
   return (
-    <text x={x} y={y} fill="#3D3D3D" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+    <text x={x} y={y} fill='#3D3D3D' textAnchor={x > cx ? 'start' : 'end'} dominantBaseline='central'>
       {`${(percent * 100).toFixed(0)}%`}
     </text>
   )
@@ -41,13 +41,13 @@ export class WeigthChart extends PureComponent {
             labelLine={false}
             label={renderCustomizedLabel}
             outerRadius={75}
-            fill="#8884d8"
-            dataKey="value">
+            fill='#8884d8'
+            dataKey='value'>
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Legend layout="vertical" align="right" verticalAlign="middle" />
+          <Legend layout='vertical' align='right' verticalAlign='middle' />
         </PieChart>
       </Wrapper>
     )

@@ -49,7 +49,7 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
             <Title>{TITLE_CHOICES[titleChoice]}</Title>
             <div>
               <Wrapper>
-                <Typography variant="body_short" bold>
+                <Typography variant='body_short' bold>
                   Optimal blend:{' '}
                 </Typography>
                 {fetched && optimizationData && optimizationData.products && optimizationData.products.length !== 0 ? (
@@ -57,26 +57,26 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
                     product =>
                       product.sacks !== 0 && (
                         <div>
-                          <Typography variant="body_short">{productMap[product.id].name}: </Typography>
-                          <Typography variant="body_short">{product.sacks} sacks</Typography>
+                          <Typography variant='body_short'>{productMap[product.id].name}: </Typography>
+                          <Typography variant='body_short'>{product.sacks} sacks</Typography>
                         </div>
                       )
                   )
                 ) : (
-                  <Typography variant="body_short" style={{ color: '#EC462F' }}>
+                  <Typography variant='body_short' style={{ color: '#EC462F' }}>
                     No solution found
                   </Typography>
                 )}
                 {fetched && optimizationData ? (
                   <div>
-                    <Typography variant="body_short" bold>
+                    <Typography variant='body_short' bold>
                       Total mass:{' '}
                     </Typography>
-                    <Typography variant="body_short">{getTotalMass()} kg</Typography>
-                    <Typography variant="body_short" bold>
+                    <Typography variant='body_short'>{getTotalMass()} kg</Typography>
+                    <Typography variant='body_short' bold>
                       Fit:{' '}
                     </Typography>
-                    <Typography variant="body_short">{optimizationData.performance.best_fit} %</Typography>
+                    <Typography variant='body_short'>{optimizationData.performance.best_fit} %</Typography>
                   </div>
                 ) : (
                   ''
@@ -85,7 +85,7 @@ export const ExportButton = ({ fetched, loading, optimizationData, productMap })
             </div>
             <Actions>
               {actionsChoice === 'buttons' ? (
-                <Button variant="ghost" onClick={() => setVisibleScrim(false)}>
+                <Button variant='ghost' onClick={() => setVisibleScrim(false)}>
                   OK
                 </Button>
               ) : (

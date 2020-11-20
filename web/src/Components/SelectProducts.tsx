@@ -90,7 +90,7 @@ export const SelectProducts = ({
     <>
       <div style={{ paddingBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>Products summary</Link>
-        <Switch label="Select all" onClick={(e: any) => handleAllToggle(e)} />
+        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} />
       </div>
       <ChipBox>
         {suppliers.map((supplier: string) => {
@@ -122,8 +122,8 @@ export const SelectProducts = ({
                 onChange={() => handleProductToggle(product.id)}
                 label={label}
                 disabled={disabled}
-                name="multiple"
-                value="first"
+                name='multiple'
+                value='first'
               />
               {disabled && (
                 <small style={{ color: 'red', alignSelf: 'center', paddingLeft: '10px' }}> Missing bridge data</small>
