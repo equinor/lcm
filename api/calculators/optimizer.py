@@ -22,6 +22,7 @@ class Optimizer:
         "BLACK": 0,
     }
     MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
+    NUMBER_OF_PRODUCTS_IMPORTANCE = 500  # %deviation/importance (less is more)
 
     def __init__(
         self,
@@ -148,8 +149,9 @@ class Optimizer:
 
         _mean = np.mean(diff_list)
         score = np.sqrt(_mean)
-        _mass_score = self.mass_score(products)
-        return score * _mass_score, experimental_bridge
+        mass_score = self.mass_score(products)
+        number_of_products_score = self.n_products_score(products)
+        return score * mass_score * number_of_products_score, experimental_bridge
 
     def optimal(self, population):
         results = []
@@ -273,3 +275,11 @@ class Optimizer:
             return 10
         # If mass within 10% of goal, use percentage decimal as score
         return (percentage_diff / self.MASS_IMPORTANCE) + 1
+
+    def n_products_score(self, products: List[Product]) -> float:
+        if len(products) <= self.max_products:
+            return 1
+
+        diff = len(products) - self.max_products
+        percentage_diff = (100 / self.max_products) * diff
+        return (percentage_diff / self.NUMBER_OF_PRODUCTS_IMPORTANCE) + 1
