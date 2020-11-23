@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { Radio, TextField, Typography, Button } from '@equinor/eds-core-react'
 import BridgeGraph from './BridgeGraph.jsx'
 import { OptimizerAPI, Requests } from '../../Api'
-import { BridgingOption } from '../../Common'
 import { AuthContext } from "../../Auth/AuthProvider"
+import { BridgingOption } from "../../Enums"
+import { ErrorToast } from "../Common/Toast"
 
 const InputWrapper = styled.div`
   display: flex;
@@ -70,8 +71,9 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
       .then(response => {
         setSizeFractions(response.data.size_fractions)
       })
-      .catch(err => {
-        console.error('fetch error' + err)
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
       })
   }, [])
 

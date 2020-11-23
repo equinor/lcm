@@ -28,7 +28,7 @@ app = init_api()
 @app.route("/api/products", methods=["GET"])
 @authorize
 def products():
-    return jsonify(products_get())
+    return products_get()
 
 
 @app.route("/api/report", methods=["POST"])

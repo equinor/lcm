@@ -1,4 +1,5 @@
 from cachetools import cached, TTLCache
+from flask import Response
 
 from config import Config
 from util.azure_table import get_service
@@ -22,5 +23,8 @@ def products_get():
             else None
         )
         products_response[p.RowKey]["cumulative"] = cumulative
+
+    if not len(products_response):
+        return Response("Failed to fetch products from storage", 500)
 
     return products_response

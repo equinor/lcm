@@ -11,6 +11,7 @@ import { ProductsAPI } from '../Api'
 import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
 import { AuthContext } from '../Auth/AuthProvider'
 import { Products } from '../Types'
+import { ErrorToast } from './Common/Toast'
 
 const Body = styled.div`
   display: flex;
@@ -54,8 +55,9 @@ export default (): ReactElement => {
         setProducts(response.data)
         setIsLoading(false)
       })
-      .catch(e => {
-        console.error(e)
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error(error)
         setIsLoading(false)
       })
   }, [])
@@ -89,7 +91,12 @@ export default (): ReactElement => {
         </TopBar.Actions>
       </TopBar>
       <Body>
-        <SideSheet variant='large' title='Select products:' open={sideSheet} onClose={() => setSideSheet(false)}>
+        <SideSheet
+          variant='large'
+          title='Select products:'
+          open={sideSheet}
+          onClose={() => setSideSheet(false)}
+          style={{ height: 'fit-content' }}>
           <SelectProducts
             loading={isLoading}
             products={products}

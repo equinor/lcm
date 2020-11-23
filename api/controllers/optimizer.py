@@ -19,10 +19,10 @@ def optimizer_request_handler(
 ):
     int_iterations = int(iterations)
     if int_iterations <= 0:
-        return Response("Number of iterations must be a positiv integer", 401)
+        return Response("Number of iterations must be a positiv integer", 400)
 
     if particle_range[0] >= particle_range[1]:
-        return Response("Particle size 'from' must be smaller than 'to'", 401)
+        return Response("Particle size 'from' must be smaller than 'to'", 400)
 
     if max_products == 0:
         max_products = 999

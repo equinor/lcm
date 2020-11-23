@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import { Card, Typography } from '@equinor/eds-core-react'
+import { Typography } from '@equinor/eds-core-react'
 import SolutionBarChart from './SolutionBarChart'
 import SolutionRadarChart from './SolutionRadarChart'
 import { Products } from '../../Types'

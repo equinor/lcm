@@ -1,14 +1,8 @@
 import styled from 'styled-components'
-import { COLORS } from './CssConstants'
 import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Tooltip as EDSTooltip } from '@equinor/eds-core-react'
-
-export enum BridgingOption {
-  PERMEABILITY = 'PERMEABILITY',
-  AVERAGE_PORESIZE = 'AVERAGE_PORESIZE',
-  MAXIMUM_PORESIZE = 'MAXIMUM_PORESIZE',
-}
+import { COLORS } from '../../Enums'
 
 const StyledTooltipIcon = styled.div`
   background-color: white;

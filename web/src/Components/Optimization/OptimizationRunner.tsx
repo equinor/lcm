@@ -7,7 +7,8 @@ import { CircularProgress, Typography, Button, TextField, Accordion } from '@equ
 import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
 import styled from 'styled-components'
-import { Tooltip } from '../../Common'
+import { Tooltip } from '../Common/Tooltip'
+import { ErrorToast } from '../Common/Toast'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -90,11 +91,9 @@ const OptimizationRunner = ({
         handleUpdate(response.data)
       })
       .catch(error => {
-        console.log(error)
+        ErrorToast(`${error.response.data}`, error.response.status)
         setLoading(false)
         setFailedRun(true)
-        if (error.response.status === 400) alert(error.response.data)
-        if (error.response.status === 401) alert(error.response.data)
       })
   }
 
@@ -144,7 +143,7 @@ const OptimizationRunner = ({
               </div>
               <div style={{ margin: '10px 0' }}>
                 <Tooltip text={'A range in microns which should be considered in the optimization'}>
-                  <Typography variant='body_short'>Particle sizes to consider (microns)</Typography>
+                  <Typography variant='body_short'>Particle sizes to consider</Typography>
                 </Tooltip>
               </div>
               <div style={{ display: 'flex' }}>
@@ -153,6 +152,7 @@ const OptimizationRunner = ({
                     id='part-from'
                     type='number'
                     label='From'
+                    meta='μm'
                     value={particleRange[0]}
                     onChange={(event: any) => {
                       if (event.target.value === '') setParticleRange([0, particleRange[1]])
@@ -167,6 +167,7 @@ const OptimizationRunner = ({
                     id='part-to'
                     type='number'
                     label='To'
+                    meta='μm'
                     value={particleRange[1]}
                     onChange={(event: any) => {
                       if (event.target.value === '') setParticleRange([particleRange[0], 0])

@@ -6,6 +6,7 @@ import { refresh } from '@equinor/eds-icons'
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
 import { AuthContext } from '../Auth/AuthProvider'
+import { ErrorToast } from './Common/Toast'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -29,8 +30,9 @@ export const RefreshButton = () => {
         setLoading(false)
         window.location.reload(false)
       })
-      .catch(err => {
-        console.error(err)
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
         setLoading(false)
       })
   }

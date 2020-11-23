@@ -7,8 +7,9 @@ import { Accordion } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
 import { AuthContext } from '../Auth/AuthProvider'
-import { BridgingOption } from '../Common'
 import styled from 'styled-components'
+import { BridgingOption } from '../Enums'
+import { ErrorToast } from './Common/Toast'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -80,8 +81,9 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       .then(response => {
         setBridges({ ...bridges, Bridge: response.data.bridge })
       })
-      .catch(err => {
-        console.error('fetch error' + err)
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
       })
   }, [bridgeValue, mode, apiToken])
 
@@ -94,7 +96,11 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         setLoading(false)
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
       })
-      .catch(() => setLoading(false))
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
+        setLoading(false)
+      })
     setCombinations({ ...combinations, [combination.name]: combination })
     setLoading(false)
   }

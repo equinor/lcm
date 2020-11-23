@@ -6,6 +6,9 @@ import './Components/icons'
 import { AuthComponentProps, AuthContext } from './Auth/AuthProvider'
 import withAuthProvider from './Auth/AuthProvider'
 
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
+
 interface LoginError {
   errorCode?: string
   errorMessage?: string
@@ -62,6 +65,7 @@ function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps)
     return (
       <AuthContext.Provider value={{ token: token }}>
         <Main />
+        <ToastContainer />
       </AuthContext.Provider>
     )
   }

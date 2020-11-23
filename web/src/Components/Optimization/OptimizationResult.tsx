@@ -1,6 +1,6 @@
 import React from 'react'
-import SolutionData from './SolutionData'
-import SolutionVisualisations from './SolutionVisualisations'
+import SolutionData from '../Solution/SolutionData'
+import SolutionVisualisations from '../Solution/SolutionVisualisations'
 import { Products } from '../../Types'
 
 interface OptimizationResultProps {

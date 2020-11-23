@@ -2,10 +2,11 @@ import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { Button, Typography, CircularProgress } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { ProductResult } from './OptimizationContainer'
+import { ProductResult } from '../Optimization/OptimizationContainer'
 import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
 import { AuthContext } from '../../Auth/AuthProvider'
+import { ErrorToast } from '../Common/Toast'
 
 const Grid = styled.div`
   height: auto;
@@ -77,9 +78,9 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
         link.click()
         setLoading(false)
       })
-      .catch(e => {
-        alert('Failed to open PDF report')
-        console.error(e)
+      .catch(error => {
+        ErrorToast('Failed to open PDF report', error.response.status)
+        console.error(error.response.data)
         setLoading(false)
       })
   }
