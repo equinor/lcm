@@ -2793,7 +2793,7 @@ def create_algorithm_report():
     bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
     # Crate Matplotlib figure
-    fig, (bridgeplot, alg_curve, massplot) = plt.subplots(3)
+    fig, (bridgeplot, alg_curve) = plt.subplots(2)
     fig.set_size_inches(9.4, 9.4)
 
     # Draw optimal bridge
@@ -2811,10 +2811,6 @@ def create_algorithm_report():
     alg_curve.set_xlabel("Generations")
     alg_curve.set_ylabel("Fitness")
 
-    massplot.set_title(f"Mass evolution")
-    massplot.set_xlabel("Generations")
-    massplot.set_ylabel("Kg")
-
     result_list = []
     for i in range(runs):
         result = Optimizer(product_data, bridge, mass, max_iterations).optimize()
@@ -2822,9 +2818,6 @@ def create_algorithm_report():
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
         alg_curve.plot(result["curve"], label=label)
-        massplot.plot(result["mass_progress"])
-        # for prod in result["combination_progress"]:
-        #     mix_plot.plot(prod)
         print(f"{i+1} of {runs} runs complete...")
 
     print("Done!")
@@ -2833,12 +2826,45 @@ def create_algorithm_report():
     fitness = [run["score"] for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)
     alg_curve.text(
-        0.75,
-        0.8,
+        0.975,
+        0.95,
         f"Standard deviation: {standard_deviation}",
         style="italic",
         transform=alg_curve.transAxes,
         bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+
+    alg_curve.text(
+        0.975,
+        0.8,
+        f"Mean: {round(np.mean(fitness), 2)}",
+        style="italic",
+        transform=alg_curve.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    alg_curve.text(
+        0.975,
+        0.65,
+        f"Max: {round(np.max(fitness), 2)}",
+        style="italic",
+        transform=alg_curve.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    alg_curve.text(
+        0.975,
+        0.5,
+        f"Min: {round(np.min(fitness), 2)}",
+        style="italic",
+        transform=alg_curve.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        horizontalalignment="right",
+        verticalalignment="top",
     )
     plt.tight_layout()
     fig.savefig(f"{Config.HOME_DIR}/test_report.png", format="png")
