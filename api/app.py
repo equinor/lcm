@@ -34,8 +34,7 @@ def products():
 @app.route("/api/report", methods=["POST"])
 @authorize
 def report():
-    create_report(request.json)
-    return send_file(f"{Config.HOME_DIR}/report.pdf", mimetype="application/pdf")
+    return send_file(create_report(request.json), mimetype="application/pdf")
 
 
 @app.route("/api/combination", methods=["POST"])

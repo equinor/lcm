@@ -96,7 +96,7 @@ export default (): ReactElement => {
           title='Select products:'
           open={sideSheet}
           onClose={() => setSideSheet(false)}
-          style={{ height: 'fit-content' }}>
+          style={{ height: 'fit-content', minHeight: '100%' }}>
           <SelectProducts
             loading={isLoading}
             products={products}

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { ProductResult } from '../Optimization/OptimizationContainer'
 import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
-import { AuthContext } from '../../Auth/AuthProvider'
+import { AuthContext, User } from '../../Auth/AuthProvider'
 import { ErrorToast } from '../Common/Toast'
 
 const Grid = styled.div`
@@ -54,12 +54,13 @@ const Sacks = ({ products, productResults, totalMass }: SacksProps): ReactElemen
 }
 
 const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
-  const apiToken: string = useContext(AuthContext).token
+  const user: User = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
 
   function onExportClick() {
     const reportRequest = {
       fitness: optimizationData.fitness,
+      curve: optimizationData.curve,
       pillVolume: 0.0,
       pillDensity: 0.0,
       bridgingMode: optimizationData.config.mode,
@@ -68,9 +69,11 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       totalMass: optimizationData.totalMass,
       products: optimizationData.products,
       weighting: optimizationData.weighting,
+      email: user.email,
+      user: user.name,
     }
     setLoading(true)
-    ReportAPI.postReportApi(apiToken, reportRequest)
+    ReportAPI.postReportApi(user.token, reportRequest)
       .then(res => {
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(res.data)

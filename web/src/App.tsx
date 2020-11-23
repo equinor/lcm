@@ -43,7 +43,7 @@ const AccessDenied = ({ errorMessage, hint }: any) => {
 
 function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps) {
   const [loginError, setLoginError] = useState<LoginError>({})
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<any>(null)
 
   useEffect(() => {
     getAccessToken()
@@ -63,7 +63,8 @@ function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps)
 
   if (token) {
     return (
-      <AuthContext.Provider value={{ token: token }}>
+      <AuthContext.Provider
+        value={{ token: token.accessToken, email: token.account.username, name: token.account.name }}>
         <Main />
         <ToastContainer />
       </AuthContext.Provider>

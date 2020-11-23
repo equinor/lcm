@@ -73,7 +73,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
       )
     }
 
-    async getAccessToken(): Promise<string> {
+    async getAccessToken(): Promise<object> {
       try {
         const accounts = this.publicClientApplication.getAllAccounts()
 
@@ -86,7 +86,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
           scopes: scopes,
           account: accounts[0],
         })
-        return silentResult.accessToken
+        return silentResult
       } catch (err) {
         // If a silent request fails, it may be because the user needs
         // to login or grant consent to one or more of the requested scopes
@@ -96,7 +96,7 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
             scopes: scopes,
           })
           // @ts-ignore
-          return interactiveResult.accessToken
+          return interactiveResult
         } else {
           throw err
         }
@@ -138,8 +138,10 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
   }
 }
 
-interface User {
+export interface User {
   token: string
+  email: string
+  name: string
 }
 
-export const AuthContext = createContext<User>({ token: '' })
+export const AuthContext = createContext<User>({ token: '', email: '', name: '' })

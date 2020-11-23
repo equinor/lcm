@@ -66,4 +66,5 @@ def optimizer_request_handler(
             "co2": 0.5,
             "environmental": 0.5,
         },
+        "curve": optimizer_result["curve"],
     }
