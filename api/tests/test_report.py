@@ -322,6 +322,8 @@ request = {
         "g": {"id": "Compund-B", "value": 56, "percentage": 12},
     },
     "totalMass": 3500,
+    "email": "test@equinor.com",
+    "user": "Test Testson",
 }
 
 

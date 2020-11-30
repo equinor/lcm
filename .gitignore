@@ -9,3 +9,4 @@ api/tests/products_data.py
 /api/report.html
 /api/report.pdf
 /api/test_report.png
+/api/.coverage

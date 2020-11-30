@@ -12,7 +12,7 @@ from cachetools import cached, LFUCache
 
 class Optimizer:
     POPULATION_SIZE = 20
-    NUMBER_OF_CHILDREN = 18  # must be a multitude of 2
+    NUMBER_OF_CHILDREN = 18  # must be a multiple of 2
     NUMBER_OF_PARENTS = 2
     MUTATION_PROBABILITY = 50  # percent
     NUMBER_OF_MUTATIONS = 30
@@ -221,34 +221,31 @@ class Optimizer:
         child_ids = list(child.keys())
         child_sacks = list(child.values())
 
-        if len(child_sacks) > 1:
-            x = random.randint(0, len(child_sacks))
+        x = random.randint(0, len(child_sacks))
+        y = random.randint(0, len(child_sacks))
+
+        while x == y:
             y = random.randint(0, len(child_sacks))
 
-            while x == y:
-                y = random.randint(0, len(child_sacks))
+        if abs(x - y) <= 1:
+            if (x == len(child_sacks)) or (y == len(child_sacks)):
+                x -= 1
+                y -= 1
+            child_sacks[x], child_sacks[y] = child_sacks[y], child_sacks[x]
+        elif x < y:
+            toReverse = child_sacks[x:y]
+            toReverse.reverse()
+            child_sacks[x:y] = toReverse
+        else:
+            toReverse = child_sacks[y:x]
+            toReverse.reverse()
+            child_sacks[y:x] = toReverse
 
-            if abs(x - y) <= 1:
-                if (x == len(child_sacks)) or (y == len(child_sacks)):
-                    x -= 1
-                    y -= 1
-                child_sacks[x], child_sacks[y] = child_sacks[y], child_sacks[x]
-            elif x < y:
-                toReverse = child_sacks[x:y]
-                toReverse.reverse()
-                child_sacks[x:y] = toReverse
-            else:
-                toReverse = child_sacks[y:x]
-                toReverse.reverse()
-                child_sacks[y:x] = toReverse
+        new_child = {}
+        for i in range(len(child_ids)):
+            new_child[child_ids[i]] = child_sacks[i]
 
-            new_child = {}
-            for i in range(len(child_ids)):
-                new_child[child_ids[i]] = child_sacks[i]
-
-            return new_child
-
-        return child
+        return new_child
 
     def flip_bit_mutation(self, child):
         key = random.choice(list(child.keys()))

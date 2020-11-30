@@ -2741,12 +2741,9 @@ product_data = [
 
 class OptimizerTest(unittest.TestCase):
     @staticmethod
-    def _short_test_wrapper(theoretical_bridge):
-        mass = 3500
-        max_iterations = 2000
-        max_products = 5
+    def _short_test_wrapper(theoretical_bridge, mass=3500, max_iterations=2000, max_products=5):
         result_list = []
-        for i in range(20):
+        for i in range(2):
             result = Optimizer(product_data, theoretical_bridge, mass, max_iterations, max_products).optimize()
             result_list.append(result)
         fitness = [run["score"] for run in result_list]
@@ -2754,11 +2751,11 @@ class OptimizerTest(unittest.TestCase):
 
     def test_deviation_short_permeability(self):
         bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
-        self._short_test_wrapper(bridge)
+        self._short_test_wrapper(bridge, mass=7000, max_products=999)
 
     def test_deviation_short_max_poresize(self):
         bridge = theoretical_bridge(BridgeOption.MAXIMUM_PORESIZE, 500)
-        self._short_test_wrapper(bridge)
+        self._short_test_wrapper(bridge, max_iterations=700, max_products=3)
 
     def test_deviation_short_avg_poresize(self):
         bridge = theoretical_bridge(BridgeOption.AVERAGE_PORESIZE, 500)
@@ -2818,7 +2815,7 @@ def create_algorithm_report():
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
         alg_curve.plot(result["curve"], label=label)
-        print(f"{i+1} of {runs} runs complete...")
+        print(f"{i + 1} of {runs} runs complete...")
 
     print("Done!")
     print(f"Saving plot to {Config.HOME_DIR}/test_report.png")
