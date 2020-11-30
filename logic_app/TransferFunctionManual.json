@@ -1,298 +1,270 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "workflows_TransferDocsToBlob_name": {
-            "defaultValue": "TransferDocsToBlob",
-            "type": "String"
-        },
-        "connections_azureblob_externalid": {
-            "defaultValue": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/resourceGroups/lcm-dev/providers/Microsoft.Web/connections/azureblob",
-            "type": "String"
-        },
-        "connections_sharepointonline_externalid": {
-            "defaultValue": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/resourceGroups/lcm-dev/providers/Microsoft.Web/connections/sharepointonline",
-            "type": "String"
-        }
-    },
-    "variables": {},
-    "resources": [
-        {
-            "type": "Microsoft.Logic/workflows",
-            "apiVersion": "2017-07-01",
-            "name": "[parameters('workflows_TransferDocsToBlob_name')]",
-            "location": "northeurope",
-            "properties": {
-                "state": "Enabled",
-                "definition": {
-                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {
-                        "$connections": {
-                            "defaultValue": {},
-                            "type": "Object"
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Create_CSV_table": {
+                "inputs": {
+                    "format": "CSV",
+                    "from": "@body('Select')"
+                },
+                "runAfter": {
+                    "Select": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Table"
+            },
+            "Create_blob_2": {
+                "inputs": {
+                    "body": "@body('Create_CSV_table')",
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azureblob']['connectionId']"
                         }
                     },
-                    "triggers": {
-                        "manual": {
-                            "type": "Request",
-                            "kind": "Http",
-                            "inputs": {
-                                "method": "GET",
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "actions": {
-                        "Create_CSV_table": {
-                            "runAfter": {
-                                "Select": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Table",
-                            "inputs": {
-                                "format": "CSV",
-                                "from": "@body('Select')"
-                            }
-                        },
-                        "Create_blob_2": {
-                            "runAfter": {
-                                "Create_CSV_table": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "body": "@body('Create_CSV_table')",
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['azureblob']['connectionId']"
-                                    }
-                                },
-                                "method": "post",
-                                "path": "/datasets/default/files",
-                                "queries": {
-                                    "folderPath": "lcm-file-blobs",
-                                    "name": "metadata.csv",
-                                    "queryParametersSingleEncoded": true
-                                }
-                            },
-                            "runtimeConfiguration": {
-                                "contentTransfer": {
-                                    "transferMode": "Chunked"
-                                }
-                            }
-                        },
-                        "For_each": {
-                            "foreach": "@body('List_folder')",
-                            "actions": {
-                                "Condition": {
-                                    "actions": {
-                                        "For_each_2": {
-                                            "foreach": "@body('List_folder_2')",
-                                            "actions": {
-                                                "Condition_2": {
-                                                    "actions": {
-                                                        "For_each_3": {
-                                                            "foreach": "@body('List_folder_3')",
-                                                            "actions": {
-                                                                "Create_blob": {
-                                                                    "runAfter": {
-                                                                        "Get_file_content": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type": "ApiConnection",
-                                                                    "inputs": {
-                                                                        "body": "@body('Get_file_content')",
-                                                                        "host": {
-                                                                            "connection": {
-                                                                                "name": "@parameters('$connections')['azureblob']['connectionId']"
-                                                                            }
-                                                                        },
-                                                                        "method": "post",
-                                                                        "path": "/datasets/default/files",
-                                                                        "queries": {
-                                                                            "folderPath": "/lcm-file-blobs",
-                                                                            "name": "@items('For_each_3')?['Name']",
-                                                                            "queryParametersSingleEncoded": true
-                                                                        }
-                                                                    },
-                                                                    "runtimeConfiguration": {
-                                                                        "contentTransfer": {
-                                                                            "transferMode": "Chunked"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Get_file_content": {
-                                                                    "runAfter": {},
-                                                                    "type": "ApiConnection",
-                                                                    "inputs": {
-                                                                        "host": {
-                                                                            "connection": {
-                                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
-                                                                            }
-                                                                        },
-                                                                        "method": "get",
-                                                                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/files/@{encodeURIComponent(items('For_each_3')?['Id'])}/content",
-                                                                        "queries": {
-                                                                            "inferContentType": true
-                                                                        }
-                                                                    }
+                    "method": "post",
+                    "path": "/datasets/default/files",
+                    "queries": {
+                        "folderPath": "lcm-file-blobs",
+                        "name": "metadata.csv",
+                        "queryParametersSingleEncoded": true
+                    }
+                },
+                "runAfter": {
+                    "Create_CSV_table": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                },
+                "type": "ApiConnection"
+            },
+            "For_each": {
+                "actions": {
+                    "Condition": {
+                        "actions": {
+                            "For_each_2": {
+                                "actions": {
+                                    "Condition_2": {
+                                        "actions": {
+                                            "For_each_3": {
+                                                "actions": {
+                                                    "Create_blob": {
+                                                        "inputs": {
+                                                            "body": "@body('Get_file_content')",
+                                                            "host": {
+                                                                "connection": {
+                                                                    "name": "@parameters('$connections')['azureblob']['connectionId']"
                                                                 }
                                                             },
-                                                            "runAfter": {
-                                                                "List_folder_3": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "Foreach"
+                                                            "method": "post",
+                                                            "path": "/datasets/default/files",
+                                                            "queries": {
+                                                                "folderPath": "/lcm-file-blobs",
+                                                                "name": "@items('For_each_3')?['Name']",
+                                                                "queryParametersSingleEncoded": true
+                                                            }
                                                         },
-                                                        "List_folder_3": {
-                                                            "runAfter": {},
-                                                            "type": "ApiConnection",
-                                                            "inputs": {
-                                                                "host": {
-                                                                    "connection": {
-                                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
-                                                                    }
-                                                                },
-                                                                "method": "get",
-                                                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/folders/@{encodeURIComponent(items('For_each_2')?['Id'])}"
+                                                        "runAfter": {
+                                                            "Get_file_content": [
+                                                                "Succeeded"
+                                                            ]
+                                                        },
+                                                        "runtimeConfiguration": {
+                                                            "contentTransfer": {
+                                                                "transferMode": "Chunked"
                                                             }
-                                                        }
+                                                        },
+                                                        "type": "ApiConnection"
                                                     },
-                                                    "runAfter": {},
-                                                    "expression": {
-                                                        "and": [
-                                                            {
-                                                                "contains": [
-                                                                    "@items('For_each_2')?['DisplayName']",
-                                                                    "PSD"
-                                                                ]
+                                                    "Get_file_content": {
+                                                        "inputs": {
+                                                            "host": {
+                                                                "connection": {
+                                                                    "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                }
                                                             },
-                                                            {
-                                                                "equals": [
-                                                                    "@items('For_each_2')?['IsFolder']",
-                                                                    true
-                                                                ]
+                                                            "method": "get",
+                                                            "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMlibrary'))}/files/@{encodeURIComponent(items('For_each_3')?['Id'])}/content",
+                                                            "queries": {
+                                                                "inferContentType": true
                                                             }
-                                                        ]
-                                                    },
-                                                    "type": "If"
-                                                }
-                                            },
-                                            "runAfter": {
-                                                "List_folder_2": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Foreach"
-                                        },
-                                        "List_folder_2": {
-                                            "runAfter": {},
-                                            "type": "ApiConnection",
-                                            "inputs": {
-                                                "host": {
-                                                    "connection": {
-                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                        },
+                                                        "runAfter": {},
+                                                        "type": "ApiConnection"
                                                     }
                                                 },
-                                                "method": "get",
-                                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/folders/@{encodeURIComponent(items('For_each')?['Id'])}"
+                                                "foreach": "@body('List_folder_3')",
+                                                "runAfter": {
+                                                    "List_folder_3": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Foreach"
+                                            },
+                                            "List_folder_3": {
+                                                "inputs": {
+                                                    "host": {
+                                                        "connection": {
+                                                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                        }
+                                                    },
+                                                    "method": "get",
+                                                    "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMlibrary'))}/folders/@{encodeURIComponent(items('For_each_2')?['Id'])}"
+                                                },
+                                                "runAfter": {},
+                                                "type": "ApiConnection"
                                             }
+                                        },
+                                        "expression": {
+                                            "and": [
+                                                {
+                                                    "contains": [
+                                                        "@items('For_each_2')?['DisplayName']",
+                                                        "PSD"
+                                                    ]
+                                                },
+                                                {
+                                                    "equals": [
+                                                        "@items('For_each_2')?['IsFolder']",
+                                                        true
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "runAfter": {},
+                                        "type": "If"
+                                    }
+                                },
+                                "foreach": "@body('List_folder_2')",
+                                "runAfter": {
+                                    "List_folder_2": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "Foreach"
+                            },
+                            "List_folder_2": {
+                                "inputs": {
+                                    "host": {
+                                        "connection": {
+                                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                                         }
                                     },
-                                    "runAfter": {},
-                                    "expression": {
-                                        "and": [
-                                            {
-                                                "equals": [
-                                                    "@items('For_each')?['IsFolder']",
-                                                    "@true"
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    "type": "If"
-                                }
-                            },
-                            "runAfter": {
-                                "List_folder": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Foreach"
-                        },
-                        "Get_items": {
-                            "runAfter": {},
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
-                                    }
+                                    "method": "get",
+                                    "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMlibrary'))}/folders/@{encodeURIComponent(items('For_each')?['Id'])}"
                                 },
-                                "method": "get",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/tables/@{encodeURIComponent(encodeURIComponent('815be822-7a54-4589-9a0e-46c575431fb7'))}/items"
+                                "runAfter": {},
+                                "type": "ApiConnection"
                             }
                         },
-                        "List_folder": {
-                            "runAfter": {},
-                            "metadata": {
-                                "%252fShared%2bDocuments": "/Shared Documents"
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'))}/folders/@{encodeURIComponent('%252fShared%2bDocuments')}"
-                            }
-                        },
-                        "Select": {
-                            "runAfter": {
-                                "Get_items": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Select",
-                            "inputs": {
-                                "from": "@body('Get_items')?['value']",
-                                "select": {
-                                    "co2": "@item()?['OData__x0043_O2']",
-                                    "cost": "@item()?['Cost']",
-                                    "environmental": "@item()?['Enviromental_x0020_Impact']",
-                                    "sack_size": "@item()?['Sack_x0020_Size']",
-                                    "supplier": "@item()?['Supplier']?['Value']",
-                                    "title": "@item()?['Title']"
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@items('For_each')?['IsFolder']",
+                                        "@true"
+                                    ]
                                 }
-                            }
+                            ]
+                        },
+                        "runAfter": {},
+                        "type": "If"
+                    }
+                },
+                "foreach": "@body('List_folder')",
+                "runAfter": {
+                    "List_folder": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Get_items": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                         }
                     },
-                    "outputs": {}
+                    "method": "get",
+                    "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMlibrary'))}/tables/@{encodeURIComponent(encodeURIComponent('4b076d8d-381c-41cf-b63c-5e7d55acb991'))}/items"
                 },
-                "parameters": {
-                    "$connections": {
-                        "value": {
-                            "azureblob": {
-                                "connectionId": "[parameters('connections_azureblob_externalid')]",
-                                "connectionName": "azureblob",
-                                "id": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/providers/Microsoft.Web/locations/northeurope/managedApis/azureblob"
-                            },
-                            "sharepointonline": {
-                                "connectionId": "[parameters('connections_sharepointonline_externalid')]",
-                                "connectionName": "sharepointonline",
-                                "id": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/providers/Microsoft.Web/locations/northeurope/managedApis/sharepointonline"
-                            }
+                "runAfter": {},
+                "type": "ApiConnection"
+            },
+            "List_folder": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                         }
+                    },
+                    "method": "get",
+                    "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://statoilsrm.sharepoint.com/sites/LCMlibrary'))}/folders/@{encodeURIComponent('%252fShared%2bDocuments')}"
+                },
+                "metadata": {
+                    "%252fShared%2bDocuments": "/Shared Documents"
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            },
+            "Select": {
+                "inputs": {
+                    "from": "@body('Get_items')?['value']",
+                    "select": {
+                        "co2": "@item()?['OData__x0043_O2']",
+                        "cost": "@item()?['Cost']",
+                        "environmental": "@item()?['Enviromental_x0020_Impact']",
+                        "sack_size": "@item()?['Sack_x0020_Size']",
+                        "supplier": "@item()?['Supplier']?['Value']",
+                        "title": "@item()?['Title']"
                     }
+                },
+                "runAfter": {
+                    "Get_items": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Select"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "method": "GET",
+                    "schema": {}
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "azureblob": {
+                    "connectionId": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/resourceGroups/lcm-dev/providers/Microsoft.Web/connections/azureblob",
+                    "connectionName": "azureblob",
+                    "id": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/providers/Microsoft.Web/locations/northeurope/managedApis/azureblob"
+                },
+                "sharepointonline": {
+                    "connectionId": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/resourceGroups/lcm-dev/providers/Microsoft.Web/connections/sharepointonline",
+                    "connectionName": "sharepointonline",
+                    "id": "/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/providers/Microsoft.Web/locations/northeurope/managedApis/sharepointonline"
                 }
             }
         }
-    ]
+    }
 }

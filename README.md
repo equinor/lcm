@@ -1,30 +1,21 @@
-# Lost Circulation Material
+# Lost Circulation Material Optimizer
 
 ![CI](https://github.com/equinor/lcm/workflows/CI/badge.svg)
 
-This is the result from the merger of the two summer intern projects from 2020.
- - Team Blend https://github.com/equinor/LCMLibrary-Blend
- - Team Bridge https://github.com/equinor/LCMLibrary-Bridge
- 
-## Optimizer
+Web application for creating, comparing, and optimizing lost circulation material blends used for bridging fractures in
+petroleum rock formations during drilling.
 
-This part is based on a genetic algorithm, using a fitness function to score results. 
-The score is calculated like this;
-```python
-for theo, blend in zip(theoretical_bridge, experimental_bridge):
-    # Only weigh particles with size in range
-    if 80 > SIZE_STEPS[i] > 1:
-        # The deviation is squared to punish larger deviations
-        diff_list.append((theo - blend) ** 2)
+This repository is the result from the merger of the two summer intern projects from 2020.
 
-_mean = mean(diff_list)
-score = sqrt(_mean)
-```
+- Team Blend <https://github.com/equinor/LCMLibrary-Blend>
+- Team Bridge <https://github.com/equinor/LCMLibrary-Bridge>
+
+![plot](bridge-plot.png)
 
 ## Requirements
 
-- [docker][]
-- [docker compose][]
+- docker
+- docker-compose
 
 ## Running
 
@@ -36,59 +27,16 @@ docker-compose build
 docker-compose up
 ```
 
-## Azure Resources
+## Contributing
 
-TODO: Explain how to re-create needed Azure resources.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## API Specification
+Please make sure to update tests as appropriate.
 
-The API follows [Equinor's API strategy][], and uses [OpenAPI, version 3][].
+## Operational runbook
 
-The API documentation can be found at http://localhost/api/ui/
+[RUNBOOK](runbook.md)
 
-### Generate API connectors
+## License
 
-For the client you need to generate new stubs after changing the API code.
-
-```bash
-./generate-typescript.sh
-```
-
-To generate the stubs for client. The stubs are placed to `web/src/gen-api`.
-
-## Update packages
-
-### Web
-
-You need yarn installed.
-
-```
-cd web
-yarn update
-```
-
-### API
-
-You need poetry installed.
-
-```
-cd api
-poetry update
-```
-
-## Testing
-
-### API
-
-Run unit tests: `docker-compose run --rm api pytest`
-
-## Tutorials
-
-* [Azure Table storage](https://docs.microsoft.com/en-us/azure/cosmos-db/table-storage-how-to-use-python) 
-
- 
-[equinor's api strategy]: https://github.com/equinor/api-strategy/blob/master/docs/strategy.md
-[openapi, version 3]: https://swagger.io/specification/
-[docker]: https://www.docker.com/products/docker-desktop
-[docker compose]: https://docs.docker.com/compose/
-
+[MIT](LICENSE)
