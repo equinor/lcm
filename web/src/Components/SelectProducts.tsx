@@ -74,13 +74,12 @@ export const SelectProducts = ({
 
   function handleAllToggle(event: any) {
     if (event.target.checked) {
-      setSelectedSuppliers(suppliers)
       let notMissing = productList.filter(p => p.cumulative !== null)
-      let justIds = notMissing.map(p => p.id)
+      let fromSelectedSuppliers = notMissing.filter(p => selectedSuppliers.includes(p.supplier))
+      let justIds = fromSelectedSuppliers.map(p => p.id)
       setEnabledProducts(justIds)
     } else {
       setEnabledProducts([])
-      setSelectedSuppliers([])
     }
   }
 
