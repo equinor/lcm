@@ -1,3 +1,4 @@
+import pickle  # nosec
 import random
 from datetime import datetime
 from typing import List
@@ -6,6 +7,7 @@ import numpy as np
 
 from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS
 from classes.product import Product
+from cachetools import cached, LFUCache
 
 
 class Optimizer:
@@ -115,7 +117,7 @@ class Optimizer:
         fit_dict = {}
 
         for combination in population:
-            score, _ = self.fitness_score(combination)
+            score, _ = self.fitness_score(pickle.dumps(combination))
             fitness.append(score)
             fit_dict[score] = combination
 
@@ -125,7 +127,9 @@ class Optimizer:
 
         return parents
 
-    def fitness_score(self, combination: dict):
+    @cached(cache=LFUCache(8192))
+    def fitness_score(self, pickled_combination: bytes):  # nosec
+        combination = pickle.loads(pickled_combination)
         try:
             # We are not in control of the combination values, so they could be zero
             sum_sacks = 100 / sum(combination.values())
@@ -162,7 +166,7 @@ class Optimizer:
     def optimal(self, population):
         results = []
         for combination in population:
-            score, exp_bridge = self.fitness_score(combination)
+            score, exp_bridge = self.fitness_score(pickle.dumps(combination))
             results.append({"score": score, "combination": combination, "bridge": exp_bridge})
 
         results.sort(key=lambda r: (r["score"]))

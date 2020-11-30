@@ -2743,7 +2743,7 @@ class OptimizerTest(unittest.TestCase):
     @staticmethod
     def _short_test_wrapper(theoretical_bridge):
         mass = 3500
-        max_iterations = 500
+        max_iterations = 2000
         max_products = 5
         result_list = []
         for i in range(20):
@@ -2789,7 +2789,7 @@ def show_plot():
 def create_algorithm_report():
     runs = 100
     mass = 3500
-    max_iterations = 500
+    max_iterations = 2000
     bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
     # Crate Matplotlib figure

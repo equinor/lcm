@@ -50,7 +50,7 @@ const OptimizationRunner = ({
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
-  const [iterations, setIterations] = useState<number>(300)
+  const [iterations, setIterations] = useState<number>(2000)
   const [maxProducts, setMaxProducts] = useState<number>(999)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
@@ -109,7 +109,7 @@ const OptimizationRunner = ({
           <AccordionPanel>
             <div>
               <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
-                <Tooltip text={'Number of iterations the optimizer will run. Approx. 1sec/300iterations'}>
+                <Tooltip text={'Number of iterations the optimizer will run.'}>
                   <TextField
                     type='number'
                     variant={(iterations <= 0 && 'error') || undefined}
