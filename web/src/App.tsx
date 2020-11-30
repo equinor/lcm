@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react'
 import './App.css'
 import Main from './Components/Main'
 import './Components/icons'
-import { AuthComponentProps, AuthContext } from './Auth/AuthProvider'
+import { AuthComponentProps } from './Auth/AuthProvider'
 import withAuthProvider from './Auth/AuthProvider'
 
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
+import { AuthContext, ParticleSizeContext } from './Context'
 
 interface LoginError {
   errorCode?: string
@@ -44,6 +45,7 @@ const AccessDenied = ({ errorMessage, hint }: any) => {
 function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps) {
   const [loginError, setLoginError] = useState<LoginError>({})
   const [token, setToken] = useState<any>(null)
+  const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 100])
 
   useEffect(() => {
     getAccessToken()
@@ -65,7 +67,10 @@ function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps)
     return (
       <AuthContext.Provider
         value={{ token: token.accessToken, email: token.account.username, name: token.account.name }}>
-        <Main />
+        <ParticleSizeContext.Provider
+          value={{ from: particleRange[0], to: particleRange[1], setRange: setParticleRange }}>
+          <Main />
+        </ParticleSizeContext.Provider>
         <ToastContainer />
       </AuthContext.Provider>
     )

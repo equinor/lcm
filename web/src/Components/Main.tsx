@@ -9,9 +9,9 @@ import SelectProducts from './SelectProducts'
 import RefreshButton from './RefreshButton'
 import { ProductsAPI } from '../Api'
 import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
-import { AuthContext } from '../Auth/AuthProvider'
 import { Products } from '../Types'
 import { ErrorToast } from './Common/Toast'
+import { AuthContext } from '../Context'
 
 const Body = styled.div`
   display: flex;

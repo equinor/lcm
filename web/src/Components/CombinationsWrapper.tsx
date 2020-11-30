@@ -6,10 +6,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Accordion } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
-import { AuthContext } from '../Auth/AuthProvider'
 import styled from 'styled-components'
 import { BridgingOption } from '../Enums'
 import { ErrorToast } from './Common/Toast'
+import { AuthContext } from '../Context'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 

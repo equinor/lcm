@@ -5,8 +5,8 @@ import { Button, Dialog, Icon, Scrim, CircularProgress } from '@equinor/eds-core
 import { refresh } from '@equinor/eds-icons'
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
-import { AuthContext } from '../Auth/AuthProvider'
 import { ErrorToast } from './Common/Toast'
+import { AuthContext } from '../Context'
 
 const { Actions, Title, CustomContent } = Dialog
 

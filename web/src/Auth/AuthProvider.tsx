@@ -1,5 +1,5 @@
 // From https://docs.microsoft.com/en-us/graph/tutorials/react?tutorial-step=3
-import React, { createContext } from 'react'
+import React from 'react'
 import { PublicClientApplication } from '@azure/msal-browser'
 
 export interface AuthComponentProps {
@@ -137,11 +137,3 @@ export default function withAuthProvider<T extends React.Component<AuthComponent
     }
   }
 }
-
-export interface User {
-  token: string
-  email: string
-  name: string
-}
-
-export const AuthContext = createContext<User>({ token: '', email: '', name: '' })

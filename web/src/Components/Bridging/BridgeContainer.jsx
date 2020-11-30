@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Radio, TextField, Typography, Button } from '@equinor/eds-core-react'
 import BridgeGraph from './BridgeGraph.jsx'
 import { OptimizerAPI, Requests } from '../../Api'
-import { AuthContext } from "../../Auth/AuthProvider"
 import { BridgingOption } from "../../Enums"
 import { ErrorToast } from "../Common/Toast"
+import { AuthContext } from "../../Context"
 
 const InputWrapper = styled.div`
   display: flex;

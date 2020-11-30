@@ -4,11 +4,11 @@ import { Environmental, Weight } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
 import { CircularProgress, Typography, Button, TextField, Accordion } from '@equinor/eds-core-react'
-import { AuthContext } from '../../Auth/AuthProvider'
 import { Products } from '../../Types'
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
 import { ErrorToast } from '../Common/Toast'
+import { AuthContext, ParticleSizeContext } from '../../Context'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -52,7 +52,6 @@ const OptimizationRunner = ({
   const apiToken: string = useContext(AuthContext)?.token
   const [iterations, setIterations] = useState<number>(300)
   const [maxProducts, setMaxProducts] = useState<number>(999)
-  const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 100])
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
@@ -65,6 +64,7 @@ const OptimizationRunner = ({
     mass: 5,
     environmental: [Environmental.GREEN, Environmental.BLACK, Environmental.RED, Environmental.YELLOW],
   })
+  const particleRange = useContext(ParticleSizeContext)
 
   const handleOptimize = () => {
     if (enabledProducts.length === 0) {
@@ -76,7 +76,7 @@ const OptimizationRunner = ({
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
-      particleRange: particleRange,
+      particleRange: [particleRange.from, particleRange.to],
       maxProducts: maxProducts,
       value: value,
       option: mode,
@@ -146,38 +146,42 @@ const OptimizationRunner = ({
                   <Typography variant='body_short'>Particle sizes to consider</Typography>
                 </Tooltip>
               </div>
-              <div style={{ display: 'flex' }}>
-                <div style={{ padding: '0 15px', width: '100px' }}>
-                  <TextField
-                    id='part-from'
-                    type='number'
-                    label='From'
-                    meta='μm'
-                    value={particleRange[0]}
-                    onChange={(event: any) => {
-                      if (event.target.value === '') setParticleRange([0, particleRange[1]])
-                      const newValue = parseFloat(event.target.value)
-                      if (Math.sign(newValue) >= 0) setParticleRange([newValue, particleRange[1]])
-                    }}
-                    disabled={loading}
-                  />
-                </div>
-                <div style={{ padding: '0 15px', width: '100px' }}>
-                  <TextField
-                    id='part-to'
-                    type='number'
-                    label='To'
-                    meta='μm'
-                    value={particleRange[1]}
-                    onChange={(event: any) => {
-                      if (event.target.value === '') setParticleRange([particleRange[0], 0])
-                      const newValue = parseFloat(event.target.value)
-                      if (Math.sign(newValue) >= 0) setParticleRange([particleRange[0], newValue])
-                    }}
-                    disabled={loading}
-                  />
-                </div>
-              </div>
+              <ParticleSizeContext.Consumer>
+                {({ from, to, setRange }) => (
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ padding: '0 15px', width: '100px' }}>
+                      <TextField
+                        id='part-from'
+                        type='number'
+                        label='From'
+                        meta='μm'
+                        value={from}
+                        onChange={(event: any) => {
+                          if (event.target.value === '') setRange([0, to])
+                          const newValue = parseFloat(event.target.value)
+                          if (Math.sign(newValue) >= 0) setRange([newValue, to])
+                        }}
+                        disabled={loading}
+                      />
+                    </div>
+                    <div style={{ padding: '0 15px', width: '100px' }}>
+                      <TextField
+                        id='part-to'
+                        type='number'
+                        label='To'
+                        meta='μm'
+                        value={to}
+                        onChange={(event: any) => {
+                          if (event.target.value === '') setRange([from, 0])
+                          const newValue = parseFloat(event.target.value)
+                          if (Math.sign(newValue) >= 0) setRange([from, newValue])
+                        }}
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+                )}
+              </ParticleSizeContext.Consumer>
             </div>
           </AccordionPanel>
         </AccordionItem>

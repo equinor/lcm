@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { ProductResult } from '../Optimization/OptimizationContainer'
 import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
-import { AuthContext, User } from '../../Auth/AuthProvider'
 import { ErrorToast } from '../Common/Toast'
+import { AuthContext, User } from '../../Context'
 
 const Grid = styled.div`
   height: auto;
