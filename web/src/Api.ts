@@ -2,13 +2,9 @@ import axios from 'axios'
 
 const BASE_PATH = '/api'
 
-export enum Requests {
-  SIZE_FRACTIONS = 'SIZE_FRACTIONS',
-}
-
 class OptimizerApi {
   async postOptimizerApi(token: string, data: any) {
-    return axios.post(BASE_PATH, data, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.post(`${BASE_PATH}/optimizer`, data, { headers: { Authorization: `Bearer ${token}` } })
   }
 }
 
@@ -45,7 +41,14 @@ class ProductsApi {
   }
 }
 
+class FractionsApi {
+  async getFractionsApi(token: string) {
+    return axios.get(`${BASE_PATH}/fractions`, { headers: { Authorization: `Bearer ${token}` } })
+  }
+}
+
 export const ProductsAPI = new ProductsApi()
+export const FractionsAPI = new FractionsApi()
 export const OptimizerAPI = new OptimizerApi()
 export const BridgeAPI = new BridgeApi()
 export const CombinationAPI = new CombinationApi()

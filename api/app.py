@@ -1,6 +1,4 @@
-import connexion
-from flask import jsonify, request, Response, send_file
-from flask_cors import CORS
+from flask import Flask, request, Response, send_file
 
 from calculators.bridge import SIZE_STEPS
 from config import Config
@@ -14,12 +12,9 @@ from util.sync_share_point_az import sync_all
 
 
 def init_api():
-    connexion_app = connexion.App(__name__, specification_dir="./openapi/")
-    CORS(connexion_app.app)
-    flask_app = connexion_app.app
+    flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
-    connexion_app.add_api("api.yaml", arguments={"title": "files"})
-    return connexion_app.app
+    return flask_app
 
 
 app = init_api()
@@ -59,25 +54,22 @@ def sync_sharepoint():
     return "ok"
 
 
-@app.route("/api", methods=["GET", "POST"])
+@app.route("/api/fractions", methods=["GET"])
+@authorize
+def size_fractions():
+    return {"size_fractions": SIZE_STEPS}
+
+
+@app.route("/api/optimizer", methods=["POST"])
 @authorize
 def main():
-    req = request.json.get("request")
-    if req == "OPTIMAL_MIX":
-        value = request.json.get("value")
-        name = request.json.get("name")
-        products = request.json.get("products")
-        mass = request.json.get("mass")
-        option = request.json.get("option")
-        iterations = request.json.get("iterations")
-        max_products = request.json.get("maxProducts")
-        particle_range = request.json.get("particleRange")
+    value = request.json.get("value")
+    name = request.json.get("name")
+    products = request.json.get("products")
+    mass = request.json.get("mass")
+    option = request.json.get("option")
+    iterations = request.json.get("iterations")
+    max_products = request.json.get("maxProducts")
+    particle_range = request.json.get("particleRange")
 
-        return optimizer_request_handler(value, name, products, mass, option, iterations, max_products, particle_range)
-
-    elif req == "SIZE_FRACTIONS":
-        return size_steps_handler()
-
-
-def size_steps_handler():
-    return {"size_fractions": SIZE_STEPS}
+    return optimizer_request_handler(value, name, products, mass, option, iterations, max_products, particle_range)
