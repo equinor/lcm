@@ -5,13 +5,19 @@ import styled from 'styled-components'
 // @ts-ignore
 import { Button, Icon, SideSheet, TopBar, Typography } from '@equinor/eds-core-react'
 
-import SelectProducts from './SelectProducts'
-import RefreshButton from './RefreshButton'
+import SelectProducts from '../Components/SelectProducts'
+import RefreshButton from '../Components/RefreshButton'
 import { ProductsAPI } from '../Api'
-import CombinationsWrapper, { Combination, Combinations } from './CombinationsWrapper'
+import CombinationsWrapper, { Combination, Combinations } from '../Components/CombinationsWrapper'
 import { Products } from '../Types'
-import { ErrorToast } from './Common/Toast'
+import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from '../Context'
+import { ContactButton } from '../Components/ContactButton'
+
+// @ts-ignore
+import { filter_alt } from '@equinor/eds-icons'
+
+Icon.add({ filter_alt })
 
 const Body = styled.div`
   display: flex;
@@ -77,7 +83,7 @@ export default (): ReactElement => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, fit-content(100%))',
+              gridTemplateColumns: 'repeat(3, fit-content(100%))',
               gap: '16px',
             }}>
             <RefreshButton />
@@ -86,6 +92,9 @@ export default (): ReactElement => {
                 <Icon name='filter_alt' title='filter products' />
                 Product filter
               </Button>
+            </div>
+            <div>
+              <ContactButton />
             </div>
           </div>
         </TopBar.Actions>

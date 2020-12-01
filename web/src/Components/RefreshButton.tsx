@@ -10,13 +10,12 @@ import { AuthContext } from '../Context'
 
 const { Actions, Title, CustomContent } = Dialog
 
-const icons = { refresh }
-
-Icon.add(icons)
+Icon.add({ refresh })
 
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  width: 100%;
 `
 
 export const RefreshButton = () => {
@@ -61,7 +60,7 @@ export const RefreshButton = () => {
               </p>
               {loading && <CircularProgress />}
             </CustomContent>
-            <Actions style={{ width: 'fill-available' }}>
+            <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
               <ButtonWrapper>
                 <Button onClick={() => setScrim(false)} disabled={loading}>
                   Cancel
