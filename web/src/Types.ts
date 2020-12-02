@@ -14,3 +14,28 @@ export interface Product {
 export interface Products {
   [id: string]: Product
 }
+
+export interface ProductValues {
+  id: string
+  value: number
+  percentage: number
+}
+
+export interface ProductsInCombination {
+  [id: string]: ProductValues
+}
+
+export interface Combination {
+  name: string
+  sacks: boolean
+  values: ProductsInCombination
+  cumulative: any
+}
+
+export interface Combinations {
+  [name: string]: Combination
+}
+
+export interface Bridge {
+  [name: string]: Array<number>
+}

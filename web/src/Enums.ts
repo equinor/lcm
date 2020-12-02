@@ -4,7 +4,6 @@ export enum BridgingOption {
   MAXIMUM_PORESIZE = 'MAXIMUM_PORESIZE',
 }
 
-// @ts-ignore
 export enum COLORS {
   primary = 'black',
   secondary = '#017078',

@@ -1,9 +1,10 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Checkbox, LinearProgress, Chip, Switch } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
 import { Products, Product } from '../Types'
+import useLocalStorage from '../Hooks'
 
 const ChipBox = styled.div`
   display: flex;
@@ -35,17 +36,8 @@ export const SelectProducts = ({
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
   const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
-  const [selectedSuppliers, setSelectedSuppliers] = useState<Array<string>>([])
-
-  // On first render with actual products, try loading selectedSuppliers from storage, or enable all
-  useEffect(() => {
-    setSelectedSuppliers(JSON.parse(localStorage.getItem('selectedSuppliers') || JSON.stringify(suppliers)))
-  }, [products])
-
-  // Saved selectedSuppliers in localStorage
-  useEffect(() => {
-    if (selectedSuppliers.length) localStorage.setItem('selectedSuppliers', JSON.stringify(selectedSuppliers))
-  }, [selectedSuppliers])
+  // @ts-ignore
+  const [selectedSuppliers, setSelectedSuppliers] = useLocalStorage<T>('selectedSuppliers', suppliers)
 
   function handleChipToggle(supplier: string) {
     // This is a bit messy. Mainly because we have two product objects, one array and one Map. Should be just one Object
@@ -56,7 +48,7 @@ export const SelectProducts = ({
           return p.id
         })
       let shouldBeRemoved = enabledProducts.filter((p: any) => productsWithDisabledSupplier.includes(p))
-      setSelectedSuppliers(selectedSuppliers.filter(s => s !== supplier))
+      setSelectedSuppliers(selectedSuppliers.filter((s: string) => s !== supplier))
       let temp = enabledProducts.filter((p: any) => !shouldBeRemoved.includes(p))
       setEnabledProducts(temp)
     } else {

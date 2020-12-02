@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button } from '@equinor/eds-core-react'
-import { Combinations } from '../CombinationsWrapper'
 import ProductTable from './ProductTable'
+import { Combinations } from '../../Types'
 
 export const Card = styled.div`
   margin: 10px;

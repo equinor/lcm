@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Icon, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
-import { Combination } from '../CombinationsWrapper'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
+import { Combination } from '../../Types'
 
 const CardHeader = styled.div`
   display: flex;
@@ -34,12 +34,13 @@ export const CombinationCard = ({
   const [totalMass, setTotalMass] = useState<number>(0)
 
   useEffect(() => {
+    if (!(Object.keys(products).length > 0)) return
     let tempMass = 0
     Object.values(combination.values).forEach(prod => {
       tempMass += products[prod.id].sack_size * prod.value
     })
     setTotalMass(tempMass)
-  }, [combination])
+  }, [combination, products])
 
   return (
     <Card>

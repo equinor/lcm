@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
-import { ProductsInCombination } from '../CombinationsWrapper'
 import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
-import { Products } from '../../Types'
+import { Products, ProductsInCombination } from '../../Types'
 
 interface CombinationTableProps {
   products: Products
@@ -38,8 +37,9 @@ export const CombinationTable = ({
   }, [enabledProducts])
 
   useEffect(() => {
+    if (!(Object.keys(products).length > 0)) return
     setValues(setPercentages(productsInCombination))
-  }, [productsInCombination])
+  }, [productsInCombination, products])
 
   function setPercentages(newValues: ProductsInCombination): ProductsInCombination {
     // Add up all the mass in the combination

@@ -10,6 +10,8 @@ import styled from 'styled-components'
 import { BridgingOption } from '../Enums'
 import { ErrorToast } from './Common/Toast'
 import { AuthContext } from '../Context'
+import { Bridge, Combination, Combinations } from '../Types'
+import useLocalStorage from '../Hooks'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -23,46 +25,20 @@ interface AppProps {
   defaultCombinations: Combinations
 }
 
-export interface ProductValues {
-  id: string
-  value: number
-  percentage: number
-}
-
-export interface ProductsInCombination {
-  [id: string]: ProductValues
-}
-
-export interface Combination {
-  name: string
-  sacks: boolean
-  values: ProductsInCombination
-  cumulative: any
-}
-
-export interface Combinations {
-  [name: string]: Combination
-}
-
-export interface Bridge {
-  [name: string]: Array<number>
-}
-
 export default ({ enabledProducts, products, defaultCombinations }: AppProps) => {
-  const [loading, setLoading] = useState<boolean>(false)
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
-  const [combinations, setCombinations] = useState<Combinations>(defaultCombinations)
+  const [combinations, setCombinations] = useLocalStorage<any>('combinations', defaultCombinations)
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const apiToken: string = useContext(AuthContext).token
 
   // When enabledProducts changes. Removed the ones not enabled from the combinations.
   useEffect(() => {
     let newCombinations = {}
-    Object.values(combinations).forEach(combination => {
+    Object.values(combinations).forEach((combination: any) => {
       let newCombination = {}
       let newValues = {}
-      Object.entries(combination.values).forEach(([id, value]) => {
+      Object.entries(combination.values).forEach(([id, value]: any) => {
         if (enabledProducts.includes(value.id)) newValues = { ...newValues, [id]: value }
       })
       newCombination = { ...combination, values: newValues }
@@ -90,19 +66,15 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
   function updateCombinationAndFetchBridge(combination: Combination) {
     // Don't fetch with empty values
     if (!Object.values(combination.values).length) return
-    setLoading(true)
     CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
       .then(response => {
-        setLoading(false)
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
       })
       .catch(error => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
-        setLoading(false)
       })
     setCombinations({ ...combinations, [combination.name]: combination })
-    setLoading(false)
   }
 
   function addCombination(combination: Combination) {

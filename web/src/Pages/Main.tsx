@@ -8,14 +8,15 @@ import { Button, Icon, SideSheet, TopBar, Typography } from '@equinor/eds-core-r
 import SelectProducts from '../Components/SelectProducts'
 import RefreshButton from '../Components/RefreshButton'
 import { ProductsAPI } from '../Api'
-import CombinationsWrapper, { Combination, Combinations } from '../Components/CombinationsWrapper'
-import { Products } from '../Types'
+import CombinationsWrapper from '../Components/CombinationsWrapper'
+import { Combination, Combinations, Products } from '../Types'
 import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from '../Context'
 import { ContactButton } from '../Components/ContactButton'
 
 // @ts-ignore
 import { filter_alt } from '@equinor/eds-icons'
+import useLocalStorage from '../Hooks'
 
 Icon.add({ filter_alt })
 
@@ -48,9 +49,8 @@ defaultCombinations[manualCombination.name] = manualCombination
 export default (): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [sideSheet, setSideSheet] = useState<boolean>(false)
-  const storedEnabledProducts = JSON.parse(localStorage.getItem('enabledProducts') || '[]')
   const [products, setProducts] = useState<Products>({})
-  const [enabledProducts, setEnabledProducts] = useState<Array<string>>(storedEnabledProducts || [])
+  const [enabledProducts, setEnabledProducts] = useLocalStorage<any>('enabledProducts', [])
   const apiToken: string = useContext(AuthContext).token
 
   // On first render, fetch all products
@@ -58,6 +58,7 @@ export default (): ReactElement => {
     setIsLoading(true)
     ProductsAPI.getProductsApi(apiToken)
       .then(response => {
+        if (Object.values(enabledProducts).length === 0) setEnabledProducts(Object.values(response.data))
         setProducts(response.data)
         setIsLoading(false)
       })
@@ -67,11 +68,6 @@ export default (): ReactElement => {
         setIsLoading(false)
       })
   }, [])
-
-  // Saved enabledProducts in localStorage
-  useEffect(() => {
-    localStorage.setItem('enabledProducts', JSON.stringify(enabledProducts))
-  }, [enabledProducts])
 
   return (
     <>

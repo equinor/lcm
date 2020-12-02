@@ -1,8 +1,7 @@
 import React, { ReactElement, useState } from 'react'
 import OptimizationRunner from './OptimizationRunner'
 import OptimizationResult from './OptimizationResult'
-import { Combination } from '../CombinationsWrapper'
-import { Products } from '../../Types'
+import { Combination, Products } from '../../Types'
 
 interface OptimizationContainerProps {
   products: Products

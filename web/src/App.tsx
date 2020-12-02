@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-import './App.css'
 import Main from './Pages/Main'
 import { AuthComponentProps } from './Auth/AuthProvider'
 import withAuthProvider from './Auth/AuthProvider'
