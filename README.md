@@ -2,8 +2,7 @@
 
 ![CI](https://github.com/equinor/lcm/workflows/CI/badge.svg)
 
-Web application for creating, comparing, and optimizing lost circulation material blends used for bridging fractures in
-petroleum rock formations during drilling.
+Web application for opimal mixing of chemicals.
 
 This repository is the result from the merger of the two summer intern projects from 2020.
 
@@ -19,13 +18,18 @@ This repository is the result from the merger of the two summer intern projects 
 
 ## Running
 
-```bash
-# Build containers
-docker-compose build
+1. Create a copy of `.env-template` called `.env` and populate it with values.
+2. Build the containers
 
-# Start containers
-docker-compose up
-```
+    ```sh
+    docker-compose build
+    ```
+
+3. Start the project
+
+    ```sh
+    docker-compose up
+    ```
 
 ## Contributing
 

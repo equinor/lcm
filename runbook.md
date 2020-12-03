@@ -2,9 +2,11 @@
 
 This document covers most operational information about the LCM Web app and API.
 
+![Diagram](diagram.drawio.svg)
+
 ## Omnia Radix
 
-The Web frontend and the API are deployed to Equinors Omnia Radix PaaS platform. This has it's own documentation available at [https://www.radix.equinor.com](https://www.radix.equinor.com). The configuration for our radix app is in `./radixconfig.yaml`. There is only one environment (`dev`). This is automatically deployed from every commit to the master branch on Github.
+The Web frontend and the API are deployed to Equinors Omnia Radix PaaS platform. This has it's own documentation available at [https://www.radix.equinor.com](https://www.radix.equinor.com). The configuration for our radix app is in [radixconfig.yaml](./radixconfig.yaml). There is only one environment (`dev`). This is automatically deployed from every commit to the master branch on Github.
 
 ### TLS and DNS
 
@@ -24,6 +26,14 @@ Resources outside of Radix and SharePoint are provided by Azure in the `S118-LCM
 One app registration `Lost Circulation Material`  
 
 Authentication and authorization is handled by Azure Active Directory, which issues Access tokens that can be used as Java Web Tokens to access the protected API endpoints.
+
+#### Granting and removing access
+
+1. Navigate to the [Azure Portal](https://portal.azure.com) (logged in with an Equinor account)
+2. Select/Search for the service called _Enterprise Application_
+3. Find the application called _Lost Circulation Material_
+4. In the left pane, select _Users and groups_
+5. Here you can add new users and groups, or remove existing ones
 
 ### StorageAccount
 
