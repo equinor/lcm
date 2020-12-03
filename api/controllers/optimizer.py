@@ -30,6 +30,9 @@ def optimizer_request_handler(
     print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
     selected_products = [p for p in products_get().values() if p["id"] in products]
+    if len(selected_products) < 2:
+        return Response("Can not run the optimizer with less than two products", 400)
+
     optimizer_result = Optimizer(
         products=selected_products,
         bridge=bridge,

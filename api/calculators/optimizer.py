@@ -180,9 +180,6 @@ class Optimizer:
         first_parent_sacks = list(parents[0].values())
         second_parent_sacks = list(parents[1].values())
 
-        if len(first_parent_ids) <= 1:
-            raise Exception("Why does this happen!?")
-
         for i in range(self.NUMBER_OF_CHILDREN // 2):
             cross_point = random.randint(1, number_of_products - 1)
             first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]

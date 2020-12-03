@@ -1,8 +1,16 @@
 from cachetools import cached, TTLCache
 from flask import Response
+from typing import Dict
 
 from config import Config
 from util.azure_table import get_service
+
+
+def sort_products(products: Dict[str, dict]):
+    values = list(products.values())
+    values.sort(key=lambda p: (p["supplier"], p["id"]))
+
+    return {v["id"]: v for v in values}
 
 
 @cached(cache=TTLCache(maxsize=128, ttl=300))
@@ -27,4 +35,5 @@ def products_get():
     if not len(products_response):
         return Response("Failed to fetch products from storage", 500)
 
-    return products_response
+    sorted_products = sort_products(products_response)
+    return sorted_products

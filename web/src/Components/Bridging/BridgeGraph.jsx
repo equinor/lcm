@@ -23,7 +23,11 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
 
   useEffect(()=>{
     setParticleFromPercentage(particleSizeOffsetPercentage(particleRange.from))
-    setParticleToPercentage(particleSizeOffsetPercentage(particleRange.to))
+    if(particleRange.to > sizeFractions[sizeFractions.length-1]){
+      setParticleToPercentage(sizeFractions[sizeFractions.length - 1])
+    } else{
+      setParticleToPercentage(particleSizeOffsetPercentage(particleRange.to))
+    }
   },[particleRange, sizeFractions])
 
   function particleSizeOffsetPercentage(offsetSize){

@@ -58,7 +58,6 @@ export default (): ReactElement => {
     setIsLoading(true)
     ProductsAPI.getProductsApi(apiToken)
       .then(response => {
-        if (Object.values(enabledProducts).length === 0) setEnabledProducts(Object.values(response.data))
         setProducts(response.data)
         setIsLoading(false)
       })

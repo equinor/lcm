@@ -24,7 +24,9 @@ export const ContactButton = () => {
             <CustomContent>
               <p>
                 Questions regarding access and usage of the LCM optimizer can be directed at John-Morten Godhavn{' '}
-                <a href='mailto:jmgo@equinor.com'>jmgo@equinor.com</a>
+                <a href={`mailto:${process.env.REACT_APP_APPLICATION_OWNER}`}>
+                  {process.env.REACT_APP_APPLICATION_OWNER}
+                </a>
               </p>
               <p>
                 Issues and bugs related to the software can be reported on the Github repository

@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react'
 // @ts-ignore
-import { Checkbox, LinearProgress, Chip, Switch } from '@equinor/eds-core-react'
+import { Checkbox, LinearProgress, Chip, Switch, Typography } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
 import { Products, Product } from '../Types'
 import useLocalStorage from '../Hooks'
+import { sortProducts } from '../Utils'
 
 const ChipBox = styled.div`
   display: flex;
@@ -32,7 +33,7 @@ export const SelectProducts = ({
   enabledProducts,
   setEnabledProducts,
 }: SelectProductsProps): ReactElement => {
-  const productList: Array<Product> = Object.values(products)
+  const productList: Array<Product> = sortProducts(Object.values(products))
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
   const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
@@ -99,26 +100,36 @@ export const SelectProducts = ({
           )
         })}
       </ChipBox>
-      <div>
+
+      {/* If some of the displayed products have missing PSD data, show a small notice*/}
+      {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
+        <div style={{ textAlign: 'end', padding: '10px 0' }}>
+          <small style={{ color: 'red', paddingLeft: '10px' }}> *Missing bridge data</small>
+        </div>
+      )}
+
+      <div style={{ paddingRight: '15px' }}>
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
         {productList.map((product, key) => {
           if (!selectedSuppliers.includes(product.supplier)) return null
-          const label = product.title + ', ' + product.supplier
           const isChecked = enabledProducts.includes(product.id)
           const disabled = product.cumulative == null
           return (
-            <div key={key} style={{ display: 'flex', flexDirection: 'row' }}>
-              <Checkbox
-                checked={isChecked}
-                onChange={() => handleProductToggle(product.id)}
-                label={label}
-                disabled={disabled}
-                name='multiple'
-                value='first'
-              />
-              {disabled && (
-                <small style={{ color: 'red', alignSelf: 'center', paddingLeft: '10px' }}> Missing bridge data</small>
-              )}
+            <div
+              key={key}
+              style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  checked={isChecked}
+                  onChange={() => handleProductToggle(product.id)}
+                  label={product.title}
+                  disabled={disabled}
+                  name='multiple'
+                  value='first'
+                />
+                {disabled && <div style={{ color: 'red', fontSize: '24px', alignSelf: 'center' }}>*</div>}
+              </div>
+              <Typography variant='body_short'>{product.supplier}</Typography>
             </div>
           )
         })}

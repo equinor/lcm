@@ -13,11 +13,11 @@ interface AuthProviderState {
   isAuthenticated: boolean
 }
 
-const scopes = ['api://lost-circulation-material-api/Optimization.All.All']
+const scopes = [process.env.REACT_APP_SCOPES || '']
 
 const config = {
   auth: {
-    clientId: '1dbc1e96-268d-41ad-894a-92a9fb85f954',
+    clientId: process.env.REACT_APP_CLIENT_ID || '',
     redirectUri: window.location.origin,
     authority: 'https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/',
   },

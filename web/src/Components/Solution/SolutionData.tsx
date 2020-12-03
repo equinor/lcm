@@ -8,14 +8,13 @@ import { ReportAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
 import { AuthContext, User } from '../../Context'
 
-const Grid = styled.div`
-  height: auto;
-  width: 100%;
-  padding: 0;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(2, 130px);
-  grid-gap: 0 0;
+const LabelWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const TextWrapper = styled.div`
+  padding: 5px 10px 0 0;
 `
 
 const Spacer = styled.div`
@@ -35,20 +34,20 @@ interface SacksProps {
 
 const Sacks = ({ products, productResults, totalMass }: SacksProps): ReactElement => {
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       {Object.values(productResults).map((productResult: ProductResult) => {
         return (
-          <Grid key={productResult.id}>
-            <Typography variant='body_short'>{products[productResult.id].title}</Typography>
-            <Typography variant='body_short'>{productResult.value} sacks</Typography>
-          </Grid>
+          <LabelWrapper key={productResult.id}>
+            <TextWrapper>{products[productResult.id].title}</TextWrapper>
+            <TextWrapper>{productResult.value} sacks</TextWrapper>
+          </LabelWrapper>
         )
       })}
 
-      <Grid>
-        <Typography variant='body_short'>Total mass: </Typography>
-        <Typography variant='body_short'>{totalMass} kg</Typography>
-      </Grid>
+      <LabelWrapper>
+        <TextWrapper>Total mass: </TextWrapper>
+        <TextWrapper>{totalMass} kg</TextWrapper>
+      </LabelWrapper>
     </div>
   )
 }
@@ -98,12 +97,16 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
         <Sacks products={products} productResults={optimizationData.products} totalMass={optimizationData.totalMass} />
       </Spacer>
       <Typography variant='h6'>Performance:</Typography>
-      <Grid>
-        <Typography variant='body_short'>Score:</Typography>
-        <Typography variant='body_short'>{optimizationData.fitness.toFixed(2)}</Typography>
-        <Typography variant='body_short'>Time:</Typography>
-        <Typography variant='body_short'>{optimizationData.executionTime} seconds</Typography>
-      </Grid>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <LabelWrapper>
+          <TextWrapper>Score:</TextWrapper>
+          <TextWrapper>{optimizationData.fitness.toFixed(2)}</TextWrapper>
+        </LabelWrapper>
+        <LabelWrapper>
+          <TextWrapper>Time:</TextWrapper>
+          <TextWrapper>{optimizationData.executionTime} seconds</TextWrapper>
+        </LabelWrapper>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '150px' }}>
           Export solution

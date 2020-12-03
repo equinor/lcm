@@ -77,7 +77,7 @@ function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps)
     return (
       <AccessDenied
         errorMessage={loginError.errorMessage}
-        hint={'Contact the applications owner to be granted access to this site.'}
+        hint={`Contact the applications owner to be granted access to this site (${process.env.REACT_APP_APPLICATION_OWNER})`}
       />
     )
   }

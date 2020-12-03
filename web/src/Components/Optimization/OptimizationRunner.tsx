@@ -67,10 +67,6 @@ const OptimizationRunner = ({
   const particleRange = useContext(ParticleSizeContext)
 
   const handleOptimize = () => {
-    if (enabledProducts.length === 0) {
-      alert('Select at least 1 product before running the optimizer')
-      return null
-    }
     setLoading(true)
     OptimizerAPI.postOptimizerApi(apiToken, {
       request: 'OPTIMAL_MIX',
