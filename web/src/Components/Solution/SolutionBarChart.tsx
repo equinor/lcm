@@ -40,7 +40,7 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
   }
 
   return (
-    <BarChart width={300} height={250} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
+    <BarChart width={400} height={300} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
       <XAxis
         dataKey='name'
         scale='point'
@@ -53,7 +53,7 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
       <Tooltip />
       <Legend />
       <CartesianGrid strokeDasharray='3 3' />
-      <Bar dataKey='sacks' fill='#73B1B5' background={{ fill: '#D6EAF4' }} label={{ position: 'top' }} />
+      <Bar dataKey='sacks' fill='#73B1B5' label={{ position: 'top' }} />
     </BarChart>
   )
 }

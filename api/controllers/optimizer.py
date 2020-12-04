@@ -33,14 +33,16 @@ def optimizer_request_handler(
     if len(selected_products) < 2:
         return Response("Can not run the optimizer with less than two products", 400)
 
-    optimizer_result = Optimizer(
+    optimizer = Optimizer(
         products=selected_products,
         bridge=bridge,
         mass_goal=mass_goal,
         max_iterations=int_iterations,
         max_products=max_products,
         particle_range=particle_range,
-    ).optimize()
+    )
+    optimizer_result = optimizer.optimize()
+
     combination = optimizer_result["combination"]
 
     total_mass: float = 0.0
@@ -52,13 +54,11 @@ def optimizer_request_handler(
         "name": blend_name,
         "config": {"iterations": optimizer_result["iterations"], "value": value, "mode": option},
         "products": {id: {"id": id, "value": combination[id]} for id in combination},
-        "performance": {
-            "best_fit": 0.5,
-            "mass_fit": 0.5,
-            "cost": 0.5,
-            "co2": 0.5,
-            "environmental": 0.5,
-        },
+        "performance": optimizer.calculate_performance(
+            experimental_bridge=optimizer_result["cumulative_bridge"],
+            mass_result=total_mass,
+            products_result=len(combination),
+        ),
         "totalMass": total_mass,
         "cumulative": optimizer_result["cumulative_bridge"],
         "executionTime": optimizer_result["execution_time"].seconds,

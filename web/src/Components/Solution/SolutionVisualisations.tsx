@@ -3,7 +3,7 @@ import styled from 'styled-components'
 // @ts-ignore
 import { Typography } from '@equinor/eds-core-react'
 import SolutionBarChart from './SolutionBarChart'
-import SolutionRadarChart from './SolutionRadarChart'
+import PerformanceRadar from './PerformanceRadar'
 import { Products } from '../../Types'
 
 const Grid = styled.div`
@@ -11,9 +11,7 @@ const Grid = styled.div`
   width: fit-content;
   padding: 10px;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(2, 300px);
-  grid-gap: 20px 100px;
+  display: flex;
   align-items: center;
 `
 
@@ -24,13 +22,16 @@ interface SolutionVisualisationsProps {
 
 export const SolutionVisualisations = ({ optimizationData, products }: SolutionVisualisationsProps) => {
   return (
-    // @ts-ignore
-    <div variant='info' style={{ width: 'fit-content', backgroundColor: '#D5EAF4' }}>
+    <div style={{ width: 'fit-content', backgroundColor: '#e4f2f8' }}>
       <Grid>
-        <Typography variant='h6'>Optimal blend</Typography>
-        <Typography variant='h6'>Scores</Typography>
-        <SolutionBarChart optimizationData={optimizationData} products={products} />
-        <SolutionRadarChart optimizationData={optimizationData} />
+        <div>
+          <Typography variant='h6'>Optimal blend</Typography>
+          <SolutionBarChart optimizationData={optimizationData} products={products} />
+        </div>
+        <div>
+          <Typography variant='h6'>Scores</Typography>
+          <PerformanceRadar performanceData={optimizationData.performance} />
+        </div>
       </Grid>
     </div>
   )

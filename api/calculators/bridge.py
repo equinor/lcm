@@ -1,11 +1,13 @@
 from math import sqrt
 from typing import List
 
+from cachetools import cached, LFUCache
 
 from classes.product import Product
 from util.enums import bridge_mode_int, BridgeOption
 
 
+@cached(cache=LFUCache(2048))
 def theoretical_bridge(mode: str, value: int):
     bridge_mode_int(mode)
     bridge_list = []

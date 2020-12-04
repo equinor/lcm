@@ -2744,7 +2744,7 @@ class OptimizerTest(unittest.TestCase):
     def _short_test_wrapper(theoretical_bridge, mass=3500, max_iterations=2000, max_products=5):
         result_list = []
         for i in range(2):
-            result = Optimizer(product_data, theoretical_bridge, mass, max_iterations, max_products).optimize()
+            result = Optimizer(theoretical_bridge, product_data, mass, max_iterations, max_products).optimize()
             result_list.append(result)
         fitness = [run["score"] for run in result_list]
         values_within_deviation(fitness, 15)
@@ -2810,7 +2810,7 @@ def create_algorithm_report():
 
     result_list = []
     for i in range(runs):
-        result = Optimizer(product_data, bridge, mass, max_iterations).optimize()
+        result = Optimizer(bridge, product_data, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)

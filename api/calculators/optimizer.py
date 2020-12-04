@@ -25,12 +25,13 @@ class Optimizer:
     }
     MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
     NUMBER_OF_PRODUCTS_IMPORTANCE = 500  # %deviation/importance (less is more)
+    BRIDGE_ZERO_SCORE_LIMIT = 50  # The bridge score will be calculated from 0 - 50, where 0 is perfect fit.
 
     def __init__(
         self,
-        products: List[dict],
         bridge: List[float],
-        mass_goal: int,
+        products: List[dict] = None,
+        mass_goal: int = 3500,
         max_iterations: int = 500,
         max_products: int = 999,
         particle_range=None,
@@ -74,6 +75,27 @@ class Optimizer:
             "iterations": iterations,
             "score": score,
         }
+
+    # Calculate scores from 0.0 -> 1 where 1 is optimal
+    def calculate_performance(self, experimental_bridge: list, mass_result: float, products_result: int) -> dict:
+
+        bridge_fitness = self.bridge_score(experimental_bridge)
+        bridge_score = (
+            0 if bridge_fitness > self.BRIDGE_ZERO_SCORE_LIMIT else 1 - (bridge_fitness / self.BRIDGE_ZERO_SCORE_LIMIT)
+        )
+
+        # If the difference is more than double the desired value, the score is 0
+        mass_score = (
+            1 - (abs(mass_result - self.mass_goal)) / self.mass_goal if self.mass_goal * 2 >= mass_result else 0
+        )
+        # If number of products is less than requested, the score is 1 (best)
+        if products_result < self.max_products:
+            products_score = 1
+        else:
+            product_diff = abs(self.max_products - products_result) / self.max_products
+            products_score = 1 - product_diff if product_diff <= 1 else 0
+
+        return {"bridge": bridge_score, "mass": mass_score, "products": products_score}
 
     def initialize_population(self, max_number_of_sacks):
         population = []
@@ -127,8 +149,22 @@ class Optimizer:
 
         return parents
 
+    def bridge_score(self, experimental_bridge):
+        if len(self.bridge) != len(experimental_bridge):
+            raise ValueError("The experimental bridge has a different size than the theoretical")
+        diff_list = []
+        i = 0
+        for theo, blend in zip(self.bridge, experimental_bridge):
+            if self.particle_range[0] < SIZE_STEPS[i] < self.particle_range[1]:
+                diff_list.append((theo - blend) ** 2)
+            i += 1
+
+        _mean = np.mean(diff_list)
+        score = np.sqrt(_mean)
+        return score
+
     @cached(cache=LFUCache(8192))
-    def fitness_score(self, pickled_combination: bytes):  # nosec
+    def fitness_score(self, pickled_combination: bytes, bridge_only: bool = False):  # nosec
         combination = pickle.loads(pickled_combination)
         try:
             # We are not in control of the combination values, so they could be zero
@@ -150,18 +186,11 @@ class Optimizer:
                 )
 
         experimental_bridge = calculate_blend_cumulative(products)
-        diff_list = []
-        i = 0
-        for theo, blend in zip(self.bridge, experimental_bridge):
-            if self.particle_range[0] < SIZE_STEPS[i] < self.particle_range[1]:
-                diff_list.append((theo - blend) ** 2)
-            i += 1
 
-        _mean = np.mean(diff_list)
-        score = np.sqrt(_mean)
-        mass_score = self.mass_score(products)
-        number_of_products_score = self.n_products_score(products)
-        return score * mass_score * number_of_products_score, experimental_bridge
+        _bridge_score = self.bridge_score(experimental_bridge)
+        mass_score = self.mass_score(products) if not bridge_only else 1
+        number_of_products_score = self.n_products_score(products) if not bridge_only else 1
+        return _bridge_score * mass_score * number_of_products_score, experimental_bridge
 
     def optimal(self, population):
         results = []
