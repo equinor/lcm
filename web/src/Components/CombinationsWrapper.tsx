@@ -1,5 +1,5 @@
 import BridgeContainer from './Bridging/BridgeContainer'
-import CardContainer from './Blending/CardContainer'
+import CardContainer from './Combinations/CardContainer'
 import OptimizationContainer from './Optimization/OptimizationContainer'
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
@@ -34,7 +34,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
 
   // When enabledProducts changes. Removed the ones not enabled from the combinations.
   useEffect(() => {
-    let newCombinations = {}
+    let newCombinations: Combinations = {}
     Object.values(combinations).forEach((combination: any) => {
       let newCombination = {}
       let newValues = {}
@@ -44,6 +44,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
       newCombination = { ...combination, values: newValues }
       newCombinations = { ...newCombinations, [combination.name]: newCombination }
     })
+    // @ts-ignore
     setCombinations(newCombinations)
   }, [enabledProducts])
 
@@ -62,6 +63,31 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         console.error('fetch error' + error)
       })
   }, [bridgeValue, mode, apiToken])
+
+  async function fetchAllBridges(): Promise<any> {
+    return await Promise.all(
+      // @ts-ignore
+      Object.values(combinations).map(async (c: Combination) => {
+        let res = await CombinationAPI.postCombinationApi(apiToken, Object.values(c.values))
+        return { [c.name]: res.data.bridge }
+      })
+    )
+  }
+
+  // Create bridges from stored combinations
+  useEffect(() => {
+    fetchAllBridges().then(storedBridges => {
+      let newBridges: Bridge = {}
+      storedBridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
+
+      BridgeAPI.postBridgeApi(apiToken, {
+        option: mode,
+        value: bridgeValue,
+      }).then(response => {
+        setBridges({ Bridge: response.data.bridge, ...newBridges })
+      })
+    })
+  }, [])
 
   function updateCombinationAndFetchBridge(combination: Combination) {
     // Don't fetch with empty values
@@ -104,6 +130,20 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
     setBridges({ ...bridges })
   }
 
+  function resetCombinations(sacks: boolean) {
+    let newCombinations: Combinations = {}
+    let newBridges: Bridge = { Bridge: bridges.Bridge }
+    // @ts-ignore
+    Object.values(combinations).forEach((c: Combination) => {
+      if (c.sacks !== sacks) {
+        newCombinations[c.name] = c
+        newBridges[c.name] = bridges[c.name]
+      }
+    })
+    setCombinations({ ...newCombinations })
+    setBridges({ ...newBridges })
+  }
+
   return (
     <>
       {/* Nice to have around for debugging */}
@@ -132,6 +172,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
                 renameCombination={renameCombination}
                 removeCombination={removeCombination}
                 addCombination={addCombination}
+                resetCombinations={resetCombinations}
               />
             </AccordionPanel>
           </AccordionItem>
@@ -147,6 +188,7 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
                 renameCombination={renameCombination}
                 addCombination={addCombination}
                 removeCombination={removeCombination}
+                resetCombinations={resetCombinations}
               />
             </AccordionPanel>
           </AccordionItem>

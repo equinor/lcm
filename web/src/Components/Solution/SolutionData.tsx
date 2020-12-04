@@ -15,6 +15,7 @@ const LabelWrapper = styled.div`
 
 const TextWrapper = styled.div`
   padding: 5px 10px 0 0;
+  min-width: fit-content;
 `
 
 const Spacer = styled.div`

@@ -13,6 +13,7 @@ export const Card = styled.div`
   background-color: white;
   border: #cccccc solid 1px;
   border-radius: 5px;
+  min-width: fit-content;
 `
 export const CombinationTableHeader = styled.div`
   display: flex;
@@ -37,6 +38,7 @@ interface CardContainerProps {
   renameCombination: Function
   removeCombination: Function
   addCombination: Function
+  resetCombinations: Function
   enabledProducts: any
 }
 
@@ -64,6 +66,7 @@ export const CardContainer = ({
   removeCombination,
   addCombination,
   enabledProducts,
+  resetCombinations,
 }: CardContainerProps) => {
   return (
     <>
@@ -100,6 +103,9 @@ export const CardContainer = ({
           }}
           variant='outlined'>
           Add combination
+        </Button>
+        <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations(sacks)} color='danger' variant='ghost'>
+          Remove combinations
         </Button>
       </div>
     </>
