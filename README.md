@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/equinor/lcm/workflows/CI/badge.svg)
 
-Web application for opimal mixing of chemicals.
+Web application for creating, comparing, and optimize blending of lost circulation material used to bridge fractures and stop losses in rock formations during petroleum drilling.
 
 This repository is the result from the merger of the two summer intern projects from 2020.
 
