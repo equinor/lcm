@@ -58,7 +58,7 @@ def sync_all():
     start = datetime.now()
     sync_sharepoint_and_az_blobs()
     # TODO: Use callBack from LogicApp to know when done/succeeded
-    sleep(30)
+    sleep(50)
     sync_excel_blobs_and_az_tables()
     end = datetime.now() - start
     print(f"The sync took {end.seconds} seconds")

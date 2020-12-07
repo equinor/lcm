@@ -37,5 +37,4 @@ def excel_raw_file_to_sheet(file: bytes) -> Sheet:
 def sheet_to_bridge_dict(sheet: Sheet) -> dict:
     return {
         "cumulative": get_column_values(sheet, "Cumulative"),
-        "distribution": get_column_values(sheet, "Distribution"),
     }

@@ -16,4 +16,3 @@ class CreateProductTableRow(unittest.TestCase):
         product_data = sheet_to_bridge_dict(product_sheet)
 
         productdata[0]["cumulative"] = product_data["cumulative"]
-        productdata[0]["distribution"] = product_data["distribution"]

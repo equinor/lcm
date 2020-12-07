@@ -10,3 +10,4 @@ api/tests/products_data.py
 /api/report.pdf
 /api/test_report.png
 /api/.coverage
+/api/test_data/sieving-selected.csv

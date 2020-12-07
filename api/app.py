@@ -1,3 +1,5 @@
+import traceback
+
 from flask import Flask, request, Response, send_file
 
 from calculators.bridge import SIZE_STEPS
@@ -50,6 +52,7 @@ def sync_sharepoint():
     try:
         sync_all()
     except Exception as error:
+        traceback.print_exc()
         return Response(str(error), 500)
     return "ok"
 
