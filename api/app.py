@@ -71,5 +71,8 @@ def main():
     iterations = request.json.get("iterations")
     max_products = request.json.get("maxProducts")
     particle_range = request.json.get("particleRange")
+    weights = request.json.get("weights")
 
-    return optimizer_request_handler(value, name, products, mass, option, iterations, max_products, particle_range)
+    return optimizer_request_handler(
+        value, name, products, mass, option, iterations, max_products, particle_range, weights
+    )

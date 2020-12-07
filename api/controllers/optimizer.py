@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, Tuple
 
 from flask import Response
 
@@ -16,6 +16,7 @@ def optimizer_request_handler(
     iterations: int = 500,
     max_products: int = 999,
     particle_range: Tuple[float, float] = (1.0, 100),
+    weights: Dict = None,
 ):
     int_iterations = int(iterations)
     if int_iterations <= 0:
@@ -26,6 +27,13 @@ def optimizer_request_handler(
 
     if max_products == 0:
         max_products = 999
+
+    if not weights:
+        weights = {"bridge": 5, "mass": 5, "products": 5}
+    else:
+        for i in weights.values():
+            if not 0 <= i <= 10:
+                return Response("Weighting values must be between 0 and 10", 400)
 
     print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
@@ -40,6 +48,7 @@ def optimizer_request_handler(
         max_iterations=int_iterations,
         max_products=max_products,
         particle_range=particle_range,
+        weights=weights,
     )
     optimizer_result = optimizer.optimize()
 

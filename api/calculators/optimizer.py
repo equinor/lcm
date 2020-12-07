@@ -1,7 +1,7 @@
 import pickle  # nosec
 import random
 from datetime import datetime
-from typing import List
+from typing import Dict, List
 
 import numpy as np
 
@@ -24,8 +24,8 @@ class Optimizer:
         "BLACK": 0,
     }
     MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
-    NUMBER_OF_PRODUCTS_IMPORTANCE = 500  # %deviation/importance (less is more)
-    BRIDGE_ZERO_SCORE_LIMIT = 50  # The bridge score will be calculated from 0 - 50, where 0 is perfect fit.
+    NUMBER_OF_PRODUCTS_IMPORTANCE = 400  # %deviation/importance (less is more)
+    BRIDGE_ZERO_SCORE_LIMIT = 30  # The bridge score will be calculated from 0 - 50, where 0 is perfect fit.
 
     def __init__(
         self,
@@ -35,6 +35,7 @@ class Optimizer:
         max_iterations: int = 500,
         max_products: int = 999,
         particle_range=None,
+        weights: Dict = None,
     ):
         self.products = products
         self.bridge = bridge
@@ -46,6 +47,8 @@ class Optimizer:
         if particle_range[1] <= 0:
             particle_range[1] = 10000
         self.particle_range = particle_range
+        weights = weights if weights else {"bridge": 5, "mass": 5, "products": 5}
+        self.weights = {k: 1 + (v / 10) for k, v in weights.items()}
 
     def optimize(self):
         start = datetime.now()
@@ -187,7 +190,7 @@ class Optimizer:
 
         experimental_bridge = calculate_blend_cumulative(products)
 
-        _bridge_score = self.bridge_score(experimental_bridge)
+        _bridge_score = self.bridge_score(experimental_bridge) * self.weights["bridge"]
         mass_score = self.mass_score(products) if not bridge_only else 1
         number_of_products_score = self.n_products_score(products) if not bridge_only else 1
         return _bridge_score * mass_score * number_of_products_score, experimental_bridge
@@ -304,15 +307,16 @@ class Optimizer:
         diff = abs(self.mass_goal - combination_mass)
         percentage_diff = (100 / self.mass_goal) * diff
         # If mass diff more than 10% from goal, score is 10 (
-        if percentage_diff > 10:
+        if percentage_diff > 10 and self.weights["mass"] != 1:
             return 10
         # If mass within 10% of goal, use percentage decimal as score
-        return (percentage_diff / self.MASS_IMPORTANCE) + 1
+        return ((percentage_diff / self.MASS_IMPORTANCE) * self.weights["mass"]) + 1
 
     def n_products_score(self, products: List[Product]) -> float:
-        if len(products) <= self.max_products:
+        if len(products) <= self.max_products or self.weights["products"] == 1:
             return 1
 
         diff = len(products) - self.max_products
         percentage_diff = (100 / self.max_products) * diff
-        return (percentage_diff / self.NUMBER_OF_PRODUCTS_IMPORTANCE) + 1
+        res = (percentage_diff / self.NUMBER_OF_PRODUCTS_IMPORTANCE * self.weights["products"]) + 1
+        return res
