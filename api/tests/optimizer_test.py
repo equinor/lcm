@@ -2787,11 +2787,13 @@ def create_algorithm_report():
     runs = 100
     mass = 3500
     max_iterations = 2000
-    bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
 
     # Crate Matplotlib figure
-    fig, (bridgeplot, alg_curve) = plt.subplots(2)
-    fig.set_size_inches(9.4, 9.4)
+    fig, (bridgeplot, permeability, m_poresize, avg_poresize) = plt.subplots(4)
+    fig.set_size_inches(9.4, 12)
+    permeability_bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
+    m_pore_bridge = theoretical_bridge(BridgeOption.MAXIMUM_PORESIZE, 300)
+    avg_pore_bridge = theoretical_bridge(BridgeOption.AVERAGE_PORESIZE, 600)
 
     # Draw optimal bridge
     bridgeplot.set_title("Bridges")
@@ -2800,69 +2802,186 @@ def create_algorithm_report():
     bridgeplot.set_ylabel("Accumulated volume %")
     bridgeplot.set_xticks([0.1, 1, 10, 100, 1000])
     bridgeplot.xaxis.set_major_formatter(ScalarFormatter())
-    bridgeplot.plot(SIZE_STEPS, bridge, color="black", label="ideal")
+    bridgeplot.plot(SIZE_STEPS, permeability_bridge, color="black")
+    bridgeplot.plot(SIZE_STEPS, m_pore_bridge, color="black")
+    bridgeplot.plot(SIZE_STEPS, avg_pore_bridge, color="black")
     bridgeplot.axes.set_ylim([0, 100])
     bridgeplot.axes.set_xlim([0.01, 10000])
+    permeability.axes.set_xlim([0, max_iterations])
+    m_poresize.axes.set_xlim([0, max_iterations])
+    avg_poresize.axes.set_xlim([0, max_iterations])
 
-    alg_curve.set_title(f"Fitness Evolution ({runs} runs)")
-    alg_curve.set_xlabel("Generations")
-    alg_curve.set_ylabel("Fitness")
+    permeability.set_title(f"Permeability  ({runs} runs)")
+    permeability.set_xlabel("Generations")
+    permeability.set_ylabel("Fitness")
 
     result_list = []
     for i in range(runs):
-        result = Optimizer(bridge, product_data, mass, max_iterations).optimize()
+        result = Optimizer(permeability_bridge, product_data, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
-        alg_curve.plot(result["curve"], label=label)
+        permeability.plot(result["curve"], label=label)
         print(f"{i + 1} of {runs} runs complete...")
-
-    print("Done!")
-    print(f"Saving plot to {Config.HOME_DIR}/test_report.png")
 
     fitness = [run["score"] for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)
-    alg_curve.text(
+    permeability.text(
         0.975,
         0.95,
         f"Standard deviation: {standard_deviation}",
         style="italic",
-        transform=alg_curve.transAxes,
-        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        transform=permeability.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
         horizontalalignment="right",
         verticalalignment="top",
     )
 
-    alg_curve.text(
+    permeability.text(
         0.975,
         0.8,
         f"Mean: {round(np.mean(fitness), 2)}",
         style="italic",
-        transform=alg_curve.transAxes,
-        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        transform=permeability.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
         horizontalalignment="right",
         verticalalignment="top",
     )
-    alg_curve.text(
+    permeability.text(
         0.975,
         0.65,
         f"Max: {round(np.max(fitness), 2)}",
         style="italic",
-        transform=alg_curve.transAxes,
-        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        transform=permeability.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
         horizontalalignment="right",
         verticalalignment="top",
     )
-    alg_curve.text(
+    permeability.text(
         0.975,
         0.5,
         f"Min: {round(np.min(fitness), 2)}",
         style="italic",
-        transform=alg_curve.transAxes,
-        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 10},
+        transform=permeability.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
         horizontalalignment="right",
         verticalalignment="top",
     )
+
+    m_poresize.set_title(f"Max poresize  ({runs} runs)")
+    m_poresize.set_xlabel("Generations")
+    m_poresize.set_ylabel("Fitness")
+
+    result_list = []
+    for i in range(runs):
+        result = Optimizer(m_pore_bridge, product_data, mass, max_iterations).optimize()
+        result_list.append(result)
+        label = f"{i}-{round(result['score'], 1)}"
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
+        m_poresize.plot(result["curve"], label=label)
+        print(f"{i + 1} of {runs} runs complete...")
+
+    fitness = [run["score"] for run in result_list]
+    standard_deviation = round(float(np.std(fitness)), 4)
+    m_poresize.text(
+        0.975,
+        0.95,
+        f"Standard deviation: {standard_deviation}",
+        style="italic",
+        transform=m_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+
+    m_poresize.text(
+        0.975,
+        0.8,
+        f"Mean: {round(np.mean(fitness), 2)}",
+        style="italic",
+        transform=m_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    m_poresize.text(
+        0.975,
+        0.65,
+        f"Max: {round(np.max(fitness), 2)}",
+        style="italic",
+        transform=m_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    m_poresize.text(
+        0.975,
+        0.5,
+        f"Min: {round(np.min(fitness), 2)}",
+        style="italic",
+        transform=m_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+
+    avg_poresize.set_title(f"Avg Poresize  ({runs} runs)")
+    avg_poresize.set_xlabel("Generations")
+    avg_poresize.set_ylabel("Fitness")
+
+    result_list = []
+    for i in range(runs):
+        result = Optimizer(avg_pore_bridge, product_data, mass, max_iterations).optimize()
+        result_list.append(result)
+        label = f"{i}-{round(result['score'], 1)}"
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
+        avg_poresize.plot(result["curve"], label=label)
+        print(f"{i + 1} of {runs} runs complete...")
+
+    fitness = [run["score"] for run in result_list]
+    standard_deviation = round(float(np.std(fitness)), 4)
+    avg_poresize.text(
+        0.975,
+        0.95,
+        f"Standard deviation: {standard_deviation}",
+        style="italic",
+        transform=avg_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+
+    avg_poresize.text(
+        0.975,
+        0.8,
+        f"Mean: {round(np.mean(fitness), 2)}",
+        style="italic",
+        transform=avg_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    avg_poresize.text(
+        0.975,
+        0.65,
+        f"Max: {round(np.max(fitness), 2)}",
+        style="italic",
+        transform=avg_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+    avg_poresize.text(
+        0.975,
+        0.5,
+        f"Min: {round(np.min(fitness), 2)}",
+        style="italic",
+        transform=avg_poresize.transAxes,
+        bbox={"facecolor": "lightblue", "alpha": 0.5, "pad": 5},
+        horizontalalignment="right",
+        verticalalignment="top",
+    )
+
     plt.tight_layout()
     fig.savefig(f"{Config.HOME_DIR}/test_report.png", format="png")
 
