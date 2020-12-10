@@ -5,53 +5,41 @@ import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
 import { Products, ProductsInCombination } from '../../Types'
 
 interface CombinationTableProps {
-  products: Products
+  allProducts: Products
   sacks: boolean
-  enabledProducts: any
   updateCombination: Function
   productsInCombination: ProductsInCombination
   combinationName: string
 }
 
 export const CombinationTable = ({
-  products,
+  allProducts,
   sacks,
-  enabledProducts,
   updateCombination,
   productsInCombination,
   combinationName,
 }: CombinationTableProps) => {
   const [values, setValues] = useState<ProductsInCombination>({})
   const alternatingColor = ['white', '#F5F5F5']
-  const productsToList = Object.values(products).filter(p => enabledProducts.includes(p['id']))
-
-  // When enabledProducts changes. Removed the ones not enabled from the values.
-  useEffect(() => {
-    let newValues = {}
-    Object.values(values).forEach(value => {
-      // @ts-ignore
-      if (enabledProducts.includes(value.id)) newValues = { ...newValues, [value.id]: value }
-    })
-
-    setValues(setPercentages(newValues))
-  }, [enabledProducts])
 
   useEffect(() => {
-    if (!(Object.keys(products).length > 0)) return
     setValues(setPercentages(productsInCombination))
-  }, [productsInCombination, products])
+  }, [productsInCombination])
 
   function setPercentages(newValues: ProductsInCombination): ProductsInCombination {
     // Add up all the mass in the combination
     let massSum = 0
     Object.entries(newValues).forEach(([id, productValue]) => {
-      massSum += productValue.value * products[id].sackSize
+      massSum += productValue.value * allProducts[id].sackSize
     })
     // Set the percentages to the value object for combination
     Object.entries(newValues).forEach(([id, productValues]) => {
-      productValues.percentage = 100 * ((productValues.value * products[id].sackSize) / massSum)
+      if (productValues.value === 0) {
+        productValues.percentage = 0
+      } else {
+        productValues.percentage = 100 * ((productValues.value * allProducts[id].sackSize) / massSum)
+      }
     })
-
     return newValues
   }
 
@@ -62,10 +50,10 @@ export const CombinationTable = ({
     setValues({ ...newValuesWithPercentage })
     updateCombination({ name: combinationName, sacks: sacks, values: newValuesWithPercentage, cumulative: null })
   }
-
   return (
-    <div style={{ display: 'flex', flexFlow: 'column' }}>
+    <div style={{ display: 'flex', flexFlow: 'column', minWidth: 'fit-content' }}>
       <CombinationTableHeader>
+        <div>Product</div>
         {sacks ? (
           <div>Sacks</div>
         ) : (
@@ -75,20 +63,29 @@ export const CombinationTable = ({
         )}
         <div>%</div>
       </CombinationTableHeader>
-      {productsToList.map((product, index) => (
+      {Object.keys(productsInCombination).map((id, index) => (
         <CombinationTableValues key={index} style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
-          <div style={{ width: '150px' }}>
-            <TextField
-              id={product.id}
-              value={values[product.id]?.value || ''}
-              type='number'
-              placeholder={sacks ? 'Sacks (' + product.sackSize + 'kg)' : 'Number of units'}
-              onChange={(event: any) => handleValueChange(product.id, event.target.value)}
-              style={{ background: 'transparent', maxWidth: '200px', height: '37px', border: 'none' }}
-            />
-          </div>
-          <div style={{ paddingLeft: '16px' }}>
-            {values[product.id]?.percentage ? values[product.id]?.percentage.toFixed(1) : 0}
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ minWidth: 'fit-content', alignSelf: 'center' }}>{allProducts[id].title}</div>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}>
+              <div style={{ maxWidth: '100px' }}>
+                <TextField
+                  id={id}
+                  value={values[id]?.value || 0}
+                  type='number'
+                  onChange={(event: any) => handleValueChange(id, event.target.value)}
+                  style={{
+                    background: 'transparent',
+                    maxWidth: '200px',
+                    height: '37px',
+                    borderTop: 'none',
+                    borderBottom: 'none',
+                    textAlign: 'center',
+                  }}
+                />
+              </div>
+              <div style={{ width: '42px' }}>{values[id]?.percentage ? values[id]?.percentage.toFixed(1) : 0}</div>
+            </div>
           </div>
         </CombinationTableValues>
       ))}

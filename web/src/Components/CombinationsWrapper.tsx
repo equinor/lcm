@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { BridgingOption } from '../Enums'
 import { ErrorToast } from './Common/Toast'
 import { AuthContext } from '../Context'
-import { Bridge, Combination, Combinations } from '../Types'
+import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
@@ -19,34 +19,12 @@ const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
 `
 
-interface AppProps {
-  enabledProducts: Array<string>
-  products: any
-  defaultCombinations: Combinations
-}
-
-export default ({ enabledProducts, products, defaultCombinations }: AppProps) => {
+export default ({ products }: Products) => {
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
-  const [combinations, setCombinations] = useLocalStorage<any>('combinations', defaultCombinations)
+  const [combinations, setCombinations] = useLocalStorage<any>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const apiToken: string = useContext(AuthContext).token
-
-  // When enabledProducts changes. Removed the ones not enabled from the combinations.
-  useEffect(() => {
-    let newCombinations: Combinations = {}
-    Object.values(combinations).forEach((combination: any) => {
-      let newCombination = {}
-      let newValues = {}
-      Object.entries(combination.values).forEach(([id, value]: any) => {
-        if (enabledProducts.includes(value.id)) newValues = { ...newValues, [id]: value }
-      })
-      newCombination = { ...combination, values: newValues }
-      newCombinations = { ...newCombinations, [combination.name]: newCombination }
-    })
-    // @ts-ignore
-    setCombinations(newCombinations)
-  }, [enabledProducts])
 
   // Update optimal bridge
   useEffect(() => {
@@ -166,7 +144,6 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
               <CardContainer
                 sacks={true}
                 combinations={combinations}
-                enabledProducts={enabledProducts}
                 products={products}
                 updateCombination={updateCombinationAndFetchBridge}
                 renameCombination={renameCombination}
@@ -182,7 +159,6 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
               <CardContainer
                 sacks={false}
                 combinations={combinations}
-                enabledProducts={enabledProducts}
                 products={products}
                 updateCombination={updateCombinationAndFetchBridge}
                 renameCombination={renameCombination}
@@ -195,13 +171,8 @@ export default ({ enabledProducts, products, defaultCombinations }: AppProps) =>
         </Accordion>
       </MainComponentsWrapper>
       <MainComponentsWrapper>
-        <OptimizationContainer
-          addCombination={addCombination}
-          products={products}
-          enabledProducts={enabledProducts}
-          mode={mode}
-          value={bridgeValue}
-        />
+        {/* @ts-ignore*/}
+        <OptimizationContainer addCombination={addCombination} products={products} mode={mode} value={bridgeValue} />
       </MainComponentsWrapper>
     </>
   )

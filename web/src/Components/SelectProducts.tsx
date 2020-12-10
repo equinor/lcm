@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 // @ts-ignore
-import { Checkbox, LinearProgress, Chip, Switch, Typography } from '@equinor/eds-core-react'
+import { Checkbox, Chip, Switch, Typography } from '@equinor/eds-core-react'
 // @ts-ignore
 import styled from 'styled-components'
 import { Products, Product } from '../Types'
@@ -11,29 +11,30 @@ const ChipBox = styled.div`
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+  width: 50%;
+`
+
+const ProductBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-right: 1px solid;
+  padding: 0 10px 0 0;
 `
 
 interface SelectProductsProps {
-  loading: boolean
-  products: Products
-  enabledProducts: Array<string>
+  allProducts: Products
+  enabledProducts: Products
   setEnabledProducts: Function
 }
 
-const Link = styled.a`
-  color: #007079;
-  font-size: 16px;
-  line-height: 20px;
-  text-decoration-line: underline;
-`
-
 export const SelectProducts = ({
-  loading,
-  products,
+  allProducts,
   enabledProducts,
   setEnabledProducts,
 }: SelectProductsProps): ReactElement => {
-  const productList: Array<Product> = sortProducts(Object.values(products))
+  const productList: Array<Product> = sortProducts(Object.values(allProducts))
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
   const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
@@ -41,87 +42,90 @@ export const SelectProducts = ({
   const [selectedSuppliers, setSelectedSuppliers] = useLocalStorage<T>('selectedSuppliers', suppliers)
 
   function handleChipToggle(supplier: string) {
-    // This is a bit messy. Mainly because we have two product objects, one array and one Map. Should be just one Object
     if (selectedSuppliers.includes(supplier)) {
-      let productsWithDisabledSupplier = productList
-        .filter((p: any) => p.supplier === supplier)
-        .map((p: any) => {
-          return p.id
-        })
-      let shouldBeRemoved = enabledProducts.filter((p: any) => productsWithDisabledSupplier.includes(p))
-      setSelectedSuppliers(selectedSuppliers.filter((s: string) => s !== supplier))
-      let temp = enabledProducts.filter((p: any) => !shouldBeRemoved.includes(p))
-      setEnabledProducts(temp)
+      let newEnabledProducts: Products = {}
+      Object.values(enabledProducts).forEach(product => {
+        if (product.supplier !== supplier) {
+          newEnabledProducts = { ...newEnabledProducts, product }
+        }
+      })
+      setEnabledProducts(newEnabledProducts)
+      setSelectedSuppliers(selectedSuppliers.filter((sup: string) => sup !== supplier))
     } else {
       setSelectedSuppliers([supplier, ...selectedSuppliers])
     }
   }
 
-  function handleProductToggle(id: string) {
-    if (enabledProducts.includes(id)) {
-      setEnabledProducts(enabledProducts.filter((exisitingId: string) => exisitingId !== id))
+  function handleProductToggle(event: any, id: string) {
+    if (event.target.checked) {
+      setEnabledProducts({ ...enabledProducts, [id]: allProducts[id] })
     } else {
-      setEnabledProducts([id, ...enabledProducts])
+      delete enabledProducts[id]
+      setEnabledProducts({ ...enabledProducts })
     }
   }
 
   function handleAllToggle(event: any) {
     if (event.target.checked) {
-      let notMissing = productList.filter(p => p.cumulative !== null)
-      let fromSelectedSuppliers = notMissing.filter(p => selectedSuppliers.includes(p.supplier))
-      let justIds = fromSelectedSuppliers.map(p => p.id)
-      setEnabledProducts(justIds)
+      let newEnabledProducts: Products = {}
+      productList.forEach(product => {
+        if (selectedSuppliers.includes(product.supplier) && product.cumulative !== null) {
+          newEnabledProducts = { ...newEnabledProducts, [product.id]: product }
+        }
+      })
+      setEnabledProducts(newEnabledProducts)
     } else {
-      setEnabledProducts([])
+      setEnabledProducts({})
     }
   }
 
-  if (loading) return <LinearProgress />
-
   return (
     <>
-      <div style={{ paddingBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>Products summary</Link>
+      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+        <ChipBox>
+          {suppliers.map((supplier: string) => {
+            let active = 'default'
+            if (selectedSuppliers.includes(supplier)) active = 'active'
+            return (
+              <Chip
+                key={supplier}
+                variant={active}
+                onClick={() => {
+                  handleChipToggle(supplier)
+                }}>
+                {supplier}
+              </Chip>
+            )
+          })}
+        </ChipBox>
         <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} />
       </div>
-      <ChipBox>
-        {suppliers.map((supplier: string) => {
-          let active = 'default'
-          if (selectedSuppliers.includes(supplier)) active = 'active'
-          return (
-            <Chip
-              key={supplier}
-              variant={active}
-              onClick={() => {
-                handleChipToggle(supplier)
-              }}>
-              {supplier}
-            </Chip>
-          )
-        })}
-      </ChipBox>
-
       {/* If some of the displayed products have missing PSD data, show a small notice*/}
       {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
-        <div style={{ textAlign: 'end', padding: '10px 0' }}>
-          <small style={{ color: 'red', paddingLeft: '10px' }}> *Missing bridge data</small>
+        <div style={{ textAlign: 'end', width: '100%' }}>
+          <small style={{ color: 'red' }}> *Missing bridge data</small>
         </div>
       )}
-
-      <div style={{ paddingRight: '15px' }}>
+      <div
+        style={{
+          paddingRight: '15px',
+          display: 'flex',
+          flexFlow: 'column wrap',
+          maxHeight: '600px',
+          width: '800px',
+          overflow: 'auto',
+        }}>
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
         {productList.map((product, key) => {
           if (!selectedSuppliers.includes(product.supplier)) return null
-          const isChecked = enabledProducts.includes(product.id)
+          const isChecked = Object.keys(enabledProducts).includes(product.id)
           const disabled = product.cumulative == null
           return (
-            <div
-              key={key}
-              style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ProductBox key={key}>
+              <div style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
                 <Checkbox
                   checked={isChecked}
-                  onChange={() => handleProductToggle(product.id)}
+                  onChange={(event: Event) => handleProductToggle(event, product.id)}
                   label={product.title}
                   disabled={disabled}
                   name='multiple'
@@ -130,7 +134,7 @@ export const SelectProducts = ({
                 {disabled && <div style={{ color: 'red', fontSize: '24px', alignSelf: 'center' }}>*</div>}
               </div>
               <Typography variant='body_short'>{product.supplier}</Typography>
-            </div>
+            </ProductBox>
           )
         })}
       </div>
