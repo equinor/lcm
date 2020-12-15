@@ -39,7 +39,7 @@ export const RefreshButton = () => {
   return (
     <>
       <Button variant='outlined' onClick={() => setScrim(true)}>
-        <Icon name='refresh' title='refresh' size={48} />
+        <Icon name='refresh' title='refresh' />
         Synchronize with SharePoint
       </Button>
       {scrim && (

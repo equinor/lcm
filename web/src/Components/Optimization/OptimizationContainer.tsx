@@ -5,7 +5,6 @@ import { Combination, Products } from '../../Types'
 
 interface OptimizationContainerProps {
   products: Products
-  enabledProducts: Array<string>
   addCombination: Function
   mode: string
   value: number
@@ -18,7 +17,6 @@ export interface ProductResult {
 
 export const OptimizationContainer = ({
   products,
-  enabledProducts,
   mode,
   addCombination,
   value,
@@ -52,13 +50,7 @@ export const OptimizationContainer = ({
 
   return (
     <div>
-      <OptimizationRunner
-        products={products}
-        enabledProducts={enabledProducts}
-        mode={mode}
-        value={value}
-        handleUpdate={handleUpdate}
-      />
+      <OptimizationRunner allProducts={products} mode={mode} value={value} handleUpdate={handleUpdate} />
       <OptimizationResult products={products} mode={mode} value={value} optimizationData={optimizationData} />
     </div>
   )

@@ -4,7 +4,8 @@ import { Button, Icon, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
-import { Combination } from '../../Types'
+import { Combination, Product, Products } from '../../Types'
+import EditProducts from '../Common/EditProducts'
 
 const CardHeader = styled.div`
   display: flex;
@@ -17,14 +18,12 @@ interface CombinationCardProps {
   updateCombination: Function
   renameCombination: Function
   removeCombination: Function
-  products: any
-  enabledProducts: any
+  allProducts: Products
 }
 
 export const CombinationCard = ({
   sacks,
-  products,
-  enabledProducts,
+  allProducts,
   combination,
   updateCombination,
   renameCombination,
@@ -32,51 +31,89 @@ export const CombinationCard = ({
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
+  const [enabledProducts, setEnabledProducts] = useState<Products>({})
 
+  // On first render with products, set enabledProducts from saved combinations
   useEffect(() => {
-    if (!(Object.keys(products).length > 0)) return
-    let tempMass = 0
+    if (!(Object.keys(allProducts).length > 0)) return
+    let newEnabledProducts: Products = {}
     Object.values(combination.values).forEach(prod => {
-      tempMass += products[prod.id].sack_size * prod.value
+      newEnabledProducts = { ...newEnabledProducts, [prod.id]: allProducts[prod.id] }
     })
-    setTotalMass(tempMass)
-  }, [combination, products])
+    setEnabledProducts(newEnabledProducts)
+  }, [allProducts])
+
+  // Calculate sum of mass in combination on combination change
+  useEffect(() => {
+    if (!(Object.keys(allProducts).length > 0)) return
+    let newMass: number = 0
+    Object.values(combination.values).forEach(prod => {
+      newMass += allProducts[prod.id].sackSize * prod.value
+    })
+    setTotalMass(newMass)
+  }, [combination, allProducts])
+
+  // Update combination to only have selected products
+  useEffect(() => {
+    let newCombination: Combination = { ...combination }
+    newCombination.values = {}
+    Object.values(enabledProducts).forEach((p: Product) => {
+      if (combination.values[p.id]) {
+        newCombination.values[p.id] = combination.values[p.id]
+      } else {
+        newCombination.values[p.id] = { value: 0, percentage: 0, id: p.id }
+      }
+    })
+    updateCombination(newCombination)
+  }, [enabledProducts])
 
   return (
     <Card>
-      <CardHeader>
-        <TextField
-          id={`${combination.name}`}
-          value={combinationName}
-          style={{ background: 'transparent', paddingTop: '10px' }}
-          onChange={(event: any) => {
-            setCombinationName(event.target.value)
-          }}
-          onBlur={() => {
-            renameCombination(combinationName, combination.name)
-          }}
-          onKeyPress={(event: any) => {
-            if (event.key === 'Enter') {
-              // @ts-ignore
-              document.activeElement.blur()
-            }
-          }}
+      <div>
+        <CardHeader>
+          <TextField
+            id={`${combination.name}`}
+            value={combinationName}
+            style={{ background: 'transparent', paddingTop: '10px' }}
+            onChange={(event: any) => {
+              setCombinationName(event.target.value)
+            }}
+            onBlur={() => {
+              renameCombination(combinationName, combination.name)
+            }}
+            onKeyPress={(event: any) => {
+              if (event.key === 'Enter') {
+                // @ts-ignore
+                document.activeElement.blur()
+              }
+            }}
+          />
+          <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
+            <Icon name='close' title='close' />
+          </Button>
+        </CardHeader>
+        {Object.keys(enabledProducts).length ? (
+          <CombinationTable
+            allProducts={allProducts}
+            sacks={sacks}
+            updateCombination={updateCombination}
+            productsInCombination={combination.values}
+            combinationName={combinationName}
+          />
+        ) : (
+          'No products selected'
+        )}
+      </div>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 5px', borderTop: '1px solid' }}>
+          <div>Total mass</div>
+          <div>{totalMass}kg</div>
+        </div>
+        <EditProducts
+          allProducts={allProducts}
+          enabledProducts={enabledProducts}
+          setEnabledProducts={setEnabledProducts}
         />
-        <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
-          <Icon name='close' title='close' />
-        </Button>
-      </CardHeader>
-      <CombinationTable
-        sacks={sacks}
-        products={products}
-        enabledProducts={enabledProducts}
-        updateCombination={updateCombination}
-        productsInCombination={combination.values}
-        combinationName={combinationName}
-      />
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 5px', borderTop: '1px solid' }}>
-        <div>Total mass</div>
-        <div>{totalMass}kg</div>
       </div>
     </Card>
   )

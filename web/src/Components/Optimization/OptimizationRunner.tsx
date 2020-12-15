@@ -3,18 +3,19 @@ import PillInput, { Pill } from './PillInput'
 import { Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { CircularProgress, Typography, Button, TextField, Accordion } from '@equinor/eds-core-react'
+import { Accordion, Button, CircularProgress, TextField, Typography } from '@equinor/eds-core-react'
 import { Products } from '../../Types'
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
 import { ErrorToast } from '../Common/Toast'
 import { AuthContext, ParticleSizeContext } from '../../Context'
+import EditProducts from '../Common/EditProducts'
+import useLocalStorage from '../../Hooks'
 
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
 interface OptimizationContainerProps {
-  products: Products
-  enabledProducts: Array<string>
+  allProducts: Products
   mode: string
   value: number
   handleUpdate: Function
@@ -29,12 +30,12 @@ const Wrapper = styled.div`
   width: fit-content;
 `
 
-const OptimizationRunner = ({
-  enabledProducts,
-  mode,
-  value,
-  handleUpdate,
-}: OptimizationContainerProps): ReactElement => {
+const ProductInput = styled.div`
+  padding: 0 15px;
+  margin: 0 15px;
+`
+
+const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: OptimizationContainerProps): ReactElement => {
   const [failedRun, setFailedRun] = useState<boolean>(false)
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -53,6 +54,8 @@ const OptimizationRunner = ({
   })
   const particleRange = useContext(ParticleSizeContext)
 
+  const [products, setProducts] = useLocalStorage<any>('optimizerProducts', {})
+
   const handleOptimize = () => {
     setLoading(true)
     OptimizerAPI.postOptimizerApi(apiToken, {
@@ -64,7 +67,7 @@ const OptimizationRunner = ({
       value: value,
       option: mode,
       mass: pill.mass,
-      products: enabledProducts,
+      products: products,
       weights: weight,
     })
       .then(response => {
@@ -86,7 +89,24 @@ const OptimizationRunner = ({
       </Typography>
       <div style={{ display: 'flex' }}>
         <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
-        <Accordion style={{ paddingLeft: '20px' }}>
+        <ProductInput>
+          Products
+          <div
+            style={{
+              border: '1px solid #DCDCDC',
+              maxHeight: '300px',
+              minHeight: '100px',
+              overflow: 'auto',
+              margin: '10px 0',
+            }}>
+            {Object.values(products).map((product: any) => {
+              return <Typography variant='body_short'>{product.title}</Typography>
+            })}
+          </div>
+          <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
+        </ProductInput>
+
+        <Accordion style={{ paddingLeft: '20px', paddingTop: '26px' }}>
           <AccordionItem>
             <AccordionHeader>Advanced options</AccordionHeader>
             <AccordionPanel>

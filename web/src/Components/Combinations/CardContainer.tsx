@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button } from '@equinor/eds-core-react'
-import ProductTable from './ProductTable'
 import { Combinations } from '../../Types'
 
 export const Card = styled.div`
@@ -14,6 +13,10 @@ export const Card = styled.div`
   border: #cccccc solid 1px;
   border-radius: 5px;
   min-width: fit-content;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 export const CombinationTableHeader = styled.div`
   display: flex;
@@ -39,7 +42,6 @@ interface CardContainerProps {
   removeCombination: Function
   addCombination: Function
   resetCombinations: Function
-  enabledProducts: any
 }
 
 const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
@@ -65,15 +67,11 @@ export const CardContainer = ({
   renameCombination,
   removeCombination,
   addCombination,
-  enabledProducts,
   resetCombinations,
 }: CardContainerProps) => {
   return (
     <>
       <div style={{ width: '100%', display: 'flex' }}>
-        <Card>
-          <ProductTable products={products} enabledProducts={enabledProducts} />
-        </Card>
         {Object.keys(combinations).map(id => {
           if (sacks === combinations[id].sacks)
             return (
@@ -82,8 +80,7 @@ export const CardContainer = ({
                 sacks={sacks}
                 combination={combinations[id]}
                 removeCombination={removeCombination}
-                products={products}
-                enabledProducts={enabledProducts}
+                allProducts={products}
                 updateCombination={updateCombination}
                 renameCombination={renameCombination}
               />
