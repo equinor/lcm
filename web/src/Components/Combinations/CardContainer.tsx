@@ -5,6 +5,7 @@ import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button } from '@equinor/eds-core-react'
 import { Combinations } from '../../Types'
+import Icon from '../../Icons'
 
 export const Card = styled.div`
   margin: 10px;
@@ -97,8 +98,8 @@ export const CardContainer = ({
               values: [],
               cumulative: null,
             })
-          }}
-          variant='outlined'>
+          }}>
+          <Icon name='add_box' title='add_box' />
           Add combination
         </Button>
         <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations(sacks)} color='danger' variant='ghost'>

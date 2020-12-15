@@ -1,16 +1,14 @@
 import React, { useContext, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, Icon, Scrim, CircularProgress } from '@equinor/eds-core-react'
-// @ts-ignore
-import { refresh } from '@equinor/eds-icons'
+import { Button, Dialog, Scrim, CircularProgress } from '@equinor/eds-core-react'
+
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
 import { ErrorToast } from './Common/Toast'
 import { AuthContext } from '../Context'
+import Icon from '../Icons'
 
 const { Actions, Title, CustomContent } = Dialog
-
-Icon.add({ refresh })
 
 const ButtonWrapper = styled.div`
   display: flex;

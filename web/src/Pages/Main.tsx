@@ -13,11 +13,6 @@ import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from '../Context'
 import { ContactButton } from '../Components/ContactButton'
 
-// @ts-ignore
-import { filter_alt, info_circle } from '@equinor/eds-icons'
-
-Icon.add({ filter_alt, info_circle })
-
 const Body = styled.div`
   display: flex;
   flex-direction: column;
@@ -61,7 +56,6 @@ export default (): ReactElement => {
               gridTemplateColumns: 'repeat(3, fit-content(100%))',
               gap: '16px',
             }}>
-            <RefreshButton />
             <div>
               <StyledLink href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>
                 <Button variant='outlined'>
@@ -70,6 +64,7 @@ export default (): ReactElement => {
                 </Button>
               </StyledLink>
             </div>
+            <RefreshButton />
             <div>
               <ContactButton />
             </div>

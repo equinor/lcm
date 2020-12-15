@@ -101,11 +101,17 @@ export const CombinationCard = ({
             combinationName={combinationName}
           />
         ) : (
-          'No products selected'
+          <div style={{ padding: '20px' }}>No products selected</div>
         )}
       </div>
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 5px', borderTop: '1px solid' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '3px 5px 15px 5px',
+            borderTop: '1px solid',
+          }}>
           <div>Total mass</div>
           <div>{totalMass}kg</div>
         </div>

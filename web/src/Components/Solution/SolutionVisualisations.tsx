@@ -22,7 +22,7 @@ interface SolutionVisualisationsProps {
 
 export const SolutionVisualisations = ({ optimizationData, products }: SolutionVisualisationsProps) => {
   return (
-    <div style={{ width: 'fit-content', backgroundColor: '#e4f2f8' }}>
+    <div style={{ width: 'fit-content', backgroundColor: '#e4f2f8', overflow: 'auto' }}>
       <Grid>
         <div>
           <Typography variant='h6'>Optimal blend</Typography>

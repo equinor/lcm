@@ -1,14 +1,10 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon, Scrim } from '@equinor/eds-core-react'
-// @ts-ignore
-import { edit } from '@equinor/eds-icons'
 import SelectProducts from '../SelectProducts'
 import { Products } from '../../Types'
 
 const { Actions, Title, CustomContent } = Dialog
-
-Icon.add({ edit })
 
 interface AddProductsProps {
   allProducts: Products

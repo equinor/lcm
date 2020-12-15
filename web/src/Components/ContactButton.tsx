@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon, Scrim } from '@equinor/eds-core-react'
-// @ts-ignore
-import { comment_important } from '@equinor/eds-icons'
 
 const { Actions, Title, CustomContent } = Dialog
-
-Icon.add({ comment_important })
 
 export const ContactButton = () => {
   const [scrim, setScrim] = useState<boolean>(false)
@@ -21,7 +17,7 @@ export const ContactButton = () => {
         <Scrim onClose={() => setScrim(false)}>
           <Dialog style={{ width: 'min-content' }}>
             <Title>Contact and support</Title>
-            <CustomContent>
+            <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
               <p>
                 Questions regarding access and usage of the LCM optimizer can be directed at John-Morten Godhavn{' '}
                 <a href={`mailto:${process.env.REACT_APP_APPLICATION_OWNER}`}>
@@ -35,7 +31,7 @@ export const ContactButton = () => {
                 </a>
               </p>
             </CustomContent>
-            <Actions>
+            <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
               <Button onClick={() => setScrim(false)}>Close</Button>
             </Actions>
           </Dialog>

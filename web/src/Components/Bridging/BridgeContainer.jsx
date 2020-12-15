@@ -118,7 +118,7 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
             />
             </div>
 
-          <Button onClick={()=>clearBridges()} variant="outlined" style={{maxWidth: '130px'}}>Clear Bridges</Button>
+          <Button onClick={()=>clearBridges()} color="danger" variant="ghost" style={{maxWidth: '130px'}}>Clear Bridges</Button>
 
         </InputWrapper>
           <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />

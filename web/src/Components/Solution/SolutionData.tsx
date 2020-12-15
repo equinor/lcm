@@ -7,6 +7,7 @@ import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
 import { AuthContext, User } from '../../Context'
+import Icon from '../../Icons'
 
 const LabelWrapper = styled.div`
   display: flex;
@@ -110,6 +111,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '150px' }}>
+          <Icon name='save' />
           Export solution
         </Button>
 

@@ -59,7 +59,7 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
   }
 
   return (
-    <div style={{ maxWidth: '150px' }}>
+    <div style={{ maxWidth: '150px', margin: '10px 0' }}>
       <TextField
         style={{ marginBottom: '16px' }}
         type='number'

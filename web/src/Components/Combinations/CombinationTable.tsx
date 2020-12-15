@@ -4,6 +4,23 @@ import { TextField } from '@equinor/eds-core-react'
 import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
 import { Products, ProductsInCombination } from '../../Types'
 
+function setPercentages(newValues: ProductsInCombination, allProducts: Products): ProductsInCombination {
+  // Add up all the mass in the combination
+  let massSum = 0
+  Object.entries(newValues).forEach(([id, productValue]) => {
+    massSum += productValue.value * allProducts[id].sackSize
+  })
+  // Set the percentages to the value object for combination
+  Object.entries(newValues).forEach(([id, productValues]) => {
+    if (productValues.value === 0) {
+      productValues.percentage = 0
+    } else {
+      productValues.percentage = 100 * ((productValues.value * allProducts[id].sackSize) / massSum)
+    }
+  })
+  return newValues
+}
+
 interface CombinationTableProps {
   allProducts: Products
   sacks: boolean
@@ -23,30 +40,13 @@ export const CombinationTable = ({
   const alternatingColor = ['white', '#F5F5F5']
 
   useEffect(() => {
-    setValues(setPercentages(productsInCombination))
-  }, [productsInCombination])
-
-  function setPercentages(newValues: ProductsInCombination): ProductsInCombination {
-    // Add up all the mass in the combination
-    let massSum = 0
-    Object.entries(newValues).forEach(([id, productValue]) => {
-      massSum += productValue.value * allProducts[id].sackSize
-    })
-    // Set the percentages to the value object for combination
-    Object.entries(newValues).forEach(([id, productValues]) => {
-      if (productValues.value === 0) {
-        productValues.percentage = 0
-      } else {
-        productValues.percentage = 100 * ((productValues.value * allProducts[id].sackSize) / massSum)
-      }
-    })
-    return newValues
-  }
+    setValues(setPercentages(productsInCombination, allProducts))
+  }, [productsInCombination, setPercentages, allProducts])
 
   const handleValueChange = (productId: string, value: string) => {
     if (parseInt(value) < 0) return
     let newValues: any = { ...values, [productId]: { value: parseInt(value), id: productId } }
-    const newValuesWithPercentage = setPercentages(newValues)
+    const newValuesWithPercentage = setPercentages(newValues, allProducts)
     setValues({ ...newValuesWithPercentage })
     updateCombination({ name: combinationName, sacks: sacks, values: newValuesWithPercentage, cumulative: null })
   }
