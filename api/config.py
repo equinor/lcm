@@ -19,3 +19,4 @@ class Config:
     DEFAULT_MAX_ITERATIONS = 100
     HOME_DIR = str(Path(__file__).parent.absolute())
     PRODUCT_TABLE_NAME = "products"
+    named_supplier = ("Baker Hughes", "Halliburton", "Schlumberger")

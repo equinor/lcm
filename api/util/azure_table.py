@@ -62,6 +62,7 @@ def process_meta_blob(meta_file: io.TextIO) -> List[dict]:
                 "RowKey": sanitize_row_key(row["title"]),
                 "id": sanitize_row_key(row["title"]),
                 **row,
+                "supplier": row["supplier"] if row["supplier"] in Config.named_supplier else "Other",
                 # TODO: Prod data is missing co2 impact
                 "co2": row["co2"] if row["co2"] else 1000,
                 # TODO: Prod data is missing cost
