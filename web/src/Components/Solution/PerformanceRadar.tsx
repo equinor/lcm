@@ -14,9 +14,9 @@ interface IPerformanceRadar {
 
 export const PerformanceRadar = ({ performanceData }: IPerformanceRadar) => {
   const graphData = [
-    { name: 'Fit', value: performanceData.bridge, fullMark: 1 },
-    { name: 'Mass', value: performanceData.mass, fullMark: 1 },
-    { name: 'Products', value: performanceData.products, fullMark: 1 },
+    { name: 'Fit', value: performanceData.bridge, fullMark: 100 },
+    { name: 'Mass', value: performanceData.mass, fullMark: 100 },
+    { name: 'Products', value: performanceData.products, fullMark: 100 },
   ]
   return (
     <RadarChart cx={200} cy={150} outerRadius={100} width={350} height={300} data={graphData}>

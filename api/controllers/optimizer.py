@@ -1,9 +1,10 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from flask import Response
 
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
+from classes.product import Product
 from controllers.products import products_get
 
 
@@ -33,7 +34,7 @@ def optimizer_request_handler(
     else:
         for i in weights.values():
             if not 0 <= i <= 10:
-                return Response("Weighting values must be between 0 and 10", 400)
+                return Response("Weighting values must be between 1 and 10", 400)
 
     print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
@@ -51,13 +52,20 @@ def optimizer_request_handler(
         weights=weights,
     )
     optimizer_result = optimizer.optimize()
-
     combination = optimizer_result["combination"]
 
-    total_mass: float = 0.0
-    for product_name, sacks in combination.items():
-        sack_size = next((p["sack_size"] for p in selected_products))
-        total_mass += sacks * sack_size
+    products_result: List[Product] = []
+    for p in selected_products:
+        if p["id"] in combination.keys():
+            products_result.append(
+                Product(
+                    product_id=p["id"],
+                    share=(combination[p["id"]] / sum(combination.values())) * 100,
+                    cumulative=p["cumulative"],
+                    sacks=combination[p["id"]],
+                    mass=(combination[p["id"]] * p["sack_size"]),
+                )
+            )
 
     return {
         "name": blend_name,
@@ -65,18 +73,16 @@ def optimizer_request_handler(
         "products": {id: {"id": id, "value": combination[id]} for id in combination},
         "performance": optimizer.calculate_performance(
             experimental_bridge=optimizer_result["cumulative_bridge"],
-            mass_result=total_mass,
-            products_result=len(combination),
+            products_result=products_result,
         ),
-        "totalMass": total_mass,
+        "totalMass": sum([p.mass for p in products_result]),
         "cumulative": optimizer_result["cumulative_bridge"],
         "executionTime": optimizer_result["execution_time"].seconds,
         "fitness": optimizer_result["score"],
         "weighting": {
-            "bridge": 0.5,
-            "cost": 0.5,
-            "co2": 0.5,
-            "environmental": 0.5,
+            "bridge": weights["bridge"],
+            "mass": weights["mass"],
+            "products": weights["products"],
         },
         "curve": optimizer_result["curve"],
     }

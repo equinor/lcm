@@ -50,7 +50,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
           <Slider
             id='Bridge'
             value={bridge}
-            min={0}
+            min={1}
             max={10}
             onChange={(event: any, value: number) => {
               setWeight({
@@ -66,7 +66,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
           <Slider
             id='Mass'
             value={mass}
-            min={0}
+            min={1}
             max={10}
             onChange={(event: any, value: any) => {
               setWeight({
@@ -82,7 +82,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
           <Slider
             id='Products'
             value={products}
-            min={0}
+            min={1}
             max={10}
             onChange={(event: any, value: any) => {
               setWeight({

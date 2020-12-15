@@ -4,10 +4,10 @@ from datetime import datetime
 from typing import Dict, List
 
 import numpy as np
+from cachetools import cached, LFUCache
 
 from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS
 from classes.product import Product
-from cachetools import cached, LFUCache
 
 
 class Optimizer:
@@ -23,9 +23,8 @@ class Optimizer:
         "RED": 33,
         "BLACK": 0,
     }
-    MASS_IMPORTANCE = 100  # %dev/MASS_IMPORTANCE (less is more)
-    NUMBER_OF_PRODUCTS_IMPORTANCE = 400  # %deviation/importance (less is more)
-    BRIDGE_ZERO_SCORE_LIMIT = 30  # The bridge score will be calculated from 0 - 50, where 0 is perfect fit.
+    MASS_IMPORTANCE = 10
+    NUMBER_OF_PRODUCTS_IMPORTANCE = 40
 
     def __init__(
         self,
@@ -47,8 +46,8 @@ class Optimizer:
         if particle_range[1] <= 0:
             particle_range[1] = 10000
         self.particle_range = particle_range
-        weights = weights if weights else {"bridge": 5, "mass": 5, "products": 5}
-        self.weights = {k: 1 + (v / 10) for k, v in weights.items()}
+        self.weights = weights if weights else {"bridge": 10, "mass": 1, "products": 1}
+        self.sum_weights = sum(self.weights.values())
 
     def optimize(self):
         start = datetime.now()
@@ -79,26 +78,12 @@ class Optimizer:
             "score": score,
         }
 
-    # Calculate scores from 0.0 -> 1 where 1 is optimal
-    def calculate_performance(self, experimental_bridge: list, mass_result: float, products_result: int) -> dict:
+    def calculate_performance(self, experimental_bridge: list, products_result: List[Product]) -> dict:
+        bridge_fitness = 100 - self.bridge_score(experimental_bridge)
+        mass_score = 100 - self.mass_score(products_result, squash=False)
+        products_score = 100 - (self.n_products_score(products_result, squash=False))
 
-        bridge_fitness = self.bridge_score(experimental_bridge)
-        bridge_score = (
-            0 if bridge_fitness > self.BRIDGE_ZERO_SCORE_LIMIT else 1 - (bridge_fitness / self.BRIDGE_ZERO_SCORE_LIMIT)
-        )
-
-        # If the difference is more than double the desired value, the score is 0
-        mass_score = (
-            1 - (abs(mass_result - self.mass_goal)) / self.mass_goal if self.mass_goal * 2 >= mass_result else 0
-        )
-        # If number of products is less than requested, the score is 1 (best)
-        if products_result < self.max_products:
-            products_score = 1
-        else:
-            product_diff = abs(self.max_products - products_result) / self.max_products
-            products_score = 1 - product_diff if product_diff <= 1 else 0
-
-        return {"bridge": bridge_score, "mass": mass_score, "products": products_score}
+        return {"bridge": bridge_fitness, "mass": mass_score, "products": products_score}
 
     def initialize_population(self, max_number_of_sacks):
         population = []
@@ -167,13 +152,8 @@ class Optimizer:
         return score
 
     @cached(cache=LFUCache(8192))
-    def fitness_score(self, pickled_combination: bytes, bridge_only: bool = False):  # nosec
+    def fitness_score(self, pickled_combination: bytes):  # nosec
         combination = pickle.loads(pickled_combination)
-        try:
-            # We are not in control of the combination values, so they could be zero
-            sum_sacks = 100 / sum(combination.values())
-        except ZeroDivisionError:
-            sum_sacks = 0
 
         products: List[Product] = []
         for p in self.products:
@@ -181,7 +161,7 @@ class Optimizer:
                 products.append(
                     Product(
                         product_id=p["id"],
-                        share=(sum_sacks * combination[p["id"]]) / 100,
+                        share=(combination[p["id"]] / sum(combination.values())) * 100,
                         cumulative=p["cumulative"],
                         sacks=combination[p["id"]],
                         mass=(combination[p["id"]] * p["sack_size"]),
@@ -189,11 +169,10 @@ class Optimizer:
                 )
 
         experimental_bridge = calculate_blend_cumulative(products)
-
-        _bridge_score = self.bridge_score(experimental_bridge) * self.weights["bridge"]
-        mass_score = self.mass_score(products) if not bridge_only else 1
-        number_of_products_score = self.n_products_score(products) if not bridge_only else 1
-        return _bridge_score * mass_score * number_of_products_score, experimental_bridge
+        _bridge_score = self.bridge_score(experimental_bridge) * (self.weights["bridge"] / self.sum_weights)
+        mass_score = self.mass_score(products) * (self.weights["mass"] / self.sum_weights)
+        number_of_products_score = self.n_products_score(products) * (self.weights["products"] / self.sum_weights)
+        return _bridge_score + mass_score + number_of_products_score, experimental_bridge
 
     def optimal(self, population):
         results = []
@@ -302,21 +281,19 @@ class Optimizer:
 
         return children
 
-    def mass_score(self, products: List[Product]) -> float:
+    def mass_score(self, products: List[Product], squash: bool = True) -> float:
         combination_mass = sum([p.mass for p in products])
         diff = abs(self.mass_goal - combination_mass)
         percentage_diff = (100 / self.mass_goal) * diff
-        # If mass diff more than 10% from goal, score is 10 (
-        if percentage_diff > 10 and self.weights["mass"] != 1:
-            return 10
-        # If mass within 10% of goal, use percentage decimal as score
-        return ((percentage_diff / self.MASS_IMPORTANCE) * self.weights["mass"]) + 1
+        if squash:
+            return percentage_diff / self.MASS_IMPORTANCE
+        return percentage_diff
 
-    def n_products_score(self, products: List[Product]) -> float:
-        if len(products) <= self.max_products or self.weights["products"] == 1:
-            return 1
-
+    def n_products_score(self, products: List[Product], squash: bool = True) -> float:
+        if len(products) <= self.max_products:
+            return 0
         diff = len(products) - self.max_products
         percentage_diff = (100 / self.max_products) * diff
-        res = (percentage_diff / self.NUMBER_OF_PRODUCTS_IMPORTANCE * self.weights["products"]) + 1
-        return res
+        if squash:
+            return percentage_diff / self.NUMBER_OF_PRODUCTS_IMPORTANCE
+        return percentage_diff
