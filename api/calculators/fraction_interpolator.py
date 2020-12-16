@@ -13,7 +13,7 @@ def fraction_interpolator(a_x: List[float], a_y: List[float], b_x: List[float]) 
 
 
 def from_csv_to_csv():
-    with open("../test_data/sieving-selected.csv") as csvfile:
+    with open("test_data/interpolate_input.csv") as csvfile:
         reader = csv.DictReader(csvfile)
         fields_copy = copy(reader.fieldnames)
         fields_copy.pop(0)
@@ -26,7 +26,7 @@ def from_csv_to_csv():
 
         for name in products:
             b_y = fraction_interpolator(a_x=a_x, a_y=products[name], b_x=SIZE_STEPS)
-            with open(f"../test_data/{name}.csv", "w+") as newcsvfile:
+            with open(f"test_data/{name}.csv", "w+") as newcsvfile:
                 writer = csv.DictWriter(newcsvfile, fieldnames=["Size", "Cumulative"])
                 writer.writeheader()
                 for step, interpol_value in zip(SIZE_STEPS, b_y):

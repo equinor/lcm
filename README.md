@@ -41,6 +41,26 @@ Please make sure to update tests as appropriate.
 
 [RUNBOOK](runbook.md)
 
+## Interpolating new fraction data
+
+Bridge data from products on a different scale than the one defined at `api/calculators/bridge.py:45` can be added to
+the LCM optimizer as long as the data gets interpolated into the same scale.
+
+That can be done like this;
+
+1. Add a file at `./api/test_data/interpolate_input.csv`
+2. Have the first column be called "Size" and have 101 measuring points of the products
+3. Add one column for each product, where the header is the name of the product.
+    ```csv
+    Size,Prod1,Prod2
+    0.01,0,0
+    0.011482,0,0
+    ...
+    10000,100,100
+    ```
+4. Run `docker-compose build api && docker-compose run api python calculators/fraction_interpolator.py`
+5. One result file for each product will be created in `./api/test_data/`
+
 ## License
 
 [MIT](LICENSE)
