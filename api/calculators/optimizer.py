@@ -161,7 +161,7 @@ class Optimizer:
                 products.append(
                     Product(
                         product_id=p["id"],
-                        share=(combination[p["id"]] / sum(combination.values())) * 100,
+                        share=combination[p["id"]] / sum(combination.values()),
                         cumulative=p["cumulative"],
                         sacks=combination[p["id"]],
                         mass=(combination[p["id"]] * p["sack_size"]),

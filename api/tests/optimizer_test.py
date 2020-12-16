@@ -2820,7 +2820,7 @@ def create_algorithm_report():
         result = Optimizer(permeability_bridge, product_data, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
         permeability.plot(result["curve"], label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
@@ -2877,7 +2877,7 @@ def create_algorithm_report():
         result = Optimizer(m_pore_bridge, product_data, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
         m_poresize.plot(result["curve"], label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
@@ -2934,7 +2934,7 @@ def create_algorithm_report():
         result = Optimizer(avg_pore_bridge, product_data, mass, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"], label=label)
+        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
         avg_poresize.plot(result["curve"], label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
