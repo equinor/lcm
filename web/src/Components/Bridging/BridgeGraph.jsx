@@ -15,7 +15,7 @@ const colors = [
   '#044f78',
 ]
 
-export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
+export function BridgeGraph({ bridges, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
   const [particleFromPercentage, setParticleFromPercentage] = useState("")
   const [particleToPercentage, setParticleToPercentage] = useState("")
@@ -43,13 +43,13 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
     sizeFractions.forEach((fraction, sizeIndex) => {
       let temp = {}
       temp.size = fraction
-      Object.entries(bridgeAndCombinations).forEach(([name, cumulative]) => (
+      Object.entries(bridges).forEach(([name, cumulative]) => (
           temp[name] = cumulative[sizeIndex + 1]
       ))
       newGraphData.push(temp)
     })
     setGraphData(newGraphData)
-  }, [bridgeAndCombinations, sizeFractions])
+  }, [bridges, sizeFractions])
 
   return (
       <div style={{paddingLeft: '5%'}}>
@@ -74,7 +74,7 @@ export function BridgeGraph({ bridgeAndCombinations, sizeFractions }) {
         <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow />
         <Tooltip />
         <Legend />
-        {Object.entries(bridgeAndCombinations).map(([name, cumulative], index) => (
+        {Object.entries(bridges).map(([name, cumulative], index) => (
             <Area
             type="monotone"
             dataKey={name}

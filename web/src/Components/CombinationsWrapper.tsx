@@ -3,7 +3,7 @@ import CardContainer from './Combinations/CardContainer'
 import OptimizationContainer from './Optimization/OptimizationContainer'
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Accordion } from '@equinor/eds-core-react'
+import { Accordion, Button } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
 import styled from 'styled-components'
@@ -81,6 +81,12 @@ export default ({ products }: Products) => {
     setCombinations({ ...combinations, [combination.name]: combination })
   }
 
+  function removeBridge(id: string) {
+    let newBridges = bridges
+    delete newBridges[id]
+    setBridges({ ...newBridges })
+  }
+
   function addCombination(combination: Combination) {
     if (combination.values) updateCombinationAndFetchBridge(combination)
     setCombinations({ ...combinations, [combination.name]: combination })
@@ -108,18 +114,9 @@ export default ({ products }: Products) => {
     setBridges({ ...bridges })
   }
 
-  function resetCombinations(sacks: boolean) {
-    let newCombinations: Combinations = {}
-    let newBridges: Bridge = { Bridge: bridges.Bridge }
-    // @ts-ignore
-    Object.values(combinations).forEach((c: Combination) => {
-      if (c.sacks !== sacks) {
-        newCombinations[c.name] = c
-        newBridges[c.name] = bridges[c.name]
-      }
-    })
-    setCombinations({ ...newCombinations })
-    setBridges({ ...newBridges })
+  function resetCombinations() {
+    setCombinations({})
+    setBridges({ Bridge: bridges.Bridge })
   }
 
   return (
@@ -128,13 +125,24 @@ export default ({ products }: Products) => {
       {/*<pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{JSON.stringify(combinations, null, 2)}</pre>*/}
       <MainComponentsWrapper>
         <BridgeContainer
-          userBridges={bridges}
+          bridges={bridges}
           mode={mode}
           setMode={setMode}
           bridgeValue={bridgeValue}
           setValue={setBridgeValue}
-          setBridges={setBridges}
         />
+      </MainComponentsWrapper>
+      <MainComponentsWrapper>
+        <Button
+          onClick={() => setBridges({ Bridge: bridges.Bridge })}
+          color='danger'
+          variant='ghost'
+          style={{ maxWidth: '130px' }}>
+          Clear Plot
+        </Button>
+        <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color='danger' variant='ghost'>
+          Delete combinations
+        </Button>
       </MainComponentsWrapper>
       <MainComponentsWrapper>
         <Accordion>
@@ -149,7 +157,8 @@ export default ({ products }: Products) => {
                 renameCombination={renameCombination}
                 removeCombination={removeCombination}
                 addCombination={addCombination}
-                resetCombinations={resetCombinations}
+                removeBridge={removeBridge}
+                bridges={bridges}
               />
             </AccordionPanel>
           </AccordionItem>
@@ -164,7 +173,8 @@ export default ({ products }: Products) => {
                 renameCombination={renameCombination}
                 addCombination={addCombination}
                 removeCombination={removeCombination}
-                resetCombinations={resetCombinations}
+                removeBridge={removeBridge}
+                bridges={bridges}
               />
             </AccordionPanel>
           </AccordionItem>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Icon, TextField } from '@equinor/eds-core-react'
+import { Button, Icon, Switch, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
@@ -18,7 +18,9 @@ interface CombinationCardProps {
   updateCombination: Function
   renameCombination: Function
   removeCombination: Function
+  removeBridge: Function
   allProducts: Products
+  enabledPlot: boolean
 }
 
 export const CombinationCard = ({
@@ -28,6 +30,8 @@ export const CombinationCard = ({
   updateCombination,
   renameCombination,
   removeCombination,
+  removeBridge,
+  enabledPlot,
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
@@ -66,6 +70,14 @@ export const CombinationCard = ({
     })
     updateCombination(newCombination)
   }, [enabledProducts])
+
+  function togglePlot(e: any) {
+    if (e.target.checked) {
+      updateCombination(combination)
+    } else {
+      removeBridge(combinationName)
+    }
+  }
 
   return (
     <Card>
@@ -115,11 +127,14 @@ export const CombinationCard = ({
           <div>Total mass</div>
           <div>{totalMass}kg</div>
         </div>
-        <EditProducts
-          allProducts={allProducts}
-          enabledProducts={enabledProducts}
-          setEnabledProducts={setEnabledProducts}
-        />
+        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+          <EditProducts
+            allProducts={allProducts}
+            enabledProducts={enabledProducts}
+            setEnabledProducts={setEnabledProducts}
+          />
+          <Switch label='Plot' onClick={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
+        </div>
       </div>
     </Card>
   )

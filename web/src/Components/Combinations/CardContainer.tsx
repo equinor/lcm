@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button } from '@equinor/eds-core-react'
-import { Combinations } from '../../Types'
+import { Bridge, Combinations } from '../../Types'
 import Icon from '../../Icons'
 
 export const Card = styled.div`
@@ -42,7 +42,8 @@ interface CardContainerProps {
   renameCombination: Function
   removeCombination: Function
   addCombination: Function
-  resetCombinations: Function
+  removeBridge: Function
+  bridges: Bridge
 }
 
 const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
@@ -68,7 +69,8 @@ export const CardContainer = ({
   renameCombination,
   removeCombination,
   addCombination,
-  resetCombinations,
+  removeBridge,
+  bridges,
 }: CardContainerProps) => {
   return (
     <>
@@ -84,6 +86,8 @@ export const CardContainer = ({
                 allProducts={products}
                 updateCombination={updateCombination}
                 renameCombination={renameCombination}
+                removeBridge={removeBridge}
+                enabledPlot={Object.keys(bridges).includes(id)}
               />
             )
           return null
@@ -101,9 +105,6 @@ export const CardContainer = ({
           }}>
           <Icon name='add_box' title='add_box' />
           Add combination
-        </Button>
-        <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations(sacks)} color='danger' variant='ghost'>
-          Remove combinations
         </Button>
       </div>
     </>

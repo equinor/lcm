@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Radio, TextField, Typography, Button } from '@equinor/eds-core-react'
+import { Radio, TextField, Typography } from '@equinor/eds-core-react'
 import BridgeGraph from './BridgeGraph.jsx'
 import { FractionsAPI } from '../../Api'
 import { BridgingOption } from "../../Enums"
@@ -18,7 +18,7 @@ const RadioWrapper = styled.div`
   flex-direction: column;
 `
 
-export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}) => {
+export default ({ bridges, mode, setMode, bridgeValue, setValue}) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
@@ -59,10 +59,6 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
 
     setBridgeValueVariant(undefined)
     setBridgeValueHelperText(undefined)
-  }
-
-  function clearBridges(){
-    setBridges({Bridge: userBridges.Bridge})
   }
 
   // Load size fractions once on first render
@@ -117,11 +113,8 @@ export default ({ userBridges, mode, setMode, bridgeValue, setValue, setBridges}
               helperText={bridgeValueHelperText}
             />
             </div>
-
-          <Button onClick={()=>clearBridges()} color="danger" variant="ghost" style={{maxWidth: '130px'}}>Clear Bridges</Button>
-
         </InputWrapper>
-          <BridgeGraph bridgeAndCombinations={userBridges} sizeFractions={sizeFractions} />
+          <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
         </div>
   )
 }
