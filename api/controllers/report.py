@@ -10,8 +10,10 @@ from plots.products_pie import products_pie
 
 
 class Weighting:
-    def __init__(self, fit: int, cost: int, co2: int, environmental: str):
+    def __init__(self, fit: int, mass: int, products: int, cost: int, co2: int, environmental: int):
         self.fit = fit
+        self.mass = mass
+        self.products = products
         self.cost = cost
         self.co2 = co2
         self.environmental = environmental
@@ -45,9 +47,11 @@ class Report:
         instance.products = _dict["products"]
         instance.weighting = Weighting(
             _dict["weighting"]["bridge"],
-            _dict["weighting"]["cost"],
-            _dict["weighting"]["co2"],
-            _dict["weighting"]["environmental"],
+            _dict["weighting"]["mass"],
+            _dict["weighting"]["products"],
+            None,
+            None,
+            None
         )
 
         return instance
@@ -73,7 +77,12 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
     <h4>Bridging value: {report.bridging_value}{bridge_unit}</h4>
     <h4>Total mass: {report.total_mass}kg</h4>
     <h4>Weighting:</h4>
-        <label>Bridge: {report.weighting.fit}</label>
+        <p>Bridge: {report.weighting.fit}</p>
+        <p>Mass: {report.weighting.mass}</p>
+        <p>Products: {report.weighting.products}</p>
+        <p>Cost: {report.weighting.cost}</p>
+        <p>Co2: {report.weighting.co2}</p>
+        <p>Environmental: {report.weighting.environmental}</p>
     <h4>Optimal blend:</h4>
         <table>
             <tr>
