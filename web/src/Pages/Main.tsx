@@ -60,7 +60,7 @@ export default (): ReactElement => {
               <StyledLink href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>
                 <Button variant='outlined'>
                   <Icon name='info_circle' title='info_circle' />
-                  Products summary
+                  LCM Library SharePoint
                 </Button>
               </StyledLink>
             </div>
