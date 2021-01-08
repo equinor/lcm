@@ -57,11 +57,12 @@ export const CombinationCard = ({
     setTotalMass(newMass)
   }, [combination, allProducts])
 
-  // Update combination to only have selected products
-  useEffect(() => {
+  function updateEnabledProductsAndCombination(changedProducts: Products) {
+    setEnabledProducts(changedProducts)
+
     let newCombination: Combination = { ...combination }
     newCombination.values = {}
-    Object.values(enabledProducts).forEach((p: Product) => {
+    Object.values(changedProducts).forEach((p: Product) => {
       if (combination.values[p.id]) {
         newCombination.values[p.id] = combination.values[p.id]
       } else {
@@ -69,7 +70,7 @@ export const CombinationCard = ({
       }
     })
     updateCombination(newCombination)
-  }, [enabledProducts])
+  }
 
   function togglePlot(e: any) {
     if (e.target.checked) {
@@ -131,7 +132,7 @@ export const CombinationCard = ({
           <EditProducts
             allProducts={allProducts}
             enabledProducts={enabledProducts}
-            setEnabledProducts={setEnabledProducts}
+            setEnabledProducts={updateEnabledProductsAndCombination}
           />
           <Switch label='Plot' onClick={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
         </div>

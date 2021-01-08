@@ -68,8 +68,8 @@ export default ({ products }: Products) => {
   }, [])
 
   function updateCombinationAndFetchBridge(combination: Combination) {
-    // Don't fetch with empty values
-    if (!Object.values(combination.values).length) return
+    // Don't fetch with empty values if combination does not exist
+    if (!Object.values(combination.values).length && !Object.keys(bridges).includes(combination.name)) return
     CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
       .then(response => {
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
