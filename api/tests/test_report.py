@@ -312,7 +312,7 @@ request = {
     "pillDensity": 350,
     "bridgingMode": "PERMEABILITY",
     "bridgingValue": 500,
-    "weighting": {"bridge": 5, "cost": 5, "co2": 5, "environmental": 5},
+    "weighting": {"bridge": 5,  "mass": 5, "products": 5},
     "products": {
         "b": {"id": "baracarb150", "value": 45, "percentage": 12},
         "c": {"id": "supercom", "value": 88, "percentage": 12},
