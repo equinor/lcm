@@ -30,7 +30,7 @@ export const SolutionVisualisations = ({ optimizationData, products }: SolutionV
         </div>
         <div>
           <Typography variant='h6'>Scores</Typography>
-          <PerformanceRadar performanceData={optimizationData.performance} />
+          <PerformanceRadar optimizationData={optimizationData} />
         </div>
       </Grid>
     </div>

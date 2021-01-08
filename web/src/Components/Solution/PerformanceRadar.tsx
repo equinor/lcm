@@ -9,17 +9,30 @@ import {
 } from 'recharts'
 
 interface IPerformanceRadar {
-  performanceData: any
+  optimizationData: any
 }
 
-export const PerformanceRadar = ({ performanceData }: IPerformanceRadar) => {
+export const PerformanceRadar = ({ optimizationData }: IPerformanceRadar) => {
+  const performanceData = optimizationData.performance
   const graphData = [
-    { name: 'Fit', value: performanceData.bridge, fullMark: 100 },
-    { name: 'Mass', value: performanceData.mass, fullMark: 100 },
-    { name: 'Products', value: performanceData.products, fullMark: 100 },
+    {
+      name: `Fit: ${optimizationData.bridgeScore.toFixed(1)}% (standard deviation)`,
+      value: performanceData.bridge,
+      fullMark: 100,
+    },
+    {
+      name: `Mass: ${optimizationData.totalMass}kg/${optimizationData.chosenMass}kg`,
+      value: performanceData.mass,
+      fullMark: 100,
+    },
+    {
+      name: `Products: ${Object.keys(optimizationData.products).length}/${optimizationData.maxNumberOfProducts} used`,
+      value: performanceData.products,
+      fullMark: 100,
+    },
   ]
   return (
-    <RadarChart cx={200} cy={150} outerRadius={100} width={350} height={300} data={graphData}>
+    <RadarChart cx={250} cy={150} outerRadius={100} width={540} height={300} data={graphData}>
       <PolarGrid />
       <PolarAngleAxis dataKey='name' />
       <PolarRadiusAxis />
