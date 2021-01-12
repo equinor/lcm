@@ -1,11 +1,11 @@
 import React, { ReactElement, useState } from 'react'
 import OptimizationRunner from './OptimizationRunner'
 import OptimizationResult from './OptimizationResult'
-import { Combination, Products } from '../../Types'
+import { Combination, OptimizationData, Products, ProductsInCombination } from '../../Types'
 
 interface OptimizationContainerProps {
   products: Products
-  addCombination: Function
+  addCombinationsFromOptimization: Function
   mode: string
   value: number
 }
@@ -18,40 +18,77 @@ export interface ProductResult {
 export const OptimizationContainer = ({
   products,
   mode,
-  addCombination,
+  addCombinationsFromOptimization,
   value,
 }: OptimizationContainerProps): ReactElement => {
-  const [optimizationData, setOptimizationData] = useState<any>(undefined)
+  const [densityOptimizationData, setDensityOptimizationData] = useState<any>(undefined)
 
-  const handleUpdate = (optimizationData: any) => {
-    setOptimizationData(optimizationData)
+  const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
+    let sackProducts: ProductsInCombination = {}
+    Object.values(densityOptimizationData.products).map(product => {
+      const SACK_KG: number = 25
+      const sackValue: number = Math.round((product.value * densityOptimizationData.chosenVolume) / SACK_KG)
+      if (sackValue > 0) {
+        sackProducts = { ...sackProducts, [product.id]: { id: product.id, value: sackValue, percentage: 0 } }
+      }
+    })
 
-    if (Object.keys(optimizationData.products).length === 0) {
+    let totalNumberOfSacks: number = 0
+    Object.values(sackProducts).map(product => {
+      totalNumberOfSacks += product.value
+    })
+
+    Object.values(sackProducts).map(product => {
+      sackProducts[product.id].percentage = (product.value / totalNumberOfSacks) * 100
+    })
+
+    //NOTE: since densities can be rounded down to 0 sacks, number of products in optimization for density and sacks can differ
+    return sackProducts
+  }
+
+  const handleUpdate = (densityOptimizationData: OptimizationData) => {
+    if (Object.keys(densityOptimizationData.products).length === 0) {
       alert('Could not find a solution. Try changing some parameters')
       return
     }
+    const sackOptimizationValues = convertDensityOptimizationToSacks(densityOptimizationData)
+    setDensityOptimizationData(densityOptimizationData)
+
     const datetime = new Date()
-    const name = `Optimized at ${datetime
-      .getHours()
-      .toString()
-      .padStart(2, '0')}:${datetime
+    const timeString = `${datetime.getHours().toString().padStart(2, '0')}:${datetime
       .getMinutes()
       .toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
+    const sackResultName = `Optimized at ${timeString} (sacks)`
+    const densityResultName = `Optimized at ${timeString} (densities)`
 
-    const combination: Combination = {
-      name: name,
+    const sackCombination: Combination = {
+      name: sackResultName,
       sacks: true,
-      values: optimizationData.products,
+      values: sackOptimizationValues,
       cumulative: null,
     }
-    addCombination(combination)
+
+    const densityCombination: Combination = {
+      name: densityResultName,
+      sacks: false,
+      values: densityOptimizationData.products,
+      cumulative: null,
+    }
+
+    addCombinationsFromOptimization(sackCombination, densityCombination)
   }
 
   return (
     <div>
       <OptimizationRunner allProducts={products} mode={mode} value={value} handleUpdate={handleUpdate} />
-      <OptimizationResult products={products} mode={mode} value={value} optimizationData={optimizationData} />
+      <OptimizationResult
+        usingSacks={false}
+        products={products}
+        mode={mode}
+        value={value}
+        optimizationData={densityOptimizationData}
+      />
     </div>
   )
 }

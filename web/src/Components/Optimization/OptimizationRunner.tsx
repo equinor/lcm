@@ -74,7 +74,8 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
       maxProducts: maxProducts,
       value: value,
       option: mode,
-      mass: pill.mass,
+      density: pill.density,
+      volume: pill.volume,
       products: products,
       weights: weight,
     })
@@ -84,8 +85,9 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
         handleUpdate({
           ...response.data,
           chosenMass: pill.mass,
+          chosenVolume: pill.volume,
           productsChosen: products,
-          maxNumberOfProducts: Object.keys(products).length <= maxProducts ? Object.keys(products).length : maxProducts,
+          maxNumberOfProducts: maxProducts,
         })
       })
       .catch(error => {

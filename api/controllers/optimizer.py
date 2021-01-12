@@ -12,7 +12,8 @@ def optimizer_request_handler(
     value,
     blend_name,
     products,
-    mass_goal,
+    density_goal,
+    volume,
     option="AVERAGE_PORESIZE",
     iterations: int = 500,
     max_products: int = 999,
@@ -45,7 +46,8 @@ def optimizer_request_handler(
     optimizer = Optimizer(
         products=selected_products,
         bridge=bridge,
-        mass_goal=mass_goal,
+        density_goal=density_goal,
+        volume=volume,
         max_iterations=int_iterations,
         max_products=max_products,
         particle_range=particle_range,
@@ -63,7 +65,7 @@ def optimizer_request_handler(
                     share=combination[p["id"]] / sum(combination.values()),
                     cumulative=p["cumulative"],
                     sacks=combination[p["id"]],
-                    mass=(combination[p["id"]] * p["sack_size"]),
+                    mass=(combination[p["id"]] * volume),
                 )
             )
 
@@ -75,7 +77,7 @@ def optimizer_request_handler(
             experimental_bridge=optimizer_result["cumulative_bridge"],
             products_result=products_result,
         ),
-        "totalMass": sum([p.mass for p in products_result]),
+        "totalMass": round(sum([p.mass for p in products_result]), 2),
         "cumulative": optimizer_result["cumulative_bridge"],
         "executionTime": optimizer_result["execution_time"].seconds,
         "fitness": optimizer_result["score"],

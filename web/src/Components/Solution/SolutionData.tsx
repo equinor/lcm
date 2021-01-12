@@ -34,21 +34,36 @@ interface SacksProps {
   totalMass: number
 }
 
-const Sacks = ({ products, productResults, totalMass }: SacksProps): ReactElement => {
+interface DensitiesProps {
+  products: Products
+  productResults: Array<ProductResult>
+}
+
+const Densities = ({ products, productResults }: DensitiesProps): ReactElement => {
+  const getSumOfDensities = () => {
+    let sum = 0
+    Object.values(productResults).map(result => (sum += result.value))
+    return sum.toFixed(2)
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {Object.values(productResults).map((productResult: ProductResult) => {
+        productResult.value = parseFloat(productResult.value.toFixed(2))
         return (
           <LabelWrapper key={productResult.id}>
             <TextWrapper>{products[productResult.id].title}</TextWrapper>
-            <TextWrapper>{productResult.value} sacks</TextWrapper>
+            <TextWrapper>
+              {productResult.value} kg/m<sup>3</sup>
+            </TextWrapper>
           </LabelWrapper>
         )
       })}
-
       <LabelWrapper>
-        <TextWrapper>Total mass: </TextWrapper>
-        <TextWrapper>{totalMass} kg</TextWrapper>
+        <TextWrapper>Sum of densities: </TextWrapper>
+        <TextWrapper>
+          {getSumOfDensities()} kg/m<sup>3</sup>
+        </TextWrapper>
       </LabelWrapper>
     </div>
   )
@@ -96,7 +111,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </Spacer>
       <Spacer>
         <Typography variant='h6'>Optimal blend:</Typography>
-        <Sacks products={products} productResults={optimizationData.products} totalMass={optimizationData.totalMass} />
+        <Densities products={products} productResults={optimizationData.products} />
       </Spacer>
       <Typography variant='h6'>Performance:</Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -111,7 +126,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '150px' }}>
-          <Icon name='save' />
+          <Icon name='save' title='export' />
           Export solution
         </Button>
 
