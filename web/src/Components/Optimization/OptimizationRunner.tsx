@@ -81,7 +81,12 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
       .then(response => {
         setFailedRun(false)
         setLoading(false)
-        handleUpdate(response.data)
+        handleUpdate({
+          ...response.data,
+          chosenMass: pill.mass,
+          productsChosen: products,
+          maxNumberOfProducts: Object.keys(products).length <= maxProducts ? Object.keys(products).length : maxProducts,
+        })
       })
       .catch(error => {
         ErrorToast(`${error.response.data}`, error.response.status)
