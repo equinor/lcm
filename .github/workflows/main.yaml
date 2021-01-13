@@ -1,7 +1,6 @@
 name: CI
 
-on:
-  push
+on: push
 
 jobs:
   test-api:
@@ -23,3 +22,16 @@ jobs:
 
       - name: "API UnitTests"
         run: docker run --rm -e TABEL_KEY="${{ secrets.TABEL_KEY }}" api-development pytest tests
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit
+        run: pre-commit run --all-files

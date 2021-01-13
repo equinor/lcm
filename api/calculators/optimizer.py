@@ -69,7 +69,7 @@ class Optimizer:
             #     combination_progress[i].append(list(fittest_combo.values())[i])
             score_progress.append(score)
 
-        bridge_score = self.bridge_score(experimental_bridge)  #standard deviaton
+        bridge_score = self.bridge_score(experimental_bridge)  # standard deviaton
         return {
             "combination": {k: v for k, v in fittest_combo.items() if v > 0},
             "cumulative_bridge": experimental_bridge,
@@ -77,7 +77,7 @@ class Optimizer:
             "execution_time": (datetime.now() - start),
             "iterations": iterations,
             "score": score,
-            "bridge_score": bridge_score
+            "bridge_score": bridge_score,
         }
 
     def calculate_performance(self, experimental_bridge: list, products_result: List[Product]) -> dict:

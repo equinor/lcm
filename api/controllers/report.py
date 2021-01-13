@@ -46,12 +46,7 @@ class Report:
         instance.total_mass = _dict["totalMass"]
         instance.products = _dict["products"]
         instance.weighting = Weighting(
-            _dict["weighting"]["bridge"],
-            _dict["weighting"]["mass"],
-            _dict["weighting"]["products"],
-            None,
-            None,
-            None
+            _dict["weighting"]["bridge"], _dict["weighting"]["mass"], _dict["weighting"]["products"], None, None, None
         )
 
         return instance
