@@ -85,5 +85,5 @@ def optimizer_request_handler(
             "products": weights["products"],
         },
         "curve": optimizer_result["curve"],
-        "bridgeScore": optimizer_result["bridge_score"] 
+        "bridgeScore": optimizer_result["bridge_score"],
     }
