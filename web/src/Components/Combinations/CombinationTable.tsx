@@ -44,6 +44,9 @@ export const CombinationTable = ({
   }, [productsInCombination, setPercentages, allProducts])
 
   const handleValueChange = (productId: string, value: string) => {
+    if (!value) {
+      value = '0'
+    }
     if (parseInt(value) < 0) return
     let newValues: any = { ...values, [productId]: { value: parseInt(value), id: productId } }
     const newValuesWithPercentage = setPercentages(newValues, allProducts)
