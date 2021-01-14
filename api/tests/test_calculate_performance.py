@@ -8,6 +8,7 @@ from tests.optimizer_test import product_data
 from util.enums import BridgeOption
 
 products_result: List[Product] = []
+volume = 10
 combination = {"1b": 10, "1l": 20, "1s": 1}
 for p in product_data:
     if p["id"] in combination:
@@ -17,7 +18,7 @@ for p in product_data:
                 share=(combination[p["id"]] / sum(combination.values())) * 100,
                 cumulative=p["cumulative"],
                 sacks=combination[p["id"]],
-                mass=(combination[p["id"]] * p["sack_size"]),
+                mass=(combination[p["id"]] * volume),
             )
         )
 
@@ -128,13 +129,13 @@ class CalcPerfTest(unittest.TestCase):
             99.99892857142858,
             99.99892857142858,
         ]
-        mass_goal = 1000
+        density_goal = 100
         products_goal = 5
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
             max_products=products_goal,
-            mass_goal=mass_goal,
+            density_goal=density_goal,
             particle_range=particle_range,
         ).calculate_performance(experimental_bridge, products_result)
         print(performance)
@@ -244,13 +245,13 @@ class CalcPerfTest(unittest.TestCase):
             99.99892857142858,
             99.99892857142858,
         ]
-        mass_goal = 1000
+        density_goal = 100
         products_goal = 5
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
             max_products=products_goal,
-            mass_goal=mass_goal,
+            density_goal=density_goal,
             particle_range=particle_range,
         ).calculate_performance(experimental_bridge, products_result)
         print(performance)
@@ -359,27 +360,27 @@ class CalcPerfTest(unittest.TestCase):
             99.99892857142858,
             99.99892857142858,
         ]
-        mass_goal = 1000
+        density_goal = 100
         products_goal = 5
         particle_range = (1.01, 100.0)
 
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
             max_products=products_goal,
-            mass_goal=mass_goal,
+            density_goal=density_goal,
             particle_range=particle_range,
         ).calculate_performance(experimental_bridge, products_result)
         print(performance)
 
     @staticmethod
     def test_calculate_performance_perfect_bridge():
-        mass_goal = 1000
+        density_goal = 100
         products_goal = 5
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
             max_products=products_goal,
-            mass_goal=mass_goal,
+            density_goal=density_goal,
             particle_range=particle_range,
         ).calculate_performance(theoretical_bridge(BridgeOption.PERMEABILITY, 500), products_result)
         print(performance)
