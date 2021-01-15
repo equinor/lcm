@@ -4,7 +4,7 @@ metadata:
   name: lost-circulation-material
 spec:
   environments:
-    - name: dev
+    - name: prod
       build:
         from: master
     - name: test
@@ -20,7 +20,7 @@ spec:
     - name: api
       src: ./api
       environmentConfig:
-        - environment: dev
+        - environment: prod
           variables:
             ENVIRONMENT: production
       ports:
@@ -36,7 +36,7 @@ spec:
         - name: nginx
           port: 80
       publicPort: nginx
-      
+
   dnsAppAlias:
-    environment: dev
+    environment: prod
     component: proxy
