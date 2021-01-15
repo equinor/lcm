@@ -61,6 +61,9 @@ That can be done like this;
 4. Run `docker-compose build api && docker-compose run api python calculators/fraction_interpolator.py`
 5. One result file for each product will be created in `./api/test_data/`
 
+## Radix
+Two different environments in Radix are used: one for test (deploys from branch "test") and one for production (deploy from branch "master")
+
 ## License
 
 [MIT](LICENSE)
