@@ -7,6 +7,9 @@ spec:
     - name: dev
       build:
         from: master
+    - name: test
+      build:
+        from: test
   components:
     - name: web
       src: ./web
