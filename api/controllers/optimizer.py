@@ -77,7 +77,7 @@ def optimizer_request_handler(
             experimental_bridge=optimizer_result["cumulative_bridge"],
             products_result=products_result,
         ),
-        "totalMass": round(sum([p.mass for p in products_result]), 2),
+        "totalMass": round(sum([p.mass for p in products_result]), 1),
         "cumulative": optimizer_result["cumulative_bridge"],
         "executionTime": optimizer_result["execution_time"].seconds,
         "fitness": optimizer_result["score"],

@@ -43,13 +43,13 @@ const Densities = ({ products, productResults }: DensitiesProps): ReactElement =
   const getSumOfDensities = () => {
     let sum = 0
     Object.values(productResults).map(result => (sum += result.value))
-    return sum.toFixed(2)
+    return sum.toFixed(1)
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {Object.values(productResults).map((productResult: ProductResult) => {
-        productResult.value = parseFloat(productResult.value.toFixed(2))
+        productResult.value = parseFloat(productResult.value.toFixed(1))
         return (
           <LabelWrapper key={productResult.id}>
             <TextWrapper>{products[productResult.id].title}</TextWrapper>

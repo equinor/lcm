@@ -43,7 +43,7 @@ const AccessDenied = ({ errorMessage, hint }: any) => {
 function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps) {
   const [loginError, setLoginError] = useState<LoginError>({})
   const [token, setToken] = useState<any>(null)
-  const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 100])
+  const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 1000])
 
   useEffect(() => {
     getAccessToken()

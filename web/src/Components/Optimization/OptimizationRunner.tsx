@@ -49,7 +49,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
   const [iterations, setIterations] = useState<number>(2000)
-  const [maxProducts, setMaxProducts] = useState<number>(999)
+  const [maxProducts, setMaxProducts] = useState<number>(5)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,

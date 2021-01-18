@@ -60,7 +60,7 @@ export const OptimizationContainer = ({
       .toString()
       .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
     const sackResultName = `Optimized at ${timeString} (sacks)`
-    const densityResultName = `Optimized at ${timeString} (densities)`
+    const densityResultName = `Optimized at ${timeString} (theoretical)`
 
     const sackCombination: Combination = {
       name: sackResultName,
