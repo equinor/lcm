@@ -47,8 +47,15 @@ export const CombinationTable = ({
     if (!value) {
       value = '0'
     }
-    if (parseInt(value) < 0) return
-    let newValues: any = { ...values, [productId]: { value: parseInt(value), id: productId } }
+    let formattedValue
+    if (sacks) {
+      formattedValue = parseInt(value)
+    } else {
+      formattedValue = parseFloat(value)
+    }
+
+    if (formattedValue < 0) return
+    let newValues: any = { ...values, [productId]: { value: formattedValue, id: productId } }
     const newValuesWithPercentage = setPercentages(newValues, allProducts)
     setValues({ ...newValuesWithPercentage })
     updateCombination({ name: combinationName, sacks: sacks, values: newValuesWithPercentage, cumulative: null })

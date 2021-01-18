@@ -82,7 +82,7 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
         <table>
             <tr>
                 <th>Product</th>
-                <th>Sacks</th>
+                <th>kg/m3</th>
                 <th>Percentage of blend</th>
             </tr>
             {combinations}

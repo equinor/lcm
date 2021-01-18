@@ -118,16 +118,21 @@ export const CombinationCard = ({
         )}
       </div>
       <div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '3px 5px 15px 5px',
-            borderTop: '1px solid',
-          }}>
-          <div>Total mass</div>
-          <div>{totalMass}kg</div>
-        </div>
+        {sacks ? (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '3px 5px 15px 5px',
+              borderTop: '1px solid',
+            }}>
+            <div>Total mass</div>
+            <div>{totalMass}kg</div>
+          </div>
+        ) : (
+          <div style={{ borderTop: '1px solid', paddingBottom: '15px' }}></div>
+        )}
+
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
           <EditProducts
             allProducts={allProducts}

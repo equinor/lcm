@@ -49,7 +49,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
   const [iterations, setIterations] = useState<number>(2000)
-  const [maxProducts, setMaxProducts] = useState<number>(999)
+  const [maxProducts, setMaxProducts] = useState<number>(5)
   const [pill, setPill] = useState<Pill>({
     volume: 10,
     density: 350,
@@ -74,7 +74,8 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
       maxProducts: maxProducts,
       value: value,
       option: mode,
-      mass: pill.mass,
+      density: pill.density,
+      volume: pill.volume,
       products: products,
       weights: weight,
     })
@@ -84,8 +85,9 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
         handleUpdate({
           ...response.data,
           chosenMass: pill.mass,
+          chosenVolume: pill.volume,
           productsChosen: products,
-          maxNumberOfProducts: Object.keys(products).length <= maxProducts ? Object.keys(products).length : maxProducts,
+          maxNumberOfProducts: maxProducts,
         })
       })
       .catch(error => {

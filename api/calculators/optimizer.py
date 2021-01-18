@@ -30,7 +30,8 @@ class Optimizer:
         self,
         bridge: List[float],
         products: List[dict] = None,
-        mass_goal: int = 3500,
+        density_goal: int = 350,
+        volume: int = 10,
         max_iterations: int = 500,
         max_products: int = 999,
         particle_range=None,
@@ -38,7 +39,9 @@ class Optimizer:
     ):
         self.products = products
         self.bridge = bridge
-        self.mass_goal = mass_goal
+        self.mass_goal = density_goal * volume
+        self.density_goal = density_goal
+        self.volume = volume
         self.max_iterations = max_iterations
         self.max_products = max_products
         if particle_range is None:
@@ -51,12 +54,10 @@ class Optimizer:
 
     def optimize(self):
         start = datetime.now()
-        max_number_of_sacks = (
-            self.mass_goal // (self.average_sack_size() * min(self.max_products, len(self.products)))
-        ) * 2
+        max_initial_density = self.density_goal // min(self.max_products, len(self.products))
 
         score_progress = []
-        population, children = self.initialize_population(max_number_of_sacks)
+        population, children = self.initialize_population(max_initial_density)
         iterations = 0
         fittest_combo, score, experimental_bridge = {}, 100, []
         for _ in range(self.max_iterations):
@@ -87,7 +88,7 @@ class Optimizer:
 
         return {"bridge": bridge_fitness, "mass": mass_score, "products": products_score}
 
-    def initialize_population(self, max_number_of_sacks):
+    def initialize_population(self, max_initial_density):
         population = []
         children = []
 
@@ -105,7 +106,7 @@ class Optimizer:
                     used_id_list.append(id)
 
                 for id in used_id_list:
-                    combo_dict[id] = random.randint(0, max_number_of_sacks)
+                    combo_dict[id] = round(random.uniform(0, max_initial_density), 2)
 
                 population.append(combo_dict)
 
@@ -113,16 +114,13 @@ class Optimizer:
             for i in range(self.POPULATION_SIZE):
                 combo_dict = {}
                 for j in range(len(self.products)):
-                    combo_dict[self.products[j]["id"]] = random.randint(0, max_number_of_sacks)
+                    combo_dict[self.products[j]["id"]] = round(random.uniform(0, max_initial_density), 2)
                 population.append(combo_dict)
 
         for i in range(self.NUMBER_OF_CHILDREN):
             children.append([])
 
         return population, children
-
-    def average_sack_size(self):
-        return sum([p["sack_size"] for p in self.products]) / len(self.products)
 
     def select_parents(self, population):
         fitness = []
@@ -166,7 +164,7 @@ class Optimizer:
                         share=combination[p["id"]] / sum(combination.values()),
                         cumulative=p["cumulative"],
                         sacks=combination[p["id"]],
-                        mass=(combination[p["id"]] * p["sack_size"]),
+                        mass=(combination[p["id"]] * self.volume),
                     )
                 )
 
@@ -190,15 +188,15 @@ class Optimizer:
 
         first_parent_ids = list(parents[0].keys())
         second_parent_ids = list(parents[1].keys())
-        first_parent_sacks = list(parents[0].values())
-        second_parent_sacks = list(parents[1].values())
+        first_parent_densities = list(parents[0].values())
+        second_parent_densities = list(parents[1].values())
 
         for i in range(self.NUMBER_OF_CHILDREN // 2):
             cross_point = random.randint(1, number_of_products - 1)
             first_child_id_list = first_parent_ids[:cross_point] + second_parent_ids[cross_point:]
             second_child_id_list = second_parent_ids[:cross_point] + first_parent_ids[cross_point:]
-            first_child_sacks_list = first_parent_sacks[:cross_point] + second_parent_sacks[cross_point:]
-            second_child_sacks_list = second_parent_sacks[:cross_point] + first_parent_sacks[cross_point:]
+            first_child_sacks_list = first_parent_densities[:cross_point] + second_parent_densities[cross_point:]
+            second_child_sacks_list = second_parent_densities[:cross_point] + first_parent_densities[cross_point:]
 
             first_child_dict = {}
             second_child_dict = {}
@@ -229,32 +227,31 @@ class Optimizer:
     @staticmethod
     def inverse_mutation(child):
         child_ids = list(child.keys())
-        child_sacks = list(child.values())
+        child_densities = list(child.values())
 
-        x = random.randint(0, len(child_sacks))
-        y = random.randint(0, len(child_sacks))
+        x = random.randint(0, len(child_densities))
+        y = random.randint(0, len(child_densities))
 
         while x == y:
-            y = random.randint(0, len(child_sacks))
+            y = random.randint(0, len(child_densities))
 
         if abs(x - y) <= 1:
-            if (x == len(child_sacks)) or (y == len(child_sacks)):
+            if (x == len(child_densities)) or (y == len(child_densities)):
                 x -= 1
                 y -= 1
-            child_sacks[x], child_sacks[y] = child_sacks[y], child_sacks[x]
+            child_densities[x], child_densities[y] = child_densities[y], child_densities[x]
         elif x < y:
-            toReverse = child_sacks[x:y]
+            toReverse = child_densities[x:y]
             toReverse.reverse()
-            child_sacks[x:y] = toReverse
+            child_densities[x:y] = toReverse
         else:
-            toReverse = child_sacks[y:x]
+            toReverse = child_densities[y:x]
             toReverse.reverse()
-            child_sacks[y:x] = toReverse
+            child_densities[y:x] = toReverse
 
         new_child = {}
         for i in range(len(child_ids)):
-            new_child[child_ids[i]] = child_sacks[i]
-
+            new_child[child_ids[i]] = child_densities[i]
         return new_child
 
     def flip_bit_mutation(self, child):

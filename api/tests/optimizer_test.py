@@ -2741,17 +2741,17 @@ product_data = [
 
 class OptimizerTest(unittest.TestCase):
     @staticmethod
-    def _short_test_wrapper(theoretical_bridge, mass=3500, max_iterations=2000, max_products=5):
+    def _short_test_wrapper(theoretical_bridge, density=350, max_iterations=2000, max_products=5):
         result_list = []
         for i in range(2):
-            result = Optimizer(theoretical_bridge, product_data, mass, max_iterations, max_products).optimize()
+            result = Optimizer(theoretical_bridge, product_data, density, max_iterations, max_products).optimize()
             result_list.append(result)
         fitness = [run["score"] for run in result_list]
         values_within_deviation(fitness, 15)
 
     def test_deviation_short_permeability(self):
         bridge = theoretical_bridge(BridgeOption.PERMEABILITY, 500)
-        self._short_test_wrapper(bridge, mass=7000, max_products=999)
+        self._short_test_wrapper(bridge, density=700, max_products=999)
 
     def test_deviation_short_max_poresize(self):
         bridge = theoretical_bridge(BridgeOption.MAXIMUM_PORESIZE, 500)
@@ -2775,7 +2775,7 @@ def show_plot():
     result_list = []
     for i in range(1):
         result = Optimizer(
-            products=product_data, bridge=bridge, mass_goal=3500, max_iterations=1000, particle_range=(10, 100)
+            products=product_data, bridge=bridge, density_goal=350, max_iterations=1000, particle_range=(10, 100)
         ).optimize()
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
         result_list.append(result)
@@ -2785,7 +2785,7 @@ def show_plot():
 
 def create_algorithm_report():
     runs = 100
-    mass = 3500
+    density = 350
     max_iterations = 2000
 
     # Crate Matplotlib figure
@@ -2817,7 +2817,7 @@ def create_algorithm_report():
 
     result_list = []
     for i in range(runs):
-        result = Optimizer(permeability_bridge, product_data, mass, max_iterations).optimize()
+        result = Optimizer(permeability_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
@@ -2874,7 +2874,7 @@ def create_algorithm_report():
 
     result_list = []
     for i in range(runs):
-        result = Optimizer(m_pore_bridge, product_data, mass, max_iterations).optimize()
+        result = Optimizer(m_pore_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
@@ -2931,7 +2931,7 @@ def create_algorithm_report():
 
     result_list = []
     for i in range(runs):
-        result = Optimizer(avg_pore_bridge, product_data, mass, max_iterations).optimize()
+        result = Optimizer(avg_pore_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
         label = f"{i}-{round(result['score'], 1)}"
         bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])

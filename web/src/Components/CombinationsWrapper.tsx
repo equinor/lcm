@@ -1,7 +1,7 @@
 import BridgeContainer from './Bridging/BridgeContainer'
 import CardContainer from './Combinations/CardContainer'
 import OptimizationContainer from './Optimization/OptimizationContainer'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion, Button } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
@@ -19,7 +19,11 @@ const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
 `
 
-export default ({ products }: Products) => {
+export interface CombinationsWrapperProps {
+  products: Products
+}
+
+export default ({ products }: CombinationsWrapperProps): ReactElement => {
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useLocalStorage<any>('combinations', {})
@@ -42,10 +46,10 @@ export default ({ products }: Products) => {
       })
   }, [bridgeValue, mode, apiToken])
 
-  async function fetchAllBridges(): Promise<any> {
+  async function fetchBridges(_combinations: Combinations): Promise<any> {
     return await Promise.all(
       // @ts-ignore
-      Object.values(combinations).map(async (c: Combination) => {
+      Object.values(_combinations).map(async (c: Combination) => {
         let res = await CombinationAPI.postCombinationApi(apiToken, Object.values(c.values))
         return { [c.name]: res.data.bridge }
       })
@@ -54,7 +58,7 @@ export default ({ products }: Products) => {
 
   // Create bridges from stored combinations
   useEffect(() => {
-    fetchAllBridges().then(storedBridges => {
+    fetchBridges(combinations).then(storedBridges => {
       let newBridges: Bridge = {}
       storedBridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
 
@@ -90,6 +94,26 @@ export default ({ products }: Products) => {
   function addCombination(combination: Combination) {
     if (combination.values) updateCombinationAndFetchBridge(combination)
     setCombinations({ ...combinations, [combination.name]: combination })
+  }
+
+  async function addCombinationsFromOptimization(sackCombination: Combination, densityCombination: Combination) {
+    if (sackCombination.values && densityCombination.values) {
+      const newCombinations: Combinations = {
+        ...combinations,
+        [sackCombination.name]: sackCombination,
+        [densityCombination.name]: densityCombination,
+      }
+      setCombinations(newCombinations)
+      const optimizationCombinations: Combinations = {
+        [sackCombination.name]: sackCombination,
+        [densityCombination.name]: densityCombination,
+      }
+      await fetchBridges(optimizationCombinations).then(_bridges => {
+        let newBridges: Bridge = {}
+        _bridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
+        setBridges({ ...bridges, ...newBridges })
+      })
+    }
   }
 
   function renameCombination(newName: string, oldName: string) {
@@ -147,23 +171,7 @@ export default ({ products }: Products) => {
       <MainComponentsWrapper>
         <Accordion>
           <AccordionItem>
-            <AccordionHeader>Sack combinations</AccordionHeader>
-            <AccordionPanel style={{ overflow: 'auto' }}>
-              <CardContainer
-                sacks={true}
-                combinations={combinations}
-                products={products}
-                updateCombination={updateCombinationAndFetchBridge}
-                renameCombination={renameCombination}
-                removeCombination={removeCombination}
-                addCombination={addCombination}
-                removeBridge={removeBridge}
-                bridges={bridges}
-              />
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader>Manual combinations</AccordionHeader>
+            <AccordionHeader>Concentration blends</AccordionHeader>
             <AccordionPanel style={{ overflow: 'auto' }}>
               <CardContainer
                 sacks={false}
@@ -178,11 +186,32 @@ export default ({ products }: Products) => {
               />
             </AccordionPanel>
           </AccordionItem>
+          <AccordionItem>
+            <AccordionHeader>Sack blends</AccordionHeader>
+            <AccordionPanel style={{ overflow: 'auto' }}>
+              <CardContainer
+                sacks={true}
+                combinations={combinations}
+                products={products}
+                updateCombination={updateCombinationAndFetchBridge}
+                renameCombination={renameCombination}
+                removeCombination={removeCombination}
+                addCombination={addCombination}
+                removeBridge={removeBridge}
+                bridges={bridges}
+              />
+            </AccordionPanel>
+          </AccordionItem>
         </Accordion>
       </MainComponentsWrapper>
       <MainComponentsWrapper>
         {/* @ts-ignore*/}
-        <OptimizationContainer addCombination={addCombination} products={products} mode={mode} value={bridgeValue} />
+        <OptimizationContainer
+          addCombinationsFromOptimization={addCombinationsFromOptimization}
+          products={products}
+          mode={mode}
+          value={bridgeValue}
+        />
       </MainComponentsWrapper>
     </>
   )
