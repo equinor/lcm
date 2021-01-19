@@ -6,7 +6,7 @@ ARG UID=2000
 ARG GID=2000
 
 
-RUN addgroup -S usergroup -g $GID && adduser -u $UID -S nonrootuser -G usergroup
+RUN addgroup -S usergroup -g $GID && adduser -u $UID -S nonrootuser -G usergroup && mkdir -p /app && chown -R nonrootuser /app
 WORKDIR /code
 ADD package.json yarn.lock /code/
 RUN yarn install --frozen-lockfile
