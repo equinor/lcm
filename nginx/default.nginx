@@ -1,5 +1,5 @@
 server {
-    listen 80;
+    listen 1080;
     server_name localhost;
     client_max_body_size 2G;
 
