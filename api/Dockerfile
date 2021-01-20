@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=/app/app.py
 ENV PYTHONPATH=/app
 ENV PATH="/root/.poetry/bin:${PATH}"
-ARG UID=3000
+ARG UID=1000
 
 RUN useradd --system --uid $UID nonrootuser
 RUN apt-get update && apt-get upgrade -y && apt-get install -y curl
@@ -24,7 +24,16 @@ WORKDIR /app
 RUN chown -R nonrootuser /app
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
-COPY . .
+COPY ./__pycache__ ./__pycache__
+COPY ./calculators ./calculators
+COPY ./controllers ./controllers
+COPY ./classes ./classes
+COPY ./openapi ./openapi
+COPY ./plots ./plots
+COPY ./test_data ./test_data
+COPY ./tests ./tests
+COPY ./util ./util
+COPY __init__.py app.py config.py docker-entrypoint.sh ./
 USER nonrootuser
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["api"]

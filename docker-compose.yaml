@@ -7,7 +7,7 @@ services:
     logging:
       driver: none
     ports:
-      - "1080:1080"
+      - "80:1080"
     depends_on:
       - web
 
