@@ -24,7 +24,6 @@ WORKDIR /app
 RUN chown -R nonrootuser /app
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
-COPY ./__pycache__ ./__pycache__
 COPY ./calculators ./calculators
 COPY ./controllers ./controllers
 COPY ./classes ./classes
