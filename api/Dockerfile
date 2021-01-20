@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     wkhtmltopdf
 
 WORKDIR /app
+RUN chown -R nonrootuser /app
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
 COPY . .

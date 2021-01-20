@@ -331,7 +331,6 @@ class ReportTest(unittest.TestCase):
     @staticmethod
     def test_create_report():
         create_report(request, bridge=False)
-        print("PATH FOR REPORT", Config.HOME_DIR)
         result = Path(f"{Config.HOME_DIR}/report.pdf")
         # Check if file was created
         assert result.is_file()
