@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: "Create report"
-        run: docker-compose build api && docker-compose run api python tests/optimizer_test.py
+        run: docker-compose build api && docker-compose run -u 0 api python tests/optimizer_test.py
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
