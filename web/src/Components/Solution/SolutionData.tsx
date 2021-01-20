@@ -124,17 +124,13 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
           <TextWrapper>{optimizationData.executionTime} seconds</TextWrapper>
         </LabelWrapper>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
-        <Button onClick={() => onExportClick()} style={{ width: '150px' }}>
+      <div style={{ display: 'flex', paddingTop: '20px' }}>
+        <Button onClick={() => onExportClick()} style={{ width: '170px' }} disabled={loading}>
           <Icon name='save' title='export' />
           Export solution
         </Button>
 
-        {loading && (
-          <div style={{ marginTop: '20px', marginLeft: '50px' }}>
-            <CircularProgress />
-          </div>
-        )}
+        {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
       </div>
     </div>
   )
