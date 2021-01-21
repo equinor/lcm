@@ -34,7 +34,7 @@ spec:
       src: ./nginx/
       ports:
         - name: nginx
-          port: 1080
+          port: 8080
       publicPort: nginx
 
   dnsAppAlias:
