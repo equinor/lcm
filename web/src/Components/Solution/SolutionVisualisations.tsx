@@ -29,7 +29,10 @@ export const SolutionVisualisations = ({ optimizationData, products }: SolutionV
           <SolutionBarChart optimizationData={optimizationData} products={products} />
         </div>
         <div>
-          <Typography variant='h6'>Scores</Typography>
+          <div style={{ margin: '0 auto' }}>
+            <Typography variant='h6' style={{ float: 'left', }}>Scores</Typography>
+            <Typography variant='h6' style={{ float: 'right', marginRight: '43%' }}>Total score: {optimizationData.fitness.toFixed(2)}</Typography>
+          </div>
           <PerformanceRadar optimizationData={optimizationData} />
         </div>
       </Grid>
