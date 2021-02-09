@@ -30,8 +30,12 @@ export const SolutionVisualisations = ({ optimizationData, products }: SolutionV
         </div>
         <div>
           <div style={{ margin: '0 auto' }}>
-            <Typography variant='h6' style={{ float: 'left', }}>Scores</Typography>
-            <Typography variant='h6' style={{ float: 'right', marginRight: '43%' }}>Total score: {optimizationData.fitness.toFixed(2)}</Typography>
+            <Typography variant='h6' style={{ float: 'left' }}>
+              Scores
+            </Typography>
+            <Typography variant='h6' style={{ float: 'right', marginRight: '43%' }}>
+              Total score: {optimizationData.fitness.toFixed(2)}
+            </Typography>
           </div>
           <PerformanceRadar optimizationData={optimizationData} />
         </div>

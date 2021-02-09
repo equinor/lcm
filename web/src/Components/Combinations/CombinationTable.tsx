@@ -68,7 +68,7 @@ export const CombinationTable = ({
           <div>Sacks</div>
         ) : (
           <div>
-            Blend (ppb or kg/m<sup>3</sup>)
+            kg/m<sup>3</sup>
           </div>
         )}
         <div>%</div>
