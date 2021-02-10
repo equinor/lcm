@@ -39,7 +39,7 @@ def calculate_blend_cumulative(product_list: List[Product]):
             for i, _ in enumerate(SIZE_STEPS):
                 cumulative_curve[i] += product.share * product.cumulative[i]
 
-    return cumulative_curve 
+    return cumulative_curve
 
 
 SIZE_STEPS = [
