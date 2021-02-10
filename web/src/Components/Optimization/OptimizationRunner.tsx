@@ -53,7 +53,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [pill, setPill] = useState<Pill>({
     volume: 1,
     density: 350,
-    mass: 3500,
+    mass: 350,
   })
   const [weight, setWeight] = useState<Weight>({
     bridge: 5,

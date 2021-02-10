@@ -22,5 +22,5 @@ def bridge_from_combination(combination: List[dict]):
                 cumulative=all_products[p["id"]]["cumulative"],
             )
         )
-
-    return {"bridge": calculate_blend_cumulative(product_list)}
+    bridge = calculate_blend_cumulative(product_list)
+    return {"bridge": [round(num, 1) for num in bridge]}
