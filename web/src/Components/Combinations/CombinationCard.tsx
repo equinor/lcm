@@ -67,7 +67,7 @@ export const CombinationCard = ({
     if (sacks) {
       setTotalMass(newMass)
     } else {
-      setTotalDensity(newDensity)
+      setTotalDensity(Math.round(newDensity * 10) / 10)
     }
   }, [combination, allProducts])
 
