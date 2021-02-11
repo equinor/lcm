@@ -51,9 +51,9 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [iterations, setIterations] = useState<number>(2000)
   const [maxProducts, setMaxProducts] = useState<number>(5)
   const [pill, setPill] = useState<Pill>({
-    volume: 10,
+    volume: 1,
     density: 350,
-    mass: 3500,
+    mass: 350,
   })
   const [weight, setWeight] = useState<Weight>({
     bridge: 5,

@@ -12,6 +12,13 @@ const CardHeader = styled.div`
   justify-content: space-between;
 `
 
+const CardSummation = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 5px 15px 10px;
+  border-top: 1px solid;
+`
+
 interface CombinationCardProps {
   sacks: boolean
   combination: Combination
@@ -35,6 +42,7 @@ export const CombinationCard = ({
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
+  const [totalDensity, setTotalDensity] = useState<number>(0)
   const [enabledProducts, setEnabledProducts] = useState<Products>({})
 
   // On first render with products, set enabledProducts from saved combinations
@@ -51,10 +59,16 @@ export const CombinationCard = ({
   useEffect(() => {
     if (!(Object.keys(allProducts).length > 0)) return
     let newMass: number = 0
+    let newDensity: number = 0
     Object.values(combination.values).forEach(prod => {
       newMass += allProducts[prod.id].sackSize * prod.value
+      newDensity += prod.value
     })
-    setTotalMass(newMass)
+    if (sacks) {
+      setTotalMass(newMass)
+    } else {
+      setTotalDensity(Math.round(newDensity * 10) / 10)
+    }
   }, [combination, allProducts])
 
   function updateEnabledProductsAndCombination(changedProducts: Products) {
@@ -119,18 +133,17 @@ export const CombinationCard = ({
       </div>
       <div>
         {sacks ? (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '3px 5px 15px 5px',
-              borderTop: '1px solid',
-            }}>
+          <CardSummation>
             <div>Total mass</div>
             <div>{totalMass}kg</div>
-          </div>
+          </CardSummation>
         ) : (
-          <div style={{ borderTop: '1px solid', paddingBottom: '15px' }}></div>
+          <CardSummation>
+            <div>Total density</div>
+            <div>
+              {totalDensity} kg/m<sup>3</sup>
+            </div>
+          </CardSummation>
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
