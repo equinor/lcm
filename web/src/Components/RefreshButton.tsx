@@ -44,9 +44,9 @@ export const RefreshButton = () => {
         <Scrim onClose={() => setScrim(false)}>
           <Dialog style={{ width: 'min-content' }}>
             <Title>Synchronize SharePoint data</Title>
-            <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+            <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
               <p>
-                This will synchronize products distribution and products metadata from SharePoint (
+                This will synchronize products distribution and products metadata from SharePoint <br /> (
                 <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
                   https://statoilsrm.sharepoint.com/sites/LCMTeamBlend
                 </a>
