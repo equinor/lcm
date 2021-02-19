@@ -8,7 +8,7 @@
     "@equinor/eds-icons": "^0.4.0",
     "@equinor/eds-tokens": "^0.4.0",
     "@storybook/addon-actions": "^6.0.21",
-    "@storybook/addon-knobs": "^6.0.21",
+    "@storybook/addon-knobs": "^6.1.0",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.0",
     "d3-scale": "^3.2.1",
