@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload }) => {
     const numMicrons = Math.round(payload[0].payload.size)
     return (
       <TooltipCard >
-        <p style={{ fontWeight: "50f0", marginLeft: '5px' }}> {numMicrons <= 1 ? 'Micron: ' : 'Microns: '} {numMicrons}</p>
+        <p style={{ fontWeight: "500", marginLeft: '5px' }}> {numMicrons <= 1 ? 'Micron: ' : 'Microns: '} {numMicrons}</p>
         {payload.map((payloadData) => {
           return <p style={{ color: payloadData.stroke, padding: '0px', margin: '5px' }}>{payloadData.name}: {Math.round(payloadData.value)}</p>
         })}
@@ -44,9 +44,6 @@ const CustomTooltip = ({ active, payload }) => {
 
   return null;
 }
-
-
-////////////////////// spørsmål skal verdi på x akse også rundes til heltetall? da blir det ganske unøyaktig for venstre del av grafen
 
 export function BridgeGraph({ bridges, sizeFractions }) {
   const [graphData, setGraphData] = useState([])

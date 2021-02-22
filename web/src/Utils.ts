@@ -24,7 +24,6 @@ export function findGraphData(sizeFractions: number[], bridges: Bridge): GraphDa
   return newGraphData
 }
 
-
 export function findDValue(graphData: GraphData[], goalYValue: number, bridgeName: string): number {
   //A D value is defined as a bridge graph's x-value at a specific y value
   //example: D90 (goalYValue = 90) is the bridge graph's x-value at at y = 90
@@ -34,12 +33,11 @@ export function findDValue(graphData: GraphData[], goalYValue: number, bridgeNam
 
   // find the bridge's y-value that is closest to the goal y-value
   var closestToGoalYvalue = bridgeYValues.reduce(function (prev: number, curr: number) {
-    return (Math.abs(curr - goalYValue) < Math.abs(prev - goalYValue) ? curr : prev);
-  });
+    return Math.abs(curr - goalYValue) < Math.abs(prev - goalYValue) ? curr : prev
+  })
 
   let indexOfClosestYValue = bridgeYValues.indexOf(closestToGoalYvalue)
-  let DValue = graphData[indexOfClosestYValue].size  //size contains the bridge's x-value
+  let DValue = graphData[indexOfClosestYValue].size //size contains the bridge's x-value
 
   return DValue
 }
-

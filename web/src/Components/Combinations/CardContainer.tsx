@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
@@ -79,7 +79,7 @@ export const CardContainer = ({
 
   // Load size fractions once on first render
   useEffect(() => {
-    FractionsAPI.getFractionsApi(apiToken,)
+    FractionsAPI.getFractionsApi(apiToken)
       .then(response => {
         setSizeFractions(response.data.size_fractions)
       })

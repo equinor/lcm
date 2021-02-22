@@ -50,7 +50,7 @@ export const CombinationCard = ({
   removeCombination,
   removeBridge,
   enabledPlot,
-  sizeFractions
+  sizeFractions,
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
@@ -88,19 +88,18 @@ export const CombinationCard = ({
     }
 
     CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
-    .then(response => {
-      let newBridge: Bridge = { ...bridge, [combination.name]: response.data.bridge }
-      setBridge(newBridge)
-      let graphData: GraphData[] = findGraphData(sizeFractions, newBridge)
-      setD10(findDValue(graphData, 10, combination.name))
-      setD50(findDValue(graphData, 50, combination.name))
-      setD90(findDValue(graphData, 90, combination.name))
-    })
-    .catch(error => {
-      ErrorToast(`${error.response.data}`, error.response.status)
-      console.error('fetch error' + error)
-    })
-
+      .then(response => {
+        let newBridge: Bridge = { ...bridge, [combination.name]: response.data.bridge }
+        setBridge(newBridge)
+        let graphData: GraphData[] = findGraphData(sizeFractions, newBridge)
+        setD10(findDValue(graphData, 10, combination.name))
+        setD50(findDValue(graphData, 50, combination.name))
+        setD90(findDValue(graphData, 90, combination.name))
+      })
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
+      })
   }, [combination, allProducts])
 
   function updateEnabledProductsAndCombination(changedProducts: Products) {
@@ -153,29 +152,28 @@ export const CombinationCard = ({
         </CardHeader>
         {Object.keys(enabledProducts).length ? (
           <div>
-          <CombinationTable
-            allProducts={allProducts}
-            sacks={sacks}
-            updateCombination={updateCombination}
-            productsInCombination={combination.values}
-            combinationName={combinationName}
-          />
-          <div style={{paddingTop: '30px'}}>
-            <DValues>
-              <div>D10</div>
-              <div>{D10}</div>
-            </DValues>
-            <DValues>
-              <div>D50</div>
-              <div>{D50}</div>
-            </DValues>
-            <DValues>
-              <div>D90</div>
-              <div>{D90}</div>
-            </DValues>
+            <CombinationTable
+              allProducts={allProducts}
+              sacks={sacks}
+              updateCombination={updateCombination}
+              productsInCombination={combination.values}
+              combinationName={combinationName}
+            />
+            <div style={{ paddingTop: '30px' }}>
+              <DValues>
+                <div>D10</div>
+                <div>{D10}</div>
+              </DValues>
+              <DValues>
+                <div>D50</div>
+                <div>{D50}</div>
+              </DValues>
+              <DValues>
+                <div>D90</div>
+                <div>{D90}</div>
+              </DValues>
             </div>
           </div>
-          
         ) : (
           <div style={{ padding: '20px' }}>No products selected</div>
         )}
