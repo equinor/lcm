@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from "../../Context"
 import styled from 'styled-components'
+import { findGraphData } from '../../Utils'
+
 const colors = [
   '#000000',
   '#ee2e89',
@@ -27,9 +29,8 @@ const TooltipCard = styled.div`
 `
 
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    console.log(payload)
     const numMicrons = Math.round(payload[0].payload.size)
     return (
       <TooltipCard >
@@ -70,16 +71,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
   }
 
   useEffect(() => {
-    let newGraphData = []
-
-    sizeFractions.forEach((fraction, sizeIndex) => {
-      let temp = {}
-      temp.size = fraction
-      Object.entries(bridges).forEach(([name, cumulative]) => (
-        temp[name] = cumulative[sizeIndex + 1]
-      ))
-      newGraphData.push(temp)
-    })
+    let newGraphData = findGraphData(sizeFractions, bridges)
     setGraphData(newGraphData)
   }, [bridges, sizeFractions])
 

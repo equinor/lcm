@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 // @ts-ignore
 import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
@@ -6,7 +6,9 @@ import CombinationCard from './CombinationCard'
 import { Button } from '@equinor/eds-core-react'
 import { Bridge, Combinations } from '../../Types'
 import Icon from '../../Icons'
-
+import { FractionsAPI } from '../../Api'
+import { AuthContext } from '../../Context'
+import { ErrorToast } from '../Common/Toast'
 export const Card = styled.div`
   margin: 10px;
   padding: 10px;
@@ -72,11 +74,26 @@ export const CardContainer = ({
   removeBridge,
   bridges,
 }: CardContainerProps) => {
+  const apiToken: string = useContext(AuthContext).token
+  const [sizeFractions, setSizeFractions] = useState<number[]>([])
+
+  // Load size fractions once on first render
+  useEffect(() => {
+    FractionsAPI.getFractionsApi(apiToken,)
+      .then(response => {
+        setSizeFractions(response.data.size_fractions)
+      })
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
+      })
+  }, [])
+
   return (
     <>
       <div style={{ width: '100%', display: 'flex' }}>
         {Object.keys(combinations).map(id => {
-          if (sacks === combinations[id].sacks)
+          if (sacks === combinations[id].sacks && sizeFractions.length > 0)
             return (
               <CombinationCard
                 key={combinations[id].name}
@@ -88,6 +105,7 @@ export const CardContainer = ({
                 renameCombination={renameCombination}
                 removeBridge={removeBridge}
                 enabledPlot={Object.keys(bridges).includes(id)}
+                sizeFractions={sizeFractions}
               />
             )
           return null
