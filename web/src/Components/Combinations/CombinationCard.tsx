@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Icon, Switch, TextField } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
-import { Combination, Product, Products } from '../../Types'
+import { Bridge, Combination, GraphData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
+import { CombinationAPI, FractionsAPI } from '../../Api'
+import { AuthContext } from '../../Context'
+import { ErrorToast } from '../Common/Toast'
+import { findDValue, findGraphData } from '../../Utils'
 
 const CardHeader = styled.div`
   display: flex;
@@ -19,6 +23,12 @@ const CardSummation = styled.div`
   border-top: 1px solid;
 `
 
+const DValues = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 5px 15px 10px;
+`
+
 interface CombinationCardProps {
   sacks: boolean
   combination: Combination
@@ -28,6 +38,7 @@ interface CombinationCardProps {
   removeBridge: Function
   allProducts: Products
   enabledPlot: boolean
+  sizeFractions: number[]
 }
 
 export const CombinationCard = ({
@@ -39,11 +50,17 @@ export const CombinationCard = ({
   removeCombination,
   removeBridge,
   enabledPlot,
+  sizeFractions,
 }: CombinationCardProps) => {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
   const [totalDensity, setTotalDensity] = useState<number>(0)
   const [enabledProducts, setEnabledProducts] = useState<Products>({})
+  const apiToken: string = useContext(AuthContext).token
+  const [bridge, setBridge] = useState<Bridge>()
+  const [D10, setD10] = useState<number>(0)
+  const [D50, setD50] = useState<number>(0)
+  const [D90, setD90] = useState<number>(0)
 
   // On first render with products, set enabledProducts from saved combinations
   useEffect(() => {
@@ -69,6 +86,20 @@ export const CombinationCard = ({
     } else {
       setTotalDensity(Math.round(newDensity * 10) / 10)
     }
+
+    CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
+      .then(response => {
+        let newBridge: Bridge = { ...bridge, [combination.name]: response.data.bridge }
+        setBridge(newBridge)
+        let graphData: GraphData[] = findGraphData(sizeFractions, newBridge)
+        setD10(findDValue(graphData, 10, combination.name))
+        setD50(findDValue(graphData, 50, combination.name))
+        setD90(findDValue(graphData, 90, combination.name))
+      })
+      .catch(error => {
+        ErrorToast(`${error.response.data}`, error.response.status)
+        console.error('fetch error' + error)
+      })
   }, [combination, allProducts])
 
   function updateEnabledProductsAndCombination(changedProducts: Products) {
@@ -120,13 +151,29 @@ export const CombinationCard = ({
           </Button>
         </CardHeader>
         {Object.keys(enabledProducts).length ? (
-          <CombinationTable
-            allProducts={allProducts}
-            sacks={sacks}
-            updateCombination={updateCombination}
-            productsInCombination={combination.values}
-            combinationName={combinationName}
-          />
+          <div>
+            <CombinationTable
+              allProducts={allProducts}
+              sacks={sacks}
+              updateCombination={updateCombination}
+              productsInCombination={combination.values}
+              combinationName={combinationName}
+            />
+            <div style={{ paddingTop: '30px' }}>
+              <DValues>
+                <div>D10</div>
+                <div>{D10}</div>
+              </DValues>
+              <DValues>
+                <div>D50</div>
+                <div>{D50}</div>
+              </DValues>
+              <DValues>
+                <div>D90</div>
+                <div>{D90}</div>
+              </DValues>
+            </div>
+          </div>
         ) : (
           <div style={{ padding: '20px' }}>No products selected</div>
         )}
