@@ -1,0 +1,10 @@
+ignore:
+  'snyk:lic:npm:equinor:eds-tokens:AGPL-3.0':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z
+
+  'snyk:lic:npm:equinor:eds-core-react:AGPL-3.0':
+    - '*':
+        reason: None Given
+        expires: 2021-11-07T11:38:28.614Z

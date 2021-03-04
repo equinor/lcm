@@ -9,7 +9,7 @@ ARG GID=1001
 RUN addgroup -S usergroup -g $GID && adduser -u $UID -S nonrootuser -G usergroup
 WORKDIR /code
 ADD package.json yarn.lock /code/
-RUN yarn install --frozen-lockfile
+RUN yarn install
 ADD ./ /code/
 
 FROM base as development

@@ -9,7 +9,7 @@
     "@equinor/eds-tokens": "^0.4.0",
     "@storybook/addon-actions": "^6.0.21",
     "@storybook/addon-knobs": "^6.0.21",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
     "d3-scale": "^3.2.1",
     "msal": "^1.4.1",
