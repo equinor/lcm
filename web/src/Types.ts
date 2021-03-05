@@ -42,6 +42,11 @@ export interface Bridge {
   [name: string]: Array<number>
 }
 
+export interface GraphData {
+  size: number
+  [name: string]: number
+}
+
 export interface Performance {
   bridge: number
   mass: number
