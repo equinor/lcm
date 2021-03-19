@@ -19,7 +19,7 @@ export const ContactButton = () => {
             <Title>Contact and support</Title>
             <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
               <p>
-                Questions regarding access and usage of the LCM optimizer can be directed at John-Morten Godhavn{' '}
+                Questions regarding access and usage of the LCM optimizer can be directed at Ove Braadland{' '}
                 <a href={`mailto:${process.env.REACT_APP_APPLICATION_OWNER}`}>
                   {process.env.REACT_APP_APPLICATION_OWNER}
                 </a>
