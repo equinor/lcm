@@ -159,26 +159,31 @@ export const CombinationCard = ({
               productsInCombination={combination.values}
               combinationName={combinationName}
             />
-            <div style={{ paddingTop: '30px' }}>
-              <DValues>
-                <div>D10</div>
-                <div>{D10}</div>
-              </DValues>
-              <DValues>
-                <div>D50</div>
-                <div>{D50}</div>
-              </DValues>
-              <DValues>
-                <div>D90</div>
-                <div>{D90}</div>
-              </DValues>
-            </div>
           </div>
         ) : (
           <div style={{ padding: '20px' }}>No products selected</div>
         )}
       </div>
       <div>
+        {Object.keys(enabledProducts).length ? (
+          <div style={{ borderTop: '1px solid', paddingTop: '3px' }}>
+            <DValues>
+              <div>D10</div>
+              <div>{D10}</div>
+            </DValues>
+            <DValues>
+              <div>D50</div>
+              <div>{D50}</div>
+            </DValues>
+            <DValues>
+              <div>D90</div>
+              <div>{D90}</div>
+            </DValues>
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         {sacks ? (
           <CardSummation>
             <div>Total mass</div>
