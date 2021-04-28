@@ -204,7 +204,7 @@ export const CombinationCard = ({
             enabledProducts={enabledProducts}
             setEnabledProducts={updateEnabledProductsAndCombination}
           />
-          <Switch label='Plot' onClick={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
+          <Switch label='Plot' onClick={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' enterKeyHint="" />
         </div>
       </div>
     </Card>

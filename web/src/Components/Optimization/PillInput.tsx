@@ -66,7 +66,7 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
         helperText={invalidVolume ? 'Must be a positive number' : undefined}
         label='Pill volume'
         id='pillvolume'
-        value={pill.volume}
+        value={pill.volume.toString()}
         meta='m3'
         variant={(invalidVolume && 'error') || undefined}
         onChange={(event: any) => handleChange(PillInputType.VOLUME, event.target.value)}
@@ -78,7 +78,7 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
         label='Pill density'
         helperText={invalidDensity ? 'Must be a positive number' : undefined}
         id='pilldensity'
-        value={pill.density}
+        value={pill.density.toString()}
         variant={(invalidDensity && 'error') || undefined}
         meta='kg/m3'
         onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}

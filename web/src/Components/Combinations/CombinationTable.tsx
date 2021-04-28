@@ -81,6 +81,7 @@ export const CombinationTable = ({
               <div style={{ maxWidth: '100px' }}>
                 <TextField
                   id={id}
+                  // @ts-ignore
                   value={values[id]?.value || 0}
                   type='number'
                   onChange={(event: any) => handleValueChange(id, event.target.value)}
@@ -90,6 +91,7 @@ export const CombinationTable = ({
                     height: '37px',
                     borderTop: 'none',
                     borderBottom: 'none',
+                    boxShadow: 'none',
                     textAlign: 'center',
                   }}
                 />

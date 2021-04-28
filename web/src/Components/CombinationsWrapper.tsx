@@ -172,7 +172,7 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
         <Accordion>
           <AccordionItem>
             <AccordionHeader>Concentration blends</AccordionHeader>
-            <AccordionPanel style={{ overflow: 'auto' }}>
+            <AccordionPanel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
               <CardContainer
                 sacks={false}
                 combinations={combinations}
@@ -188,7 +188,7 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
           </AccordionItem>
           <AccordionItem>
             <AccordionHeader>Sack blends</AccordionHeader>
-            <AccordionPanel style={{ overflow: 'auto' }}>
+            <AccordionPanel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
               <CardContainer
                 sacks={true}
                 combinations={combinations}

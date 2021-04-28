@@ -12,11 +12,11 @@ import { AuthContext, ParticleSizeContext } from '../../Context'
 import EditProducts from '../Common/EditProducts'
 import useLocalStorage from '../../Hooks'
 import Icon from '../../Icons'
+import numberOfProductsFitnessFormulaImg from './FormulaPictures/NumberOfProductsFitnessFormula.png'
+import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
+import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
+import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
 
-let numberOfProductsFitnessFormulaImg = require('./FormulaPictures/NumberOfProductsFitnessFormula.PNG')
-let totalFitnessFormulaImg = require('./FormulaPictures/TotalFitnessFormula.PNG')
-let MassFitnessFormulaImg = require('./FormulaPictures/MassFitnessFormula.PNG')
-let BridgeFitnessFormulaImg = require('./FormulaPictures/BridgeFitnessFormula.PNG')
 
 const { Actions, Title, CustomContent } = Dialog
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
@@ -176,7 +176,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           <Accordion style={{ paddingTop: '10px' }}>
             <AccordionItem>
               <AccordionHeader>Advanced options</AccordionHeader>
-              <AccordionPanel>
+              <AccordionPanel style={{backgroundColor: '#f7f7f7'}}>
                 <div style={{ display: 'flex' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
@@ -186,7 +186,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           variant={(iterations <= 0 && 'error') || undefined}
                           label='Number of iterations'
                           id='interations'
-                          value={iterations}
+                          value={iterations.toString()}
                           onChange={(event: any) => {
                             if (event.target.value === '') setIterations(0)
                             const newValue = parseInt(event.target.value)
@@ -203,7 +203,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           type='number'
                           label='Max number of products'
                           id='maxProducts'
-                          value={maxProducts}
+                          value={maxProducts.toString()}
                           onChange={(event: any) => {
                             if (event.target.value === '') setMaxProducts(0)
                             const newValue = parseInt(event.target.value)
@@ -227,7 +227,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                               type='number'
                               label='From'
                               meta='μm'
-                              value={from}
+                              value={from.toString()}
                               onChange={(event: any) => {
                                 if (event.target.value === '') setRange([0, to])
                                 const newValue = parseFloat(event.target.value)
@@ -242,7 +242,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                               type='number'
                               label='To'
                               meta='μm'
-                              value={to}
+                              value={to.toString()}
                               onChange={(event: any) => {
                                 if (event.target.value === '') setRange([from, 0])
                                 const newValue = parseFloat(event.target.value)
