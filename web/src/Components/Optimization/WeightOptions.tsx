@@ -34,18 +34,15 @@ interface WeightOptionsProps {
 export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactElement => {
   const { bridge, mass, products } = weight
 
-  // after a recent update, the Slider component from equinor/eds is meant to be used for a range of numbers. 
+  // after a recent update, the Slider component from equinor/eds is meant to be used for a range of numbers.
   // This function lets us use the Slider component for a single number instead
   const getSliderValue = (value: number | number[]): number => {
-    if (typeof value === "number") {
+    if (typeof value === 'number') {
       return value
-    }
-    else if( value.length === 1)
-    {
+    } else if (value.length === 1) {
       return value[0]
-    }
-    else {
-      throw new Error("Could not change slider value")
+    } else {
+      throw new Error('Could not change slider value')
     }
   }
 
@@ -68,7 +65,6 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             min={1}
             max={10}
             onChange={(event: any, value: number | number[]) => {
-
               setWeight({
                 ...weight,
                 bridge: getSliderValue(value),

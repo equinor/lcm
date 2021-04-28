@@ -17,7 +17,6 @@ import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
 import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
 
-
 const { Actions, Title, CustomContent } = Dialog
 const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
@@ -176,7 +175,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           <Accordion style={{ paddingTop: '10px' }}>
             <AccordionItem>
               <AccordionHeader>Advanced options</AccordionHeader>
-              <AccordionPanel style={{backgroundColor: '#f7f7f7'}}>
+              <AccordionPanel style={{ backgroundColor: '#f7f7f7' }}>
                 <div style={{ display: 'flex' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
