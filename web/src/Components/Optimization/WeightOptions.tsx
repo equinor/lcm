@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { FormEvent, ReactElement, useState } from 'react'
 // @ts-ignore
 import { Slider, Typography } from '@equinor/eds-core-react'
 // @ts-ignore
@@ -34,6 +34,18 @@ interface WeightOptionsProps {
 export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactElement => {
   const { bridge, mass, products } = weight
 
+  // after a recent update, the Slider component from equinor/eds is meant to be used for a range of numbers.
+  // This function lets us use the Slider component for a single number instead
+  const getSliderValue = (value: number | number[]): number => {
+    if (typeof value === 'number') {
+      return value
+    } else if (value.length === 1) {
+      return value[0]
+    } else {
+      throw new Error('Could not change slider value')
+    }
+  }
+
   return (
     <div style={{ width: '400px', margin: '0 10px', border: 'solid 1px #E8E5E5' }}>
       <div style={{ padding: '10px 0' }}>
@@ -52,10 +64,10 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={bridge}
             min={1}
             max={10}
-            onChange={(event: any, value: number) => {
+            onChange={(event: any, value: number | number[]) => {
               setWeight({
                 ...weight,
-                bridge: value,
+                bridge: getSliderValue(value),
               })
             }}
             ariaLabelledby={''}
@@ -68,10 +80,11 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={mass}
             min={1}
             max={10}
-            onChange={(event: any, value: any) => {
+            // @ts-ignore
+            onChange={(event: any, value: number) => {
               setWeight({
                 ...weight,
-                mass: value,
+                mass: getSliderValue(value),
               })
             }}
             ariaLabelledby={''}
@@ -84,10 +97,11 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={products}
             min={1}
             max={10}
-            onChange={(event: any, value: any) => {
+            // @ts-ignore
+            onChange={(event: any, value: number) => {
               setWeight({
                 ...weight,
-                products: value,
+                products: getSliderValue(value),
               })
             }}
             ariaLabelledby={''}

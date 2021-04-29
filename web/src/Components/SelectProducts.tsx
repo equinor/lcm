@@ -29,6 +29,8 @@ interface SelectProductsProps {
   setEnabledProducts: Function
 }
 
+type ChipBoxStates = 'default' | 'active'
+
 export const SelectProducts = ({
   allProducts,
   enabledProducts,
@@ -84,7 +86,7 @@ export const SelectProducts = ({
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
         <ChipBox>
           {suppliers.map((supplier: string) => {
-            let active = 'default'
+            let active: ChipBoxStates = 'default'
             if (selectedSuppliers.includes(supplier)) active = 'active'
             return (
               <Chip
@@ -98,7 +100,7 @@ export const SelectProducts = ({
             )
           })}
         </ChipBox>
-        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} />
+        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} enterKeyHint='' />
       </div>
       {/* If some of the displayed products have missing PSD data, show a small notice*/}
       {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
@@ -125,6 +127,7 @@ export const SelectProducts = ({
               <div style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
                 <Checkbox
                   checked={isChecked}
+                  // @ts-ignore
                   onChange={(event: Event) => handleProductToggle(event, product.id)}
                   label={product.title}
                   disabled={disabled}
