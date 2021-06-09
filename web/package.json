@@ -12,7 +12,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "d3-scale": "^3.2.3",
-    "msal": "^1.4.1",
+    "msal": "^1.4.11",
     "react": "^16.13.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^16.13.1",
