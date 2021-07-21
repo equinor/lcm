@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@azure/msal-browser": "^2.4.0",
+    "@azure/msal-browser": "^2.15.0",
     "@equinor/eds-core-react": "^0.8.4",
     "@equinor/eds-icons": "^0.6.2",
     "@equinor/eds-tokens": "^0.5.4",
