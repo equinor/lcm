@@ -18,7 +18,6 @@ import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
 
 const { Actions, Title, CustomContent } = Dialog
-const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
 
 interface OptimizationContainerProps {
   allProducts: Products
@@ -173,9 +172,9 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
         <InputWrapper>
           <Typography variant='body_short'>Optimzier</Typography>
           <Accordion style={{ paddingTop: '10px' }}>
-            <AccordionItem>
-              <AccordionHeader>Advanced options</AccordionHeader>
-              <AccordionPanel style={{ backgroundColor: '#f7f7f7' }}>
+            <Accordion.Item>
+              <Accordion.Header>Advanced options</Accordion.Header>
+              <Accordion.Panel style={{ backgroundColor: '#f7f7f7' }}>
                 <div style={{ display: 'flex' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
@@ -256,8 +255,8 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                   </div>
                   <WeightOptions weight={weight} setWeight={setWeight} />
                 </div>
-              </AccordionPanel>
-            </AccordionItem>
+              </Accordion.Panel>
+            </Accordion.Item>
           </Accordion>
         </InputWrapper>
       </div>

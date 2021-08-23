@@ -13,8 +13,6 @@ import { AuthContext } from '../Context'
 import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
 
-const { AccordionItem, AccordionHeader, AccordionPanel } = Accordion
-
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
 `
@@ -170,9 +168,9 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
       </MainComponentsWrapper>
       <MainComponentsWrapper>
         <Accordion>
-          <AccordionItem>
-            <AccordionHeader>Concentration blends</AccordionHeader>
-            <AccordionPanel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
+          <Accordion.Item>
+            <Accordion.Header>Concentration blends</Accordion.Header>
+            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
               <CardContainer
                 sacks={false}
                 combinations={combinations}
@@ -184,11 +182,11 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
                 removeBridge={removeBridge}
                 bridges={bridges}
               />
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader>Sack blends</AccordionHeader>
-            <AccordionPanel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item>
+            <Accordion.Header>Sack blends</Accordion.Header>
+            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
               <CardContainer
                 sacks={true}
                 combinations={combinations}
@@ -200,8 +198,8 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
                 removeBridge={removeBridge}
                 bridges={bridges}
               />
-            </AccordionPanel>
-          </AccordionItem>
+            </Accordion.Panel>
+          </Accordion.Item>
         </Accordion>
       </MainComponentsWrapper>
       <MainComponentsWrapper>
