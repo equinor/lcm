@@ -4,21 +4,23 @@ from typing import List
 from cachetools import cached, LFUCache
 
 from classes.product import Product
-from util.enums import bridge_mode_int, BridgeOption
+from util.enums import BridgeOption
 
 
 @cached(cache=LFUCache(2048))
 def theoretical_bridge(mode: str, value: int):
-    bridge_mode_int(mode)
     bridge_list = []
     d_value = 50
     bridge_input = value
 
-    if mode == BridgeOption.PERMEABILITY:
+    if mode in (BridgeOption.PERMEABILITY, BridgeOption.CERAMIC_DISCS):
         bridge_input = sqrt(value)
-
     elif mode == BridgeOption.MAXIMUM_PORESIZE:
         d_value = 90
+    elif mode == BridgeOption.AVERAGE_PORESIZE:
+        pass
+    else:
+        raise ValueError(f"Invalid bridge mode string '{mode}'")
 
     result = 100 * (sqrt(bridge_input) / d_value)
 
