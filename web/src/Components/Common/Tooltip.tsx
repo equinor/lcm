@@ -36,7 +36,7 @@ export const Tooltip = ({ text, children }: TooltipProps): ReactElement => {
   return (
     <TooltipWrapper key={text}>
       {children}
-      <EDSTooltip title={text} placement='top-end'>
+      <EDSTooltip title={text} placement={'top-end'}>
         <StyledTooltipIcon>?</StyledTooltipIcon>
       </EDSTooltip>
     </TooltipWrapper>

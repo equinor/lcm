@@ -106,6 +106,12 @@ def create_report(request: Dict, bridge: bool = True):
         "pdf",
         format="html",
         outputfile=f"{Config.HOME_DIR}/report.pdf",
-        extra_args=["--to", "html", "--css", f"{Config.HOME_DIR}/util/report.css"],
+        extra_args=[
+            "--to",
+            "html",
+            "--css",
+            f"{Config.HOME_DIR}/util/report.css",
+            "--pdf-engine-opt=--enable-local-file-access",
+        ],
     )
     return f"{Config.HOME_DIR}/report.pdf"

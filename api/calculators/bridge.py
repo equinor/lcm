@@ -17,6 +17,8 @@ def theoretical_bridge(mode: str, value: int):
         bridge_input = sqrt(value)
     elif mode == BridgeOption.MAXIMUM_PORESIZE:
         d_value = 90
+    elif mode == BridgeOption.AVERAGE_PORESIZE:
+        pass
     else:
         raise ValueError(f"Invalid bridge mode string '{mode}'")
 
