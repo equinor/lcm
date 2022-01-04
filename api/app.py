@@ -43,7 +43,7 @@ def combination():
 @app.route("/api/bridge", methods=["POST"])
 @authorize
 def bridge():
-    return bridgeRequestHandler(request.json.get("option"), request.json.get("value"))
+    return bridgeRequestHandler(request.json.get("option"), int(request.json.get("value")))
 
 
 @app.route("/api/sync", methods=["POST"])

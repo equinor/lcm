@@ -36,6 +36,18 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
 
   const apiToken = useContext(AuthContext).token
 
+  // Load size fractions once on first render
+  useEffect(() => {
+    FractionsAPI.getFractionsApi(apiToken)
+        .then(response => {
+          setSizeFractions(response.data.size_fractions)
+        })
+        .catch(error => {
+          ErrorToast(`${error.response.data}`, error.response.status)
+          console.error('fetch error' + error)
+        })
+  }, [])
+
   function bridgingOptionChange(event) {
     switch (event.target.value) {
       case BridgingOption.PERMEABILITY:
@@ -54,6 +66,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
       case BridgingOption.CERAMIC_DISCS:
         setMode(BridgingOption.CERAMIC_DISCS)
         setUnit('microns')
+        setValue(CeramicDiscsValues[0])
         break
       default:
         return
@@ -75,17 +88,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueHelperText(undefined)
   }
 
-  // Load size fractions once on first render
-  useEffect(() => {
-    FractionsAPI.getFractionsApi(apiToken)
-        .then(response => {
-          setSizeFractions(response.data.size_fractions)
-        })
-        .catch(error => {
-          ErrorToast(`${error.response.data}`, error.response.status)
-          console.error('fetch error' + error)
-        })
-  }, [])
+
 
   return (
       <div style={{ display: 'flex' }}>
