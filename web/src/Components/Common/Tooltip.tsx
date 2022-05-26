@@ -7,7 +7,7 @@ import { COLORS } from '../../Enums'
 const StyledTooltipIcon = styled.div`
   background-color: white;
   height: 18px;
-  margin: 5px 0;
+  margin: 15px 2px;
   width: 18px;
   border-radius: 20px;
   border: #cccccc solid 1px;
