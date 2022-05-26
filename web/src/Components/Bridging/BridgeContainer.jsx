@@ -6,6 +6,7 @@ import { BridgingOption, CeramicDiscsValues } from "../../Enums"
 import { ErrorToast } from "../Common/Toast"
 import { AuthContext } from "../../Context"
 import BridgeGraph from "./BridgeGraph"
+import {findDValue, findGraphData} from "../../Utils";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
-
+  const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
   const apiToken = useContext(AuthContext).token
 
   // Load size fractions once on first render
@@ -47,6 +48,13 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           console.error('fetch error' + error)
         })
   }, [])
+
+  useEffect(() => {
+      if (bridges["Bridge"].length > 0 && sizeFractions.length > 0 ) {
+      const x = (findGraphData(sizeFractions, {"Bridge": bridges["Bridge"]}))
+      setOptimalBridgeGraphData(x)
+        }
+  }, [bridges, sizeFractions])
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {
@@ -88,7 +96,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueHelperText(undefined)
   }
 
-
+  console.log("b", bridges["Bridge"])
 
   return (
       <div style={{ display: 'flex' }}>
@@ -152,6 +160,12 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           </div>
         </InputWrapper>
         <BridgeGraph bridges={bridges} sizeFractions={sizeFractions}/>
+        {optimalBridgeGraphData.length > 0 && <div>
+          <p>Optimal bridge:</p>
+          <p>D10: {findDValue(optimalBridgeGraphData, 10, "Bridge")}</p>
+          <p>D50: {findDValue(optimalBridgeGraphData, 50, "Bridge")}</p>
+          <p>D90: {findDValue(optimalBridgeGraphData, 90, "Bridge")}</p>
+        </div>}
       </div>
   )
 }
