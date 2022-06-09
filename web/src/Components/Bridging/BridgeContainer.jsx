@@ -111,7 +111,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
                 onChange={bridgingOptionChange}
                 checked={mode === BridgingOption.AVERAGE_PORESIZE}
             />
-            <Tooltip text={'??????'}>
+            <Tooltip text={'Max poresize/crack opening is the largest pore throat diameter or widest crack/aperture width (fracture width or screen slot opening)'}>
               <Radio
                 label="Max pore size/crack opening"
                 name="group"
