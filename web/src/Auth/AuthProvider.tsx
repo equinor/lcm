@@ -28,7 +28,7 @@ const config = {
 }
 
 export default function withAuthProvider<T extends React.Component<AuthComponentProps>>(
-  WrappedComponent: new (props: AuthComponentProps, context?: any) => T
+  WrappedComponent: new (props: AuthComponentProps, context?: any) => any
 ): React.ComponentClass {
   return class extends React.Component<any, AuthProviderState> {
     private publicClientApplication: PublicClientApplication
