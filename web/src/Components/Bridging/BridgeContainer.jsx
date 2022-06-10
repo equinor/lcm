@@ -50,7 +50,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   }, [])
 
   useEffect(() => {
-      if (bridges["Bridge"].length > 0 && sizeFractions.length > 0 ) {
+      if (bridges["Bridge"].length && sizeFractions.length ) {
       const x = (findGraphData(sizeFractions, {"Bridge": bridges["Bridge"]}))
       setOptimalBridgeGraphData(x)
         }
@@ -95,8 +95,6 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueVariant(undefined)
     setBridgeValueHelperText(undefined)
   }
-
-  console.log("b", bridges["Bridge"])
 
   return (
       <div style={{ display: 'flex' }}>
@@ -162,9 +160,9 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
         <BridgeGraph bridges={bridges} sizeFractions={sizeFractions}/>
         {optimalBridgeGraphData.length > 0 && <div>
           <p>Optimal bridge:</p>
-          <p>D10: {findDValue(optimalBridgeGraphData, 10, "Bridge")}</p>
-          <p>D50: {findDValue(optimalBridgeGraphData, 50, "Bridge")}</p>
-          <p>D90: {findDValue(optimalBridgeGraphData, 90, "Bridge")}</p>
+          <p>D10: {findDValue(optimalBridgeGraphData, 10, "Bridge")}µ</p>
+          <p>D50: {findDValue(optimalBridgeGraphData, 50, "Bridge")}µ</p>
+          <p>D90: {findDValue(optimalBridgeGraphData, 90, "Bridge")}µ</p>
         </div>}
       </div>
   )
