@@ -191,7 +191,7 @@ export const CombinationCard = ({
           </CardSummation>
         ) : (
           <CardSummation>
-            <div>Total density</div>
+            <div>Total concentration</div>
             <div>
               {totalDensity} kg/m<sup>3</sup>
             </div>

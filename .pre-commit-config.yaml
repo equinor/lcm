@@ -38,5 +38,5 @@ repos:
 #      files: ^web/.*\.(test.ts|test.tsx|test.js)$
 #    - id: pytest
 #      name: API Unit Tests with coverage
-#      entry: sh -c "docker run --rm api-dev pytest tests"
+#      entry: sh -c "docker-compose run --rm api pytest tests"
 #      language: system
