@@ -1,6 +1,7 @@
-import subprocess  # nosec
 from datetime import datetime
 from typing import Dict, List
+
+import pypandoc
 
 from config import Config
 from plots.bridge import bridge_plot
