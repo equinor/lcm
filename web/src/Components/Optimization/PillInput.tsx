@@ -75,9 +75,9 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
       <TextField
         style={{ marginBottom: '16px' }}
         type='number'
-        label='Pill density'
+        label='Pill concentration'
         helperText={invalidDensity ? 'Must be a positive number' : undefined}
-        id='pilldensity'
+        id='pillconcentration'
         value={pill.density.toString()}
         variant={(invalidDensity && 'error') || undefined}
         meta='kg/m3'
