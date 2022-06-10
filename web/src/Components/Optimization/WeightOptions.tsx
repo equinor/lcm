@@ -53,7 +53,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
           text={
             'Set importance (0-10) to fine tune the optimization algorithm. These values only has meaning relative to each other.'
           }>
-          <Typography style={{ margin: '0 10px' }}>Weigthing</Typography>
+          <Typography>Weigthing</Typography>
         </Tooltip>
       </div>
       <div>
