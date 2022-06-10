@@ -7,6 +7,7 @@ import { ErrorToast } from "../Common/Toast"
 import { AuthContext } from "../../Context"
 import BridgeGraph from "./BridgeGraph"
 import {Tooltip} from "../Common/Tooltip";
+import {findDValue, findGraphData} from "../../Utils";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
-
+  const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
   const apiToken = useContext(AuthContext).token
 
   // Load size fractions once on first render
@@ -48,6 +49,13 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           console.error('fetch error' + error)
         })
   }, [])
+
+  useEffect(() => {
+      if (bridges["Bridge"].length && sizeFractions.length ) {
+      const x = (findGraphData(sizeFractions, {"Bridge": bridges["Bridge"]}))
+      setOptimalBridgeGraphData(x)
+        }
+  }, [bridges, sizeFractions])
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {
@@ -88,8 +96,6 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueVariant(undefined)
     setBridgeValueHelperText(undefined)
   }
-
-
 
   return (
       <div style={{ display: 'flex' }}>
@@ -155,6 +161,12 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           </div>
         </InputWrapper>
         <BridgeGraph bridges={bridges} sizeFractions={sizeFractions}/>
+        {optimalBridgeGraphData.length > 0 && <div>
+          <p>Optimal bridge:</p>
+          <p>D10: {findDValue(optimalBridgeGraphData, 10, "Bridge")}µ</p>
+          <p>D50: {findDValue(optimalBridgeGraphData, 50, "Bridge")}µ</p>
+          <p>D90: {findDValue(optimalBridgeGraphData, 90, "Bridge")}µ</p>
+        </div>}
       </div>
   )
 }
