@@ -6,6 +6,8 @@ import { BridgingOption, CeramicDiscsValues } from "../../Enums"
 import { ErrorToast } from "../Common/Toast"
 import { AuthContext } from "../../Context"
 import BridgeGraph from "./BridgeGraph"
+import {Tooltip} from "../Common/Tooltip";
+import {findDValue, findGraphData} from "../../Utils";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -33,7 +35,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
-
+  const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
   const apiToken = useContext(AuthContext).token
 
   // Load size fractions once on first render
@@ -47,6 +49,13 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           console.error('fetch error' + error)
         })
   }, [])
+
+  useEffect(() => {
+      if (bridges["Bridge"].length && sizeFractions.length ) {
+      const x = (findGraphData(sizeFractions, {"Bridge": bridges["Bridge"]}))
+      setOptimalBridgeGraphData(x)
+        }
+  }, [bridges, sizeFractions])
 
   function bridgingOptionChange(event) {
     switch (event.target.value) {
@@ -88,8 +97,6 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
     setBridgeValueHelperText(undefined)
   }
 
-
-
   return (
       <div style={{ display: 'flex' }}>
         <InputWrapper>
@@ -110,13 +117,15 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
                 onChange={bridgingOptionChange}
                 checked={mode === BridgingOption.AVERAGE_PORESIZE}
             />
-            <Radio
+            <Tooltip text={'Max poresize/crack opening is the largest pore throat diameter or widest crack/aperture width (fracture width or screen slot opening)'}>
+              <Radio
                 label="Max pore size/crack opening"
                 name="group"
                 value={BridgingOption.MAXIMUM_PORESIZE}
                 onChange={bridgingOptionChange}
                 checked={mode === BridgingOption.MAXIMUM_PORESIZE}
-            />
+              />
+            </Tooltip>
             <Radio
                 label="Ceramic Discs"
                 name="group"
@@ -152,6 +161,12 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
           </div>
         </InputWrapper>
         <BridgeGraph bridges={bridges} sizeFractions={sizeFractions}/>
+        {optimalBridgeGraphData.length > 0 && <div>
+          <p>Optimal bridge:</p>
+          <p>D10: {findDValue(optimalBridgeGraphData, 10, "Bridge")}µ</p>
+          <p>D50: {findDValue(optimalBridgeGraphData, 50, "Bridge")}µ</p>
+          <p>D90: {findDValue(optimalBridgeGraphData, 90, "Bridge")}µ</p>
+        </div>}
       </div>
   )
 }
