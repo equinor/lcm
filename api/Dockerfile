@@ -7,8 +7,8 @@ ENV PATH="/root/.poetry/bin:${PATH}"
 
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y curl
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-RUN poetry config virtualenvs.create false
+RUN curl -sSL https://install.python-poetry.org | python -
+RUN /root/.local/bin/poetry config virtualenvs.create false
 
 # Needed for html => pdf conversion
 RUN apt-get update && apt-get install -y \
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 RUN chown -R 1000:1000 /app
 COPY pyproject.toml poetry.lock ./
-RUN poetry install
+RUN /root/.local/bin/poetry install
 COPY ./calculators ./calculators
 COPY ./controllers ./controllers
 COPY ./classes ./classes
