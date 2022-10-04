@@ -15,12 +15,12 @@ services:
     restart: unless-stopped
     environment:
       ENVIRONMENT: development
-      FLASK_ENV: development
+      FLASK_DEBUG: development
       TABLE_KEY: ${TABLE_KEY}
     ports:
       - "5000:5000"
-    volumes:
-      - ./api/:/app
+#    volumes:
+#      - ./api/:/app
 
   web:
     build:

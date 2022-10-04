@@ -1,4 +1,4 @@
-FROM node:12-alpine as base
+FROM node:18-alpine as base
 ENV REACT_APP_APPLICATION_OWNER=ovbra@equinor.com
 ENV REACT_APP_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
 ENV REACT_APP_SCOPES="api://lost-circulation-material-api/Optimization.All.All"

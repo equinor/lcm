@@ -120,7 +120,8 @@ export const CardContainer = ({
               values: [],
               cumulative: null,
             })
-          }}>
+          }}
+        >
           <Icon name='add_box' title='add_box' />
           Add combination
         </Button>

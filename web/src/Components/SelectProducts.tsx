@@ -94,13 +94,14 @@ export const SelectProducts = ({
                 variant={active}
                 onClick={() => {
                   handleChipToggle(supplier)
-                }}>
+                }}
+              >
                 {supplier}
               </Chip>
             )
           })}
         </ChipBox>
-        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} enterKeyHint='' />
+        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} />
       </div>
       {/* If some of the displayed products have missing PSD data, show a small notice*/}
       {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
@@ -116,7 +117,8 @@ export const SelectProducts = ({
           maxHeight: '600px',
           width: '800px',
           overflow: 'auto',
-        }}>
+        }}
+      >
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
         {productList.map((product, key) => {
           if (!selectedSuppliers.includes(product.supplier)) return null

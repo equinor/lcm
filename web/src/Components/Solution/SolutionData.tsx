@@ -28,12 +28,6 @@ interface SolutionDataProps {
   products: Products
 }
 
-interface SacksProps {
-  products: Products
-  productResults: Array<ProductResult>
-  totalMass: number
-}
-
 interface DensitiesProps {
   products: Products
   productResults: Array<ProductResult>

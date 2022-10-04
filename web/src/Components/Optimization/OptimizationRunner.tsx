@@ -3,7 +3,7 @@ import PillInput, { Pill } from './PillInput'
 import { Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { Accordion, Button, CircularProgress, TextField, Typography, Scrim, Dialog } from '@equinor/eds-core-react'
+import { Accordion, Button, CircularProgress, TextField, Typography, Dialog } from '@equinor/eds-core-react'
 import { Products } from '../../Types'
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
@@ -41,7 +41,7 @@ const InputWrapper = styled.div`
 `
 
 const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: OptimizationContainerProps): ReactElement => {
-  const [scrim, setScrim] = useState<boolean>(false)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [failedRun, setFailedRun] = useState<boolean>(false)
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -99,50 +99,51 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
     <Wrapper>
       <Typography variant='h3' style={{ paddingBottom: '2rem' }}>
         Optimizer
-        <Icon style={{ cursor: 'pointer', paddingLeft: '5px' }} name='info_circle' onClick={() => setScrim(true)} />
-        {scrim && (
-          <Scrim onClose={() => setScrim(false)}>
-            <Dialog style={{ width: 'auto' }}>
-              <Title>Formulas used in optimizer</Title>
-              <CustomContent>
-                <div></div>
-                <table style={{ border: '50px' }}>
-                  <tr>
-                    <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
-                    <th style={{ padding: '10px' }}>
-                      <img src={totalFitnessFormulaImg} alt='Formula for total fitness' height={53} width={240}></img>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
-                    <th style={{ padding: '10px' }}>
-                      <img src={BridgeFitnessFormulaImg} alt='Formula for total fitness' height={94} width={337}></img>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
-                    <th style={{ padding: '10px' }}>
-                      <img src={MassFitnessFormulaImg} alt='Formula for total fitness' height={60} width={270}></img>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th style={{ fontWeight: 'normal' }}>Number of products fitness:</th>
-                    <th style={{ padding: '10px' }}>
-                      <img
-                        src={numberOfProductsFitnessFormulaImg}
-                        alt='Formula for total fitness'
-                        height={52}
-                        width={270}></img>
-                    </th>
-                  </tr>
-                </table>
-              </CustomContent>
-              <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
-                <Button onClick={() => setScrim(false)}>Close</Button>
-              </Actions>
-            </Dialog>
-          </Scrim>
-        )}
+        <Icon
+          style={{ cursor: 'pointer', paddingLeft: '5px' }}
+          name='info_circle'
+          onClick={() => setDialogOpen(true)}
+        />
+        <Dialog style={{ width: 'auto' }} open={dialogOpen}>
+          <Title>Formulas used in optimizer</Title>
+          <CustomContent>
+            <div></div>
+            <table style={{ border: '50px' }}>
+              <tr>
+                <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
+                <th style={{ padding: '10px' }}>
+                  <img src={totalFitnessFormulaImg} alt='Formula for total fitness' height={53} width={240}></img>
+                </th>
+              </tr>
+              <tr>
+                <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
+                <th style={{ padding: '10px' }}>
+                  <img src={BridgeFitnessFormulaImg} alt='Formula for total fitness' height={94} width={337}></img>
+                </th>
+              </tr>
+              <tr>
+                <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
+                <th style={{ padding: '10px' }}>
+                  <img src={MassFitnessFormulaImg} alt='Formula for total fitness' height={60} width={270}></img>
+                </th>
+              </tr>
+              <tr>
+                <th style={{ fontWeight: 'normal' }}>Number of products fitness:</th>
+                <th style={{ padding: '10px' }}>
+                  <img
+                    src={numberOfProductsFitnessFormulaImg}
+                    alt='Formula for total fitness'
+                    height={52}
+                    width={270}
+                  ></img>
+                </th>
+              </tr>
+            </table>
+          </CustomContent>
+          <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+            <Button onClick={() => setDialogOpen(false)}>Close</Button>
+          </Actions>
+        </Dialog>
       </Typography>
       <div style={{ display: 'flex' }}>
         <InputWrapper>
@@ -158,7 +159,8 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
               minHeight: '100px',
               overflow: 'auto',
               margin: '10px 0',
-            }}>
+            }}
+          >
             {Object.values(products).map((product: any) => {
               return (
                 <Typography key={product.id} variant='body_short'>
@@ -196,7 +198,8 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                     </div>
                     <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
                       <Tooltip
-                        text={'Maximum number of products the optimizer should try to include in the combination'}>
+                        text={'Maximum number of products the optimizer should try to include in the combination'}
+                      >
                         <TextField
                           type='number'
                           label='Max number of products'
