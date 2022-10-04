@@ -159,7 +159,8 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
           onClick={() => setBridges({ Bridge: bridges.Bridge })}
           color='danger'
           variant='ghost'
-          style={{ maxWidth: '130px' }}>
+          style={{ maxWidth: '130px' }}
+        >
           Clear Plot
         </Button>
         <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color='danger' variant='ghost'>

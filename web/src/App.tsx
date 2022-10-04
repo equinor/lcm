@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { AuthContext, ParticleSizeContext } from './Context'
 
-interface LoginError {
+interface ILoginError {
   errorCode?: string
   errorMessage?: string
   message?: string
@@ -41,7 +41,7 @@ const AccessDenied = ({ errorMessage, hint }: any) => {
 }
 
 function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps) {
-  const [loginError, setLoginError] = useState<LoginError>({})
+  const [loginError, setLoginError] = useState<ILoginError>({})
   const [token, setToken] = useState<any>(null)
   const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 1000])
 
@@ -64,9 +64,11 @@ function App({ msalError, isAuthenticated, getAccessToken }: AuthComponentProps)
   if (token) {
     return (
       <AuthContext.Provider
-        value={{ token: token.accessToken, email: token.account.username, name: token.account.name }}>
+        value={{ token: token.accessToken, email: token.account.username, name: token.account.name }}
+      >
         <ParticleSizeContext.Provider
-          value={{ from: particleRange[0], to: particleRange[1], setRange: setParticleRange }}>
+          value={{ from: particleRange[0], to: particleRange[1], setRange: setParticleRange }}
+        >
           <Main />
         </ParticleSizeContext.Provider>
         <ToastContainer />

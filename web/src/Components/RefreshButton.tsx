@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, Scrim, CircularProgress } from '@equinor/eds-core-react'
+import { Button, Dialog, CircularProgress } from '@equinor/eds-core-react'
 
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
@@ -17,7 +17,7 @@ const ButtonWrapper = styled.div`
 `
 
 export const RefreshButton = () => {
-  const [scrim, setScrim] = useState<boolean>(false)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const apiToken: string = useContext(AuthContext)?.token
 
@@ -36,47 +36,43 @@ export const RefreshButton = () => {
 
   return (
     <>
-      <Button variant='outlined' onClick={() => setScrim(true)}>
+      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
         <Icon name='refresh' title='refresh' />
         Synchronize with SharePoint
       </Button>
-      {scrim && (
-        <Scrim onClose={() => setScrim(false)}>
-          <Dialog style={{ width: 'min-content' }}>
-            <Title>Synchronize SharePoint data</Title>
-            <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
-              <p>
-                This will synchronize products distribution and products metadata from SharePoint (
-                <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
-                  https://statoilsrm.sharepoint.com/sites/LCMTeamBlend
-                </a>
-                )
-              </p>
-              <p>
-                The sync job will take approximately 1 minute, and the LCM App will be <b>unavailable</b> during this
-                time.
-              </p>
-              {loading && <CircularProgress />}
-            </CustomContent>
-            <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
-              <ButtonWrapper>
-                <Button onClick={() => setScrim(false)} disabled={loading}>
-                  Cancel
-                </Button>
-                <Button
-                  color='danger'
-                  disabled={loading}
-                  onClick={() => {
-                    setLoading(true)
-                    syncSharePoint()
-                  }}>
-                  Sync Now
-                </Button>
-              </ButtonWrapper>
-            </Actions>
-          </Dialog>
-        </Scrim>
-      )}
+      <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>
+        <Title>Synchronize SharePoint data</Title>
+        <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+          <p>
+            This will synchronize products distribution and products metadata from SharePoint (
+            <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
+              https://statoilsrm.sharepoint.com/sites/LCMTeamBlend
+            </a>
+            )
+          </p>
+          <p>
+            The sync job will take approximately 1 minute, and the LCM App will be <b>unavailable</b> during this time.
+          </p>
+          {loading && <CircularProgress />}
+        </CustomContent>
+        <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
+          <ButtonWrapper>
+            <Button onClick={() => setDialogOpen(false)} disabled={loading}>
+              Cancel
+            </Button>
+            <Button
+              color='danger'
+              disabled={loading}
+              onClick={() => {
+                setLoading(true)
+                syncSharePoint()
+              }}
+            >
+              Sync Now
+            </Button>
+          </ButtonWrapper>
+        </Actions>
+      </Dialog>
     </>
   )
 }

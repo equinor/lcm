@@ -1,14 +1,13 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=/app/app.py
 ENV PYTHONPATH=/app
-ENV PATH="/root/.poetry/bin:${PATH}"
+ENV PATH="/app/.venv/bin:${PATH}"
 
-
-RUN apt-get update && apt-get upgrade -y && apt-get install -y curl
-RUN curl -sSL https://install.python-poetry.org | python -
-RUN /root/.local/bin/poetry config virtualenvs.create false
+RUN pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.in-project true
 
 # Needed for html => pdf conversion
 RUN apt-get update && apt-get install -y \
@@ -19,19 +18,13 @@ RUN apt-get update && apt-get install -y \
     texlive-latex-extra \
     wkhtmltopdf
 
+#RUN apt-get install -y libblas-dev liblapack-dev
+
 WORKDIR /app
 RUN chown -R 1000:1000 /app
 COPY pyproject.toml poetry.lock ./
-RUN /root/.local/bin/poetry install
-COPY ./calculators ./calculators
-COPY ./controllers ./controllers
-COPY ./classes ./classes
-COPY ./openapi ./openapi
-COPY ./plots ./plots
-COPY ./test_data ./test_data
-COPY ./tests ./tests
-COPY ./util ./util
-COPY __init__.py app.py config.py docker-entrypoint.sh ./
+RUN poetry install
+COPY . .
 USER 1000:1000
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["api"]
