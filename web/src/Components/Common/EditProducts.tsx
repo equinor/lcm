@@ -13,7 +13,7 @@ interface AddProductsProps {
 }
 
 export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts }: AddProductsProps): ReactElement => {
-  const [scrim, setScrim] = useState<boolean>(false)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [selectedProducts, setSelectedProducts] = useState<Products>(enabledProducts)
 
   useEffect(() => {
@@ -22,34 +22,31 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
 
   return (
     <>
-      <Button variant='outlined' onClick={() => setScrim(true)}>
+      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
         <Icon name='edit' title='edit' />
         Select products
       </Button>
-      {scrim && (
-        <Scrim onClose={() => setScrim(false)}>
-          <Dialog style={{ width: 'min-content' }}>
-            <Title>Select products in blend</Title>
-            <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
-              <SelectProducts
-                allProducts={allProducts}
-                enabledProducts={selectedProducts}
-                setEnabledProducts={setSelectedProducts}
-              />
-            </CustomContent>
-            <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
-              <Button
-                style={{ width: '200px' }}
-                onClick={() => {
-                  setScrim(false)
-                  setEnabledProducts(selectedProducts)
-                }}>
-                Ok
-              </Button>
-            </Actions>
-          </Dialog>
-        </Scrim>
-      )}
+      <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
+        <Title>Select products in blend</Title>
+        <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+          <SelectProducts
+            allProducts={allProducts}
+            enabledProducts={selectedProducts}
+            setEnabledProducts={setSelectedProducts}
+          />
+        </CustomContent>
+        <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+          <Button
+            style={{ width: '200px' }}
+            onClick={() => {
+              setDialogOpen(false)
+              setEnabledProducts(selectedProducts)
+            }}
+          >
+            Ok
+          </Button>
+        </Actions>
+      </Dialog>
     </>
   )
 }

@@ -1,7 +1,7 @@
-#!/bin/sh
+#! /usr/bin/env bash
 
 if [ "$1" = 'api' ]; then
-  if [ "$FLASK_ENV" = 'development' ]; then
+  if [ "$FLASK_DEBUG" = 'development' ]; then
         flask run --host=0.0.0.0
     else
         gunicorn -b 0.0.0.0:5000 \

@@ -36,7 +36,7 @@ const CustomTooltip = ({ active, payload }) => {
       <TooltipCard >
         <p style={{ fontWeight: "500", marginLeft: '5px' }}> {numMicrons <= 1 ? 'Micron: ' : 'Microns: '} {numMicrons}</p>
         {payload.map((payloadData) => {
-          return <p style={{ color: payloadData.stroke, padding: '0px', margin: '5px' }}>{payloadData.name}: {Math.round(payloadData.value)}</p>
+          return <p key={payloadData.name} style={{ color: payloadData.stroke, padding: '0px', margin: '5px' }}>{payloadData.name}: {Math.round(payloadData.value)}</p>
         })}
       </TooltipCard>
     );

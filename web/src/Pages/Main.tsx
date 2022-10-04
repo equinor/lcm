@@ -55,7 +55,8 @@ export default (): ReactElement => {
               display: 'grid',
               gridTemplateColumns: 'repeat(3, fit-content(100%))',
               gap: '16px',
-            }}>
+            }}
+          >
             <div>
               <StyledLink href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>
                 <Button variant='outlined'>
