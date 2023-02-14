@@ -11,6 +11,10 @@ This repository is the result from the merger of the two summer intern projects 
 
 ![plot](bridge-plot.png)
 
+Deployed environments:
+ - [Test](https://proxy-lost-circulation-material-test.radix.equinor.com)
+ - [Production](https://lost-circulation-material.app.radix.equinor.com)
+
 ## Requirements
 
 - docker
