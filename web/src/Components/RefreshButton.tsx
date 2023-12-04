@@ -9,7 +9,6 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import Icon from '../Icons'
 import { IAuthContext } from 'react-oauth2-code-pkce'
 
-const { Actions, Title, CustomContent } = Dialog
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -42,8 +41,11 @@ export const RefreshButton = () => {
         Synchronize with SharePoint
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>
-        <Title>Synchronize SharePoint data</Title>
-        <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+        <Dialog.Header>
+
+        <Dialog.Title>Synchronize SharePoint data</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
           <p>
             This will synchronize products distribution and products metadata from SharePoint (
             <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
@@ -55,8 +57,8 @@ export const RefreshButton = () => {
             The sync job will take approximately 1 minute, and the LCM App will be <b>unavailable</b> during this time.
           </p>
           {loading && <CircularProgress />}
-        </CustomContent>
-        <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
+        </Dialog.CustomContent>
+        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
           <ButtonWrapper>
             <Button onClick={() => setDialogOpen(false)} disabled={loading}>
               Cancel
@@ -72,7 +74,7 @@ export const RefreshButton = () => {
               Sync Now
             </Button>
           </ButtonWrapper>
-        </Actions>
+        </Dialog.Actions>
       </Dialog>
     </>
   )

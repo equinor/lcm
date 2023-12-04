@@ -1,20 +1,11 @@
 import styled from 'styled-components'
 import React, { ReactElement } from 'react'
 // @ts-ignore
-import { Tooltip as EDSTooltip } from '@equinor/eds-core-react'
+import { Tooltip as EDSTooltip, Icon } from '@equinor/eds-core-react'
+import { help_outline} from '@equinor/eds-icons'
 import { COLORS } from '../../Enums'
 
-const StyledTooltipIcon = styled.div`
-  background-color: white;
-  height: 18px;
-  margin: 15px 2px;
-  width: 18px;
-  border-radius: 20px;
-  border: #cccccc solid 1px;
-  color: ${COLORS.secondary};
-  display: flex;
-  font-size: 16px;
-  font-weight: 600;
+const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   &:hover {
@@ -24,7 +15,7 @@ const StyledTooltipIcon = styled.div`
 
 const TooltipWrapper = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 `
 
 interface TooltipProps {
@@ -34,10 +25,12 @@ interface TooltipProps {
 
 export const Tooltip = ({ text, children }: TooltipProps): ReactElement => {
   return (
-    <TooltipWrapper key={text}>
+    <TooltipWrapper>
       {children}
       <EDSTooltip title={text} placement={'top-end'}>
-        <StyledTooltipIcon>?</StyledTooltipIcon>
+        <Wrapper>
+        <Icon data={help_outline} size={18} style={{color: COLORS.secondary}}/>
+        </Wrapper>
       </EDSTooltip>
     </TooltipWrapper>
   )

@@ -24,7 +24,8 @@ export const Card = styled.div`
 export const CombinationTableHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 5px 10px;
+  align-items: self-end;
+  padding: 0px 10px;
   background-color: #f7f7f7;
   border-bottom: #bfbfbf 2px solid;
 `
