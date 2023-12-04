@@ -36,7 +36,7 @@ def products_pie(products: dict) -> str:
         product_values,
         autopct="%1.1f%%",
         startangle=90,
-        wedgeprops=dict(edgecolor="w", linewidth=1, width=0.3),
+        wedgeprops={"edgecolor": "w", "linewidth": 1, "width": 0.3},
         colors=COLORS,
     )
     ax.legend(wedges, product_names, title="Products", loc="center left", bbox_to_anchor=(0.92, 0.3, 0, 1))

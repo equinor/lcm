@@ -1,8 +1,6 @@
 from math import sqrt
-from typing import List
 
-from cachetools import cached, LFUCache
-
+from cachetools import LFUCache, cached
 from classes.product import Product
 from util.enums import BridgeOption
 
@@ -33,8 +31,8 @@ def theoretical_bridge(mode: str, value: int):
     return bridge_list
 
 
-def calculate_blend_cumulative(product_list: List[Product]):
-    cumulative_curve: List[float] = [0.0 for _ in SIZE_STEPS]
+def calculate_blend_cumulative(product_list: list[Product]):
+    cumulative_curve: list[float] = [0.0 for _ in SIZE_STEPS]
 
     for product in product_list:
         if product.share > 0:

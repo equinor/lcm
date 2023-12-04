@@ -11,3 +11,4 @@ api/tests/products_data.py
 /api/test_report.png
 /api/.coverage
 /api/test_data/interpolate_input.csv
+.python-version

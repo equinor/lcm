@@ -1,17 +1,15 @@
 import unittest
-from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.ticker import ScalarFormatter
-
 from calculators.bridge import SIZE_STEPS, theoretical_bridge
 from calculators.optimizer import Optimizer
 from config import Config
+from matplotlib.ticker import ScalarFormatter
 from util.enums import BridgeOption
 
 
-def values_within_deviation(array: List, allowed_deviation: float):
+def values_within_deviation(array: list, allowed_deviation: float):
     standard_deviation = np.std(array)
     largest_deviation = 0.0
     mean = np.mean(array)
@@ -2743,7 +2741,7 @@ class OptimizerTest(unittest.TestCase):
     @staticmethod
     def _short_test_wrapper(theoretical_bridge, density=350, max_iterations=2000, max_products=5):
         result_list = []
-        for i in range(2):
+        for _i in range(2):
             result = Optimizer(theoretical_bridge, product_data, density, max_iterations, max_products).optimize()
             result_list.append(result)
         fitness = [run["score"] for run in result_list]
@@ -2773,7 +2771,7 @@ def show_plot():
     bridgeplot.axes.set_xlim([0.01, 10000])
 
     result_list = []
-    for i in range(1):
+    for _i in range(1):
         result = Optimizer(
             products=product_data, bridge=bridge, density_goal=350, max_iterations=1000, particle_range=(10, 100)
         ).optimize()

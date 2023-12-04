@@ -1,8 +1,6 @@
 from datetime import datetime
-from typing import Dict, List
 
 import pypandoc
-
 from config import Config
 from plots.bridge import bridge_plot
 from plots.evolution import evolution_plot
@@ -21,7 +19,7 @@ class Weighting:
 
 class Report:
     score: float = None
-    curve: List[float] = None
+    curve: list[float] = None
     pill_volume: int = None
     pill_density: int = None
     bridging_mode: str = None
@@ -33,7 +31,7 @@ class Report:
     user: str = None
 
     @classmethod
-    def from_dict(cls, _dict: Dict):
+    def from_dict(cls, _dict: dict):
         instance = cls()
         instance.score = _dict["fitness"]
         instance.curve = _dict["curve"]
@@ -93,7 +91,7 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
 </body>"""
 
 
-def create_report(request: Dict, bridge: bool = True):
+def create_report(request: dict, bridge: bool = True):
     report: Report = Report().from_dict(request)
     pie_chart = products_pie(report.products)
     bridge_graph = bridge_plot(report.products, report.bridging_mode, report.bridging_value) if bridge else ""

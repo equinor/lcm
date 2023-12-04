@@ -1,11 +1,8 @@
-from typing import List
-
 import xlrd
-
 from xlrd.sheet import Sheet
 
 
-def get_column_values(sheet: Sheet, column_name: str) -> List:
+def get_column_values(sheet: Sheet, column_name: str) -> list:
     column_index = _find_column_index(sheet, column_name)
 
     if column_index == -1:

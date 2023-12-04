@@ -3,12 +3,11 @@ from functools import wraps
 
 import jwt
 import requests
-from cachetools import cached, TTLCache
+from cachetools import TTLCache, cached
+from classes.user import User
+from config import Config
 from flask import abort, g, request
 from jwt.algorithms import RSAAlgorithm
-
-from config import Config
-from classes.user import User
 from util.exceptions import AuthenticationException
 
 
@@ -20,19 +19,17 @@ def get_cert(key_id):
     Time-To-Live cache that expires every 24h
     """
     try:
-        jwks = requests.get(Config.AUTH_JWK_URL).json()["keys"]
-        return next((RSAAlgorithm.from_jwk(json.dumps(key)) for key in jwks if key["kid"] == key_id))
+        jwks = requests.get(Config.AUTH_JWK_URL, timeout=30).json()["keys"]
+        return next(RSAAlgorithm.from_jwk(json.dumps(key)) for key in jwks if key["kid"] == key_id)
     except requests.RequestException as error:
-        raise AuthenticationException(str(error))
+        raise AuthenticationException(str(error)) from error
 
 
 def decode_jwt(token):
     try:
         # If Auth is configured with a secret, we use that to decode the token
         if Config.AUTH_SECRET:
-            decoded_token = jwt.decode(
-                token, Config.AUTH_SECRET, algorithms="HS256", audience=Config.AUTH_JWT_AUDIENCE
-            )
+            decoded_token = jwt.decode(token, Config.AUTH_SECRET, algorithms="HS256", audience=Config.AUTH_JWT_AUDIENCE)
         # If no secret provided, fallback to RSA based token signing.
         else:
             cert = get_cert(jwt.get_unverified_header(token)["kid"])
@@ -41,7 +38,7 @@ def decode_jwt(token):
         g.user = User(**decoded_token)
         return decoded_token
     except Exception as e:
-        raise AuthenticationException(str(e))
+        raise AuthenticationException(str(e)) from e
 
 
 def authorize(f):

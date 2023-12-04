@@ -2,11 +2,10 @@ import csv
 import json
 from datetime import datetime, timedelta
 from time import sleep
-from typing import io, List
+from typing import io
 
 from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableService
-
 from config import Config
 
 
@@ -25,7 +24,7 @@ def _wait_for_table_to_be_created(table_service: TableService, table_name: str) 
                 print("Giving up")
                 print("Could not create Azure Table!")
                 break
-            print(f"Retrying in 5 seconds...")
+            print("Retrying in 5 seconds...")
             sleep(5)
     return is_created
 
@@ -51,7 +50,7 @@ def get_service():
     return TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
 
 
-def process_meta_blob(meta_file: io.TextIO) -> List[dict]:
+def process_meta_blob(meta_file: io.TextIO) -> list[dict]:
     reader = csv.DictReader(meta_file)
 
     products = []
@@ -70,9 +69,7 @@ def process_meta_blob(meta_file: io.TextIO) -> List[dict]:
                 # TODO: Prod data is missing Sack_size
                 "sack_size": row["sack_size"] if row["sack_size"] else 25,
                 # TODO: Why is 'environmental' read so strange from SharePoint?
-                "environmental": json.loads(row["environmental"])["Value"].upper()
-                if row["environmental"]
-                else "Green",
+                "environmental": json.loads(row["environmental"])["Value"].upper() if row["environmental"] else "Green",
             }
         )
     return products

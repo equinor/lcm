@@ -6,7 +6,6 @@ from calculators.fraction_interpolator import fraction_interpolator
 class InterpolatorTest(unittest.TestCase):
     @staticmethod
     def test_interpolator():
-
         a_x = [
             34.673685,
             39.810717,

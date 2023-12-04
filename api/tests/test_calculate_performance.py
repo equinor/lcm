@@ -1,5 +1,4 @@
 import unittest
-from typing import List
 
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
@@ -7,7 +6,7 @@ from classes.product import Product
 from tests.optimizer_test import product_data
 from util.enums import BridgeOption
 
-products_result: List[Product] = []
+products_result: list[Product] = []
 volume = 10
 combination = {"1b": 10, "1l": 20, "1s": 1}
 for p in product_data:

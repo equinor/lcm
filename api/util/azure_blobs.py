@@ -1,13 +1,12 @@
 import io
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Dict, Iterator, List
 
 from azure.storage.blob import BlobProperties, ContainerClient
-from xlrd.sheet import Sheet
-
 from config import Config
 from util.azure_table import process_meta_blob, sanitize_row_key
 from util.excel import excel_raw_file_to_sheet, sheet_to_bridge_dict
+from xlrd.sheet import Sheet
 
 
 def get_container_client() -> ContainerClient:
@@ -18,7 +17,7 @@ def get_container_client() -> ContainerClient:
     )
 
 
-def from_blobs_to_excel(blobs: Iterator[BlobProperties], container_client: ContainerClient) -> Dict[str, Sheet]:
+def from_blobs_to_excel(blobs: Iterator[BlobProperties], container_client: ContainerClient) -> dict[str, Sheet]:
     sheets = {}
     for blob in blobs:
         if Path(blob.name).suffix != ".xlsx":
@@ -31,14 +30,14 @@ def from_blobs_to_excel(blobs: Iterator[BlobProperties], container_client: Conta
     return sheets
 
 
-def get_metadata_blob_data() -> List[Dict]:
+def get_metadata_blob_data() -> list[dict]:
     blob_client = get_container_client().get_blob_client("metadata.csv")
     raw_blob = blob_client.download_blob().readall()
     f = io.StringIO(raw_blob.decode(encoding="utf-8"))
     return process_meta_blob(f)
 
 
-def get_product_blobs_data() -> Dict[str, Dict]:
+def get_product_blobs_data() -> dict[str, dict]:
     container_client = get_container_client()
     all_blobs = container_client.list_blobs()
     sheets = from_blobs_to_excel(all_blobs, container_client)

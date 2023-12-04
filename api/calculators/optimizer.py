@@ -1,12 +1,11 @@
+# ruff: noqa: S311
 import pickle  # nosec
 import random
 from datetime import datetime
-from typing import Dict, List
 
 import numpy as np
-from cachetools import cached, LFUCache
-
-from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS
+from cachetools import LFUCache, cached
+from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
 
 
@@ -28,14 +27,14 @@ class Optimizer:
 
     def __init__(
         self,
-        bridge: List[float],
-        products: List[dict] = None,
+        bridge: list[float],
+        products: list[dict] | None = None,
         density_goal: int = 350,
         volume: int = 10,
         max_iterations: int = 500,
         max_products: int = 999,
         particle_range=None,
-        weights: Dict = None,
+        weights: dict | None = None,
     ):
         self.products = products
         self.bridge = bridge
@@ -81,7 +80,7 @@ class Optimizer:
             "bridge_score": bridge_score,
         }
 
-    def calculate_performance(self, experimental_bridge: list, products_result: List[Product]) -> dict:
+    def calculate_performance(self, experimental_bridge: list, products_result: list[Product]) -> dict:
         bridge_fitness = 100 - self.bridge_score(experimental_bridge)
         mass_score = 100 - self.mass_score(products_result, squash=False)
         products_score = 100 - (self.n_products_score(products_result, squash=False))
@@ -111,13 +110,13 @@ class Optimizer:
                 population.append(combo_dict)
 
         else:
-            for i in range(self.POPULATION_SIZE):
+            for _i in range(self.POPULATION_SIZE):
                 combo_dict = {}
                 for j in range(len(self.products)):
                     combo_dict[self.products[j]["id"]] = round(random.uniform(0, max_initial_density), 2)
                 population.append(combo_dict)
 
-        for i in range(self.NUMBER_OF_CHILDREN):
+        for _i in range(self.NUMBER_OF_CHILDREN):
             children.append([])
 
         return population, children
@@ -142,7 +141,7 @@ class Optimizer:
             raise ValueError("The experimental bridge has a different size than the theoretical")
         diff_list = []
         i = 0
-        for theo, blend in zip(self.bridge, experimental_bridge):
+        for theo, blend in zip(self.bridge, experimental_bridge, strict=False):
             if self.particle_range[0] < SIZE_STEPS[i] < self.particle_range[1]:
                 diff_list.append((theo - blend) ** 2)
             i += 1
@@ -152,10 +151,10 @@ class Optimizer:
         return score
 
     @cached(cache=LFUCache(8192))
-    def fitness_score(self, pickled_combination: bytes):  # nosec
-        combination = pickle.loads(pickled_combination)
+    def fitness_score(self, pickled_combination: bytes):
+        combination = pickle.loads(pickled_combination)  # noqa: S301
 
-        products: List[Product] = []
+        products: list[Product] = []
         for p in self.products:
             if combination[p["id"]] > 0:
                 products.append(
@@ -280,7 +279,7 @@ class Optimizer:
 
         return children
 
-    def mass_score(self, products: List[Product], squash: bool = True) -> float:
+    def mass_score(self, products: list[Product], squash: bool = True) -> float:
         combination_mass = sum([p.mass for p in products])
         diff = abs(self.mass_goal - combination_mass)
         percentage_diff = (100 / self.mass_goal) * diff
@@ -288,7 +287,7 @@ class Optimizer:
             return percentage_diff / self.MASS_IMPORTANCE
         return percentage_diff
 
-    def n_products_score(self, products: List[Product], squash: bool = True) -> float:
+    def n_products_score(self, products: list[Product], squash: bool = True) -> float:
         if len(products) <= self.max_products:
             return 0
         diff = len(products) - self.max_products

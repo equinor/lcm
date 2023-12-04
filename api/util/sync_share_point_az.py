@@ -4,15 +4,14 @@ from time import sleep
 import requests
 from azure.common import AzureMissingResourceHttpError
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
-from urllib3.exceptions import HeaderParsingError
-
 from config import Config
+from urllib3.exceptions import HeaderParsingError
 from util.azure_blobs import get_metadata_blob_data, get_product_blobs_data
 from util.azure_table import create_table
 
 
 def sync_sharepoint_and_az_blobs():
-    request = requests.get(Config.SYNC_BLOBS_APP_URL)
+    request = requests.get(Config.SYNC_BLOBS_APP_URL, timeout=30)
     request.raise_for_status()
     print(f"Triggered Logic App by HTTP request for url; {Config.SYNC_BLOBS_APP_URL}")
 
