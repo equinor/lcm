@@ -6,8 +6,8 @@ import { ProductResult } from '../Optimization/OptimizationContainer'
 import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
-import { AuthContext, User } from '../../Context'
 import Icon from '../../Icons'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const LabelWrapper = styled.div`
   display: flex;
@@ -64,7 +64,7 @@ const Densities = ({ products, productResults }: DensitiesProps): ReactElement =
 }
 
 const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
-  const user: User = useContext(AuthContext)
+  const { tokenData, token } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
 
   function onExportClick() {
@@ -79,11 +79,11 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       totalMass: optimizationData.totalMass,
       products: optimizationData.products,
       weighting: optimizationData.weighting,
-      email: user.email,
-      user: user.name,
+      email: tokenData.upn || 'none',
+      user: tokenData.name,
     }
     setLoading(true)
-    ReportAPI.postReportApi(user.token, reportRequest)
+    ReportAPI.postReportApi(token, reportRequest)
       .then(res => {
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(res.data)

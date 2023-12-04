@@ -6,10 +6,10 @@ import styled from 'styled-components'
 import { Card } from './CardContainer'
 import { Bridge, Combination, GraphData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
-import { CombinationAPI, FractionsAPI } from '../../Api'
-import { AuthContext } from '../../Context'
+import { CombinationAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
 import { findDValue, findGraphData } from '../../Utils'
+import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
 
 const CardHeader = styled.div`
   display: flex;
@@ -56,7 +56,7 @@ export const CombinationCard = ({
   const [totalMass, setTotalMass] = useState<number>(0)
   const [totalDensity, setTotalDensity] = useState<number>(0)
   const [enabledProducts, setEnabledProducts] = useState<Products>({})
-  const apiToken: string = useContext(AuthContext).token
+  const { token }: IAuthContext = useContext(AuthContext)
   const [bridge, setBridge] = useState<Bridge>()
   const [D10, setD10] = useState<number>(0)
   const [D50, setD50] = useState<number>(0)
@@ -87,7 +87,7 @@ export const CombinationCard = ({
       setTotalDensity(Math.round(newDensity * 10) / 10)
     }
 
-    CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
+    CombinationAPI.postCombinationApi(token, Object.values(combination.values))
       .then(response => {
         let newBridge: Bridge = { ...bridge, [combination.name]: response.data.bridge }
         setBridge(newBridge)

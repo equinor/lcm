@@ -13,5 +13,3 @@ export interface User {
   email: string
   name: string
 }
-
-export const AuthContext = createContext<User>({ token: '', email: '', name: '' })

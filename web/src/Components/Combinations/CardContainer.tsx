@@ -7,8 +7,8 @@ import { Button } from '@equinor/eds-core-react'
 import { Bridge, Combinations } from '../../Types'
 import Icon from '../../Icons'
 import { FractionsAPI } from '../../Api'
-import { AuthContext } from '../../Context'
 import { ErrorToast } from '../Common/Toast'
+import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
 export const Card = styled.div`
   margin: 10px;
   padding: 10px;
@@ -74,12 +74,12 @@ export const CardContainer = ({
   removeBridge,
   bridges,
 }: CardContainerProps) => {
-  const apiToken: string = useContext(AuthContext).token
+  const { token }: IAuthContext = useContext(AuthContext)
   const [sizeFractions, setSizeFractions] = useState<number[]>([])
 
   // Load size fractions once on first render
   useEffect(() => {
-    FractionsAPI.getFractionsApi(apiToken)
+    FractionsAPI.getFractionsApi(token)
       .then(response => {
         setSizeFractions(response.data.size_fractions)
       })

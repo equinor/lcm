@@ -105,7 +105,7 @@ def create_report(request: dict, bridge: bool = True):
         format="html",
         outputfile=f"{Config.HOME_DIR}/report.pdf",
         extra_args=[
-            "--to",
+            "--metadata title='LCM Report'" "--to",
             "html",
             "--css",
             f"{Config.HOME_DIR}/util/report.css",

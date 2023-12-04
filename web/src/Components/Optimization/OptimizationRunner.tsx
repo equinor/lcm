@@ -8,7 +8,7 @@ import { Products } from '../../Types'
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
 import { ErrorToast } from '../Common/Toast'
-import { AuthContext, ParticleSizeContext } from '../../Context'
+import { ParticleSizeContext } from '../../Context'
 import EditProducts from '../Common/EditProducts'
 import useLocalStorage from '../../Hooks'
 import Icon from '../../Icons'
@@ -16,6 +16,7 @@ import numberOfProductsFitnessFormulaImg from './FormulaPictures/NumberOfProduct
 import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
 import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -45,7 +46,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [failedRun, setFailedRun] = useState<boolean>(false)
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const apiToken: string = useContext(AuthContext)?.token
+  const { token } = useContext(AuthContext)
   const [iterations, setIterations] = useState<number>(2000)
   const [maxProducts, setMaxProducts] = useState<number>(5)
   const [pill, setPill] = useState<Pill>({
@@ -64,7 +65,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
 
   const handleOptimize = () => {
     setLoading(true)
-    OptimizerAPI.postOptimizerApi(apiToken, {
+    OptimizerAPI.postOptimizerApi(token, {
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
