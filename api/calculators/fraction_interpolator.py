@@ -1,25 +1,22 @@
 import csv
-import math
 from copy import copy
-from typing import Dict, List
-
-from numpy import log
 
 from calculators.bridge import SIZE_STEPS
+from numpy import log
 
 
-def lookup_smaller(table: Dict, value: float):
+def lookup_smaller(table: dict, value: float):
     n = [i for i in table.keys() if i <= value]
     return max(n)
 
 
-def lookup_bigger(table: Dict, value: float):
+def lookup_bigger(table: dict, value: float):
     n = [i for i in table.keys() if i >= value]
     return min(n)
 
 
-def fraction_interpolator(x: List[float], y: List[float], z: List[float]) -> List[float]:
-    table_dict = {_x: _y for _x, _y in zip(x, y)}
+def fraction_interpolator(x: list[float], y: list[float], z: list[float]) -> list[float]:
+    table_dict = dict(zip(x, y, strict=False))
     max_x = max(x)
 
     z_table = {}
@@ -57,7 +54,7 @@ def from_csv_to_csv():
             with open(f"test_data/{name}.csv", "w+") as newcsvfile:
                 writer = csv.DictWriter(newcsvfile, fieldnames=["Size", "Cumulative"])
                 writer.writeheader()
-                for step, interpol_value in zip(SIZE_STEPS, b_y):
+                for step, interpol_value in zip(SIZE_STEPS, b_y, strict=False):
                     writer.writerow({"Size": step, "Cumulative": interpol_value})
 
 

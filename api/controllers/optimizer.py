@@ -1,11 +1,8 @@
-from typing import Dict, List, Tuple
-
-from flask import Response
-
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
 from classes.product import Product
 from controllers.products import products_get
+from flask import Response
 
 
 def optimizer_request_handler(
@@ -17,8 +14,8 @@ def optimizer_request_handler(
     option="AVERAGE_PORESIZE",
     iterations: int = 500,
     max_products: int = 999,
-    particle_range: Tuple[float, float] = (1.0, 100),
-    weights: Dict = None,
+    particle_range: tuple[float, float] = (1.0, 100),
+    weights: dict | None = None,
 ):
     int_iterations = int(iterations)
     if int_iterations <= 0:
@@ -56,7 +53,7 @@ def optimizer_request_handler(
     optimizer_result = optimizer.optimize()
     combination = optimizer_result["combination"]
 
-    products_result: List[Product] = []
+    products_result: list[Product] = []
     for p in selected_products:
         if p["id"] in combination.keys():
             products_result.append(

@@ -2,11 +2,10 @@ import base64
 from io import BytesIO
 
 import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
-
-from calculators.bridge import calculate_blend_cumulative, SIZE_STEPS, theoretical_bridge
+from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative, theoretical_bridge
 from classes.product import Product
 from controllers.products import products_get
+from matplotlib.ticker import ScalarFormatter
 
 
 def bridge_plot(products: dict, mode, value) -> str:

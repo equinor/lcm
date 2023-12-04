@@ -1,8 +1,8 @@
 import unittest
 
 from tests.utils import read_file
-from util.excel import excel_raw_file_to_sheet, sheet_to_bridge_dict
 from util.azure_table import process_meta_blob
+from util.excel import excel_raw_file_to_sheet, sheet_to_bridge_dict
 
 
 class CreateProductTableRow(unittest.TestCase):

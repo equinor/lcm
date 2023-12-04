@@ -1,12 +1,10 @@
-from cachetools import cached, TTLCache
-from flask import Response
-from typing import Dict
-
+from cachetools import TTLCache, cached
 from config import Config
+from flask import Response
 from util.azure_table import get_service
 
 
-def sort_products(products: Dict[str, dict]):
+def sort_products(products: dict[str, dict]):
     values = list(products.values())
     values.sort(key=lambda p: (p["supplier"], p["id"]))
 

@@ -1,12 +1,11 @@
 import base64
 from io import BytesIO
-from typing import List
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
 
-def evolution_plot(progress: List[float]) -> str:
+def evolution_plot(progress: list[float]) -> str:
     # Crate Matplotlib figure
     fig, ax = plt.subplots()
 
