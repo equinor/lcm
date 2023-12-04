@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon } from '@equinor/eds-core-react'
 
-const { Actions, Title, CustomContent } = Dialog
 
 export const ContactButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
@@ -14,8 +13,11 @@ export const ContactButton = () => {
         Contact
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
-        <Title>Contact and support</Title>
-        <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
+        <Dialog.Header>
+
+        <Dialog.Title>Contact and support</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
           <p>
             Questions regarding access and usage of the LCM optimizer can be directed at Ove Braadland{' '}
             <a href={`mailto:${process.env.REACT_APP_APPLICATION_OWNER}`}>{process.env.REACT_APP_APPLICATION_OWNER}</a>
@@ -26,10 +28,10 @@ export const ContactButton = () => {
               https://github.com/equinor/lcm
             </a>
           </p>
-        </CustomContent>
-        <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+        </Dialog.CustomContent>
+        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
-        </Actions>
+        </Dialog.Actions>
       </Dialog>
     </>
   )

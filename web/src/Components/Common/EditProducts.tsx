@@ -4,7 +4,6 @@ import { Button, Dialog, Icon, Scrim } from '@equinor/eds-core-react'
 import SelectProducts from '../SelectProducts'
 import { Products } from '../../Types'
 
-const { Actions, Title, CustomContent } = Dialog
 
 interface AddProductsProps {
   allProducts: Products
@@ -23,19 +22,21 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
   return (
     <>
       <Button variant='outlined' onClick={() => setDialogOpen(true)}>
-        <Icon name='edit' title='edit' />
         Select products
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
-        <Title>Select products in blend</Title>
-        <CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+        <Dialog.Header>
+
+        <Dialog.Title>Select products in blend</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
           <SelectProducts
             allProducts={allProducts}
             enabledProducts={selectedProducts}
             setEnabledProducts={setSelectedProducts}
           />
-        </CustomContent>
-        <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+        </Dialog.CustomContent>
+        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
           <Button
             style={{ width: '200px' }}
             onClick={() => {
@@ -45,7 +46,7 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
           >
             Ok
           </Button>
-        </Actions>
+        </Dialog.Actions>
       </Dialog>
     </>
   )

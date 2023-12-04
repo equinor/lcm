@@ -106,9 +106,10 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           onClick={() => setDialogOpen(true)}
         />
         <Dialog style={{ width: 'auto' }} open={dialogOpen}>
-          <Title>Formulas used in optimizer</Title>
-          <CustomContent>
-            <div></div>
+                  <Dialog.Header>
+          <Dialog.Title>Formulas used in optimizer</Dialog.Title>
+        </Dialog.Header>
+          <Dialog.CustomContent>
             <table style={{ border: '50px' }}>
               <tr>
                 <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
@@ -140,10 +141,10 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                 </th>
               </tr>
             </table>
-          </CustomContent>
-          <Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+          </Dialog.CustomContent>
+          <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
             <Button onClick={() => setDialogOpen(false)}>Close</Button>
-          </Actions>
+          </Dialog.Actions>
         </Dialog>
       </Typography>
       <div style={{ display: 'flex' }}>
@@ -173,7 +174,6 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
         </InputWrapper>
         <InputWrapper>
-          <Typography variant='body_short'>Optimzier</Typography>
           <Accordion style={{ paddingTop: '10px' }}>
             <Accordion.Item>
               <Accordion.Header>Advanced options</Accordion.Header>
