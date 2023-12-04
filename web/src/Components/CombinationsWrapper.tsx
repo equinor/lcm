@@ -9,7 +9,7 @@ import { BridgeAPI, CombinationAPI } from '../Api'
 import styled from 'styled-components'
 import { BridgingOption } from '../Enums'
 import { ErrorToast } from './Common/Toast'
-import { AuthContext } from '../Context'
+import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce'
 import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
 
@@ -26,12 +26,12 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useLocalStorage<any>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
-  const apiToken: string = useContext(AuthContext).token
+  const { token }: IAuthContext = useContext(AuthContext)
 
   // Update optimal bridge
   useEffect(() => {
     if (!(bridgeValue >= 1)) return
-    BridgeAPI.postBridgeApi(apiToken, {
+    BridgeAPI.postBridgeApi(token, {
       option: mode,
       value: bridgeValue,
     })
@@ -42,13 +42,13 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
-  }, [bridgeValue, mode, apiToken])
+  }, [bridgeValue, mode, token])
 
   async function fetchBridges(_combinations: Combinations): Promise<any> {
     return await Promise.all(
       // @ts-ignore
       Object.values(_combinations).map(async (c: Combination) => {
-        let res = await CombinationAPI.postCombinationApi(apiToken, Object.values(c.values))
+        let res = await CombinationAPI.postCombinationApi(token, Object.values(c.values))
         return { [c.name]: res.data.bridge }
       })
     )
@@ -60,7 +60,7 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
       let newBridges: Bridge = {}
       storedBridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
 
-      BridgeAPI.postBridgeApi(apiToken, {
+      BridgeAPI.postBridgeApi(token, {
         option: mode,
         value: bridgeValue,
       }).then(response => {
@@ -72,7 +72,7 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
   function updateCombinationAndFetchBridge(combination: Combination) {
     // Don't fetch with empty values if combination does not exist
     if (!Object.values(combination.values).length && !Object.keys(bridges).includes(combination.name)) return
-    CombinationAPI.postCombinationApi(apiToken, Object.values(combination.values))
+    CombinationAPI.postCombinationApi(token, Object.values(combination.values))
       .then(response => {
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
       })

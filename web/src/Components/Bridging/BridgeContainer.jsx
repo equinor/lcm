@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { Radio, TextField, Typography } from '@equinor/eds-core-react'
 import { FractionsAPI } from '../../Api'
 import { BridgingOption, CeramicDiscsValues } from "../../Enums"
-import { ErrorToast } from "../Common/Toast"
-import { AuthContext } from "../../Context"
+import { AuthContext } from 'react-oauth2-code-pkce'
 import BridgeGraph from "./BridgeGraph"
 import {Tooltip} from "../Common/Tooltip";
 import {findDValue, findGraphData} from "../../Utils";
@@ -36,11 +35,11 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
   const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
-  const apiToken = useContext(AuthContext).token
+   const { token} = useContext(AuthContext)
 
   // Load size fractions once on first render
   useEffect(() => {
-    FractionsAPI.getFractionsApi(apiToken)
+    FractionsAPI.getFractionsApi(token)
         .then(response => {
           setSizeFractions(response.data.size_fractions)
         })
@@ -139,8 +138,8 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
                 <div style={{display: 'flex', flexDirection: "column"}}>
                   <label>Ceramic Discs Size</label>
                   <StyledSelect onChange={event =>onBridgeValueChange(event.target.value)}>
-                    {CeramicDiscsValues.map((value)=>{
-                      return <option value={value}>{value}</option>
+                    {CeramicDiscsValues.map((value, index)=>{
+                      return <option value={value} index={index+value}>{value}</option>
                     })}
                   </StyledSelect>
                   <small style={{alignSelf: "flex-end"}}>microns</small>

@@ -10,8 +10,9 @@ import { ProductsAPI } from '../Api'
 import CombinationsWrapper from '../Components/CombinationsWrapper'
 import { Products } from '../Types'
 import { ErrorToast } from '../Components/Common/Toast'
-import { AuthContext } from '../Context'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import { ContactButton } from '../Components/ContactButton'
+import { IAuthContext } from 'react-oauth2-code-pkce'
 
 const Body = styled.div`
   display: flex;
@@ -29,11 +30,11 @@ const StyledLink = styled.a`
 
 export default (): ReactElement => {
   const [products, setProducts] = useState<Products>({})
-  const apiToken: string = useContext(AuthContext).token
+  const { token }: IAuthContext = useContext(AuthContext)
 
   // On first render, fetch all products
   useEffect(() => {
-    ProductsAPI.getProductsApi(apiToken)
+    ProductsAPI.getProductsApi(token)
       .then(response => {
         setProducts(response.data)
       })
