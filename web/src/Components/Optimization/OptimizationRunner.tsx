@@ -106,9 +106,9 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           onClick={() => setDialogOpen(true)}
         />
         <Dialog style={{ width: 'auto' }} open={dialogOpen}>
-                  <Dialog.Header>
-          <Dialog.Title>Formulas used in optimizer</Dialog.Title>
-        </Dialog.Header>
+          <Dialog.Header>
+            <Dialog.Title>Formulas used in optimizer</Dialog.Title>
+          </Dialog.Header>
           <Dialog.CustomContent>
             <table style={{ border: '50px' }}>
               <tr>

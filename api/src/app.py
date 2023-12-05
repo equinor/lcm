@@ -1,5 +1,7 @@
 import traceback
 
+from flask import Flask, Response, request, send_file
+
 from calculators.bridge import SIZE_STEPS
 from config import Config
 from controllers.combination import bridge_from_combination
@@ -7,7 +9,6 @@ from controllers.optimal_bridge import bridgeRequestHandler
 from controllers.optimizer import optimizer_request_handler
 from controllers.products import products_get
 from controllers.report import create_report
-from flask import Flask, Response, request, send_file
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
 

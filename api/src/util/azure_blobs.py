@@ -3,10 +3,11 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from azure.storage.blob import BlobProperties, ContainerClient
+from xlrd.sheet import Sheet
+
 from config import Config
 from util.azure_table import process_meta_blob, sanitize_row_key
 from util.excel import excel_raw_file_to_sheet, sheet_to_bridge_dict
-from xlrd.sheet import Sheet
 
 
 def get_container_client() -> ContainerClient:

@@ -5,6 +5,7 @@ from datetime import datetime
 
 import numpy as np
 from cachetools import LFUCache, cached
+
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
 

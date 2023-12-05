@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon } from '@equinor/eds-core-react'
 
-
 export const ContactButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
 
@@ -14,8 +13,7 @@ export const ContactButton = () => {
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
         <Dialog.Header>
-
-        <Dialog.Title>Contact and support</Dialog.Title>
+          <Dialog.Title>Contact and support</Dialog.Title>
         </Dialog.Header>
         <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center', width: '500px' }}>
           <p>

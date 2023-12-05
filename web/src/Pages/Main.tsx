@@ -13,6 +13,7 @@ import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { ContactButton } from '../Components/ContactButton'
 import { IAuthContext } from 'react-oauth2-code-pkce'
+import { info_circle, open_in_browser } from '@equinor/eds-icons'
 
 const Body = styled.div`
   display: flex;
@@ -59,9 +60,13 @@ export default (): ReactElement => {
             }}
           >
             <div>
-              <StyledLink href={'https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'}>
+              <StyledLink
+                href='https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
                 <Button variant='outlined'>
-                  <Icon name='info_circle' title='info_circle' />
+                  <Icon data={info_circle} title='info_circle' />
                   LCM Library SharePoint
                 </Button>
               </StyledLink>
