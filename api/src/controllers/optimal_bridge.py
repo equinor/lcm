@@ -1,5 +1,6 @@
-from calculators.bridge import theoretical_bridge
 from flask import Response
+
+from calculators.bridge import theoretical_bridge
 
 
 def bridgeRequestHandler(option: str, value: int):

@@ -2,10 +2,11 @@ import unittest
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import ScalarFormatter
+
 from calculators.bridge import SIZE_STEPS, theoretical_bridge
 from calculators.optimizer import Optimizer
 from config import Config
-from matplotlib.ticker import ScalarFormatter
 from util.enums import BridgeOption
 
 

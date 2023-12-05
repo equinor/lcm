@@ -1,7 +1,7 @@
+import subprocess
+import tempfile
 from datetime import datetime
 
-import pypandoc
-from config import Config
 from plots.bridge import bridge_plot
 from plots.evolution import evolution_plot
 from plots.products_pie import products_pie
@@ -91,25 +91,27 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
 </body>"""
 
 
+OUT_PDF = "/tmp/report.pdf"  # noqa: S108
+
+
 def create_report(request: dict, bridge: bool = True):
     report: Report = Report().from_dict(request)
     pie_chart = products_pie(report.products)
     bridge_graph = bridge_plot(report.products, report.bridging_mode, report.bridging_value) if bridge else ""
     fitness_plot = evolution_plot(report.curve)
     html = as_html(report, pie_chart, bridge_graph, fitness_plot)
-    with open(f"{Config.HOME_DIR}/report.html", "w") as report_html:
-        report_html.write(html)
-    pypandoc.convert_file(
-        f"{Config.HOME_DIR}/report.html",
-        "pdf",
-        format="html",
-        outputfile=f"{Config.HOME_DIR}/report.pdf",
-        extra_args=[
-            "--metadata title='LCM Report'" "--to",
-            "html",
-            "--css",
-            f"{Config.HOME_DIR}/util/report.css",
-            "--pdf-engine-opt=--enable-local-file-access",
-        ],
-    )
-    return f"{Config.HOME_DIR}/report.pdf"
+
+    with tempfile.NamedTemporaryFile("w") as html_file:
+        html_file.write(html)
+        try:
+            subprocess.run(
+                [f"pandoc {html_file.name} -f html -o {OUT_PDF}"],
+                check=True,
+                shell=True,  # noqa: S602
+                capture_output=True,
+            )
+        except subprocess.CalledProcessError as ex:
+            print(ex.stderr.decode())
+            raise ex
+
+    return OUT_PDF

@@ -1,8 +1,9 @@
 import csv
 from copy import copy
 
-from calculators.bridge import SIZE_STEPS
 from numpy import log
+
+from calculators.bridge import SIZE_STEPS
 
 
 def lookup_smaller(table: dict, value: float):

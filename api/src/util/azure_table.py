@@ -6,6 +6,7 @@ from typing import io
 
 from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableService
+
 from config import Config
 
 

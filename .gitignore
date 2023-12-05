@@ -4,11 +4,11 @@ web/node_modules
 **/__pycache__/**
 log.txt
 .env
-api/tests/products_data.py
+api/src/tests/products_data.py
 /api/algo_test_report.png
 /api/report.html
 /api/report.pdf
 /api/test_report.png
 /api/.coverage
-/api/test_data/interpolate_input.csv
+/api/src/test_data/interpolate_input.csv
 .python-version

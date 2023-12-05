@@ -4,8 +4,9 @@ from time import sleep
 import requests
 from azure.common import AzureMissingResourceHttpError
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
-from config import Config
 from urllib3.exceptions import HeaderParsingError
+
+from config import Config
 from util.azure_blobs import get_metadata_blob_data, get_product_blobs_data
 from util.azure_table import create_table
 

@@ -1,6 +1,7 @@
 from math import sqrt
 
 from cachetools import LFUCache, cached
+
 from classes.product import Product
 from util.enums import BridgeOption
 

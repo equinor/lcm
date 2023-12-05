@@ -1,8 +1,9 @@
+from flask import Response
+
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
 from classes.product import Product
 from controllers.products import products_get
-from flask import Response
 
 
 def optimizer_request_handler(

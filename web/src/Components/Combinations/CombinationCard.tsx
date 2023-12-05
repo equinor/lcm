@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Icon, Switch, Input} from '@equinor/eds-core-react'
+import { Button, Icon, Switch, Input } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
@@ -131,7 +131,9 @@ export const CombinationCard = ({
     <Card>
       <div>
         <CardHeader>
-          <Button variant='ghost_icon' onClick={()=>setIsHeaderEditable(!isHeaderEditable)}><Icon  name='edit' size={16} /></Button>
+          <Button variant='ghost_icon' onClick={() => setIsHeaderEditable(!isHeaderEditable)}>
+            <Icon name='edit' size={16} />
+          </Button>
           <Input
             id={`${combination.name}`}
             value={combinationName}

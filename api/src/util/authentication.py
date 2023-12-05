@@ -4,10 +4,11 @@ from functools import wraps
 import jwt
 import requests
 from cachetools import TTLCache, cached
-from classes.user import User
-from config import Config
 from flask import abort, g, request
 from jwt.algorithms import RSAAlgorithm
+
+from classes.user import User
+from config import Config
 from util.exceptions import AuthenticationException
 
 

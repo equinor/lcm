@@ -9,7 +9,6 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import Icon from '../Icons'
 import { IAuthContext } from 'react-oauth2-code-pkce'
 
-
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -42,8 +41,7 @@ export const RefreshButton = () => {
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>
         <Dialog.Header>
-
-        <Dialog.Title>Synchronize SharePoint data</Dialog.Title>
+          <Dialog.Title>Synchronize SharePoint data</Dialog.Title>
         </Dialog.Header>
         <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
           <p>

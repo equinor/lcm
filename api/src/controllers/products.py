@@ -1,6 +1,7 @@
 from cachetools import TTLCache, cached
-from config import Config
 from flask import Response
+
+from config import Config
 from util.azure_table import get_service
 
 
