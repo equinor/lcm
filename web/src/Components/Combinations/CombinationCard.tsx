@@ -209,7 +209,7 @@ export const CombinationCard = ({
             enabledProducts={enabledProducts}
             setEnabledProducts={updateEnabledProductsAndCombination}
           />
-          <Switch label='Plot' onClick={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
+          <Switch label='Plot' onChange={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
         </div>
       </div>
     </Card>

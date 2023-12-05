@@ -256,7 +256,7 @@ class Optimizer:
 
     def flip_bit_mutation(self, child):
         key = random.choice(list(child.keys()))
-        max_mutator = child[key] // 2
+        max_mutator = int(child[key] // 2)
         if max_mutator < self.MIN_MUTATOR_VALUE:
             max_mutator = self.MIN_MUTATOR_VALUE
 

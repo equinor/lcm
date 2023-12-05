@@ -77,7 +77,7 @@ def optimizer_request_handler(
         ),
         "totalMass": round(sum([p.mass for p in products_result]), 1),
         "cumulative": optimizer_result["cumulative_bridge"],
-        "executionTime": optimizer_result["execution_time"].seconds,
+        "executionTime": int(optimizer_result["execution_time"].microseconds / 1000),
         "fitness": optimizer_result["score"],
         "weighting": {
             "bridge": weights["bridge"],

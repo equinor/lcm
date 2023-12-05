@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from 'react'
+import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Typography, CircularProgress } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -67,6 +67,10 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
   const { tokenData, token } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
 
+  useEffect(() => {
+    window.scrollTo(0, 999999)
+  }, [])
+
   function onExportClick() {
     const reportRequest = {
       fitness: optimizationData.fitness,
@@ -115,7 +119,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
         </LabelWrapper>
         <LabelWrapper>
           <TextWrapper>Time:</TextWrapper>
-          <TextWrapper>{optimizationData.executionTime} seconds</TextWrapper>
+          <TextWrapper>{optimizationData.executionTime}ms</TextWrapper>
         </LabelWrapper>
       </div>
       <div style={{ display: 'flex', paddingTop: '20px' }}>
