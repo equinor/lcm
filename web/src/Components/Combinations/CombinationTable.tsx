@@ -86,6 +86,7 @@ export const CombinationTable = ({
                   type='number'
                   onChange={(event: any) => handleValueChange(id, event.target.value)}
                   style={{
+                    // @ts-ignore
                     '--eds-input-background': 'rgba(133,186,191,0.15)',
                   }}
                 />
