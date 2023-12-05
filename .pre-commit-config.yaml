@@ -3,7 +3,7 @@ repos:
   rev: v4.3.0
   hooks:
     - id: check-ast
-      language_version: python3.10
+      language_version: python3.12
     - id: check-merge-conflict
     - id: check-json
     - id: check-yaml

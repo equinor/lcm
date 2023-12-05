@@ -12,7 +12,7 @@ if [ "$1" = 'api' ]; then
             --log-file=- \
             --workers 4 \
             --timeout 60 \
-            src/app:app
+            src.app:app
     fi
 else
   exec "$@"
