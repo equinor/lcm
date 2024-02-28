@@ -3,7 +3,7 @@ import PillInput, { Pill } from './PillInput'
 import { Weight, WeightOptions } from './WeightOptions'
 import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { Accordion, Button, CircularProgress, TextField, Typography, Dialog } from '@equinor/eds-core-react'
+import { Accordion, Button, CircularProgress, TextField, Typography, Dialog, Icon } from '@equinor/eds-core-react'
 import { Products } from '../../Types'
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
@@ -11,12 +11,12 @@ import { ErrorToast } from '../Common/Toast'
 import { ParticleSizeContext } from '../../Context'
 import EditProducts from '../Common/EditProducts'
 import useLocalStorage from '../../Hooks'
-import Icon from '../../Icons'
 import numberOfProductsFitnessFormulaImg from './FormulaPictures/NumberOfProductsFitnessFormula.png'
 import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
 import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
 import { AuthContext } from 'react-oauth2-code-pkce'
+import { info_circle, play } from '@equinor/eds-icons'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -33,7 +33,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   min-height: 250px;
-  width: fit-content;
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 `
 
 const InputWrapper = styled.div`
@@ -98,81 +100,95 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
 
   return (
     <Wrapper>
-      <Typography variant='h3' style={{ paddingBottom: '2rem' }}>
-        Optimizer
+      <div style={{ display: 'flex', alignItems: 'center', paddingBlockEnd: '2rem' }}>
+        <Typography variant='h3'>Optimizer</Typography>
         <Icon
           style={{ cursor: 'pointer', paddingLeft: '5px' }}
-          name='info_circle'
+          data={info_circle}
           onClick={() => setDialogOpen(true)}
         />
-        <Dialog style={{ width: 'auto' }} open={dialogOpen}>
-          <Dialog.Header>
-            <Dialog.Title>Formulas used in optimizer</Dialog.Title>
-          </Dialog.Header>
-          <Dialog.CustomContent>
-            <table style={{ border: '50px' }}>
-              <tr>
-                <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
-                <th style={{ padding: '10px' }}>
-                  <img src={totalFitnessFormulaImg} alt='Formula for total fitness' height={53} width={240}></img>
-                </th>
-              </tr>
-              <tr>
-                <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
-                <th style={{ padding: '10px' }}>
-                  <img src={BridgeFitnessFormulaImg} alt='Formula for total fitness' height={94} width={337}></img>
-                </th>
-              </tr>
-              <tr>
-                <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
-                <th style={{ padding: '10px' }}>
-                  <img src={MassFitnessFormulaImg} alt='Formula for total fitness' height={60} width={270}></img>
-                </th>
-              </tr>
-              <tr>
-                <th style={{ fontWeight: 'normal' }}>Number of products fitness:</th>
-                <th style={{ padding: '10px' }}>
-                  <img
-                    src={numberOfProductsFitnessFormulaImg}
-                    alt='Formula for total fitness'
-                    height={52}
-                    width={270}
-                  ></img>
-                </th>
-              </tr>
-            </table>
-          </Dialog.CustomContent>
-          <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
-            <Button onClick={() => setDialogOpen(false)}>Close</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Typography>
+      </div>
+      <Dialog style={{ width: 'auto' }} open={dialogOpen}>
+        <Dialog.Header>
+          <Dialog.Title>Formulas used in optimizer</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.CustomContent>
+          <table style={{ border: '50px' }}>
+            <tr>
+              <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
+              <th style={{ padding: '10px' }}>
+                <img src={totalFitnessFormulaImg} alt='Formula for total fitness' height={53} width={240}></img>
+              </th>
+            </tr>
+            <tr>
+              <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
+              <th style={{ padding: '10px' }}>
+                <img src={BridgeFitnessFormulaImg} alt='Formula for total fitness' height={94} width={337}></img>
+              </th>
+            </tr>
+            <tr>
+              <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
+              <th style={{ padding: '10px' }}>
+                <img src={MassFitnessFormulaImg} alt='Formula for total fitness' height={60} width={270}></img>
+              </th>
+            </tr>
+            <tr>
+              <th style={{ fontWeight: 'normal' }}>Number of products fitness:</th>
+              <th style={{ padding: '10px' }}>
+                <img
+                  src={numberOfProductsFitnessFormulaImg}
+                  alt='Formula for total fitness'
+                  height={52}
+                  width={270}
+                ></img>
+              </th>
+            </tr>
+          </table>
+        </Dialog.CustomContent>
+        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+          <Button onClick={() => setDialogOpen(false)}>Close</Button>
+        </Dialog.Actions>
+      </Dialog>
       <div style={{ display: 'flex' }}>
-        <InputWrapper>
-          <Typography variant='body_short'>Pill</Typography>
-          <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
-        </InputWrapper>
-        <InputWrapper>
-          <Typography variant='body_short'>Products</Typography>
-          <div
-            style={{
-              border: '1px solid #DCDCDC',
-              maxHeight: '300px',
-              minHeight: '100px',
-              overflow: 'auto',
-              margin: '10px 0',
-            }}
-          >
-            {Object.values(products).map((product: any) => {
-              return (
-                <Typography key={product.id} variant='body_short'>
-                  {product.title}
-                </Typography>
-              )
-            })}
+        <div>
+          <div style={{ display: 'flex' }}>
+            <InputWrapper>
+              <Typography variant='body_short'>Products</Typography>
+              <div
+                style={{
+                  border: '1px solid #DCDCDC',
+                  maxHeight: '300px',
+                  minHeight: '100px',
+                  overflow: 'auto',
+                  margin: '10px 0',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '4px',
+                  padding: '4px',
+                }}
+              >
+                {Object.values(products).map((product: any) => {
+                  return (
+                    <Typography key={product.id} variant='body_short'>
+                      {product.title}
+                    </Typography>
+                  )
+                })}
+              </div>
+              <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
+            </InputWrapper>
+            <InputWrapper>
+              <Typography variant='body_short'>Pill</Typography>
+              <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
+            </InputWrapper>
           </div>
-          <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
-        </InputWrapper>
+          <div style={{ display: 'flex', padding: '16px 0' }}>
+            <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
+              <Icon data={play} title='play' />
+              Run optimizer
+            </Button>
+            {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
+          </div>
+        </div>
         <InputWrapper>
           <Accordion style={{ paddingTop: '10px' }}>
             <Accordion.Item>
@@ -263,13 +279,6 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
             </Accordion.Item>
           </Accordion>
         </InputWrapper>
-      </div>
-      <div style={{ display: 'flex', padding: '16px 0' }}>
-        <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
-          <Icon name='play' title='play' />
-          Run optimizer
-        </Button>
-        {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
       </div>
 
       {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}

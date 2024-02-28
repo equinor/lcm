@@ -3,12 +3,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CombinationCard from './CombinationCard'
 // @ts-ignore
-import { Button } from '@equinor/eds-core-react'
+import { Button, Icon } from '@equinor/eds-core-react'
 import { Bridge, Combinations } from '../../Types'
-import Icon from '../../Icons'
 import { FractionsAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
 import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
+import { add } from '@equinor/eds-icons'
 export const Card = styled.div`
   margin: 10px;
   padding: 10px;
@@ -123,8 +123,8 @@ export const CardContainer = ({
             })
           }}
         >
-          <Icon name='add_box' title='add_box' />
-          Add combination
+          <Icon data={add} title='add_box' />
+          New combination
         </Button>
       </div>
     </>

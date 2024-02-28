@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Icon, Switch, Input } from '@equinor/eds-core-react'
+import { Button, Icon, Switch, Input, Tooltip, Divider } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
@@ -10,11 +10,13 @@ import { CombinationAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
 import { findDValue, findGraphData } from '../../Utils'
 import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
+import { edit, close, delete_to_trash } from '@equinor/eds-icons'
 
 const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: self-end;
+  margin-bottom: 0.5rem;
 `
 
 const CardSummation = styled.div`
@@ -131,9 +133,11 @@ export const CombinationCard = ({
     <Card>
       <div>
         <CardHeader>
-          <Button variant='ghost_icon' onClick={() => setIsHeaderEditable(!isHeaderEditable)}>
-            <Icon name='edit' size={16} />
-          </Button>
+          <Tooltip title={isHeaderEditable ? 'Toggle edit off' : 'Edit combination title'}>
+            <Button variant='ghost_icon' onClick={() => setIsHeaderEditable(!isHeaderEditable)}>
+              <Icon data={edit} size={16} style={{ width: '40px' }} />
+            </Button>
+          </Tooltip>
           <Input
             id={`${combination.name}`}
             value={combinationName}
@@ -151,9 +155,11 @@ export const CombinationCard = ({
               }
             }}
           />
-          <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
-            <Icon name='close' title='close' />
-          </Button>
+          <Tooltip title={'Delete combination'}>
+            <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
+              <Icon data={delete_to_trash} title='close' style={{ width: '40px' }} />
+            </Button>
+          </Tooltip>
         </CardHeader>
         {Object.keys(enabledProducts).length ? (
           <div>
