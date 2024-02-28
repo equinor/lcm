@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon } from '@equinor/eds-core-react'
+import { comment_important } from '@equinor/eds-icons'
 
 export const ContactButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
@@ -8,7 +9,7 @@ export const ContactButton = () => {
   return (
     <>
       <Button variant='outlined' onClick={() => setDialogOpen(true)}>
-        <Icon name='comment_important' title='filter products' />
+        <Icon data={comment_important} title='filter products' />
         Contact
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>

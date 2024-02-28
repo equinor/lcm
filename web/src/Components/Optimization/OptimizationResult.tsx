@@ -1,4 +1,3 @@
-import React from 'react'
 import SolutionData from '../Solution/SolutionData'
 import SolutionVisualisations from '../Solution/SolutionVisualisations'
 import { Products } from '../../Types'

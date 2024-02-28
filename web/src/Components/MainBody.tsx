@@ -3,7 +3,7 @@ import CardContainer from './Combinations/CardContainer'
 import OptimizationContainer from './Optimization/OptimizationContainer'
 import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Accordion, Button } from '@equinor/eds-core-react'
+import { Accordion, Button, Icon, Typography } from '@equinor/eds-core-react'
 import { BridgeAPI, CombinationAPI } from '../Api'
 // @ts-ignore
 import styled from 'styled-components'
@@ -12,16 +12,18 @@ import { ErrorToast } from './Common/Toast'
 import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce'
 import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
+import { colors } from '../colors'
+import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
 
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
 `
 
-export interface CombinationsWrapperProps {
+export interface MainBodyProps {
   products: Products
 }
 
-export default ({ products }: CombinationsWrapperProps): ReactElement => {
+export default ({ products }: MainBodyProps): ReactElement => {
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useLocalStorage<any>('combinations', {})
@@ -154,55 +156,66 @@ export default ({ products }: CombinationsWrapperProps): ReactElement => {
           setValue={setBridgeValue}
         />
       </MainComponentsWrapper>
-      <MainComponentsWrapper>
-        <Button
-          onClick={() => setBridges({ Bridge: bridges.Bridge })}
-          color='danger'
-          variant='ghost'
-          style={{ maxWidth: '130px' }}
-        >
-          Clear Plot
-        </Button>
-        <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color='danger' variant='ghost'>
-          Delete combinations
-        </Button>
-      </MainComponentsWrapper>
-      <MainComponentsWrapper>
-        <Accordion>
-          <Accordion.Item>
-            <Accordion.Header>Concentration blends</Accordion.Header>
-            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
-              <CardContainer
-                sacks={false}
-                combinations={combinations}
-                products={products}
-                updateCombination={updateCombinationAndFetchBridge}
-                renameCombination={renameCombination}
-                addCombination={addCombination}
-                removeCombination={removeCombination}
-                removeBridge={removeBridge}
-                bridges={bridges}
-              />
-            </Accordion.Panel>
-          </Accordion.Item>
-          <Accordion.Item>
-            <Accordion.Header>Sack blends</Accordion.Header>
-            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
-              <CardContainer
-                sacks={true}
-                combinations={combinations}
-                products={products}
-                updateCombination={updateCombinationAndFetchBridge}
-                renameCombination={renameCombination}
-                removeCombination={removeCombination}
-                addCombination={addCombination}
-                removeBridge={removeBridge}
-                bridges={bridges}
-              />
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </MainComponentsWrapper>
+      <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant={'h3'}>Blends</Typography>
+            {/* <Icon style={{ cursor: 'pointer', paddingLeft: '5px' }} data={info_circle} /> */}
+          </div>
+          <div style={{ display: 'flex' }}>
+            <Button
+              onClick={() => setBridges({ Bridge: bridges.Bridge })}
+              color='danger'
+              variant='ghost'
+              style={{ maxWidth: '130px' }}
+            >
+              <Icon data={visibility_off} />
+              Hide blends
+            </Button>
+            <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color='danger' variant='ghost'>
+              <Icon data={delete_to_trash} />
+              Delete blends
+            </Button>
+          </div>
+        </div>
+
+        <div style={{ padding: '0.5rem 0px 0.5rem 0px' }}>
+          <Accordion>
+            <Accordion.Item>
+              <Accordion.Header>Concentration blends</Accordion.Header>
+              <Accordion.Panel style={{ overflow: 'auto', backgroundColor: `${colors.background}` }}>
+                <CardContainer
+                  sacks={false}
+                  combinations={combinations}
+                  products={products}
+                  updateCombination={updateCombinationAndFetchBridge}
+                  renameCombination={renameCombination}
+                  addCombination={addCombination}
+                  removeCombination={removeCombination}
+                  removeBridge={removeBridge}
+                  bridges={bridges}
+                />
+              </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item>
+              <Accordion.Header>Sack blends</Accordion.Header>
+              <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
+                <CardContainer
+                  sacks={true}
+                  combinations={combinations}
+                  products={products}
+                  updateCombination={updateCombinationAndFetchBridge}
+                  renameCombination={renameCombination}
+                  removeCombination={removeCombination}
+                  addCombination={addCombination}
+                  removeBridge={removeBridge}
+                  bridges={bridges}
+                />
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        </div>
+      </div>
       <MainComponentsWrapper>
         {/* @ts-ignore*/}
         <OptimizationContainer

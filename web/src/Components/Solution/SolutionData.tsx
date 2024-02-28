@@ -1,13 +1,13 @@
 import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Typography, CircularProgress } from '@equinor/eds-core-react'
+import { Button, Typography, CircularProgress, Icon } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { ProductResult } from '../Optimization/OptimizationContainer'
 import { Products } from '../../Types'
 import { ReportAPI } from '../../Api'
 import { ErrorToast } from '../Common/Toast'
-import Icon from '../../Icons'
 import { AuthContext } from 'react-oauth2-code-pkce'
+import { save } from '@equinor/eds-icons'
 
 const LabelWrapper = styled.div`
   display: flex;
@@ -124,7 +124,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </div>
       <div style={{ display: 'flex', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '170px' }} disabled={loading}>
-          <Icon name='save' title='export' />
+          <Icon data={save} title='export' />
           Export solution
         </Button>
 
