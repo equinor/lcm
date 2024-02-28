@@ -73,8 +73,8 @@ export function BridgeGraph({ bridges, sizeFractions }) {
   }, [bridges, sizeFractions])
 
   return (
-    <div style={{ paddingLeft: '5%' }}>
-      <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }} width={750} height={420}>
+    <div>
+      <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }} width={980} height={420}>
         {/* Defines a gradient applied to the areaPlot to highlight selected particle size range*/}
         <defs>
           <linearGradient id="particleArea">
@@ -96,7 +96,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
         />
         <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend  verticalAlign='middle' align='right' width={150}/>
         {Object.entries(bridges).map(([name, cumulative], index) => (
           <Area
             type="monotone"
