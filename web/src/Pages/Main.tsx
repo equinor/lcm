@@ -18,8 +18,8 @@ import { info_circle, open_in_browser } from '@equinor/eds-icons'
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 3%;
-  padding-right: 3%;
+  padding-left: 1rem;
+  padding-right: 1rem;
   font-family: 'Equinor';
 `
 const StyledLink = styled.a`

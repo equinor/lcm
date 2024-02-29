@@ -13,8 +13,9 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  border-radius: 4px 0 4px 4px; 
+  border-radius: 4px; 
   padding: 1rem; 
+  gap: 10px 0px;
 `
 
 const RadioWrapper = styled.div`
