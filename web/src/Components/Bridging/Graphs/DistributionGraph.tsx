@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { findGraphData } from '../../Utils'
-import { differentiateArrayObjects } from './utils'
+import { findGraphData } from '../../../Utils'
+import { differentiateArrayObjects } from '../utils'
 import BridgeGraph from './BridgeGraph'
 
 export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
