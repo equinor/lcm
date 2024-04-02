@@ -1,6 +1,7 @@
 web/node_modules
 /.idea/
 /api/.venv/
+**/build
 **/__pycache__/**
 log.txt
 .env

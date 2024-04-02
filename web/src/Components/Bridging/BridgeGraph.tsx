@@ -73,7 +73,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
   }, [bridges, sizeFractions])
 
   return (
-    <div>
+    <div style={{backgroundColor: 'white', borderRadius: '0.5rem'}}>
       <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }} width={980} height={420}>
         {/* Defines a gradient applied to the areaPlot to highlight selected particle size range*/}
         <defs>
