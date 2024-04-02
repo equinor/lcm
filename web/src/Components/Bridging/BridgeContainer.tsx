@@ -75,8 +75,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   }
 
   return (
-    //<div style={{ display: 'flex' }}>
-    <div>
+    <div style={{ display: 'flex', overflow: 'auto' }}>
       <InputContainer
         mode={mode}
         onBridgeOptionChange={onBridgeOptionChange}
@@ -87,9 +86,9 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
         bridgeValueVariant={bridgeValueVariant}
         bridgeValueHelperText={bridgeValueHelperText}
       />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
-        <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
+      <div style={{display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
+      <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
+      <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
       </div>
     </div>
   )
