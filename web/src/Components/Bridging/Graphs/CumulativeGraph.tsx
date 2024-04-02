@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ParticleSizeContext } from '../../Context'
-import { findGraphData } from '../../Utils'
+import { ParticleSizeContext } from '../../../Context'
+import { findGraphData } from '../../../Utils'
 import BridgeGraph from './BridgeGraph'
 
 export function CumulativeGraph({ bridges, sizeFractions }) {

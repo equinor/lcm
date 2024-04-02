@@ -5,8 +5,8 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
-import CumulativeGraph from './CumulativeGraph'
-import DistributionGraph from './DistributionGraph'
+import CumulativeGraph from './Graphs/CumulativeGraph'
+import DistributionGraph from './Graphs/DistributionGraph'
 
 export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [sizeFractions, setSizeFractions] = useState([])
