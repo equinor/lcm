@@ -29,7 +29,7 @@ const TooltipCard = styled.div`
 `
 
 
-const CustomTooltip = ({ active, payload }) => {
+const GraphTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const numMicrons = Math.round(payload[0].payload.size)
     return (
@@ -61,14 +61,14 @@ export function BridgeGraph({ bridges, sizeFractions }) {
   }, [particleRange, sizeFractions])
 
   function particleSizeOffsetPercentage(offsetSize) {
-    let index = sizeFractions.findIndex(size => size > offsetSize)
+    const index = sizeFractions.findIndex(size => size > offsetSize)
     if (index === -1) return ""
-    let percentage = (index / sizeFractions.length) * 100
-    return `${parseInt(percentage)}%`
+    const percentage = Math.round(index / sizeFractions.length) * 100
+    return `${percentage}%`
   }
 
   useEffect(() => {
-    let newGraphData = findGraphData(sizeFractions, bridges)
+    const newGraphData = findGraphData(sizeFractions, bridges)
     setGraphData(newGraphData)
   }, [bridges, sizeFractions])
 
@@ -95,7 +95,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
           height={70}
         />
         <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<GraphTooltip active={undefined} payload={undefined} />} />
         <Legend  verticalAlign='middle' align='right' width={150}/>
         {Object.entries(bridges).map(([name, cumulative], index) => (
           <Area
