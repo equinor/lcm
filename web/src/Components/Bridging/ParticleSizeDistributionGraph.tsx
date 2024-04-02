@@ -55,7 +55,7 @@ export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
           label={{ value: 'particle size (\u00B5m)', position: 'center', offset: 0 }}
           height={70}
         />
-        <YAxis type='number' label={{ value: 'Volume (%)', angle: '270' }} allowDataOverflow />
+        <YAxis type='number' label={{ value: 'Volume (%)', angle: '270' }} width={75} allowDataOverflow />
         <Tooltip />
         <Legend verticalAlign='bottom' align='center' />
         {Object.entries(bridges).map(([name, cumulative], index) => (

@@ -58,6 +58,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
           domain={[0, 100]}
           ticks={[20, 40, 60, 80, 100]}
           allowDataOverflow
+          width={75}
           label={{ value: 'Cumulative Volume (%)', angle: '270' }}
         />
         <Tooltip />
