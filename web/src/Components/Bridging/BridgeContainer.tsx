@@ -6,6 +6,7 @@ import BridgeGraph from './BridgeGraph'
 import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
+import ParticleSizeDistributionGraph from './ParticleSizeDistributionGraph'
 
 export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [sizeFractions, setSizeFractions] = useState([])
@@ -88,7 +89,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
       />
       <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
         <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
-        <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <ParticleSizeDistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
       </div>
     </div>
   )
