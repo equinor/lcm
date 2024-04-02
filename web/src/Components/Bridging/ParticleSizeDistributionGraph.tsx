@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { useContext, useEffect, useState } from 'react'
+import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from '../../Context'
 import { findGraphData } from '../../Utils'
 import { graphColors } from './styles'
+import { differentiateArrayObjects } from './utils'
 
-export function BridgeGraph({ bridges, sizeFractions }) {
+export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
   const [particleFromPercentage, setParticleFromPercentage] = useState('')
   const [particleToPercentage, setParticleToPercentage] = useState('')
@@ -28,7 +29,8 @@ export function BridgeGraph({ bridges, sizeFractions }) {
 
   useEffect(() => {
     const newGraphData = findGraphData(sizeFractions, bridges)
-    setGraphData(newGraphData)
+    const diffentiated = differentiateArrayObjects(newGraphData)
+    setGraphData(diffentiated)
   }, [bridges, sizeFractions])
 
   return (
@@ -53,7 +55,7 @@ export function BridgeGraph({ bridges, sizeFractions }) {
           label={{ value: 'particle size (\u00B5m)', position: 'center', offset: 0 }}
           height={70}
         />
-        <YAxis type='number' domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow label={{value: 'Cumulative Volume (%)', angle: '270' }} />
+        <YAxis type='number'  label={{value: 'Volume (%)', angle: '270' }} allowDataOverflow />
         <Tooltip />
         <Legend verticalAlign='bottom' align='center' />
         {Object.entries(bridges).map(([name, cumulative], index) => (
@@ -72,4 +74,4 @@ export function BridgeGraph({ bridges, sizeFractions }) {
   )
 }
 
-export default BridgeGraph
+export default ParticleSizeDistributionGraph
