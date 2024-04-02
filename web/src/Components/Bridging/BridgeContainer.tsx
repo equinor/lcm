@@ -7,7 +7,6 @@ import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
 import ParticleSizeDistributionGraph from './ParticleSizeDistributionGraph'
-import CumulativeGraph from './CumulativeGraph'
 
 export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [sizeFractions, setSizeFractions] = useState([])
@@ -89,7 +88,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
         bridgeValueHelperText={bridgeValueHelperText}
       />
       <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
-        <CumulativeGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
         <ParticleSizeDistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
       </div>
     </div>
