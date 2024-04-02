@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from '../../Context'
 import { findGraphData } from '../../Utils'
-import { graphColors } from './styles'
 import BridgeGraph from './BridgeGraph'
 
 export function CumulativeGraph({ bridges, sizeFractions }) {
