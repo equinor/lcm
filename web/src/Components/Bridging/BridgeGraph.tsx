@@ -53,7 +53,13 @@ export function BridgeGraph({ bridges, sizeFractions }) {
           label={{ value: 'particle size (\u00B5m)', position: 'center', offset: 0 }}
           height={70}
         />
-        <YAxis type='number' domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow label={{value: 'Cumulative Volume (%)', angle: '270' }} />
+        <YAxis
+          type='number'
+          domain={[0, 100]}
+          ticks={[20, 40, 60, 80, 100]}
+          allowDataOverflow
+          label={{ value: 'Cumulative Volume (%)', angle: '270' }}
+        />
         <Tooltip />
         <Legend verticalAlign='bottom' align='center' />
         {Object.entries(bridges).map(([name, cumulative], index) => (
