@@ -4,8 +4,7 @@ import { ParticleSizeContext } from '../../Context'
 import { findGraphData } from '../../Utils'
 import { graphColors } from './styles'
 
-export function BridgeGraph({ bridges, sizeFractions }) {
-  const [graphData, setGraphData] = useState([])
+export function BridgeGraph({ graphData, sizeFractions, bridges }) {
   const [particleFromPercentage, setParticleFromPercentage] = useState('')
   const [particleToPercentage, setParticleToPercentage] = useState('')
   const particleRange = useContext(ParticleSizeContext)
@@ -25,11 +24,6 @@ export function BridgeGraph({ bridges, sizeFractions }) {
     const percentage = Math.round(index / sizeFractions.length) * 100
     return `${percentage}%`
   }
-
-  useEffect(() => {
-    const newGraphData = findGraphData(sizeFractions, bridges)
-    setGraphData(newGraphData)
-  }, [bridges, sizeFractions])
 
   return (
     <div style={{ backgroundColor: 'white', borderRadius: '0.5rem' }}>

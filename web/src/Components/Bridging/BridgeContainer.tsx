@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from 'react'
 import { FractionsAPI } from '../../Api'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
 import { AuthContext } from 'react-oauth2-code-pkce'
-import BridgeGraph from './BridgeGraph'
 import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
-import ParticleSizeDistributionGraph from './ParticleSizeDistributionGraph'
+import CumulativeGraph from './CumulativeGraph'
+import DistributionGraph from './DistributionGraph'
 
 export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   const [sizeFractions, setSizeFractions] = useState([])
@@ -88,8 +88,8 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
         bridgeValueHelperText={bridgeValueHelperText}
       />
       <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
-        <BridgeGraph bridges={bridges} sizeFractions={sizeFractions} />
-        <ParticleSizeDistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <CumulativeGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <DistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
       </div>
     </div>
   )
