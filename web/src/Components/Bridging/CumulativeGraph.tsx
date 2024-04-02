@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from 'react'
-import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
+import React, { useContext, useEffect, useState } from 'react'
+import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from '../../Context'
 import { findGraphData } from '../../Utils'
 import { graphColors } from './styles'
-import { differentiateArrayObjects } from './utils'
 import BridgeGraph from './BridgeGraph'
 
-export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
+export function CumulativeGraph({ bridges, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
   const [particleFromPercentage, setParticleFromPercentage] = useState('')
   const [particleToPercentage, setParticleToPercentage] = useState('')
@@ -30,11 +29,10 @@ export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
 
   useEffect(() => {
     const newGraphData = findGraphData(sizeFractions, bridges)
-    const diffentiated = differentiateArrayObjects(newGraphData)
-    setGraphData(diffentiated)
+    setGraphData(newGraphData)
   }, [bridges, sizeFractions])
 
   return <BridgeGraph graphData={graphData} bridges={bridges} />
 }
 
-export default ParticleSizeDistributionGraph
+export default CumulativeGraph
