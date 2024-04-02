@@ -1,49 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from "../../Context"
-import styled from 'styled-components'
 import { findGraphData } from '../../Utils'
+import { graphColors } from './styles'
 
-const colors = [
-  '#000000',
-  '#ee2e89',
-  '#21d0bb',
-  '#2077d9',
-  '#a1022f',
-  '#2bcb95',
-  '#64b3ec',
-  '#ef7895',
-  '#02953d',
-  '#044f78',
-]
-
-
-const TooltipCard = styled.div`
-  background: white;
-  border-style: solid;
-  border-color: silver;
-  border-width: 0.1px;
-  padding-left: 15px;
-  padding-right: 20px;
-  padding-bottom: 5px;
-`
-
-
-const GraphTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const numMicrons = Math.round(payload[0].payload.size)
-    return (
-      <TooltipCard >
-        <p style={{ fontWeight: "500", marginLeft: '5px' }}> {numMicrons <= 1 ? 'Micron: ' : 'Microns: '} {numMicrons}</p>
-        {payload.map((payloadData) => {
-          return <p key={payloadData.name} style={{ color: payloadData.stroke, padding: '0px', margin: '5px' }}>{payloadData.name}: {Math.round(payloadData.value)}</p>
-        })}
-      </TooltipCard>
-    );
-  }
-
-  return null;
-}
 
 export function BridgeGraph({ bridges, sizeFractions }) {
   const [graphData, setGraphData] = useState([])
@@ -95,13 +55,13 @@ export function BridgeGraph({ bridges, sizeFractions }) {
           height={70}
         />
         <YAxis type="number" domain={[0, 100]} ticks={[20, 40, 60, 80, 100]} allowDataOverflow />
-        <Tooltip content={<GraphTooltip active={undefined} payload={undefined} />} />
-        <Legend  verticalAlign='middle' align='right' width={150}/>
+        <Tooltip />
+        {/* <Legend  verticalAlign='middle' align='right' width={150}/> */}
         {Object.entries(bridges).map(([name, cumulative], index) => (
           <Area
             type="monotone"
             dataKey={name}
-            stroke={colors[index % colors.length]}
+            stroke={graphColors[index % graphColors.length]}
             key={name}
             fill={(name === "Bridge" && "url(#particleArea)") || "transparent"}
             name={name}

@@ -20,3 +20,17 @@ export const StyledSelect = styled.select`
   width: 150px;
   background-color: #ffffff;
 `
+
+export const graphColors = [
+    '#000000',
+    '#ee2e89',
+    '#21d0bb',
+    '#2077d9',
+    '#a1022f',
+    '#2bcb95',
+    '#64b3ec',
+    '#ef7895',
+    '#02953d',
+    '#044f78',
+  ]
+  
