@@ -25,8 +25,8 @@ services:
   web:
     build:
       context: ./web
-      target: prod
-#      target: development
+#      target: prod
+      target: development
     restart: unless-stopped
     stdin_open: true
     volumes:
