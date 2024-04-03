@@ -97,11 +97,20 @@ const InputContainer = ({
         </div>
       </InputWrapper>
       {optimalBridgeGraphData.length > 0 && (
-        <div style={{ marginBlockStart: '3rem' }}>
+        <div style={{ marginBlockStart: '3rem', alignItems: 'center' }}>
           <Typography variant='h3'>Optimal Bridge:</Typography>
-          <p>D10: {findDValue(optimalBridgeGraphData, 10, 'Bridge')}µ</p>
-          <p>D50: {findDValue(optimalBridgeGraphData, 50, 'Bridge')}µ</p>
-          <p>D90: {findDValue(optimalBridgeGraphData, 90, 'Bridge')}µ</p>
+          <p>
+            D10: {findDValue(optimalBridgeGraphData, 10, 'Bridge')}
+            {'\u00B5'}
+          </p>
+          <p>
+            D50: {findDValue(optimalBridgeGraphData, 50, 'Bridge')}
+            {'\u00B5'}
+          </p>
+          <p>
+            D90: {findDValue(optimalBridgeGraphData, 90, 'Bridge')}
+            {'\u00B5'}
+          </p>
         </div>
       )}
     </div>
