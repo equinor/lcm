@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, CircularProgress, Icon } from '@equinor/eds-core-react'
 
-import { SyncAPI } from '../Api'
+import { SyncAPI } from '../../Api'
 import styled from 'styled-components'
-import { ErrorToast } from './Common/Toast'
+import { ErrorToast } from '../Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { IAuthContext } from 'react-oauth2-code-pkce'
 import { refresh } from '@equinor/eds-icons'
