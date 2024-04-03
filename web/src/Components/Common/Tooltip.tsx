@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Tooltip as EDSTooltip, Icon } from '@equinor/eds-core-react'
 import { help_outline } from '@equinor/eds-icons'
-import { COLORS } from '../../Enums'
+import { colors } from '../../colors'
 
 const Wrapper = styled.div`
   justify-content: center;
@@ -29,7 +29,7 @@ export const Tooltip = ({ text, children }: TooltipProps): ReactElement => {
       {children}
       <EDSTooltip title={text} placement={'top-end'}>
         <Wrapper>
-          <Icon data={help_outline} size={18} style={{ color: COLORS.secondary }} />
+          <Icon data={help_outline} size={18} style={{ color: colors.secondary }} />
         </Wrapper>
       </EDSTooltip>
     </TooltipWrapper>

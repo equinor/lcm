@@ -12,6 +12,7 @@ import { ErrorToast } from './Common/Toast'
 import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce'
 import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
+import { colors } from '../colors'
 
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
@@ -171,7 +172,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
         <Accordion>
           <Accordion.Item>
             <Accordion.Header>Concentration blends</Accordion.Header>
-            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: '#f7f7f7' }}>
+            <Accordion.Panel style={{ overflow: 'auto', backgroundColor: `${colors.background}` }}>
               <CardContainer
                 sacks={false}
                 combinations={combinations}

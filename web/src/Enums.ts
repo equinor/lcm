@@ -5,9 +5,4 @@ export enum BridgingOption {
   CERAMIC_DISCS = 'CERAMIC_DISCS',
 }
 
-export enum COLORS {
-  primary = 'black',
-  secondary = '#017078',
-}
-
 export const CeramicDiscsValues = ['10', '12', '20', '40', '50', '55', '120']
