@@ -150,34 +150,45 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
         </Dialog.Actions>
       </Dialog>
       <div style={{ display: 'flex' }}>
-        <InputWrapper>
-          <Typography variant='body_short'>Products</Typography>
-          <div
-            style={{
-              border: '1px solid #DCDCDC',
-              maxHeight: '300px',
-              minHeight: '100px',
-              overflow: 'auto',
-              margin: '10px 0',
-              backgroundColor: '#f5f5f5',
-              borderRadius: '4px',
-              padding: '4px',
-            }}
-          >
-            {Object.values(products).map((product: any) => {
-              return (
-                <Typography key={product.id} variant='body_short'>
-                  {product.title}
-                </Typography>
-              )
-            })}
+        <div>
+          <div style={{ display: 'flex' }}>
+            <InputWrapper>
+              <Typography variant='body_short'>Products</Typography>
+              <div
+                style={{
+                  border: '1px solid #DCDCDC',
+                  maxHeight: '300px',
+                  minHeight: '100px',
+                  overflow: 'auto',
+                  margin: '10px 0',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '4px',
+                  padding: '4px',
+                }}
+              >
+                {Object.values(products).map((product: any) => {
+                  return (
+                    <Typography key={product.id} variant='body_short'>
+                      {product.title}
+                    </Typography>
+                  )
+                })}
+              </div>
+              <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
+            </InputWrapper>
+            <InputWrapper>
+              <Typography variant='body_short'>Pill</Typography>
+              <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
+            </InputWrapper>
           </div>
-          <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
-        </InputWrapper>
-        <InputWrapper>
-          <Typography variant='body_short'>Pill</Typography>
-          <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
-        </InputWrapper>
+          <div style={{ display: 'flex', padding: '16px 0' }}>
+            <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
+              <Icon data={play} title='play' />
+              Run optimizer
+            </Button>
+            {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
+          </div>
+        </div>
         <InputWrapper>
           <Accordion style={{ paddingTop: '10px' }}>
             <Accordion.Item>
@@ -268,13 +279,6 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
             </Accordion.Item>
           </Accordion>
         </InputWrapper>
-      </div>
-      <div style={{ display: 'flex', padding: '16px 0', alignSelf: 'flex-end' }}>
-        <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
-          <Icon data={play} title='play' />
-          Run optimizer
-        </Button>
-        {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
       </div>
 
       {failedRun && <p style={{ color: 'red' }}>Failed to run the optimizer</p>}
