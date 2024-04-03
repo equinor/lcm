@@ -7,8 +7,17 @@ import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
 import CumulativeGraph from './Graphs/CumulativeGraph'
 import DistributionGraph from './Graphs/DistributionGraph'
+import { Bridge } from '../../Types'
 
-export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
+type BridgeContainerProps = {
+  bridges: Bridge
+  mode: BridgingOption
+  setMode: (mode: BridgingOption) => void
+  bridgeValue: number
+  setValue: (value: number) => void
+}
+
+export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContainerProps) => {
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
@@ -53,7 +62,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
       case BridgingOption.CERAMIC_DISCS:
         setMode(BridgingOption.CERAMIC_DISCS)
         setUnit('microns')
-        setValue(CeramicDiscsValues[0])
+        setValue(parseInt(CeramicDiscsValues[0]))
         break
       default:
         return

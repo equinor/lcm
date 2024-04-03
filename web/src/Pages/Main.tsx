@@ -9,7 +9,7 @@ import { Products } from '../Types'
 import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { IAuthContext } from 'react-oauth2-code-pkce'
-import Navbar from '../Components/Navbar/NavBar'
+import Navbar from '../Components/Navbar/Navbar'
 
 const BodyWrapper = styled.div`
   display: flex;
