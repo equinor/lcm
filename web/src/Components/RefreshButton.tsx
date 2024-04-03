@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, CircularProgress } from '@equinor/eds-core-react'
+import { Button, Dialog, CircularProgress, Icon } from '@equinor/eds-core-react'
 
 import { SyncAPI } from '../Api'
 import styled from 'styled-components'
 import { ErrorToast } from './Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
-import Icon from '../Icons'
 import { IAuthContext } from 'react-oauth2-code-pkce'
+import { refresh } from '@equinor/eds-icons'
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ export const RefreshButton = () => {
   return (
     <>
       <Button variant='outlined' onClick={() => setDialogOpen(true)}>
-        <Icon name='refresh' title='refresh' />
+        <Icon data={refresh} title='refresh' />
         Synchronize with SharePoint
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>

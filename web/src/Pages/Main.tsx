@@ -7,7 +7,7 @@ import { Button, Icon, TopBar, Typography } from '@equinor/eds-core-react'
 
 import RefreshButton from '../Components/RefreshButton'
 import { ProductsAPI } from '../Api'
-import CombinationsWrapper from '../Components/CombinationsWrapper'
+import CombinationsWrapper from '../Components/Combinations/CombinationsWrapper'
 import { Products } from '../Types'
 import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
