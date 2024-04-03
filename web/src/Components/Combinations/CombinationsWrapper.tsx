@@ -1,17 +1,17 @@
-import BridgeContainer from './Bridging/BridgeContainer'
-import CardContainer from './Combinations/CardContainer'
-import OptimizationContainer from './Optimization/OptimizationContainer'
+import BridgeContainer from '../Bridging/BridgeContainer'
+import CardContainer from './CardContainer'
+import OptimizationContainer from '../Optimization/OptimizationContainer'
 import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion, Button } from '@equinor/eds-core-react'
-import { BridgeAPI, CombinationAPI } from '../Api'
+import { BridgeAPI, CombinationAPI } from '../../Api'
 // @ts-ignore
 import styled from 'styled-components'
-import { BridgingOption } from '../Enums'
-import { ErrorToast } from './Common/Toast'
+import { BridgingOption } from '../../Enums'
+import { ErrorToast } from '../Common/Toast'
 import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce'
-import { Bridge, Combination, Combinations, Products } from '../Types'
-import useLocalStorage from '../Hooks'
+import { Bridge, Combination, Combinations, Products } from '../../Types'
+import useLocalStorage from '../../Hooks'
 
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;

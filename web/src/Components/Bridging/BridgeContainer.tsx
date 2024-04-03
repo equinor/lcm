@@ -76,7 +76,20 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
   }
 
   return (
-    <div style={{ display: 'flex', overflow: 'auto' }}>
+    <div style={{ overflow: 'auto' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor: 'white',
+          overflow: 'auto',
+          padding: '0.5rem',
+          borderRadius: '0.5rem',
+        }}
+      >
+        <CumulativeGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <DistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
+      </div>
       <InputContainer
         mode={mode}
         onBridgeOptionChange={onBridgeOptionChange}
@@ -87,10 +100,6 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }) => {
         bridgeValueVariant={bridgeValueVariant}
         bridgeValueHelperText={bridgeValueHelperText}
       />
-      <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
-        <CumulativeGraph bridges={bridges} sizeFractions={sizeFractions} />
-        <DistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
-      </div>
     </div>
   )
 }

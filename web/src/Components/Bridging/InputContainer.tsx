@@ -1,4 +1,4 @@
-import { Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
+import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
 import { InputWrapper, RadioWrapper, StyledSelect } from './styles'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
 import { findDValue } from '../../Utils'
@@ -27,7 +27,15 @@ const InputContainer = ({
   bridgeValueHelperText,
 }: InputContainerProps) => {
   return (
-    <div style={{ backgroundColor: 'white', borderRadius: '4px', padding: '0.5rem' }}>
+    <div
+      style={{
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        padding: '0.5rem',
+        marginBlockStart: '1rem',
+        display: 'flex',
+      }}
+    >
       <InputWrapper>
         <Typography variant='h3'>Bridging options</Typography>
         <span>Bridging based on:</span>
@@ -70,8 +78,12 @@ const InputContainer = ({
         <div style={{ width: '150px' }}>
           {mode === BridgingOption.CERAMIC_DISCS ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label>Ceramic Discs Size</label>
-              <StyledSelect onChange={event => onBridgeValueChange(event.target.value)}>
+              <label htmlFor='ceramic-disk-selector'>Ceramic Discs Size</label>
+              <NativeSelect
+                onChange={event => onBridgeValueChange(event.target.value)}
+                id={'ceramic-disk-selector'}
+                label={''}
+              >
                 {CeramicDiscsValues.map((value, index) => {
                   return (
                     <option value={value} key={index + value}>
@@ -79,7 +91,7 @@ const InputContainer = ({
                     </option>
                   )
                 })}
-              </StyledSelect>
+              </NativeSelect>
               <small style={{ alignSelf: 'flex-end' }}>microns</small>
             </div>
           ) : (
@@ -97,7 +109,7 @@ const InputContainer = ({
         </div>
       </InputWrapper>
       {optimalBridgeGraphData.length > 0 && (
-        <div style={{ marginBlockStart: '3rem', alignItems: 'center' }}>
+        <div style={{ marginInlineStart: '1rem' }}>
           <Typography variant='h3'>Optimal Bridge:</Typography>
           <p>
             D10: {findDValue(optimalBridgeGraphData, 10, 'Bridge')}
