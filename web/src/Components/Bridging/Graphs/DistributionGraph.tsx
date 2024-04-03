@@ -12,7 +12,7 @@ export function ParticleSizeDistributionGraph({ bridges, sizeFractions }) {
     setGraphData(diffentiated)
   }, [bridges, sizeFractions])
 
-  return <BridgeGraph graphData={graphData} sizeFractions={sizeFractions} bridges={bridges} />
+  return <BridgeGraph yAxis='Volume (%)' graphData={graphData} sizeFractions={sizeFractions} bridges={bridges} />
 }
 
 export default ParticleSizeDistributionGraph

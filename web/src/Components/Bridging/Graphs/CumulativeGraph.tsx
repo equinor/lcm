@@ -11,7 +11,14 @@ export function CumulativeGraph({ bridges, sizeFractions }) {
     setGraphData(newGraphData)
   }, [bridges, sizeFractions])
 
-  return <BridgeGraph graphData={graphData} bridges={bridges} sizeFractions={sizeFractions} />
+  return (
+    <BridgeGraph
+      graphData={graphData}
+      bridges={bridges}
+      sizeFractions={sizeFractions}
+      yAxis={'Cumulative Volume (%)'}
+    />
+  )
 }
 
 export default CumulativeGraph

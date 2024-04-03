@@ -3,22 +3,30 @@ import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, X
 import { ParticleSizeContext } from '../../../Context'
 import { findGraphData } from '../../../Utils'
 import { graphColors } from '../styles'
+import { Bridge, GraphData } from '../../../Types'
 
-export function BridgeGraph({ graphData, sizeFractions, bridges }) {
-  const [particleFromPercentage, setParticleFromPercentage] = useState('')
-  const [particleToPercentage, setParticleToPercentage] = useState('')
+type BridgeGraphProps = {
+  yAxis: string
+  graphData: GraphData[]
+  sizeFractions: number[]
+  bridges: Bridge
+}
+
+export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: BridgeGraphProps) {
+  const [particleFromPercentage, setParticleFromPercentage] = useState<string>('')
+  const [particleToPercentage, setParticleToPercentage] = useState<string>('')
   const particleRange = useContext(ParticleSizeContext)
 
   useEffect(() => {
     setParticleFromPercentage(particleSizeOffsetPercentage(particleRange.from))
     if (particleRange.to > sizeFractions[sizeFractions.length - 1]) {
-      setParticleToPercentage(sizeFractions[sizeFractions.length - 1])
+      setParticleToPercentage(`${sizeFractions[sizeFractions.length - 1]}`)
     } else {
       setParticleToPercentage(particleSizeOffsetPercentage(particleRange.to))
     }
   }, [particleRange, sizeFractions])
 
-  function particleSizeOffsetPercentage(offsetSize) {
+  function particleSizeOffsetPercentage(offsetSize: number) {
     const index = sizeFractions.findIndex(size => size > offsetSize)
     if (index === -1) return ''
     const percentage = Math.round(index / sizeFractions.length) * 100
@@ -47,14 +55,7 @@ export function BridgeGraph({ graphData, sizeFractions, bridges }) {
           label={{ value: 'particle size (\u00B5m)', position: 'center', offset: 0 }}
           height={70}
         />
-        <YAxis
-          type='number'
-          domain={[0, 100]}
-          ticks={[20, 40, 60, 80, 100]}
-          allowDataOverflow
-          width={75}
-          label={{ value: 'Cumulative Volume (%)', angle: '270' }}
-        />
+        <YAxis type='number' allowDataOverflow width={75} label={{ value: yAxis, angle: '270' }} />
         <Tooltip />
         <Legend verticalAlign='bottom' align='center' />
         {Object.entries(bridges).map(([name, cumulative], index) => (
