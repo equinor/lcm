@@ -113,15 +113,15 @@ const InputContainer = ({
           <Typography variant='h3'>Optimal Bridge:</Typography>
           <p>
             D10: {findDValue(optimalBridgeGraphData, 10, 'Bridge')}
-            {'\u00B5'}
+            {'\u00B5m'}
           </p>
           <p>
             D50: {findDValue(optimalBridgeGraphData, 50, 'Bridge')}
-            {'\u00B5'}
+            {'\u00B5m'}
           </p>
           <p>
             D90: {findDValue(optimalBridgeGraphData, 90, 'Bridge')}
-            {'\u00B5'}
+            {'\u00B5m'}
           </p>
         </div>
       )}
