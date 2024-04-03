@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
 import { Button, Dialog, Icon, Scrim } from '@equinor/eds-core-react'
-import SelectProducts from '../SelectProducts'
+import SelectProducts from './SelectProducts'
 import { Products } from '../../Types'
 
 interface AddProductsProps {
