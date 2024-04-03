@@ -35,7 +35,7 @@ export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: Bridge
 
   return (
     <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', width: '100%', height: '100%' }}>
-      <ResponsiveContainer width={'99%'} height={500}>
+      <ResponsiveContainer height={500} minWidth={600}>
         <AreaChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           {/* Defines a gradient applied to the areaPlot to highlight selected particle size range*/}
           <defs>
