@@ -5,9 +5,9 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
-import CumulativeGraph from './Graphs/CumulativeGraph'
-import DistributionGraph from './Graphs/DistributionGraph'
 import { Bridge } from '../../Types'
+import BridgeGraph from './Graphs/BridgeGraph'
+import { differentiateArrayObjects } from './utils'
 
 type BridgeContainerProps = {
   bridges: Bridge
@@ -96,8 +96,18 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
           borderRadius: '0.5rem',
         }}
       >
-        <CumulativeGraph bridges={bridges} sizeFractions={sizeFractions} />
-        <DistributionGraph bridges={bridges} sizeFractions={sizeFractions} />
+        <BridgeGraph
+          graphData={findGraphData(sizeFractions, bridges)}
+          yAxis={'Cumulative Volume (%)'}
+          sizeFractions={sizeFractions}
+          bridges={bridges}
+        />
+        <BridgeGraph
+          graphData={differentiateArrayObjects(findGraphData(sizeFractions, bridges))}
+          yAxis={'Volume (%)'}
+          sizeFractions={sizeFractions}
+          bridges={bridges}
+        />
       </div>
       <InputContainer
         mode={mode}
