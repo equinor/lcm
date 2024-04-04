@@ -13,8 +13,8 @@ type BridgeGraphProps = {
 }
 
 export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: BridgeGraphProps) {
-  const [particleFromPercentage, setParticleFromPercentage] = useState<string>('')
-  const [particleToPercentage, setParticleToPercentage] = useState<string>('')
+  const [particleFromPercentage, setParticleFromPercentage] = useState<string>('30%')
+  const [particleToPercentage, setParticleToPercentage] = useState<string>('100%')
   const particleRange = useContext(ParticleSizeContext)
 
   useEffect(() => {
@@ -28,8 +28,8 @@ export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: Bridge
 
   function particleSizeOffsetPercentage(offsetSize: number) {
     const index = sizeFractions.findIndex(size => size > offsetSize)
-    if (index === -1) return ''
-    const percentage = Math.round(index / sizeFractions.length) * 100
+    if (index === -1) return '0%'
+    let percentage = (index / sizeFractions.length) * 100
     return `${percentage}%`
   }
 
