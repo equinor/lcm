@@ -13,7 +13,7 @@ type BridgeGraphProps = {
 }
 
 export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: BridgeGraphProps) {
-  const [particleFromPercentage, setParticleFromPercentage] = useState<string>('30%')
+  const [particleFromPercentage, setParticleFromPercentage] = useState<string>('0%')
   const [particleToPercentage, setParticleToPercentage] = useState<string>('100%')
   const particleRange = useContext(ParticleSizeContext)
 
