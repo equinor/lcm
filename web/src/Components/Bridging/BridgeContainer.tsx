@@ -23,8 +23,8 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
   const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
-  const [graphData, setGraphData] = useState([])
-  const [cumulativeGraphData, setCumulativeGraphData] = useState([])
+  const [volumeData, setVolumeData] = useState([])
+  const [cumulativeVolumeData, setCumulativeVolumeData] = useState([])
   const { token } = useContext(AuthContext)
 
   // Load size fractions once on first render
@@ -89,8 +89,8 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   useEffect(() => {
     const cumulative = findGraphData(sizeFractions, bridges)
     const differentiated = differentiateArrayObjects(cumulative)
-    setCumulativeGraphData(cumulative)
-    setGraphData(differentiated)
+    setCumulativeVolumeData(cumulative)
+    setVolumeData(differentiated)
   }, [sizeFractions, bridges])
 
   return (
@@ -116,12 +116,12 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
           bridgeValueHelperText={bridgeValueHelperText}
         />
         <BridgeGraph
-          graphData={cumulativeGraphData}
+          graphData={cumulativeVolumeData}
           yAxis={'Cumulative Volume (%)'}
           sizeFractions={sizeFractions}
           bridges={bridges}
         />
-        <BridgeGraph graphData={graphData} yAxis={'Volume (%)'} sizeFractions={sizeFractions} bridges={bridges} />
+        <BridgeGraph graphData={volumeData} yAxis={'Volume (%)'} sizeFractions={sizeFractions} bridges={bridges} />
       </div>
     </div>
   )
