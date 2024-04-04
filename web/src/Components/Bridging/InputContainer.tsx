@@ -16,6 +16,13 @@ type InputContainerProps = {
   bridgeValueHelperText: string
 }
 
+const InputLabels: { [key in BridgingOption]: string } = {
+  [BridgingOption.PERMEABILITY]: 'Permeability',
+  [BridgingOption.AVERAGE_PORESIZE]: 'Avg. Pore Size',
+  [BridgingOption.MAXIMUM_PORESIZE]: 'Max Pore Size',
+  [BridgingOption.CERAMIC_DISCS]: 'Disk Size',
+}
+
 const InputContainer = ({
   mode,
   onBridgeOptionChange,
@@ -77,11 +84,12 @@ const InputContainer = ({
         <div style={{ width: '150px' }}>
           {mode === BridgingOption.CERAMIC_DISCS ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor='ceramic-disk-selector'>Ceramic Discs Size</label>
+              {/* <label htmlFor='ceramic-disk-selector'>Ceramic Discs Size</label> */}
               <NativeSelect
                 onChange={event => onBridgeValueChange(event.target.value)}
                 id={'ceramic-disk-selector'}
-                label={''}
+                label={'Disk Size'}
+                meta={'microns'}
               >
                 {CeramicDiscsValues.map((value, index) => {
                   return (
@@ -91,11 +99,11 @@ const InputContainer = ({
                   )
                 })}
               </NativeSelect>
-              <small style={{ alignSelf: 'flex-end' }}>microns</small>
+              {/* <small style={{ alignSelf: 'flex-end' }}>microns</small> */}
             </div>
           ) : (
             <TextField
-              label='Value'
+              label={InputLabels[mode]}
               type='number'
               id='textfield-number'
               meta={unit}
