@@ -20,7 +20,7 @@ export function BridgeGraph({ yAxis, graphData, sizeFractions, bridges }: Bridge
   useEffect(() => {
     setParticleFromPercentage(particleSizeOffsetPercentage(particleRange.from))
     if (particleRange.to > sizeFractions[sizeFractions.length - 1]) {
-      setParticleToPercentage(`${sizeFractions[sizeFractions.length - 1]}`)
+      setParticleToPercentage(`${sizeFractions[sizeFractions.length - 1]}%`)
     } else {
       setParticleToPercentage(particleSizeOffsetPercentage(particleRange.to))
     }
