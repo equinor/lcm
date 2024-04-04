@@ -96,6 +96,16 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
           borderRadius: '0.5rem',
         }}
       >
+        <InputContainer
+          mode={mode}
+          onBridgeOptionChange={onBridgeOptionChange}
+          onBridgeValueChange={onBridgeValueChange}
+          optimalBridgeGraphData={optimalBridgeGraphData}
+          unit={unit}
+          bridgeValue={bridgeValue}
+          bridgeValueVariant={bridgeValueVariant}
+          bridgeValueHelperText={bridgeValueHelperText}
+        />
         <BridgeGraph
           graphData={findGraphData(sizeFractions, bridges)}
           yAxis={'Cumulative Volume (%)'}
@@ -109,16 +119,6 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
           bridges={bridges}
         />
       </div>
-      <InputContainer
-        mode={mode}
-        onBridgeOptionChange={onBridgeOptionChange}
-        onBridgeValueChange={onBridgeValueChange}
-        optimalBridgeGraphData={optimalBridgeGraphData}
-        unit={unit}
-        bridgeValue={bridgeValue}
-        bridgeValueVariant={bridgeValueVariant}
-        bridgeValueHelperText={bridgeValueHelperText}
-      />
     </div>
   )
 }
