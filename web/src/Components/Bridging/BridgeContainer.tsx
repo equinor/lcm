@@ -5,7 +5,7 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import { ErrorToast } from '../Common/Toast'
 import InputContainer from './InputContainer'
 import { findGraphData } from '../../Utils'
-import { Bridge } from '../../Types'
+import { Bridge, GraphData } from '../../Types'
 import BridgeGraph from './Graphs/BridgeGraph'
 import { differentiateArrayObjects } from './utils'
 
@@ -23,6 +23,8 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState(undefined)
   const [bridgeValueVariant, setBridgeValueVariant] = useState(undefined)
   const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState([])
+  const [graphData, setGraphData] = useState([])
+  const [cumulativeGraphData, setCumulativeGraphData] = useState([])
   const { token } = useContext(AuthContext)
 
   // Load size fractions once on first render
@@ -84,6 +86,13 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
     setBridgeValueHelperText(undefined)
   }
 
+  useEffect(() => {
+    const cumulative = findGraphData(sizeFractions, bridges)
+    const differentiated = differentiateArrayObjects(cumulative)
+    setCumulativeGraphData(cumulative)
+    setGraphData(differentiated)
+  }, [sizeFractions, bridges])
+
   return (
     <div style={{ overflow: 'auto' }}>
       <div
@@ -107,17 +116,12 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
           bridgeValueHelperText={bridgeValueHelperText}
         />
         <BridgeGraph
-          graphData={findGraphData(sizeFractions, bridges)}
+          graphData={cumulativeGraphData}
           yAxis={'Cumulative Volume (%)'}
           sizeFractions={sizeFractions}
           bridges={bridges}
         />
-        <BridgeGraph
-          graphData={differentiateArrayObjects(findGraphData(sizeFractions, bridges))}
-          yAxis={'Volume (%)'}
-          sizeFractions={sizeFractions}
-          bridges={bridges}
-        />
+        <BridgeGraph graphData={graphData} yAxis={'Volume (%)'} sizeFractions={sizeFractions} bridges={bridges} />
       </div>
     </div>
   )
