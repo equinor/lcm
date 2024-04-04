@@ -160,7 +160,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant={'h3'}>Blends</Typography>
-            <Icon style={{ cursor: 'pointer', paddingLeft: '5px' }} data={info_circle} />
+            {/* <Icon style={{ cursor: 'pointer', paddingLeft: '5px' }} data={info_circle} /> */}
           </div>
           <div style={{ display: 'flex' }}>
             <Button
