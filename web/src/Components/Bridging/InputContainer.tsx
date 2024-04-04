@@ -33,7 +33,6 @@ const InputContainer = ({
         borderRadius: '0.5rem',
         padding: '0.5rem',
         marginBlockStart: '1rem',
-        display: 'flex',
       }}
     >
       <InputWrapper>
@@ -109,7 +108,7 @@ const InputContainer = ({
         </div>
       </InputWrapper>
       {optimalBridgeGraphData.length > 0 && (
-        <div style={{ marginInlineStart: '1rem' }}>
+        <div style={{ marginBlockStart: '1rem' }}>
           <Typography variant='h3'>Optimal Bridge:</Typography>
           <p>
             D10: {findDValue(optimalBridgeGraphData, 10, 'Bridge')}
