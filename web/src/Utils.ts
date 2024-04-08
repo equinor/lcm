@@ -17,27 +17,42 @@ export function findGraphData(sizeFractions: number[], bridges: Bridge): GraphDa
   sizeFractions.forEach((fraction, sizeIndex) => {
     let temp: GraphData = { size: fraction }
     Object.entries(bridges).forEach(([name, cumulative]) => {
-      temp[name] = cumulative[sizeIndex + 1]
+      temp[name] = cumulative[sizeIndex]
     })
     newGraphData.push(temp)
   })
   return newGraphData
 }
 
+function linearInterpolation(yMin: number, yMax: number, xMin: number, xMax: number, targetY: number): number {
+  const increase = (yMax - yMin) / (xMax - xMin)
+  return Number((increase * (targetY - xMin) + yMin).toFixed(1))
+}
+
 export function findDValue(graphData: GraphData[], goalYValue: number, bridgeName: string): number {
-  //A D value is defined as a bridge graph's x-value at a specific y value
-  //example: D90 (goalYValue = 90) is the bridge graph's x-value at at y = 90
+  // A D value is defined as a bridge graph's x-value at a specific y value
+  // Example: D90 (goalYValue = 90) is the bridge graph's x-value at y = 90
 
   let bridgeYValues: number[] = []
   graphData.map(graph => bridgeYValues.push(graph[bridgeName]))
 
   // find the bridge's y-value that is closest to the goal y-value
-  var closestToGoalYvalue = bridgeYValues.reduce(function (prev: number, curr: number) {
-    return Math.abs(curr - goalYValue) < Math.abs(prev - goalYValue) ? curr : prev
+  let indexOfClosestHigherYValue = 0
+  bridgeYValues.some((accumulativePercentage, index) => {
+    if (accumulativePercentage > goalYValue) {
+      indexOfClosestHigherYValue = index
+      return true
+    }
+    return false
   })
+  if (!indexOfClosestHigherYValue) throw new Error('Failed to find D-value of bridge')
 
-  let indexOfClosestYValue = bridgeYValues.indexOf(closestToGoalYvalue)
-  let DValue = graphData[indexOfClosestYValue].size //size contains the bridge's x-value
-
-  return DValue
+  // interpolate the values to get an approx value for the exact D requested
+  return linearInterpolation(
+    graphData[indexOfClosestHigherYValue - 1].size,
+    graphData[indexOfClosestHigherYValue].size,
+    bridgeYValues[indexOfClosestHigherYValue - 1],
+    bridgeYValues[indexOfClosestHigherYValue],
+    goalYValue
+  )
 }
