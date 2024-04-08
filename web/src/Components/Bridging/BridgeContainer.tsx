@@ -41,8 +41,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
 
   useEffect(() => {
     if (bridges['Bridge'].length && sizeFractions.length) {
-      const x = findGraphData(sizeFractions, { Bridge: bridges['Bridge'] })
-      setOptimalBridgeGraphData(x)
+      setOptimalBridgeGraphData(findGraphData(sizeFractions, { Bridge: bridges['Bridge'] }))
     }
   }, [bridges, sizeFractions])
 

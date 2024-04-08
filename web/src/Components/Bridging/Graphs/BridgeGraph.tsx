@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from '../../../Context'
-import { findGraphData } from '../../../Utils'
 import { bridgeColor, graphColors } from '../styles'
 import { Bridge, GraphData } from '../../../Types'
 import { Typography } from '@equinor/eds-core-react'
@@ -12,6 +11,25 @@ type BridgeGraphProps = {
   sizeFractions: number[]
   bridges: Bridge | undefined
   showBridge?: boolean
+}
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    console.log(payload)
+    console.log(label)
+    return (
+      <div style={{ backgroundColor: 'white', border: '1px solid gray', padding: '5px', borderRadius: '2px' }}>
+        <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
+        <div style={{ marginTop: '15px' }}>
+          {payload.map((graphData: any) => (
+            <div style={{ color: graphData.color }}>{`${graphData.name}: ${graphData.value}%`}</div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return null
 }
 
 export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBridge = true }: BridgeGraphProps) {
@@ -68,7 +86,7 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
             height={70}
           />
           <YAxis type='number' allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: '270' }} />
-          <Tooltip />
+          <Tooltip content={CustomTooltip} />
           <Legend verticalAlign='bottom' align='center' height={legendHeight} />
           {Object.entries(bridges).map(([name, cumulative], index) => (
             <Area
