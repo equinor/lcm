@@ -1,3 +1,4 @@
+from azure.common import AzureConflictHttpError
 from cachetools import TTLCache, cached
 from flask import Response
 
@@ -45,6 +46,14 @@ def products_get():
 
 def products_post(product_name: str, supplier_name: str, product_data: [[float, float]]) -> Response:
     product_id = sanitize_row_key(product_name)
+
+    for p in product_data:
+        if not len(p) == 2:
+            return Response("Invalid product data. Must be two valid numbers for each line", 400)
+
+        if not isinstance(p[0], float | int) or not isinstance(p[1], float | int):
+            return Response("Invalid product data. Must be two valid numbers for each line", 400)
+
     sizes = [p[0] for p in product_data]
     cumulative = [p[1] for p in product_data]
     table_entry = {
@@ -60,6 +69,9 @@ def products_post(product_name: str, supplier_name: str, product_data: [[float, 
         "co2": 1000,
     }
 
-    get_table_service().insert_entity(Config.CUSTOM_PRODUCT_TABLE, table_entry)
+    try:
+        get_table_service().insert_entity(Config.CUSTOM_PRODUCT_TABLE, table_entry)
+    except AzureConflictHttpError:
+        return Response("A product with that name already exists", 400)
     products_get.cache_clear()
     return table_entry
