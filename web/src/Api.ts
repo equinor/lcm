@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { TNewProduct } from './Types'
 
 const BASE_PATH = '/api'
 
@@ -38,6 +39,9 @@ class SyncApi {
 class ProductsApi {
   async getProductsApi(token: string) {
     return axios.get(`${BASE_PATH}/products`, { headers: { Authorization: `Bearer ${token}` } })
+  }
+  async postProductsApi(token: string, newProduct: TNewProduct) {
+    return axios.post(`${BASE_PATH}/products`, newProduct, { headers: { Authorization: `Bearer ${token}` } })
   }
 }
 

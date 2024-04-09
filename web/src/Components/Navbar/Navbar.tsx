@@ -3,6 +3,7 @@ import RefreshButton from './RefreshButton'
 import { ContactButton } from './ContactButton'
 import { info_circle } from '@equinor/eds-icons'
 import { StyledLink } from './styles'
+import CreateProduct from './CreateProduct'
 
 const Navbar = () => {
   return (
@@ -14,7 +15,7 @@ const Navbar = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, fit-content(100%))',
+            gridTemplateColumns: 'repeat(4, fit-content(100%))',
             gap: '16px',
           }}
         >
@@ -30,6 +31,7 @@ const Navbar = () => {
               </Button>
             </StyledLink>
           </div>
+          <CreateProduct />
           <RefreshButton />
           <div>
             <ContactButton />

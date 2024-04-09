@@ -7,8 +7,6 @@ from calculators.bridge import SIZE_STEPS
 
 def find_closest_bigger_index(array: list[float], target: float) -> int:
     index = bisect_left(array, target)
-    if index == 0:
-        raise ValueError("Failed to find closest biggest index")
     return index + 1
 
 
@@ -22,8 +20,6 @@ def fraction_interpolator_and_extrapolator(
 ) -> list[float]:
     sizes_dict = {size: 0 for size in zArray}  # Populate size_dict with 0 values
     starting_index = find_closest_bigger_index(zArray, min(xArray)) - 1
-    s = sum(yArray)
-    print(f"Sum Y: {s}")
 
     for zIndex, z in enumerate(zArray[starting_index:]):
         if z < xArray[0]:  # Don't extrapolate down from first measuring point

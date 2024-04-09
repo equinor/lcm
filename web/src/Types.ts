@@ -13,6 +13,12 @@ export interface Product {
   cumulative: Array<number> | null
 }
 
+export type TNewProduct = {
+  productName: string
+  productSupplier: string
+  productData: number[][]
+}
+
 export interface Products {
   [id: string]: Product
 }
