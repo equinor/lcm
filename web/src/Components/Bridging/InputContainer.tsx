@@ -139,7 +139,7 @@ const InputContainer = ({
           <Typography variant='h3'>Optimal Bridge:</Typography>
           <div style={{ marginInlineStart: '0.5rem' }}>
             {[10, 50, 90].map(d => (
-              <p>
+              <p key={d}>
                 D{d}: {findDValue(optimalBridgeGraphData, d, 'Bridge')}
                 {'\u00B5m'}
               </p>

@@ -1,63 +1,48 @@
-import csv
-from copy import copy
+from bisect import bisect_left
 
 from numpy import log
 
 from calculators.bridge import SIZE_STEPS
 
 
-def lookup_smaller(table: dict, value: float):
-    n = [i for i in table.keys() if i <= value]
-    return max(n)
+def find_closest_bigger_index(array: list[float], target: float) -> int:
+    index = bisect_left(array, target)
+    if index == 0:
+        raise ValueError("Failed to find closest biggest index")
+    return index + 1
 
 
-def lookup_bigger(table: dict, value: float):
-    n = [i for i in table.keys() if i >= value]
-    return min(n)
+def log_interpolate_or_extrapolate(xMin: float, yMin: float, xMax: float, yMax: float, z: float) -> float:
+    increase = (log(z) - log(xMin)) / (log(xMax) - log(xMin))
+    return increase * (yMax - yMin) + yMin
 
 
-def fraction_interpolator(x: list[float], y: list[float], z: list[float]) -> list[float]:
-    table_dict = dict(zip(x, y, strict=False))
-    max_x = max(x)
+def fraction_interpolator_and_extrapolator(
+    xArray: list[float], yArray: list[float], zArray: list[float] = SIZE_STEPS
+) -> list[float]:
+    sizes_dict = {size: 0 for size in zArray}  # Populate size_dict with 0 values
+    starting_index = find_closest_bigger_index(zArray, min(xArray)) - 1
+    s = sum(yArray)
+    print(f"Sum Y: {s}")
 
-    z_table = {}
-    for _z in z:
-        if _z > max_x:
-            break
-        smaller_x = lookup_smaller(table_dict, _z)
-        bigger_x = lookup_bigger(table_dict, _z)
-        z_table[_z] = {"x1": smaller_x, "x2": bigger_x, "y1": table_dict[smaller_x], "y2": table_dict[bigger_x]}
+    for zIndex, z in enumerate(zArray[starting_index:]):
+        if z < xArray[0]:  # Don't extrapolate down from first measuring point
+            continue
+        # If z is above the range of xArray, use the last two points for extrapolation
+        elif z > xArray[-1]:
+            yz = log_interpolate_or_extrapolate(xArray[-2], yArray[-2], xArray[-1], yArray[-1], z)
+        else:
+            # Find the interval that z falls into for interpolation
+            for i in range(1, len(xArray)):
+                if xArray[i - 1] <= z <= xArray[i]:
+                    yz = log_interpolate_or_extrapolate(xArray[i - 1], yArray[i - 1], xArray[i], yArray[i], z)
+                    break
 
-    for zz, values in z_table.items():
-        x1 = values["x1"]
-        x2 = values["x2"]
-        y1 = values["y1"]
-        y2 = values["y2"]
+        if yz > 100:  # 100% volume has been reached. Stop extrapolation. Set all remaining to 100%
+            for key in zArray[zIndex + starting_index :]:
+                sizes_dict[key] = 100
+            return list(sizes_dict.values())
 
-        values["j"] = (y2 - y1) / (log(x2) - log(x1)) * (log(zz) - log(x1)) + y1
-    return [round(v["j"], 3) for v in z_table.values()]
+        sizes_dict[z] = round(yz, ndigits=3)
 
-
-def from_csv_to_csv():
-    with open("test_data/interpolate_input.csv") as csvfile:
-        reader = csv.DictReader(csvfile)
-        fields_copy = copy(reader.fieldnames)
-        fields_copy.pop(0)
-        products = {name: [] for name in fields_copy}
-        a_x = []
-        for line in reader:
-            a_x.append(float(line["Size"]))
-            for n in products:
-                products[n].append(float(line[n]))
-
-        for name in products:
-            b_y = fraction_interpolator(x=a_x, y=products[name], z=SIZE_STEPS)
-            with open(f"test_data/{name}.csv", "w+") as newcsvfile:
-                writer = csv.DictWriter(newcsvfile, fieldnames=["Size", "Cumulative"])
-                writer.writeheader()
-                for step, interpol_value in zip(SIZE_STEPS, b_y, strict=False):
-                    writer.writerow({"Size": step, "Cumulative": interpol_value})
-
-
-if __name__ == "__main__":
-    from_csv_to_csv()
+    return list(sizes_dict.values())
