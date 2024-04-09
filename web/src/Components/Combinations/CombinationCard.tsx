@@ -101,8 +101,8 @@ export const CombinationCard = ({
         setD90(findDValue(graphData, 90, combination.name))
       })
       .catch(error => {
-        ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
+        ErrorToast(`${error.response.data}`, error.response.status)
       })
   }, [combination, allProducts])
 

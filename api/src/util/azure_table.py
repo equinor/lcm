@@ -47,7 +47,7 @@ def sanitize_row_key(value: str) -> str:
     return value.replace("/", "-").replace("\\", "-").replace("#", "").replace("?", "-").replace(" ", "").lower()
 
 
-def get_service():
+def get_table_service() -> TableService:
     return TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
 
 

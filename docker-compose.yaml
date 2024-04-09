@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     environment:
       ENVIRONMENT: development
+      AUTH_DISABLED: "true"
       FLASK_DEBUG: "true"
       TABLE_KEY: ${TABLE_KEY}
     ports:

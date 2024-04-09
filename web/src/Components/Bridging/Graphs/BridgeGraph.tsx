@@ -15,8 +15,6 @@ type BridgeGraphProps = {
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    console.log(payload)
-    console.log(label)
     return (
       <div style={{ backgroundColor: 'white', border: '1px solid gray', padding: '5px', borderRadius: '2px' }}>
         <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
