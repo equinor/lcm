@@ -1,42 +1,55 @@
-import { Button, Icon, TopBar, Typography } from '@equinor/eds-core-react'
+import { Button, Icon, Menu, TopBar, Typography } from '@equinor/eds-core-react'
 import RefreshButton from './RefreshButton'
 import { ContactButton } from './ContactButton'
-import { info_circle } from '@equinor/eds-icons'
+import { external_link, menu } from '@equinor/eds-icons'
 import { StyledLink } from './styles'
 import CreateProduct from './CreateProduct'
+import { useState } from 'react'
+import ResetApp from './ResetAppData'
+import ResetAppData from './ResetAppData'
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   return (
     <TopBar>
       <TopBar.Header>
         <Typography variant='h2'>LCM Optimizer</Typography>
       </TopBar.Header>
       <TopBar.Actions>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, fit-content(100%))',
-            gap: '16px',
-          }}
+        <Button variant='ghost_icon' onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setAnchorEl}>
+          <Icon data={menu} />
+        </Button>
+        <Menu
+          open={isMenuOpen}
+          id='menu-default'
+          aria-labelledby='anchor-default'
+          onClose={() => setIsMenuOpen(false)}
+          anchorEl={anchorEl}
         >
-          <div>
+          <Menu.Item>
+            <Icon data={external_link} title='info_circle' />
             <StyledLink
               href='https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product'
               target='_blank'
               rel='noopener noreferrer'
             >
-              <Button variant='outlined'>
-                <Icon data={info_circle} title='info_circle' />
-                LCM Library SharePoint
-              </Button>
+              LCM Library SharePoint
             </StyledLink>
-          </div>
-          <CreateProduct />
-          <RefreshButton />
-          <div>
+          </Menu.Item>
+          <Menu.Item>
             <ContactButton />
-          </div>
-        </div>
+          </Menu.Item>
+          <Menu.Item>
+            <CreateProduct />
+          </Menu.Item>
+          <Menu.Item>
+            <RefreshButton />
+          </Menu.Item>
+          <Menu.Item>
+            <ResetAppData />
+          </Menu.Item>
+        </Menu>
       </TopBar.Actions>
     </TopBar>
   )

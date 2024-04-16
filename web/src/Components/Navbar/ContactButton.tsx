@@ -7,11 +7,11 @@ export const ContactButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
 
   return (
-    <>
-      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
+    <div>
+      <div onClick={() => setDialogOpen(true)} style={{ display: 'flex', alignItems: 'center' }}>
         <Icon data={comment_important} title='filter products' />
-        Contact
-      </Button>
+        <div style={{ paddingLeft: '15px' }}>Contact</div>
+      </div>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
         <Dialog.Header>
           <Dialog.Title>Contact and support</Dialog.Title>
@@ -32,6 +32,6 @@ export const ContactButton = () => {
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
         </Dialog.Actions>
       </Dialog>
-    </>
+    </div>
   )
 }

@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-// @ts-ignore
-import { Button, Icon, Switch, Input, Tooltip, Divider } from '@equinor/eds-core-react'
+import { Button, Icon, Switch, Input, Tooltip } from '@equinor/eds-core-react'
 import CombinationTable from './CombinationTable'
 import styled from 'styled-components'
 import { Card } from './CardContainer'
 import { Bridge, Combination, GraphData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
 import { CombinationAPI } from '../../Api'
-import { ErrorToast } from '../Common/Toast'
 import { findDValue, findGraphData } from '../../Utils'
 import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
-import { edit, close, delete_to_trash } from '@equinor/eds-icons'
+import { edit, delete_to_trash } from '@equinor/eds-icons'
+import { toast } from 'react-toastify'
 
 const CardHeader = styled.div`
   display: flex;
@@ -82,6 +81,11 @@ export const CombinationCard = ({
     let newMass: number = 0
     let newDensity: number = 0
     Object.values(combination.values).forEach(prod => {
+      if (!allProducts[prod.id]) {
+        console.error(`Product with id '${prod.id}' not found in allProducts`)
+        toast.error(`Product with id '${prod.id}' not found. Try resetting the application data.`, { autoClose: false })
+        return
+      }
       newMass += allProducts[prod.id].sackSize * prod.value
       newDensity += prod.value
     })
@@ -102,7 +106,7 @@ export const CombinationCard = ({
       })
       .catch(error => {
         console.error('fetch error' + error)
-        ErrorToast(`${error.response.data}`, error.response.status)
+        toast.error(`Failed to calculate bridge for combination '${combination.name}'`, { autoClose: false })
       })
   }, [combination, allProducts])
 

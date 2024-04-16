@@ -10,6 +10,7 @@ import { ErrorToast } from '../Components/Common/Toast'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { IAuthContext } from 'react-oauth2-code-pkce'
 import Navbar from '../Components/Navbar/Navbar'
+import ErrorBoundary from '../Components/Common/ErrorBoundary'
 
 const BodyWrapper = styled.div`
   display: flex;
@@ -37,11 +38,13 @@ export default (): ReactElement => {
 
   return (
     <>
-      <Navbar />
-      <BodyWrapper>
-        {/* @ts-ignore*/}
-        <Body products={products} />
-      </BodyWrapper>
+      <ErrorBoundary>
+        <Navbar />
+        <BodyWrapper>
+          {/* @ts-ignore*/}
+          <Body products={products} />
+        </BodyWrapper>
+      </ErrorBoundary>
     </>
   )
 }
