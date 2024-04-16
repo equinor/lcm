@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, CircularProgress, Icon } from '@equinor/eds-core-react'
+import { Button, Dialog, CircularProgress, Icon, Typography } from '@equinor/eds-core-react'
 
 import { SyncAPI } from '../../Api'
 import styled from 'styled-components'
@@ -34,11 +34,11 @@ export const RefreshButton = () => {
   }
 
   return (
-    <>
-      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
+    <div>
+      <div onClick={() => setDialogOpen(true)} style={{ display: 'flex', alignItems: 'center' }}>
         <Icon data={refresh} title='refresh' />
-        Synchronize with SharePoint
-      </Button>
+        <div style={{ paddingLeft: '15px' }}>Synchronize with SharePoint</div>
+      </div>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>
         <Dialog.Header>
           <Dialog.Title>Synchronize SharePoint data</Dialog.Title>
@@ -74,7 +74,7 @@ export const RefreshButton = () => {
           </ButtonWrapper>
         </Dialog.Actions>
       </Dialog>
-    </>
+    </div>
   )
 }
 

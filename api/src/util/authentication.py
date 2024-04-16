@@ -45,6 +45,8 @@ def decode_jwt(token):
 def authorize(f):
     @wraps(f)
     def wrap(*args, **kwargs):
+        if Config.AUTH_DISABLED == "true":
+            return f(*args, **kwargs)
         if "Authorization" not in request.headers:
             abort(401, "Missing 'Authorization' header")
         try:

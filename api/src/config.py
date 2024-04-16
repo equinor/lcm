@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 class Config:
+    AUTH_DISABLED = os.getenv("AUTH_DISABLED", "false")
     TABLE_ACCOUNT_NAME = os.getenv("TABLE_ACCOUNT_NAME", "lcmdevstorage")
     TABLE_KEY = os.getenv("TABLE_KEY")
     BLOB_CONTAINER_NAME = "lcm-file-blobs"
@@ -19,4 +20,5 @@ class Config:
     DEFAULT_MAX_ITERATIONS = 100
     HOME_DIR = str(Path(__file__).parent.absolute())
     PRODUCT_TABLE_NAME = "products"
+    CUSTOM_PRODUCT_TABLE = "interpolatedproducts"
     named_supplier = ("Baker Hughes", "Halliburton", "Schlumberger")

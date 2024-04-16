@@ -7,7 +7,7 @@ from config import Config
 from controllers.combination import bridge_from_combination
 from controllers.optimal_bridge import bridgeRequestHandler
 from controllers.optimizer import optimizer_request_handler
-from controllers.products import products_get
+from controllers.products import products_get, products_post
 from controllers.report import create_report
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
@@ -22,10 +22,17 @@ def init_api():
 app = init_api()
 
 
-@app.route("/api/products", methods=["GET"])
+@app.route("/api/products", methods=["GET", "POST"])
 @authorize
-def products():
-    return products_get()
+def products() -> Response:
+    if request.method == "GET":
+        return products_get()
+    if request.method == "POST":
+        name: str = request.json.get("productName")
+        supplier: str = request.json.get("productSupplier")
+        product_data: [[float, float]] = request.json.get("productData")
+        return products_post(name, supplier, product_data)
+    raise ValueError("Invalid method for endpoint")
 
 
 @app.route("/api/report", methods=["POST"])

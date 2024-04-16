@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@equinor/eds-core-react": "^0.34.0",
-    "@equinor/eds-icons": "^0.19.3",
+    "@equinor/eds-core-react": "^0.36.1",
+    "@equinor/eds-icons": "^0.21.0",
     "@equinor/eds-tokens": "^0.9.2",
     "axios": "^1.6.2",
     "react": "^18.2.0",
@@ -28,7 +28,7 @@
     "source-map-explorer": "^2.5.3"
   },
   "scripts": {
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && WDS_SOCKET_PORT=80 react-scripts start",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
