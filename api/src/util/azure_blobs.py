@@ -3,11 +3,10 @@ from collections.abc import Iterator
 from pathlib import Path
 
 from azure.storage.blob import BlobProperties, ContainerClient
-from xlrd.sheet import Sheet
+from pandas import DataFrame, read_excel
 
 from config import Config
 from util.azure_table import process_meta_blob, sanitize_row_key
-from util.excel import excel_raw_file_to_sheet, sheet_to_bridge_dict
 
 
 def get_container_client() -> ContainerClient:
@@ -18,17 +17,25 @@ def get_container_client() -> ContainerClient:
     )
 
 
-def from_blobs_to_excel(blobs: Iterator[BlobProperties], container_client: ContainerClient) -> dict[str, Sheet]:
-    sheets = {}
+def excel_bytes_to_dataframe(file: bytes) -> DataFrame:
+    file_io = io.BytesIO(file)
+    df = read_excel(file_io)
+    return df
+
+
+def from_excel_blobs_to_data_frame(
+    blobs: Iterator[BlobProperties], container_client: ContainerClient
+) -> dict[str, DataFrame]:
+    products: dict[str, DataFrame] = {}
     for blob in blobs:
         if Path(blob.name).suffix != ".xlsx":
             continue
         blob_client = container_client.get_blob_client(blob)
         raw_blob = blob_client.download_blob().readall()
         product_id = sanitize_row_key(Path(blob.name).stem)
-        sheets[product_id] = excel_raw_file_to_sheet(raw_blob)
+        products[product_id] = excel_bytes_to_dataframe(raw_blob)
 
-    return sheets
+    return products
 
 
 def get_metadata_blob_data() -> list[dict]:
@@ -41,10 +48,5 @@ def get_metadata_blob_data() -> list[dict]:
 def get_product_blobs_data() -> dict[str, dict]:
     container_client = get_container_client()
     all_blobs = container_client.list_blobs()
-    sheets = from_blobs_to_excel(all_blobs, container_client)
-
-    table_data = {}
-    for filename, sheet in sheets.items():
-        table_data[filename] = sheet_to_bridge_dict(sheet)
-
-    return table_data
+    dfs = from_excel_blobs_to_data_frame(all_blobs, container_client)
+    return {filename: {"cumulative": data_frame.Cumulative.to_list()} for filename, data_frame in dfs.items()}
