@@ -1,6 +1,6 @@
+import type { Products } from '../../Types'
 import SolutionData from '../Solution/SolutionData'
 import SolutionVisualisations from '../Solution/SolutionVisualisations'
-import { Products } from '../../Types'
 
 interface OptimizationResultProps {
   products: Products

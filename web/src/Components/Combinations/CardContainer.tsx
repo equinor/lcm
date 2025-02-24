@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-// @ts-ignore
-import styled from 'styled-components'
-import CombinationCard from './CombinationCard'
 // @ts-ignore
 import { Button, Icon } from '@equinor/eds-core-react'
-import { Bridge, Combinations } from '../../Types'
-import { FractionsAPI } from '../../Api'
-import { ErrorToast } from '../Common/Toast'
-import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
 import { add } from '@equinor/eds-icons'
+import { useContext, useEffect, useState } from 'react'
+import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
+// @ts-ignore
+import styled from 'styled-components'
+import { FractionsAPI } from '../../Api'
+import type { Bridge, Combinations } from '../../Types'
+import { ErrorToast } from '../Common/Toast'
+import CombinationCard from './CombinationCard'
 export const Card = styled.div`
   margin: 10px;
   padding: 10px;
@@ -50,9 +50,9 @@ interface CardContainerProps {
 }
 
 const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
-  let combinationNames: Array<string> = Object.keys(combinationMap).map(id => combinationMap[id].name)
+  const combinationNames: Array<string> = Object.keys(combinationMap).map((id) => combinationMap[id].name)
 
-  let i: number = 1
+  let i = 1
   while (i < 100) {
     const newCombinationName: string = sacks ? 'Sack combination ' + i : 'Manual combination ' + i
     if (!combinationNames.includes(newCombinationName)) {
@@ -81,10 +81,10 @@ export const CardContainer = ({
   // Load size fractions once on first render
   useEffect(() => {
     FractionsAPI.getFractionsApi(token)
-      .then(response => {
+      .then((response) => {
         setSizeFractions(response.data.size_fractions)
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
@@ -93,7 +93,7 @@ export const CardContainer = ({
   return (
     <>
       <div style={{ width: '100%', display: 'flex' }}>
-        {Object.keys(combinations).map(id => {
+        {Object.keys(combinations).map((id) => {
           if (sacks === combinations[id].sacks && sizeFractions.length > 0)
             return (
               <CombinationCard
@@ -123,7 +123,7 @@ export const CardContainer = ({
             })
           }}
         >
-          <Icon data={add} title='add_box' />
+          <Icon data={add} title="add_box" />
           New combination
         </Button>
       </div>

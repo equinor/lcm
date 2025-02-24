@@ -1,8 +1,8 @@
-import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, Icon, Scrim } from '@equinor/eds-core-react'
+import { Button, Dialog } from '@equinor/eds-core-react'
+import { type ReactElement, useEffect, useState } from 'react'
+import type { Products } from '../../Types'
 import SelectProducts from './SelectProducts'
-import { Products } from '../../Types'
 
 interface AddProductsProps {
   allProducts: Products
@@ -20,7 +20,7 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
 
   return (
     <>
-      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
+      <Button variant="outlined" onClick={() => setDialogOpen(true)}>
         Select products
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
@@ -34,7 +34,13 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
             setEnabledProducts={setSelectedProducts}
           />
         </Dialog.CustomContent>
-        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+        <Dialog.Actions
+          style={{
+            width: 'fill-available',
+            display: 'flex',
+            justifySelf: 'center',
+          }}
+        >
           <Button
             style={{ width: '200px' }}
             onClick={() => {

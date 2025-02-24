@@ -4,13 +4,17 @@ const BASE_PATH = '/api'
 
 class OptimizerApi {
   async postOptimizerApi(token: string, data: any) {
-    return axios.post(`${BASE_PATH}/optimizer`, data, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.post(`${BASE_PATH}/optimizer`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 }
 
 class CombinationApi {
   async postCombinationApi(token: string, data: any) {
-    return axios.post(`${BASE_PATH}/combination`, data, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.post(`${BASE_PATH}/combination`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 }
 
@@ -25,7 +29,9 @@ class ReportApi {
 
 class BridgeApi {
   async postBridgeApi(token: string, data: any) {
-    return axios.post(`${BASE_PATH}/bridge`, data, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.post(`${BASE_PATH}/bridge`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 }
 
@@ -37,13 +43,17 @@ class SyncApi {
 
 class ProductsApi {
   async getProductsApi(token: string) {
-    return axios.get(`${BASE_PATH}/products`, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.get(`${BASE_PATH}/products`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 }
 
 class FractionsApi {
   async getFractionsApi(token: string) {
-    return axios.get(`${BASE_PATH}/fractions`, { headers: { Authorization: `Bearer ${token}` } })
+    return axios.get(`${BASE_PATH}/fractions`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 }
 

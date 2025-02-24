@@ -6,7 +6,11 @@ interface ParticleRange {
   setRange: Function
 }
 
-export const ParticleSizeContext = createContext<ParticleRange>({ from: 1, to: 1000, setRange: () => {} })
+export const ParticleSizeContext = createContext<ParticleRange>({
+  from: 1,
+  to: 1000,
+  setRange: () => {},
+})
 
 export interface User {
   token: string

@@ -1,13 +1,13 @@
-import React, { useContext, useState } from 'react'
 // @ts-ignore
-import { Button, Dialog, CircularProgress, Icon } from '@equinor/eds-core-react'
+import { Button, CircularProgress, Dialog, Icon } from '@equinor/eds-core-react'
+import { useContext, useState } from 'react'
 
-import { SyncAPI } from '../../Api'
-import styled from 'styled-components'
-import { ErrorToast } from '../Common/Toast'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { IAuthContext } from 'react-oauth2-code-pkce'
 import { refresh } from '@equinor/eds-icons'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import type { IAuthContext } from 'react-oauth2-code-pkce'
+import styled from 'styled-components'
+import { SyncAPI } from '../../Api'
+import { ErrorToast } from '../Common/Toast'
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -26,7 +26,7 @@ export const RefreshButton = () => {
         setLoading(false)
         window.location.reload()
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
         setLoading(false)
@@ -35,8 +35,8 @@ export const RefreshButton = () => {
 
   return (
     <>
-      <Button variant='outlined' onClick={() => setDialogOpen(true)}>
-        <Icon data={refresh} title='refresh' />
+      <Button variant="outlined" onClick={() => setDialogOpen(true)}>
+        <Icon data={refresh} title="refresh" />
         Synchronize with SharePoint
       </Button>
       <Dialog style={{ width: 'min-content' }} open={dialogOpen} isDismissable={true}>
@@ -46,7 +46,7 @@ export const RefreshButton = () => {
         <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
           <p>
             This will synchronize products distribution and products metadata from SharePoint (
-            <a href='https://statoilsrm.sharepoint.com/sites/LCMTeamBlend'>
+            <a href="https://statoilsrm.sharepoint.com/sites/LCMTeamBlend">
               https://statoilsrm.sharepoint.com/sites/LCMTeamBlend
             </a>
             )
@@ -56,13 +56,19 @@ export const RefreshButton = () => {
           </p>
           {loading && <CircularProgress />}
         </Dialog.CustomContent>
-        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'normal' }}>
+        <Dialog.Actions
+          style={{
+            width: 'fill-available',
+            display: 'flex',
+            justifySelf: 'normal',
+          }}
+        >
           <ButtonWrapper>
             <Button onClick={() => setDialogOpen(false)} disabled={loading}>
               Cancel
             </Button>
             <Button
-              color='danger'
+              color="danger"
               disabled={loading}
               onClick={() => {
                 setLoading(true)

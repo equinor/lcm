@@ -1,4 +1,4 @@
-import { Bridge, GraphData, Product } from './Types'
+import type { Bridge, GraphData, Product } from './Types'
 
 export function sortProducts(products: Array<Product>): Array<Product> {
   return products.sort((a, b) => {
@@ -13,9 +13,9 @@ export function sortProducts(products: Array<Product>): Array<Product> {
 }
 
 export function findGraphData(sizeFractions: number[], bridges: Bridge): GraphData[] {
-  let newGraphData: GraphData[] = []
+  const newGraphData: GraphData[] = []
   sizeFractions.forEach((fraction, sizeIndex) => {
-    let temp: GraphData = { size: fraction }
+    const temp: GraphData = { size: fraction }
     Object.entries(bridges).forEach(([name, cumulative]) => {
       temp[name] = cumulative[sizeIndex]
     })
@@ -33,8 +33,8 @@ export function findDValue(graphData: GraphData[], goalYValue: number, bridgeNam
   // A D value is defined as a bridge graph's x-value at a specific y value
   // Example: D90 (goalYValue = 90) is the bridge graph's x-value at y = 90
 
-  let bridgeYValues: number[] = []
-  graphData.map(graph => bridgeYValues.push(graph[bridgeName]))
+  const bridgeYValues: number[] = []
+  graphData.map((graph) => bridgeYValues.push(graph[bridgeName]))
 
   // find the bridge's y-value that is closest to the goal y-value
   let indexOfClosestHigherYValue = 0

@@ -1,6 +1,6 @@
-import React, { ReactElement, useEffect, useState } from 'react'
 // @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
+import { type ReactElement, useEffect, useState } from 'react'
 
 enum PillInputType {
   VOLUME = 'volume',
@@ -31,8 +31,8 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
   }, [invalidDensity, invalidVolume])
 
   const handleChange = (type: string, value: string) => {
-    let newValue: number = 0
-    if (value !== '') newValue = parseInt(value)
+    let newValue = 0
+    if (value !== '') newValue = Number.parseInt(value)
 
     if (Math.sign(newValue) <= 0) {
       type === PillInputType.VOLUME && setInvalidVolume(true)
@@ -62,25 +62,25 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
     <div style={{ maxWidth: '150px', margin: '10px 0' }}>
       <TextField
         style={{ marginBottom: '16px' }}
-        type='number'
+        type="number"
         helperText={invalidVolume ? 'Must be a positive number' : undefined}
-        label='Pill volume'
-        id='pillvolume'
+        label="Pill volume"
+        id="pillvolume"
         value={pill.volume.toString()}
-        meta='m3'
+        meta="m3"
         variant={(invalidVolume && 'error') || undefined}
         onChange={(event: any) => handleChange(PillInputType.VOLUME, event.target.value)}
         disabled={isLoading}
       />
       <TextField
         style={{ marginBottom: '16px' }}
-        type='number'
-        label='Pill concentration'
+        type="number"
+        label="Pill concentration"
         helperText={invalidDensity ? 'Must be a positive number' : undefined}
-        id='pillconcentration'
+        id="pillconcentration"
         value={pill.density.toString()}
         variant={(invalidDensity && 'error') || undefined}
-        meta='kg/m3'
+        meta="kg/m3"
         onChange={(event: any) => handleChange(PillInputType.DENSITY, event.target.value)}
         disabled={isLoading}
       />

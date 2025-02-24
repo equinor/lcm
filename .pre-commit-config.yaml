@@ -31,4 +31,4 @@ repos:
       name: "Lint: biome (js/ts)"
       files: ^web/.*\.(ts|tsx|js|css|html|json)$
       additional_dependencies: ["@biomejs/biome@1.9.4"]
-      rgs: ["--config-path", "web"]
+      args: ["--config-path", "web"]

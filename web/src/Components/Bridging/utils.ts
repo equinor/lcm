@@ -1,4 +1,4 @@
-import { GraphData } from '../../Types'
+import type { GraphData } from '../../Types'
 
 export function differentiateArrayObjects(arr: GraphData[]): GraphData[] {
   return arr.map((currentObj, index, array) => {
@@ -6,9 +6,9 @@ export function differentiateArrayObjects(arr: GraphData[]): GraphData[] {
     if (index === array.length - 1) {
       const lastObj: GraphData = { size: currentObj.size } // Preserving the size property
       // Set all other properties to NaN or 0 to indicate no difference can be calculated
-      Object.keys(currentObj).forEach(key => {
+      Object.keys(currentObj).forEach((key) => {
         if (key !== 'size') {
-          lastObj[key] = NaN // or set to 0 as per requirement
+          lastObj[key] = Number.NaN // or set to 0 as per requirement
         }
       })
       return lastObj
@@ -18,11 +18,11 @@ export function differentiateArrayObjects(arr: GraphData[]): GraphData[] {
     const differentiatedObj: GraphData = { size: currentObj.size } // Preserve the size property
 
     // Iterate over the properties of the current object
-    Object.keys(currentObj).forEach(key => {
+    Object.keys(currentObj).forEach((key) => {
       if (key !== 'size' && typeof currentObj[key] === 'number') {
         // Calculate the difference with the next object's corresponding property
         const difference = (nextObj[key] || 0) - currentObj[key]
-        differentiatedObj[key] = parseFloat(difference.toFixed(3))
+        differentiatedObj[key] = Number.parseFloat(difference.toFixed(3))
       }
     })
 

@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Icon, Switch, Input, Tooltip, Divider } from '@equinor/eds-core-react'
-import CombinationTable from './CombinationTable'
+import { Button, Icon, Input, Switch, Tooltip } from '@equinor/eds-core-react'
+import { delete_to_trash, edit } from '@equinor/eds-icons'
+import { useContext, useEffect, useState } from 'react'
+import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
-import { Card } from './CardContainer'
-import { Bridge, Combination, GraphData, Product, Products } from '../../Types'
-import EditProducts from '../Common/EditProducts'
 import { CombinationAPI } from '../../Api'
-import { ErrorToast } from '../Common/Toast'
+import type { Bridge, Combination, GraphData, Product, Products } from '../../Types'
 import { findDValue, findGraphData } from '../../Utils'
-import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
-import { edit, close, delete_to_trash } from '@equinor/eds-icons'
+import EditProducts from '../Common/EditProducts'
+import { ErrorToast } from '../Common/Toast'
+import { Card } from './CardContainer'
+import CombinationTable from './CombinationTable'
 
 const CardHeader = styled.div`
   display: flex;
@@ -70,8 +70,11 @@ export const CombinationCard = ({
   useEffect(() => {
     if (!(Object.keys(allProducts).length > 0)) return
     let newEnabledProducts: Products = {}
-    Object.values(combination.values).forEach(prod => {
-      newEnabledProducts = { ...newEnabledProducts, [prod.id]: allProducts[prod.id] }
+    Object.values(combination.values).forEach((prod) => {
+      newEnabledProducts = {
+        ...newEnabledProducts,
+        [prod.id]: allProducts[prod.id],
+      }
     })
     setEnabledProducts(newEnabledProducts)
   }, [allProducts])
@@ -79,9 +82,9 @@ export const CombinationCard = ({
   // Calculate sum of mass in combination on combination change
   useEffect(() => {
     if (!(Object.keys(allProducts).length > 0)) return
-    let newMass: number = 0
-    let newDensity: number = 0
-    Object.values(combination.values).forEach(prod => {
+    let newMass = 0
+    let newDensity = 0
+    Object.values(combination.values).forEach((prod) => {
       newMass += allProducts[prod.id].sackSize * prod.value
       newDensity += prod.value
     })
@@ -92,15 +95,18 @@ export const CombinationCard = ({
     }
 
     CombinationAPI.postCombinationApi(token, Object.values(combination.values))
-      .then(response => {
-        let newBridge: Bridge = { ...bridge, [combination.name]: response.data.bridge }
+      .then((response) => {
+        const newBridge: Bridge = {
+          ...bridge,
+          [combination.name]: response.data.bridge,
+        }
         setBridge(newBridge)
-        let graphData: GraphData[] = findGraphData(sizeFractions, newBridge)
+        const graphData: GraphData[] = findGraphData(sizeFractions, newBridge)
         setD10(findDValue(graphData, 10, combination.name))
         setD50(findDValue(graphData, 50, combination.name))
         setD90(findDValue(graphData, 90, combination.name))
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
@@ -109,7 +115,7 @@ export const CombinationCard = ({
   function updateEnabledProductsAndCombination(changedProducts: Products) {
     setEnabledProducts(changedProducts)
 
-    let newCombination: Combination = { ...combination }
+    const newCombination: Combination = { ...combination }
     newCombination.values = {}
     Object.values(changedProducts).forEach((p: Product) => {
       if (combination.values[p.id]) {
@@ -134,7 +140,7 @@ export const CombinationCard = ({
       <div>
         <CardHeader>
           <Tooltip title={isHeaderEditable ? 'Toggle edit off' : 'Edit combination title'}>
-            <Button variant='ghost_icon' onClick={() => setIsHeaderEditable(!isHeaderEditable)}>
+            <Button variant="ghost_icon" onClick={() => setIsHeaderEditable(!isHeaderEditable)}>
               <Icon data={edit} size={16} style={{ width: '40px' }} />
             </Button>
           </Tooltip>
@@ -156,8 +162,8 @@ export const CombinationCard = ({
             }}
           />
           <Tooltip title={'Delete combination'}>
-            <Button variant='ghost_icon' color='danger' onClick={() => removeCombination(combination.name)}>
-              <Icon data={delete_to_trash} title='close' style={{ width: '40px' }} />
+            <Button variant="ghost_icon" color="danger" onClick={() => removeCombination(combination.name)}>
+              <Icon data={delete_to_trash} title="close" style={{ width: '40px' }} />
             </Button>
           </Tooltip>
         </CardHeader>
@@ -209,13 +215,19 @@ export const CombinationCard = ({
           </CardSummation>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+          }}
+        >
           <EditProducts
             allProducts={allProducts}
             enabledProducts={enabledProducts}
             setEnabledProducts={updateEnabledProductsAndCombination}
           />
-          <Switch label='Plot' onChange={(e: any) => togglePlot(e)} checked={enabledPlot} size='small' />
+          <Switch label="Plot" onChange={(e: any) => togglePlot(e)} checked={enabledPlot} size="small" />
         </div>
       </div>
     </Card>

@@ -1,10 +1,9 @@
-import React from 'react'
 import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   // @ts-ignore
 } from 'recharts'
 
@@ -34,9 +33,9 @@ export const PerformanceRadar = ({ optimizationData }: IPerformanceRadar) => {
   return (
     <RadarChart cx={250} cy={150} outerRadius={100} width={540} height={300} data={graphData}>
       <PolarGrid />
-      <PolarAngleAxis dataKey='name' />
+      <PolarAngleAxis dataKey="name" />
       <PolarRadiusAxis />
-      <Radar name='Mike' dataKey='value' stroke='#73B1B5' fill='#73B1B5' fillOpacity={0.6} />
+      <Radar name="Mike" dataKey="value" stroke="#73B1B5" fill="#73B1B5" fillOpacity={0.6} />
     </RadarChart>
   )
 }

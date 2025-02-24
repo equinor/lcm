@@ -1,13 +1,13 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { Button, Typography, CircularProgress, Icon } from '@equinor/eds-core-react'
-import styled from 'styled-components'
-import { ProductResult } from '../Optimization/OptimizationContainer'
-import { Products } from '../../Types'
-import { ReportAPI } from '../../Api'
-import { ErrorToast } from '../Common/Toast'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { Button, CircularProgress, Icon, Typography } from '@equinor/eds-core-react'
 import { save } from '@equinor/eds-icons'
+import { type ReactElement, useContext, useEffect, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import styled from 'styled-components'
+import { ReportAPI } from '../../Api'
+import type { Products } from '../../Types'
+import { ErrorToast } from '../Common/Toast'
+import type { ProductResult } from '../Optimization/OptimizationContainer'
 
 const LabelWrapper = styled.div`
   display: flex;
@@ -36,14 +36,14 @@ interface DensitiesProps {
 const Densities = ({ products, productResults }: DensitiesProps): ReactElement => {
   const getSumOfDensities = () => {
     let sum = 0
-    Object.values(productResults).map(result => (sum += result.value))
+    Object.values(productResults).map((result) => (sum += result.value))
     return sum.toFixed(1)
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {Object.values(productResults).map((productResult: ProductResult) => {
-        productResult.value = parseFloat(productResult.value.toFixed(1))
+        productResult.value = Number.parseFloat(productResult.value.toFixed(1))
         return (
           <LabelWrapper key={productResult.id}>
             <TextWrapper>{products[productResult.id].title}</TextWrapper>
@@ -88,14 +88,14 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
     }
     setLoading(true)
     ReportAPI.postReportApi(token, reportRequest)
-      .then(res => {
+      .then((res) => {
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(res.data)
         link.target = '_blank'
         link.click()
         setLoading(false)
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast('Failed to open PDF report', error.response.status)
         console.error(error.response.data)
         setLoading(false)
@@ -105,13 +105,13 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
   return (
     <div>
       <Spacer>
-        <Typography variant='h4'>Optimal solution</Typography>
+        <Typography variant="h4">Optimal solution</Typography>
       </Spacer>
       <Spacer>
-        <Typography variant='h6'>Optimal blend:</Typography>
+        <Typography variant="h6">Optimal blend:</Typography>
         <Densities products={products} productResults={optimizationData.products} />
       </Spacer>
-      <Typography variant='h6'>Performance:</Typography>
+      <Typography variant="h6">Performance:</Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <LabelWrapper>
           <TextWrapper>Score:</TextWrapper>
@@ -124,7 +124,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </div>
       <div style={{ display: 'flex', paddingTop: '20px' }}>
         <Button onClick={() => onExportClick()} style={{ width: '170px' }} disabled={loading}>
-          <Icon data={save} title='export' />
+          <Icon data={save} title="export" />
           Export solution
         </Button>
 
