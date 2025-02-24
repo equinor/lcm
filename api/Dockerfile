@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 RUN chown -R 1000:1000 /app
 COPY pyproject.toml poetry.lock ./
-RUN poetry install
+RUN poetry install --no-root
 COPY . .
 USER 1000:1000
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
