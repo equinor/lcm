@@ -1,6 +1,7 @@
 name: Algorithm-Report
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - prod
