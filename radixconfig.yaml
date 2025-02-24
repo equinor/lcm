@@ -6,10 +6,10 @@ spec:
   environments:
     - name: prod
       build:
-        from: master
+        from: prod
     - name: test
       build:
-        from: test
+        from: master
   components:
     - name: web
       src: ./web
