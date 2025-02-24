@@ -12,10 +12,10 @@ jobs:
       - uses: actions/checkout@master
 
       - name: "Create report"
-        run: docker-compose build api && docker-compose run -u 0 api python src/tests/optimizer_test.py
+        run: docker compose build api && docker compose run -u 0 api python src/tests/optimizer_test.py
 
       - name: Archive results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: algorithm-report
           path: api/test_report.png
