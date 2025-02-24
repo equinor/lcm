@@ -8043,10 +8043,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-oauth2-code-pkce@^1.15.2:
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/react-oauth2-code-pkce/-/react-oauth2-code-pkce-1.17.2.tgz#a36fff30e33c131ed6bcdeeb7094536afad88448"
-  integrity sha512-CIuvKlOr0r390NTvtEXSTCrNuGz7pu+Omf3LOcsEGuhvuLze3G4i7RjYVsqLjWALdvy40Wv3q5PV+qTbIryBoQ==
+react-oauth2-code-pkce@^1.17.2:
+  version "1.22.2"
+  resolved "https://registry.yarnpkg.com/react-oauth2-code-pkce/-/react-oauth2-code-pkce-1.22.2.tgz#c636a0857d0d5dfec7ef9517616deae186c46e7f"
+  integrity sha512-Mn6JfA6AhYkhCZ83CJDsTRhNFbXkZnTuhdaJgj2/W1bqkU29cQAZaVnWtQrlXOLKYq9Ete9SdBHSi93pPt6gVA==
 
 react-refresh@^0.11.0:
   version "0.11.0"

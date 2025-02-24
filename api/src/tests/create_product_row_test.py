@@ -1,8 +1,8 @@
 import unittest
 
 from tests.utils import read_file
+from util.azure_blobs import excel_bytes_to_dataframe
 from util.azure_table import process_meta_blob
-from util.excel import excel_bytes_to_dataframe
 
 
 class CreateProductTableRow(unittest.TestCase):
