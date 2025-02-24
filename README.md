@@ -26,13 +26,13 @@ Deployed environments:
 2. Build the containers
 
     ```sh
-    docker-compose build
+    docker compose build
     ```
 
 3. Start the project
 
     ```sh
-    docker-compose up
+    docker compose up
     ```
 
 ## Contributing
@@ -62,7 +62,7 @@ That can be done like this;
     ...
     10000,100,100
     ```
-4. Run `docker-compose build api && docker-compose run api python calculators/fraction_interpolator.py`
+4. Run `docker compose build api && docker compose run api python calculators/fraction_interpolator.py`
 5. One result file for each product will be created in `./api/test_data/`
 
 ## Radix
