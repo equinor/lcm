@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { Typography } from '@equinor/eds-core-react'
+import { useContext, useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ParticleSizeContext } from '../../../Context'
+import type { Bridge, GraphData } from '../../../Types'
 import { bridgeColor, graphColors } from '../styles'
-import { Bridge, GraphData } from '../../../Types'
-import { Typography } from '@equinor/eds-core-react'
 
 type BridgeGraphProps = {
   title: string
@@ -18,7 +18,14 @@ const CustomTooltip = ({ active, payload, label }) => {
     console.log(payload)
     console.log(label)
     return (
-      <div style={{ backgroundColor: 'white', border: '1px solid gray', padding: '5px', borderRadius: '2px' }}>
+      <div
+        style={{
+          backgroundColor: 'white',
+          border: '1px solid gray',
+          padding: '5px',
+          borderRadius: '2px',
+        }}
+      >
         <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
         <div style={{ marginTop: '15px' }}>
           {payload.map((graphData: any) => (
@@ -47,9 +54,9 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
   }, [particleRange, sizeFractions])
 
   function particleSizeOffsetPercentage(offsetSize: number) {
-    const index = sizeFractions.findIndex(size => size > offsetSize)
+    const index = sizeFractions.findIndex((size) => size > offsetSize)
     if (index === -1) return '0%'
-    let percentage = (index / sizeFractions.length) * 100
+    const percentage = (index / sizeFractions.length) * 100
     return `${percentage}%`
   }
   const legendHeight = Math.max(Math.round(Object.entries(bridges).length / 3) * 20, 30)
@@ -59,38 +66,49 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
     bridges = withoutBridge
   }
   return (
-    <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', width: '100%', height: '100%' }}>
-      <Typography variant='h4' style={{ textAlign: 'center' }}>
+    <div
+      style={{
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      <Typography variant="h4" style={{ textAlign: 'center' }}>
         {title}
       </Typography>
       <ResponsiveContainer height={500} minWidth={600}>
         <AreaChart data={graphData} margin={{ top: 5, right: 30, bottom: 5 }}>
           {/* Defines a gradient applied to the areaPlot to highlight selected particle size range*/}
           <defs>
-            <linearGradient id='particleArea'>
-              <stop offset={particleFromPercentage} stopColor='transparent' />
-              <stop offset={particleFromPercentage} stopColor='#E2DCDC' />
-              <stop offset={particleToPercentage} stopColor='#E2DCDC' />
-              <stop offset={particleToPercentage} stopColor='transparent' />
+            <linearGradient id="particleArea">
+              <stop offset={particleFromPercentage} stopColor="transparent" />
+              <stop offset={particleFromPercentage} stopColor="#E2DCDC" />
+              <stop offset={particleToPercentage} stopColor="#E2DCDC" />
+              <stop offset={particleToPercentage} stopColor="transparent" />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray='3 3' />
+          <CartesianGrid strokeDasharray="3 3" />
 
           <XAxis
-            dataKey='size'
-            scale='log'
+            dataKey="size"
+            scale="log"
             domain={[0.1, 10000]}
-            type='number'
+            type="number"
             ticks={[0.1, 1, 10, 100, 1000, 10000]}
-            label={{ value: 'particle size (\u00B5m)', position: 'center', offset: 0 }}
+            label={{
+              value: 'particle size (\u00B5m)',
+              position: 'center',
+              offset: 0,
+            }}
             height={70}
           />
-          <YAxis type='number' allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: '270' }} />
+          <YAxis type="number" allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: '270' }} />
           <Tooltip content={CustomTooltip} />
-          <Legend verticalAlign='bottom' align='center' height={legendHeight} />
+          <Legend verticalAlign="bottom" align="center" height={legendHeight} />
           {Object.entries(bridges).map(([name, cumulative], index) => (
             <Area
-              type='monotone'
+              type="monotone"
               dataKey={name}
               stroke={
                 name === 'Bridge' ? bridgeColor : graphColors[(index - (showBridge ? 1 : 0)) % graphColors.length]

@@ -1,4 +1,4 @@
-import { Weight } from './Components/Optimization/WeightOptions'
+import type { Weight } from './Components/Optimization/WeightOptions'
 
 export interface Product {
   id: string

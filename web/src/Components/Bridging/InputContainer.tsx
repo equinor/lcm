@@ -1,10 +1,10 @@
 import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
-import { InputWrapper, RadioWrapper, StyledSelect } from './styles'
+import type { Variants } from '@equinor/eds-core-react/dist/types/components/types'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
+import type { GraphData } from '../../Types'
 import { findDValue } from '../../Utils'
-import { GraphData } from '../../Types'
-import { Variants } from '@equinor/eds-core-react/dist/types/components/types'
 import { colors } from '../../colors'
+import { InputWrapper, RadioWrapper } from './styles'
 
 type InputContainerProps = {
   mode: BridgingOption
@@ -52,19 +52,19 @@ const InputContainer = ({
             padding: '0.5rem',
           }}
         >
-          <Typography variant='h3'>Bridging options</Typography>
+          <Typography variant="h3">Bridging options</Typography>
           <span>Bridging based on:</span>
           <RadioWrapper>
             <Radio
-              label='Permeability'
-              name='group'
+              label="Permeability"
+              name="group"
               value={BridgingOption.PERMEABILITY}
               onChange={onBridgeOptionChange}
               checked={mode === BridgingOption.PERMEABILITY}
             />
             <Radio
-              label='Average pore size/crack opening'
-              name='group'
+              label="Average pore size/crack opening"
+              name="group"
               value={BridgingOption.AVERAGE_PORESIZE}
               onChange={onBridgeOptionChange}
               checked={mode === BridgingOption.AVERAGE_PORESIZE}
@@ -75,16 +75,16 @@ const InputContainer = ({
               }
             >
               <Radio
-                label='Max pore size/crack opening'
-                name='group'
+                label="Max pore size/crack opening"
+                name="group"
                 value={BridgingOption.MAXIMUM_PORESIZE}
                 onChange={onBridgeOptionChange}
                 checked={mode === BridgingOption.MAXIMUM_PORESIZE}
               />
             </Tooltip>
             <Radio
-              label='Ceramic Discs'
-              name='group'
+              label="Ceramic Discs"
+              name="group"
               value={BridgingOption.CERAMIC_DISCS}
               onChange={onBridgeOptionChange}
               checked={mode === BridgingOption.CERAMIC_DISCS}
@@ -95,7 +95,7 @@ const InputContainer = ({
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {/* <label htmlFor='ceramic-disk-selector'>Ceramic Discs Size</label> */}
                 <NativeSelect
-                  onChange={event => onBridgeValueChange(event.target.value)}
+                  onChange={(event) => onBridgeValueChange(event.target.value)}
                   id={'ceramic-disk-selector'}
                   label={'Disk Size'}
                   meta={'microns'}
@@ -113,11 +113,11 @@ const InputContainer = ({
             ) : (
               <TextField
                 label={InputLabels[mode]}
-                type='number'
-                id='textfield-number'
+                type="number"
+                id="textfield-number"
                 meta={unit}
                 value={bridgeValue || 0}
-                onChange={event => onBridgeValueChange(event.target.value)}
+                onChange={(event) => onBridgeValueChange(event.target.value)}
                 variant={bridgeValueVariant}
                 helperText={bridgeValueHelperText}
               />
@@ -136,9 +136,9 @@ const InputContainer = ({
             padding: '0.5rem',
           }}
         >
-          <Typography variant='h3'>Optimal Bridge:</Typography>
+          <Typography variant="h3">Optimal Bridge:</Typography>
           <div style={{ marginInlineStart: '0.5rem' }}>
-            {[10, 50, 90].map(d => (
+            {[10, 50, 90].map((d) => (
               <p>
                 D{d}: {findDValue(optimalBridgeGraphData, d, 'Bridge')}
                 {'\u00B5m'}

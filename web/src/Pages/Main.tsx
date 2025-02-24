@@ -1,15 +1,15 @@
 // @ts-ignore
-import { ReactElement, useContext, useEffect, useState } from 'react'
+import { type ReactElement, useContext, useEffect, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import type { IAuthContext } from 'react-oauth2-code-pkce'
 // @ts-ignore
 import styled from 'styled-components'
 // @ts-ignore
 import { ProductsAPI } from '../Api'
-import Body from '../Components/MainBody'
-import { Products } from '../Types'
 import { ErrorToast } from '../Components/Common/Toast'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { IAuthContext } from 'react-oauth2-code-pkce'
+import Body from '../Components/MainBody'
 import Navbar from '../Components/Navbar/Navbar'
+import type { Products } from '../Types'
 
 const BodyWrapper = styled.div`
   display: flex;
@@ -26,10 +26,10 @@ export default (): ReactElement => {
   // On first render, fetch all products
   useEffect(() => {
     ProductsAPI.getProductsApi(token)
-      .then(response => {
+      .then((response) => {
         setProducts(response.data)
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error(error)
       })

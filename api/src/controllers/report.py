@@ -57,9 +57,9 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
     combinations = ""
     for p in report.products.values():
         combinations += f"""<tr>
-            <td>{p['id']}</td>
-            <td>{p['value']}</td>
-            <td style='padding-left:50px;'>{round(p['percentage'], 2)}%</td>
+            <td>{p["id"]}</td>
+            <td>{p["value"]}</td>
+            <td style='padding-left:50px;'>{round(p["percentage"], 2)}%</td>
         </tr>"""
 
     return f"""
@@ -107,7 +107,7 @@ def create_report(request: dict, bridge: bool = True):
             subprocess.run(
                 [f"pandoc {html_file.name} -f html -o {OUT_PDF}"],
                 check=True,
-                shell=True,  # noqa: S602
+                shell=True,
                 capture_output=True,
             )
         except subprocess.CalledProcessError as ex:

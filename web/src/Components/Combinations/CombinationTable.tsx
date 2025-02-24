@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
+import { useEffect, useState } from 'react'
+import type { Products, ProductsInCombination } from '../../Types'
 import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
-import { Products, ProductsInCombination } from '../../Types'
 
 function setPercentages(newValues: ProductsInCombination, allProducts: Products): ProductsInCombination {
   // Add up all the mass in the combination
@@ -49,16 +49,24 @@ export const CombinationTable = ({
     }
     let formattedValue
     if (sacks) {
-      formattedValue = parseInt(value)
+      formattedValue = Number.parseInt(value)
     } else {
-      formattedValue = parseFloat(value)
+      formattedValue = Number.parseFloat(value)
     }
 
     if (formattedValue < 0) return
-    let newValues: any = { ...values, [productId]: { value: formattedValue, id: productId } }
+    const newValues: any = {
+      ...values,
+      [productId]: { value: formattedValue, id: productId },
+    }
     const newValuesWithPercentage = setPercentages(newValues, allProducts)
     setValues({ ...newValuesWithPercentage })
-    updateCombination({ name: combinationName, sacks: sacks, values: newValuesWithPercentage, cumulative: null })
+    updateCombination({
+      name: combinationName,
+      sacks: sacks,
+      values: newValuesWithPercentage,
+      cumulative: null,
+    })
   }
   return (
     <div style={{ display: 'flex', flexFlow: 'column', minWidth: 'fit-content' }}>
@@ -75,15 +83,27 @@ export const CombinationTable = ({
       </CombinationTableHeader>
       {Object.keys(productsInCombination).map((id, index) => (
         <CombinationTableValues key={index} style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
             <div style={{ minWidth: 'fit-content', alignSelf: 'center' }}>{allProducts[id].title}</div>
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginLeft: '5px',
+              }}
+            >
               <div style={{ maxWidth: '100px' }}>
                 <TextField
                   id={id}
                   // @ts-ignore
                   value={values[id]?.value || 0}
-                  type='number'
+                  type="number"
                   onChange={(event: any) => handleValueChange(id, event.target.value)}
                   style={{
                     // @ts-ignore

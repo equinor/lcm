@@ -1,7 +1,7 @@
-import React, { ReactElement, useState } from 'react'
-import OptimizationRunner from './OptimizationRunner'
+import { type ReactElement, useState } from 'react'
+import type { Combination, OptimizationData, Products, ProductsInCombination } from '../../Types'
 import OptimizationResult from './OptimizationResult'
-import { Combination, OptimizationData, Products, ProductsInCombination } from '../../Types'
+import OptimizationRunner from './OptimizationRunner'
 
 interface OptimizationContainerProps {
   products: Products
@@ -25,20 +25,23 @@ export const OptimizationContainer = ({
 
   const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
     let sackProducts: ProductsInCombination = {}
-    Object.values(densityOptimizationData.products).map(product => {
+    Object.values(densityOptimizationData.products).map((product) => {
       const SACK_KG: number = 25
       const sackValue: number = Math.round((product.value * densityOptimizationData.chosenVolume) / SACK_KG)
       if (sackValue > 0) {
-        sackProducts = { ...sackProducts, [product.id]: { id: product.id, value: sackValue, percentage: 0 } }
+        sackProducts = {
+          ...sackProducts,
+          [product.id]: { id: product.id, value: sackValue, percentage: 0 },
+        }
       }
     })
 
-    let totalNumberOfSacks: number = 0
-    Object.values(sackProducts).map(product => {
+    let totalNumberOfSacks = 0
+    Object.values(sackProducts).map((product) => {
       totalNumberOfSacks += product.value
     })
 
-    Object.values(sackProducts).map(product => {
+    Object.values(sackProducts).map((product) => {
       sackProducts[product.id].percentage = (product.value / totalNumberOfSacks) * 100
     })
 

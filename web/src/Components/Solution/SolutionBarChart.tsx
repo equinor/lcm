@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 // @ts-ignore
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { Products } from '../../Types'
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
+import type { Products } from '../../Types'
 
 class CustomizedAxisTick extends PureComponent {
   render() {
@@ -16,7 +16,7 @@ class CustomizedAxisTick extends PureComponent {
 
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={8} textAnchor='end' fill='#666' transform='rotate(-60)'>
+        <text x={0} y={0} dy={8} textAnchor="end" fill="#666" transform="rotate(-60)">
           {payload.value}
         </text>
       </g>
@@ -42,8 +42,8 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
   return (
     <BarChart width={400} height={300} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
       <XAxis
-        dataKey='name'
-        scale='point'
+        dataKey="name"
+        scale="point"
         padding={{ left: 50, right: 50 }}
         height={80}
         interval={0}
@@ -52,8 +52,8 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
       <YAxis />
       <Tooltip />
       <Legend />
-      <CartesianGrid strokeDasharray='3 3' />
-      <Bar dataKey='sacks' fill='#73B1B5' label={{ position: 'top' }} />
+      <CartesianGrid strokeDasharray="3 3" />
+      <Bar dataKey="sacks" fill="#73B1B5" label={{ position: 'top' }} />
     </BarChart>
   )
 }

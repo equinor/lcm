@@ -1,10 +1,10 @@
-import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Checkbox, Chip, Switch, Typography } from '@equinor/eds-core-react'
+import type { ReactElement } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
-import { Products, Product } from '../../Types'
 import useLocalStorage from '../../Hooks'
+import type { Product, Products } from '../../Types'
 import { sortProducts } from '../../Utils'
 
 const ChipBox = styled.div`
@@ -46,7 +46,7 @@ export const SelectProducts = ({
   function handleChipToggle(supplier: string) {
     if (selectedSuppliers.includes(supplier)) {
       let newEnabledProducts: Products = {}
-      Object.values(enabledProducts).forEach(product => {
+      Object.values(enabledProducts).forEach((product) => {
         if (product.supplier !== supplier) {
           newEnabledProducts = { ...newEnabledProducts, product }
         }
@@ -70,7 +70,7 @@ export const SelectProducts = ({
   function handleAllToggle(event: any) {
     if (event.target.checked) {
       let newEnabledProducts: Products = {}
-      productList.forEach(product => {
+      productList.forEach((product) => {
         if (selectedSuppliers.includes(product.supplier) && product.cumulative !== null) {
           newEnabledProducts = { ...newEnabledProducts, [product.id]: product }
         }
@@ -83,7 +83,14 @@ export const SelectProducts = ({
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
         <ChipBox>
           {suppliers.map((supplier: string) => {
             let active: ChipBoxStates = 'default'
@@ -101,7 +108,7 @@ export const SelectProducts = ({
             )
           })}
         </ChipBox>
-        <Switch label='Select all' onClick={(e: any) => handleAllToggle(e)} />
+        <Switch label="Select all" onClick={(e: any) => handleAllToggle(e)} />
       </div>
       {/* If some of the displayed products have missing PSD data, show a small notice*/}
       {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
@@ -126,19 +133,35 @@ export const SelectProducts = ({
           const disabled = product.cumulative == null
           return (
             <ProductBox key={key}>
-              <div style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginRight: '5px',
+                }}
+              >
                 <Checkbox
                   checked={isChecked}
                   // @ts-ignore
                   onChange={(event: Event) => handleProductToggle(event, product.id)}
                   label={product.title}
                   disabled={disabled}
-                  name='multiple'
-                  value='first'
+                  name="multiple"
+                  value="first"
                 />
-                {disabled && <div style={{ color: 'red', fontSize: '24px', alignSelf: 'center' }}>*</div>}
+                {disabled && (
+                  <div
+                    style={{
+                      color: 'red',
+                      fontSize: '24px',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    *
+                  </div>
+                )}
               </div>
-              <Typography variant='body_short'>{product.supplier}</Typography>
+              <Typography variant="body_short">{product.supplier}</Typography>
             </ProductBox>
           )
         })}

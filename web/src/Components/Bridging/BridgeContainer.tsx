@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import { FractionsAPI } from '../../Api'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { ErrorToast } from '../Common/Toast'
-import InputContainer from './InputContainer'
+import type { Bridge } from '../../Types'
 import { findGraphData } from '../../Utils'
-import { Bridge, GraphData } from '../../Types'
+import { ErrorToast } from '../Common/Toast'
 import BridgeGraph from './Graphs/BridgeGraph'
+import InputContainer from './InputContainer'
 import { differentiateArrayObjects } from './utils'
 
 type BridgeContainerProps = {
@@ -30,10 +30,10 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   // Load size fractions once on first render
   useEffect(() => {
     FractionsAPI.getFractionsApi(token)
-      .then(response => {
+      .then((response) => {
         setSizeFractions(response.data.size_fractions)
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
@@ -63,7 +63,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
       case BridgingOption.CERAMIC_DISCS:
         setMode(BridgingOption.CERAMIC_DISCS)
         setUnit('microns')
-        setValue(parseInt(CeramicDiscsValues[0]))
+        setValue(Number.parseInt(CeramicDiscsValues[0]))
         break
       default:
         return
@@ -71,7 +71,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   }
 
   function onBridgeValueChange(value) {
-    const newBridgeValue = parseInt(value)
+    const newBridgeValue = Number.parseInt(value)
     // TODO: Setting invalid values on parent is not good
     setValue(newBridgeValue)
 

@@ -1,19 +1,19 @@
-import BridgeContainer from './Bridging/BridgeContainer'
-import CardContainer from './Combinations/CardContainer'
-import OptimizationContainer from './Optimization/OptimizationContainer'
-import React, { ReactElement, useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { Accordion, Button, Icon, Typography } from '@equinor/eds-core-react'
-import { BridgeAPI, CombinationAPI } from '../Api'
+import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
+import { type ReactElement, useContext, useEffect, useState } from 'react'
+import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 // @ts-ignore
 import styled from 'styled-components'
+import { BridgeAPI, CombinationAPI } from '../Api'
 import { BridgingOption } from '../Enums'
-import { ErrorToast } from './Common/Toast'
-import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce'
-import { Bridge, Combination, Combinations, Products } from '../Types'
 import useLocalStorage from '../Hooks'
+import type { Bridge, Combination, Combinations, Products } from '../Types'
 import { colors } from '../colors'
-import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
+import BridgeContainer from './Bridging/BridgeContainer'
+import CardContainer from './Combinations/CardContainer'
+import { ErrorToast } from './Common/Toast'
+import OptimizationContainer from './Optimization/OptimizationContainer'
 
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
@@ -37,10 +37,10 @@ export default ({ products }: MainBodyProps): ReactElement => {
       option: mode,
       value: bridgeValue,
     })
-      .then(response => {
+      .then((response) => {
         setBridges({ ...bridges, Bridge: response.data.bridge })
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
@@ -50,7 +50,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
     return await Promise.all(
       // @ts-ignore
       Object.values(_combinations).map(async (c: Combination) => {
-        let res = await CombinationAPI.postCombinationApi(token, Object.values(c.values))
+        const res = await CombinationAPI.postCombinationApi(token, Object.values(c.values))
         return { [c.name]: res.data.bridge }
       })
     )
@@ -58,14 +58,14 @@ export default ({ products }: MainBodyProps): ReactElement => {
 
   // Create bridges from stored combinations
   useEffect(() => {
-    fetchBridges(combinations).then(storedBridges => {
+    fetchBridges(combinations).then((storedBridges) => {
       let newBridges: Bridge = {}
       storedBridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
 
       BridgeAPI.postBridgeApi(token, {
         option: mode,
         value: bridgeValue,
-      }).then(response => {
+      }).then((response) => {
         setBridges({ Bridge: response.data.bridge, ...newBridges })
       })
     })
@@ -75,10 +75,10 @@ export default ({ products }: MainBodyProps): ReactElement => {
     // Don't fetch with empty values if combination does not exist
     if (!Object.values(combination.values).length && !Object.keys(bridges).includes(combination.name)) return
     CombinationAPI.postCombinationApi(token, Object.values(combination.values))
-      .then(response => {
+      .then((response) => {
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error('fetch error' + error)
       })
@@ -86,7 +86,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
   }
 
   function removeBridge(id: string) {
-    let newBridges = bridges
+    const newBridges = bridges
     delete newBridges[id]
     setBridges({ ...newBridges })
   }
@@ -108,7 +108,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
         [sackCombination.name]: sackCombination,
         [densityCombination.name]: densityCombination,
       }
-      await fetchBridges(optimizationCombinations).then(_bridges => {
+      await fetchBridges(optimizationCombinations).then((_bridges) => {
         let newBridges: Bridge = {}
         _bridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
         setBridges({ ...bridges, ...newBridges })
@@ -131,7 +131,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
   }
 
   function removeCombination(combinationName: string) {
-    let tempCombination: Combinations = combinations
+    const tempCombination: Combinations = combinations
     delete tempCombination[combinationName]
     setCombinations({ ...tempCombination })
     delete bridges[combinationName]
@@ -156,7 +156,13 @@ export default ({ products }: MainBodyProps): ReactElement => {
           setValue={setBridgeValue}
         />
       </MainComponentsWrapper>
-      <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', padding: '0.5rem' }}>
+      <div
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          padding: '0.5rem',
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant={'h3'}>Blends</Typography>
@@ -165,14 +171,14 @@ export default ({ products }: MainBodyProps): ReactElement => {
           <div style={{ display: 'flex' }}>
             <Button
               onClick={() => setBridges({ Bridge: bridges.Bridge })}
-              color='danger'
-              variant='ghost'
+              color="danger"
+              variant="ghost"
               style={{ maxWidth: '130px' }}
             >
               <Icon data={visibility_off} />
               Hide blends
             </Button>
-            <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color='danger' variant='ghost'>
+            <Button style={{ marginLeft: '20px' }} onClick={() => resetCombinations()} color="danger" variant="ghost">
               <Icon data={delete_to_trash} />
               Delete blends
             </Button>
@@ -183,7 +189,12 @@ export default ({ products }: MainBodyProps): ReactElement => {
           <Accordion>
             <Accordion.Item>
               <Accordion.Header>Concentration blends</Accordion.Header>
-              <Accordion.Panel style={{ overflow: 'auto', backgroundColor: `${colors.background}` }}>
+              <Accordion.Panel
+                style={{
+                  overflow: 'auto',
+                  backgroundColor: `${colors.background}`,
+                }}
+              >
                 <CardContainer
                   sacks={false}
                   combinations={combinations}

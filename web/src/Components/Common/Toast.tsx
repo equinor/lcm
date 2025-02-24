@@ -1,5 +1,4 @@
 import { toast } from 'react-toastify'
-import React from 'react'
 
 export const InfoToast = (msg: string) => toast.info(msg)
 export const WarningToast = (msg: string) => toast.warning(msg)

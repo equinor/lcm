@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import React, { ReactElement } from 'react'
 // @ts-ignore
 import { Tooltip as EDSTooltip, Icon } from '@equinor/eds-core-react'
 import { help_outline } from '@equinor/eds-icons'
+import type { ReactElement } from 'react'
+import styled from 'styled-components'
 import { colors } from '../../colors'
 
 const Wrapper = styled.div`

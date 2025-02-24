@@ -1,22 +1,22 @@
-import { OptimizerAPI } from '../../Api'
-import PillInput, { Pill } from './PillInput'
-import { Weight, WeightOptions } from './WeightOptions'
-import React, { ReactElement, useContext, useState } from 'react'
 // @ts-ignore
-import { Accordion, Button, CircularProgress, TextField, Typography, Dialog, Icon } from '@equinor/eds-core-react'
-import { Products } from '../../Types'
+import { Accordion, Button, CircularProgress, Dialog, Icon, TextField, Typography } from '@equinor/eds-core-react'
+import { info_circle, play } from '@equinor/eds-icons'
+import { type ReactElement, useContext, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
-import { Tooltip } from '../Common/Tooltip'
-import { ErrorToast } from '../Common/Toast'
+import { OptimizerAPI } from '../../Api'
 import { ParticleSizeContext } from '../../Context'
-import EditProducts from '../Common/EditProducts'
 import useLocalStorage from '../../Hooks'
+import type { Products } from '../../Types'
+import EditProducts from '../Common/EditProducts'
+import { ErrorToast } from '../Common/Toast'
+import { Tooltip } from '../Common/Tooltip'
+import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
+import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import numberOfProductsFitnessFormulaImg from './FormulaPictures/NumberOfProductsFitnessFormula.png'
 import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
-import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
-import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { info_circle, play } from '@equinor/eds-icons'
+import PillInput, { type Pill } from './PillInput'
+import { type Weight, WeightOptions } from './WeightOptions'
 
 const { Actions, Title, CustomContent } = Dialog
 
@@ -80,7 +80,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
       products: products,
       weights: weight,
     })
-      .then(response => {
+      .then((response) => {
         setFailedRun(false)
         setLoading(false)
         handleUpdate({
@@ -91,7 +91,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
           maxNumberOfProducts: maxProducts,
         })
       })
-      .catch(error => {
+      .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
         setLoading(false)
         setFailedRun(true)
@@ -100,8 +100,14 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
 
   return (
     <Wrapper>
-      <div style={{ display: 'flex', alignItems: 'center', paddingBlockEnd: '2rem' }}>
-        <Typography variant='h3'>Optimizer</Typography>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          paddingBlockEnd: '2rem',
+        }}
+      >
+        <Typography variant="h3">Optimizer</Typography>
         <Icon
           style={{ cursor: 'pointer', paddingLeft: '5px' }}
           data={info_circle}
@@ -117,19 +123,19 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
             <tr>
               <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
               <th style={{ padding: '10px' }}>
-                <img src={totalFitnessFormulaImg} alt='Formula for total fitness' height={53} width={240}></img>
+                <img src={totalFitnessFormulaImg} alt="Formula for total fitness" height={53} width={240}></img>
               </th>
             </tr>
             <tr>
               <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
               <th style={{ padding: '10px' }}>
-                <img src={BridgeFitnessFormulaImg} alt='Formula for total fitness' height={94} width={337}></img>
+                <img src={BridgeFitnessFormulaImg} alt="Formula for total fitness" height={94} width={337}></img>
               </th>
             </tr>
             <tr>
               <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
               <th style={{ padding: '10px' }}>
-                <img src={MassFitnessFormulaImg} alt='Formula for total fitness' height={60} width={270}></img>
+                <img src={MassFitnessFormulaImg} alt="Formula for total fitness" height={60} width={270}></img>
               </th>
             </tr>
             <tr>
@@ -137,7 +143,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
               <th style={{ padding: '10px' }}>
                 <img
                   src={numberOfProductsFitnessFormulaImg}
-                  alt='Formula for total fitness'
+                  alt="Formula for total fitness"
                   height={52}
                   width={270}
                 ></img>
@@ -145,7 +151,13 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
             </tr>
           </table>
         </Dialog.CustomContent>
-        <Dialog.Actions style={{ width: 'fill-available', display: 'flex', justifySelf: 'center' }}>
+        <Dialog.Actions
+          style={{
+            width: 'fill-available',
+            display: 'flex',
+            justifySelf: 'center',
+          }}
+        >
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
         </Dialog.Actions>
       </Dialog>
@@ -153,7 +165,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
         <div>
           <div style={{ display: 'flex' }}>
             <InputWrapper>
-              <Typography variant='body_short'>Products</Typography>
+              <Typography variant="body_short">Products</Typography>
               <div
                 style={{
                   border: '1px solid #DCDCDC',
@@ -168,7 +180,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
               >
                 {Object.values(products).map((product: any) => {
                   return (
-                    <Typography key={product.id} variant='body_short'>
+                    <Typography key={product.id} variant="body_short">
                       {product.title}
                     </Typography>
                   )
@@ -177,13 +189,13 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
               <EditProducts allProducts={allProducts} enabledProducts={products} setEnabledProducts={setProducts} />
             </InputWrapper>
             <InputWrapper>
-              <Typography variant='body_short'>Pill</Typography>
+              <Typography variant="body_short">Pill</Typography>
               <PillInput pill={pill} setPill={setPill} isLoading={loading} setInvalidInput={setInvalidInput} />
             </InputWrapper>
           </div>
           <div style={{ display: 'flex', padding: '16px 0' }}>
             <Button onClick={() => handleOptimize()} disabled={loading || invalidInput || iterations <= 0}>
-              <Icon data={play} title='play' />
+              <Icon data={play} title="play" />
               Run optimizer
             </Button>
             {loading && <CircularProgress style={{ padding: '0 15px', height: '35px', width: '35px' }} />}
@@ -195,18 +207,24 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
               <Accordion.Header>Advanced options</Accordion.Header>
               <Accordion.Panel style={{ backgroundColor: '#f7f7f7' }}>
                 <div style={{ display: 'flex' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <div style={{ paddingBottom: '10px', maxWidth: '130px' }}>
                       <Tooltip text={'Number of iterations the optimizer will run.'}>
                         <TextField
-                          type='number'
+                          type="number"
                           variant={(iterations <= 0 && 'error') || undefined}
-                          label='Number of iterations'
-                          id='interations'
+                          label="Number of iterations"
+                          id="interations"
                           value={iterations.toString()}
                           onChange={(event: any) => {
                             if (event.target.value === '') setIterations(0)
-                            const newValue = parseInt(event.target.value)
+                            const newValue = Number.parseInt(event.target.value)
                             if (Math.sign(newValue) >= 0) setIterations(newValue)
                           }}
                           disabled={loading}
@@ -218,13 +236,13 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                         text={'Maximum number of products the optimizer should try to include in the combination'}
                       >
                         <TextField
-                          type='number'
-                          label='Max number of products'
-                          id='maxProducts'
+                          type="number"
+                          label="Max number of products"
+                          id="maxProducts"
                           value={maxProducts.toString()}
                           onChange={(event: any) => {
                             if (event.target.value === '') setMaxProducts(0)
-                            const newValue = parseInt(event.target.value)
+                            const newValue = Number.parseInt(event.target.value)
                             if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
                           }}
                           disabled={loading}
@@ -233,7 +251,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                     </div>
                     <div style={{ margin: '10px 0' }}>
                       <Tooltip text={'A range in microns which should be considered in the optimization'}>
-                        <Typography variant='body_short'>Particle sizes to consider</Typography>
+                        <Typography variant="body_short">Particle sizes to consider</Typography>
                       </Tooltip>
                     </div>
                     <ParticleSizeContext.Consumer>
@@ -241,14 +259,14 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                         <div style={{ display: 'flex' }}>
                           <div style={{ padding: '0 15px', width: '100px' }}>
                             <TextField
-                              id='part-from'
-                              type='number'
-                              label='From'
-                              meta='μm'
+                              id="part-from"
+                              type="number"
+                              label="From"
+                              meta="μm"
                               value={from.toString()}
                               onChange={(event: any) => {
                                 if (event.target.value === '') setRange([0, to])
-                                const newValue = parseFloat(event.target.value)
+                                const newValue = Number.parseFloat(event.target.value)
                                 if (Math.sign(newValue) >= 0) setRange([newValue, to])
                               }}
                               disabled={loading}
@@ -256,14 +274,14 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           </div>
                           <div style={{ padding: '0 15px', width: '100px' }}>
                             <TextField
-                              id='part-to'
-                              type='number'
-                              label='To'
-                              meta='μm'
+                              id="part-to"
+                              type="number"
+                              label="To"
+                              meta="μm"
                               value={to.toString()}
                               onChange={(event: any) => {
                                 if (event.target.value === '') setRange([from, 0])
-                                const newValue = parseFloat(event.target.value)
+                                const newValue = Number.parseFloat(event.target.value)
                                 if (Math.sign(newValue) >= 0) setRange([from, newValue])
                               }}
                               disabled={loading}

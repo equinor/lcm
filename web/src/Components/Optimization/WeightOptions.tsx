@@ -1,6 +1,6 @@
-import React, { FormEvent, ReactElement, useState } from 'react'
 // @ts-ignore
 import { Slider, Typography } from '@equinor/eds-core-react'
+import type { ReactElement } from 'react'
 // @ts-ignore
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
@@ -61,7 +61,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
         <Wrapper>
           <span style={{ color: '#3D3D3D' }}>Bridge fit</span>
           <Slider
-            id='Bridge'
+            id="Bridge"
             value={bridge}
             min={1}
             max={10}
@@ -77,7 +77,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
         <Wrapper>
           <span style={{ color: '#3D3D3D' }}>Mass</span>
           <Slider
-            id='Mass'
+            id="Mass"
             value={mass}
             min={1}
             max={10}
@@ -94,7 +94,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
         <Wrapper>
           <span style={{ color: '#3D3D3D' }}>Number of products</span>
           <Slider
-            id='Products'
+            id="Products"
             value={products}
             min={1}
             max={10}

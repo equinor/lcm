@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import Main from './Pages/Main'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import { ToastContainer } from 'react-toastify'
 import { ParticleSizeContext } from './Context'
-import { IAuthContext, AuthContext } from 'react-oauth2-code-pkce'
 
 function App() {
   const [particleRange, setParticleRange] = useState<Array<number>>([1.01, 1000])
@@ -15,7 +15,11 @@ function App() {
   return (
     <>
       <ParticleSizeContext.Provider
-        value={{ from: particleRange[0], to: particleRange[1], setRange: setParticleRange }}
+        value={{
+          from: particleRange[0],
+          to: particleRange[1],
+          setRange: setParticleRange,
+        }}
       >
         <Main />
       </ParticleSizeContext.Provider>
