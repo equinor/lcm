@@ -6,7 +6,7 @@ import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 // @ts-ignore
 import styled from 'styled-components'
 import { FractionsAPI } from '../../Api'
-import type { Bridge, Combinations } from '../../Types'
+import type { Bridge, Combination, Combinations } from '../../Types'
 import { ErrorToast } from '../Common/Toast'
 import CombinationCard from './CombinationCard'
 export const Card = styled.div`
@@ -41,11 +41,11 @@ interface CardContainerProps {
   sacks: any
   products: any
   combinations: Combinations
-  updateCombination: Function
-  renameCombination: Function
-  removeCombination: Function
-  addCombination: Function
-  removeBridge: Function
+  updateCombination: (c: Combination) => void
+  renameCombination: (id: string, name: string) => void
+  removeCombination: (id: string) => void
+  addCombination: (c: Combination) => void
+  removeBridge: (id: string) => void
   bridges: Bridge
 }
 
@@ -54,7 +54,7 @@ const createCombinationName = (sacks: any, combinationMap: Combinations): string
 
   let i = 1
   while (i < 100) {
-    const newCombinationName: string = sacks ? 'Sack combination ' + i : 'Manual combination ' + i
+    const newCombinationName: string = sacks ? `Sack combination ${i}` : `Manual combination ${i}`
     if (!combinationNames.includes(newCombinationName)) {
       return newCombinationName
     }
@@ -86,7 +86,7 @@ export const CardContainer = ({
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
       })
   }, [])
 
@@ -118,7 +118,7 @@ export const CardContainer = ({
             addCombination({
               name: createCombinationName(sacks, combinations),
               sacks: sacks,
-              values: [],
+              values: {},
               cumulative: null,
             })
           }}

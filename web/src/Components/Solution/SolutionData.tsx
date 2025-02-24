@@ -36,7 +36,9 @@ interface DensitiesProps {
 const Densities = ({ products, productResults }: DensitiesProps): ReactElement => {
   const getSumOfDensities = () => {
     let sum = 0
-    Object.values(productResults).map((result) => (sum += result.value))
+    Object.values(productResults).forEach((result) => {
+      sum += result.value
+    })
     return sum.toFixed(1)
   }
 

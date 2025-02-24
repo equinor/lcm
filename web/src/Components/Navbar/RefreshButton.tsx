@@ -28,7 +28,7 @@ export const RefreshButton = () => {
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
         setLoading(false)
       })
   }

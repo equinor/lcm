@@ -6,11 +6,10 @@ interface OptimizationResultProps {
   products: Products
   mode: string
   value: number
-  usingSacks: boolean
   optimizationData: any
 }
 
-export const OptimizationResult = ({ products, optimizationData, usingSacks }: OptimizationResultProps) => {
+export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps) => {
   if (!optimizationData) return null
 
   return (

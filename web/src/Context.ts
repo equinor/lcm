@@ -3,7 +3,7 @@ import { createContext } from 'react'
 interface ParticleRange {
   from: number
   to: number
-  setRange: Function
+  setRange: (range: number[]) => void
 }
 
 export const ParticleSizeContext = createContext<ParticleRange>({

@@ -5,7 +5,7 @@ import OptimizationRunner from './OptimizationRunner'
 
 interface OptimizationContainerProps {
   products: Products
-  addCombinationsFromOptimization: Function
+  addCombinationsFromOptimization: (sackCombination: Combination, densityCombination: Combination) => void
   mode: string
   value: number
 }
@@ -85,13 +85,7 @@ export const OptimizationContainer = ({
   return (
     <div>
       <OptimizationRunner allProducts={products} mode={mode} value={value} handleUpdate={handleUpdate} />
-      <OptimizationResult
-        usingSacks={false}
-        products={products}
-        mode={mode}
-        value={value}
-        optimizationData={densityOptimizationData}
-      />
+      <OptimizationResult products={products} mode={mode} value={value} optimizationData={densityOptimizationData} />
     </div>
   )
 }

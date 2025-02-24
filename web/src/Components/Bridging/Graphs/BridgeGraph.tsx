@@ -29,7 +29,10 @@ const CustomTooltip = ({ active, payload, label }) => {
         <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
         <div style={{ marginTop: '15px' }}>
           {payload.map((graphData: any) => (
-            <div style={{ color: graphData.color }}>{`${graphData.name}: ${graphData.value}%`}</div>
+            <div
+              key={graphData.name}
+              style={{ color: graphData.color }}
+            >{`${graphData.name}: ${graphData.value}%`}</div>
           ))}
         </div>
       </div>
@@ -106,7 +109,7 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
           <YAxis type="number" allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: '270' }} />
           <Tooltip content={CustomTooltip} />
           <Legend verticalAlign="bottom" align="center" height={legendHeight} />
-          {Object.entries(bridges).map(([name, cumulative], index) => (
+          {Object.entries(bridges).map(([name, _], index) => (
             <Area
               type="monotone"
               dataKey={name}

@@ -7,7 +7,7 @@ import SelectProducts from './SelectProducts'
 interface AddProductsProps {
   allProducts: Products
   enabledProducts: Products
-  setEnabledProducts: Function
+  setEnabledProducts: (products: Products) => void
 }
 
 export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts }: AddProductsProps): ReactElement => {

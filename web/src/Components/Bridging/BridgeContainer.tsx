@@ -35,13 +35,13 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
       })
   }, [])
 
   useEffect(() => {
-    if (bridges['Bridge'].length && sizeFractions.length) {
-      setOptimalBridgeGraphData(findGraphData(sizeFractions, { Bridge: bridges['Bridge'] }))
+    if (bridges.Bridge.length && sizeFractions.length) {
+      setOptimalBridgeGraphData(findGraphData(sizeFractions, { Bridge: bridges.Bridge }))
     }
   }, [bridges, sizeFractions])
 

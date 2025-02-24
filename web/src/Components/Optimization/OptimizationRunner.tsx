@@ -18,13 +18,11 @@ import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
 import PillInput, { type Pill } from './PillInput'
 import { type Weight, WeightOptions } from './WeightOptions'
 
-const { Actions, Title, CustomContent } = Dialog
-
 interface OptimizationContainerProps {
   allProducts: Products
   mode: string
   value: number
-  handleUpdate: Function
+  handleUpdate: (data: any) => void
 }
 
 const Wrapper = styled.div`
@@ -123,30 +121,25 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
             <tr>
               <th style={{ fontWeight: 'normal' }}>Total fitness – weighted average:</th>
               <th style={{ padding: '10px' }}>
-                <img src={totalFitnessFormulaImg} alt="Formula for total fitness" height={53} width={240}></img>
+                <img src={totalFitnessFormulaImg} alt="Formula for total fitness" height={53} width={240} />
               </th>
             </tr>
             <tr>
               <th style={{ fontWeight: 'normal' }}>Bridge fitness – standard deviation:</th>
               <th style={{ padding: '10px' }}>
-                <img src={BridgeFitnessFormulaImg} alt="Formula for total fitness" height={94} width={337}></img>
+                <img src={BridgeFitnessFormulaImg} alt="Formula for total fitness" height={94} width={337} />
               </th>
             </tr>
             <tr>
               <th style={{ fontWeight: 'normal' }}>Mass fitness – deviation from desired mass:</th>
               <th style={{ padding: '10px' }}>
-                <img src={MassFitnessFormulaImg} alt="Formula for total fitness" height={60} width={270}></img>
+                <img src={MassFitnessFormulaImg} alt="Formula for total fitness" height={60} width={270} />
               </th>
             </tr>
             <tr>
               <th style={{ fontWeight: 'normal' }}>Number of products fitness:</th>
               <th style={{ padding: '10px' }}>
-                <img
-                  src={numberOfProductsFitnessFormulaImg}
-                  alt="Formula for total fitness"
-                  height={52}
-                  width={270}
-                ></img>
+                <img src={numberOfProductsFitnessFormulaImg} alt="Formula for total fitness" height={52} width={270} />
               </th>
             </tr>
           </table>

@@ -42,7 +42,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
       })
   }, [bridgeValue, mode, token])
 
@@ -60,7 +60,9 @@ export default ({ products }: MainBodyProps): ReactElement => {
   useEffect(() => {
     fetchBridges(combinations).then((storedBridges) => {
       let newBridges: Bridge = {}
-      storedBridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
+      storedBridges.forEach((b: any) => {
+        newBridges = { ...newBridges, ...b }
+      })
 
       BridgeAPI.postBridgeApi(token, {
         option: mode,
@@ -80,7 +82,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
       })
     setCombinations({ ...combinations, [combination.name]: combination })
   }
@@ -110,7 +112,9 @@ export default ({ products }: MainBodyProps): ReactElement => {
       }
       await fetchBridges(optimizationCombinations).then((_bridges) => {
         let newBridges: Bridge = {}
-        _bridges.forEach((b: any) => (newBridges = { ...newBridges, ...b }))
+        _bridges.forEach((b: any) => {
+          newBridges = { ...newBridges, ...b }
+        })
         setBridges({ ...bridges, ...newBridges })
       })
     }
