@@ -28,7 +28,7 @@ export enum Environmental {
 
 interface WeightOptionsProps {
   weight: Weight
-  setWeight: Function
+  setWeight: (weight: Weight) => void
 }
 
 export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactElement => {
@@ -39,11 +39,11 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
   const getSliderValue = (value: number | number[]): number => {
     if (typeof value === 'number') {
       return value
-    } else if (value.length === 1) {
-      return value[0]
-    } else {
-      throw new Error('Could not change slider value')
     }
+    if (value.length === 1) {
+      return value[0]
+    }
+    throw new Error('Could not change slider value')
   }
 
   return (
@@ -65,7 +65,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={bridge}
             min={1}
             max={10}
-            onChange={(event: any, value: number | number[]) => {
+            onChange={(_: any, value: number | number[]) => {
               setWeight({
                 ...weight,
                 bridge: getSliderValue(value),
@@ -82,7 +82,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             min={1}
             max={10}
             // @ts-ignore
-            onChange={(event: any, value: number) => {
+            onChange={(_: any, value: number) => {
               setWeight({
                 ...weight,
                 mass: getSliderValue(value),
@@ -99,7 +99,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             min={1}
             max={10}
             // @ts-ignore
-            onChange={(event: any, value: number) => {
+            onChange={(_: any, value: number) => {
               setWeight({
                 ...weight,
                 products: getSliderValue(value),

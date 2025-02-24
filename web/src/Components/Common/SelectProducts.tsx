@@ -26,7 +26,7 @@ const ProductBox = styled.div`
 interface SelectProductsProps {
   allProducts: Products
   enabledProducts: Products
-  setEnabledProducts: Function
+  setEnabledProducts: (p: Products) => void
 }
 
 type ChipBoxStates = 'default' | 'active'
@@ -127,12 +127,12 @@ export const SelectProducts = ({
         }}
       >
         {!selectedSuppliers.length && <p>Select a supplier to show products</p>}
-        {productList.map((product, key) => {
+        {productList.map((product) => {
           if (!selectedSuppliers.includes(product.supplier)) return null
           const isChecked = Object.keys(enabledProducts).includes(product.id)
           const disabled = product.cumulative == null
           return (
-            <ProductBox key={key}>
+            <ProductBox key={product.id}>
               <div
                 style={{
                   display: 'flex',

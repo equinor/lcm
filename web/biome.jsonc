@@ -21,11 +21,19 @@
   },
   "linter": {
     "rules": {
+      "complexity": {
+        "noForEach": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
       "style": {
         "useImportType": "error"
       },
       "correctness": {
-        "noUnusedImports": "error"
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "off"
       },
       "performance": {
         "noDelete": "off"

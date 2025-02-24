@@ -35,10 +35,10 @@ const DValues = styled.div`
 interface CombinationCardProps {
   sacks: boolean
   combination: Combination
-  updateCombination: Function
-  renameCombination: Function
-  removeCombination: Function
-  removeBridge: Function
+  updateCombination: (c: Combination) => void
+  renameCombination: (id: string, name: string) => void
+  removeCombination: (id: string) => void
+  removeBridge: (id: string) => void
   allProducts: Products
   enabledPlot: boolean
   sizeFractions: number[]
@@ -108,7 +108,7 @@ export const CombinationCard = ({
       })
       .catch((error) => {
         ErrorToast(`${error.response.data}`, error.response.status)
-        console.error('fetch error' + error)
+        console.error(`fetch error ${error}`)
       })
   }, [combination, allProducts])
 
@@ -198,7 +198,7 @@ export const CombinationCard = ({
             </DValues>
           </div>
         ) : (
-          <div></div>
+          <div />
         )}
 
         {sacks ? (

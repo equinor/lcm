@@ -3,7 +3,7 @@ name: Algorithm-Report
 on:
   push:
     branches:
-      - master
+      - prod
 
 jobs:
   test-report:

@@ -16,8 +16,8 @@ export interface Pill {
 interface PillInputProps {
   isLoading: boolean
   pill: Pill
-  setPill: Function
-  setInvalidInput: Function
+  setPill: (pill: Pill) => void
+  setInvalidInput: (value: boolean) => void
 }
 
 const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps): ReactElement => {

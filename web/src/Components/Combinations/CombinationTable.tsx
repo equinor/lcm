@@ -1,7 +1,7 @@
 // @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
-import type { Products, ProductsInCombination } from '../../Types'
+import type { Combination, Products, ProductsInCombination } from '../../Types'
 import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
 
 function setPercentages(newValues: ProductsInCombination, allProducts: Products): ProductsInCombination {
@@ -24,7 +24,7 @@ function setPercentages(newValues: ProductsInCombination, allProducts: Products)
 interface CombinationTableProps {
   allProducts: Products
   sacks: boolean
-  updateCombination: Function
+  updateCombination: (c: Combination) => void
   productsInCombination: ProductsInCombination
   combinationName: string
 }
@@ -41,13 +41,14 @@ export const CombinationTable = ({
 
   useEffect(() => {
     setValues(setPercentages(productsInCombination, allProducts))
-  }, [productsInCombination, setPercentages, allProducts])
+  }, [productsInCombination, allProducts])
 
-  const handleValueChange = (productId: string, value: string) => {
+  const handleValueChange = (productId: string, newValue: string) => {
+    let value = newValue
     if (!value) {
       value = '0'
     }
-    let formattedValue
+    let formattedValue: number
     if (sacks) {
       formattedValue = Number.parseInt(value)
     } else {
@@ -82,7 +83,7 @@ export const CombinationTable = ({
         <div>%</div>
       </CombinationTableHeader>
       {Object.keys(productsInCombination).map((id, index) => (
-        <CombinationTableValues key={index} style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
+        <CombinationTableValues key={id} style={{ backgroundColor: `${alternatingColor[index % 2]}` }}>
           <div
             style={{
               display: 'flex',
