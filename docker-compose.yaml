@@ -27,4 +27,5 @@ services:
     restart: unless-stopped
     stdin_open: true
     volumes:
-      - ./web:/code
+      - ./web/src:/code/src
+      
