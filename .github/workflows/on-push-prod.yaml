@@ -10,7 +10,7 @@ jobs:
   test-report:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
 
       - name: "Create report"
         run: docker compose build api && docker compose run -u 0 api python src/tests/optimizer_test.py
