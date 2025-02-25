@@ -26,7 +26,7 @@ export const ContactButton = () => {
         >
           <p>
             Questions regarding access and usage of the LCM optimizer can be directed at Ove Braadland{' '}
-            <a href={`mailto:${process.env.REACT_APP_APPLICATION_OWNER}`}>{process.env.REACT_APP_APPLICATION_OWNER}</a>
+            <a href={`mailto:${import.meta.env.VITE_APPLICATION_OWNER}`}>{import.meta.env.VITE_APPLICATION_OWNER}</a>
           </p>
           <p>
             Issues and bugs related to the software can be reported on the Github repository
