@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:23-alpine AS base
 ENV REACT_APP_APPLICATION_OWNER=ovbra@equinor.com
 ENV REACT_APP_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
 ENV REACT_APP_SCOPES="api://lost-circulation-material-api/Optimization.All.All"
@@ -9,14 +9,14 @@ ADD package.json yarn.lock /code/
 RUN yarn install
 ADD ./ /code/
 
-FROM base as development
+FROM base AS development
 USER 1000:1000
 CMD ["yarn", "start"]
 
-FROM base as build
+FROM base AS build
 RUN yarn build
 
-FROM node:20-alpine as prod
+FROM node:23-alpine AS prod
 RUN npm install -g serve
 COPY --from=build /code/build /code/build
 EXPOSE 3000
