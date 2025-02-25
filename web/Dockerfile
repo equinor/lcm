@@ -10,6 +10,7 @@ RUN npm install
 ADD ./ /code/
 
 FROM base AS development
+RUN chown -R ${UID}:${UID} /code
 USER 1000:1000
 CMD ["npm","run", "start"]
 
