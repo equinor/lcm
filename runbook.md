@@ -2,11 +2,12 @@
 
 This document covers most operational information about the LCM Web app and API.
 
-![Diagram](diagram.drawio.svg)
+![Diagram](doc/diagram.drawio.svg)
 
 ## Omnia Radix
 
-The Web frontend and the API are deployed to Equinors Omnia Radix PaaS platform. This has it's own documentation available at [https://www.radix.equinor.com](https://www.radix.equinor.com). The configuration for our radix app is in [radixconfig.yaml](./radixconfig.yaml). There is only one environment (`dev`). This is automatically deployed from every commit to the master branch on Github.
+The Web frontend and the API are deployed to Equinors Omnia Radix PaaS platform. This has its own documentation available at [https://www.radix.equinor.com](https://www.radix.equinor.com). The configuration for our radix app is in [radixconfig.yaml](./radixconfig.yaml).  
+Two different environments in Radix are used: one for test (deploys from branch "master") and one for production (deploy from branch "prod"). Deploys will happen automatically when pushing to these branches.
 
 ### TLS and DNS
 
