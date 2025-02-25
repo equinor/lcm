@@ -1,4 +1,4 @@
-import {OptimizationData, Products} from '../../Types'
+import type { OptimizationData, Products } from '../../Types'
 import SolutionData from '../Solution/SolutionData'
 import SolutionVisualisations from '../Solution/SolutionVisualisations'
 

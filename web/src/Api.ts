@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from './Types'
+import type { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from './Types'
 
 const BASE_PATH = '/api'
 

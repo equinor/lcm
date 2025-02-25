@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Button, CircularProgress, Dialog, Icon } from '@equinor/eds-core-react'
 import { useContext, useState } from 'react'
 

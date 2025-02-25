@@ -1,9 +1,7 @@
-// @ts-ignore
 import { Accordion, Button, Icon, Typography } from '@equinor/eds-core-react'
 import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
 import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
-// @ts-ignore
 import styled from 'styled-components'
 import { BridgeAPI, CombinationAPI } from '../Api'
 import { BridgingOption } from '../Enums'
@@ -48,7 +46,6 @@ export default ({ products }: MainBodyProps): ReactElement => {
 
   async function fetchBridges(_combinations: Combinations): Promise<Bridge[]> {
     return await Promise.all(
-      // @ts-ignore
       Object.values(_combinations).map(async (c: Combination) => {
         const res = await CombinationAPI.postCombinationApi(token, Object.values(c.values))
         return { [c.name]: res.data.bridge }
@@ -232,7 +229,6 @@ export default ({ products }: MainBodyProps): ReactElement => {
         </div>
       </div>
       <MainComponentsWrapper>
-        {/* @ts-ignore*/}
         <OptimizationContainer
           addCombinationsFromOptimization={addCombinationsFromOptimization}
           products={products}

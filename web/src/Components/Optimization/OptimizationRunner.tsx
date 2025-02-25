@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Accordion, Button, CircularProgress, Dialog, Icon, TextField, Typography } from '@equinor/eds-core-react'
 import { info_circle, play } from '@equinor/eds-icons'
 import { type ReactElement, useContext, useState } from 'react'

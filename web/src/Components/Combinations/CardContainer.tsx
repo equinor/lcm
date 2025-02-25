@@ -1,9 +1,8 @@
-// @ts-ignore
 import { Button, Icon } from '@equinor/eds-core-react'
 import { add } from '@equinor/eds-icons'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
-// @ts-ignore
+
 import styled from 'styled-components'
 import { FractionsAPI } from '../../Api'
 import type { Bridge, Combination, Combinations, Products } from '../../Types'

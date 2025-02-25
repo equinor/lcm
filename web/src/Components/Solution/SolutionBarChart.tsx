@@ -1,20 +1,18 @@
 import { PureComponent } from 'react'
-// @ts-ignore
+
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 import type { OptimizationData, Products } from '../../Types'
-import { ProductResult } from '../Optimization/OptimizationContainer'
+import type { ProductResult } from '../Optimization/OptimizationContainer'
 
-class CustomizedAxisTick extends PureComponent {
+interface CustomizedAxisTickProps {
+  x: number
+  y: number
+  payload: { value: number }
+}
+
+class CustomizedAxisTick extends PureComponent<CustomizedAxisTickProps> {
   render() {
-    const {
-      // @ts-ignore
-      x,
-      // @ts-ignore
-      y,
-      // @ts-ignore
-      payload,
-    } = this.props
-
+    const { x, y, payload } = this.props
     return (
       <g transform={`translate(${x},${y})`}>
         <text x={0} y={0} dy={8} textAnchor="end" fill="#666" transform="rotate(-60)">
@@ -48,7 +46,15 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
         padding={{ left: 50, right: 50 }}
         height={80}
         interval={0}
-        tick={<CustomizedAxisTick />}
+        tick={
+          <CustomizedAxisTick
+            x={0}
+            y={0}
+            payload={{
+              value: 0,
+            }}
+          />
+        }
       />
       <YAxis />
       <Tooltip />

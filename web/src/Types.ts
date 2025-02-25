@@ -31,7 +31,7 @@ export interface Combination {
   name: string
   sacks: boolean
   values: ProductsInCombination
-  cumulative: Array<number> 
+  cumulative: Array<number>
 }
 
 export interface Combinations {
@@ -78,35 +78,35 @@ export interface OptimizationData {
 }
 
 export interface OptimizationApiData {
-  request: string,
-  name: string,
-  iterations: number,
-  particleRange: number[],
-  maxProducts: number,
-  value: number,
-  option: string,
-  density: number,
-  volume: number,
-  products: Products,
+  request: string
+  name: string
+  iterations: number
+  particleRange: number[]
+  maxProducts: number
+  value: number
+  option: string
+  density: number
+  volume: number
+  products: Products
   weights: Weight
 }
 
 export interface ReportApiRequest {
-  fitness: number,
-  curve: Array<number>,
-  pillVolume: number,
-  pillDensity: number,
-  bridgingMode: string,
-  bridgingValue: number,
-  iterations: number,
-  totalMass: number,
-  products: ProductsInCombination,
-  weighting: Weight,
-  email: string,
+  fitness: number
+  curve: Array<number>
+  pillVolume: number
+  pillDensity: number
+  bridgingMode: string
+  bridgingValue: number
+  iterations: number
+  totalMass: number
+  products: ProductsInCombination
+  weighting: Weight
+  email: string
   user: string
 }
 
 export interface BridgeApiRequest {
-  option: string,
+  option: string
   value: number
 }

@@ -1,7 +1,6 @@
-// @ts-ignore
 import { Checkbox, Chip, Switch, Typography } from '@equinor/eds-core-react'
 import type { ReactElement } from 'react'
-// @ts-ignore
+
 import styled from 'styled-components'
 import useLocalStorage from '../../Hooks'
 import type { Product, Products } from '../../Types'
@@ -38,10 +37,10 @@ export const SelectProducts = ({
 }: SelectProductsProps): ReactElement => {
   const productList: Array<Product> = sortProducts(Object.values(allProducts))
   // Create set to only keep unique suppliers, then back to array to map them.
-  // @ts-ignore
+
   const suppliers: Array<string> = [...new Set(productList.map((p: Product) => p.supplier))]
-  // @ts-ignore
-  const [selectedSuppliers, setSelectedSuppliers] = useLocalStorage<T>('selectedSuppliers', suppliers)
+
+  const [selectedSuppliers, setSelectedSuppliers] = useLocalStorage<Array<string>>('selectedSuppliers', suppliers)
 
   function handleChipToggle(supplier: string) {
     if (selectedSuppliers.includes(supplier)) {

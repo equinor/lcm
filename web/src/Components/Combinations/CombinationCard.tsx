@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Button, Icon, Input, Switch, Tooltip } from '@equinor/eds-core-react'
 import { delete_to_trash, edit } from '@equinor/eds-icons'
 import { useContext, useEffect, useState } from 'react'
@@ -156,8 +155,7 @@ export const CombinationCard = ({
             }}
             onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
               if (event.key === 'Enter') {
-                // @ts-ignore
-                document.activeElement.blur()
+                ;(document.activeElement as HTMLElement).blur()
               }
             }}
           />
@@ -227,7 +225,12 @@ export const CombinationCard = ({
             enabledProducts={enabledProducts}
             setEnabledProducts={updateEnabledProductsAndCombination}
           />
-          <Switch label="Plot" onChange={(e: React.ChangeEvent<HTMLInputElement>) => togglePlot(e)} checked={enabledPlot} size="small" />
+          <Switch
+            label="Plot"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => togglePlot(e)}
+            checked={enabledPlot}
+            size="small"
+          />
         </div>
       </div>
     </Card>
