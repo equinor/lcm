@@ -1,12 +1,5 @@
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  PolarRadiusAxis,
-  Radar,
-  RadarChart,
-  // @ts-ignore
-} from 'recharts'
-import { OptimizationData } from '../../Types'
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from 'recharts'
+import type { OptimizationData } from '../../Types'
 
 interface IPerformanceRadar {
   optimizationData: OptimizationData

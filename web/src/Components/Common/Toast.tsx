@@ -1,4 +1,4 @@
-import { Id, toast } from 'react-toastify'
+import { type Id, toast } from 'react-toastify'
 
 export const InfoToast = (msg: string) => toast.info(msg)
 export const WarningToast = (msg: string) => toast.warning(msg)

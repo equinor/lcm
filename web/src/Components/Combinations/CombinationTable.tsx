@@ -1,4 +1,3 @@
-// @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
 import type { Combination, Products, ProductsInCombination } from '../../Types'
@@ -59,7 +58,6 @@ export const CombinationTable = ({
     const newValues: ProductsInCombination = {
       ...values,
       [productId]: { value: formattedValue, id: productId, percentage: values[productId]?.percentage || 0 },
-
     }
     const newValuesWithPercentage = setPercentages(newValues, allProducts)
     setValues({ ...newValuesWithPercentage })
@@ -103,13 +101,11 @@ export const CombinationTable = ({
               <div style={{ maxWidth: '100px' }}>
                 <TextField
                   id={id}
-                  // @ts-ignore
                   value={values[id]?.value || 0}
                   type="number"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleValueChange(id, event.target.value)}
                   style={{
-                    // @ts-ignore
-                    '--eds-input-background': 'rgba(133,186,191,0.15)',
+                    backgroundColor: 'rgba(133,186,191,0.15)',
                   }}
                 />
               </div>

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Button, Dialog } from '@equinor/eds-core-react'
 import { type ReactElement, useEffect, useState } from 'react'
 import type { Products } from '../../Types'

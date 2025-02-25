@@ -1,10 +1,9 @@
-// @ts-ignore
 import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import type { IAuthContext } from 'react-oauth2-code-pkce'
-// @ts-ignore
+
 import styled from 'styled-components'
-// @ts-ignore
+
 import { ProductsAPI } from '../Api'
 import { ErrorToast } from '../Components/Common/Toast'
 import Body from '../Components/MainBody'
@@ -39,7 +38,6 @@ export default (): ReactElement => {
     <>
       <Navbar />
       <BodyWrapper>
-        {/* @ts-ignore*/}
         <Body products={products} />
       </BodyWrapper>
     </>

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import type { OptimizationData, Products } from '../../Types'

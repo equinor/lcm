@@ -1,7 +1,6 @@
-// @ts-ignore
 import { Slider, Typography } from '@equinor/eds-core-react'
 import type { ReactElement } from 'react'
-// @ts-ignore
+
 import styled from 'styled-components'
 import { Tooltip } from '../Common/Tooltip'
 
@@ -80,8 +79,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={mass}
             min={1}
             max={10}
-            // @ts-ignore
-            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number) => {
+            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number | number[]) => {
               setWeight({
                 ...weight,
                 mass: getSliderValue(value),
@@ -96,8 +94,7 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={products}
             min={1}
             max={10}
-            // @ts-ignore
-            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number) => {
+            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number | number[]) => {
               setWeight({
                 ...weight,
                 products: getSliderValue(value),

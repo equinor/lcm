@@ -1,4 +1,3 @@
-// @ts-ignore
 import { TextField } from '@equinor/eds-core-react'
 import { type ReactElement, useEffect, useState } from 'react'
 
@@ -69,7 +68,9 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
         value={pill.volume.toString()}
         meta="m3"
         variant={(invalidVolume && 'error') || undefined}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(PillInputType.VOLUME, event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          handleChange(PillInputType.VOLUME, event.target.value)
+        }
         disabled={isLoading}
       />
       <TextField
@@ -81,7 +82,9 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
         value={pill.density.toString()}
         variant={(invalidDensity && 'error') || undefined}
         meta="kg/m3"
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(PillInputType.DENSITY, event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          handleChange(PillInputType.DENSITY, event.target.value)
+        }
         disabled={isLoading}
       />
     </div>
