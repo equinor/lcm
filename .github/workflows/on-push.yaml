@@ -1,6 +1,8 @@
 name: CI
 
-on: push
+on: 
+  workflow_dispatch:
+  push:
 
 jobs:
   test-api:
@@ -28,11 +30,13 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Set up python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Install pre-commit
         run: pip install pre-commit
+
       - name: Run pre-commit
-        run: pre-commit run --all-files
+        run: pre-commit run --all-files --verbose
