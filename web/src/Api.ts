@@ -1,9 +1,10 @@
 import axios from 'axios'
+import { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from './Types'
 
 const BASE_PATH = '/api'
 
 class OptimizerApi {
-  async postOptimizerApi(token: string, data: any) {
+  async postOptimizerApi(token: string, data: OptimizationApiData) {
     return axios.post(`${BASE_PATH}/optimizer`, data, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -11,7 +12,7 @@ class OptimizerApi {
 }
 
 class CombinationApi {
-  async postCombinationApi(token: string, data: any) {
+  async postCombinationApi(token: string, data: ProductValues[]) {
     return axios.post(`${BASE_PATH}/combination`, data, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -19,7 +20,7 @@ class CombinationApi {
 }
 
 class ReportApi {
-  async postReportApi(token: string, data: any) {
+  async postReportApi(token: string, data: ReportApiRequest) {
     return axios.post(`${BASE_PATH}/report`, data, {
       headers: { Authorization: `Bearer ${token}` },
       responseType: 'blob',
@@ -28,7 +29,7 @@ class ReportApi {
 }
 
 class BridgeApi {
-  async postBridgeApi(token: string, data: any) {
+  async postBridgeApi(token: string, data: BridgeApiRequest) {
     return axios.post(`${BASE_PATH}/bridge`, data, {
       headers: { Authorization: `Bearer ${token}` },
     })

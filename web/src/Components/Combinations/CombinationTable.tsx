@@ -56,9 +56,10 @@ export const CombinationTable = ({
     }
 
     if (formattedValue < 0) return
-    const newValues: any = {
+    const newValues: ProductsInCombination = {
       ...values,
-      [productId]: { value: formattedValue, id: productId },
+      [productId]: { value: formattedValue, id: productId, percentage: values[productId]?.percentage || 0 },
+
     }
     const newValuesWithPercentage = setPercentages(newValues, allProducts)
     setValues({ ...newValuesWithPercentage })
@@ -105,7 +106,7 @@ export const CombinationTable = ({
                   // @ts-ignore
                   value={values[id]?.value || 0}
                   type="number"
-                  onChange={(event: any) => handleValueChange(id, event.target.value)}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleValueChange(id, event.target.value)}
                   style={{
                     // @ts-ignore
                     '--eds-input-background': 'rgba(133,186,191,0.15)',

@@ -5,7 +5,7 @@ import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import { ReportAPI } from '../../Api'
-import type { Products } from '../../Types'
+import type { OptimizationData, Products } from '../../Types'
 import { ErrorToast } from '../Common/Toast'
 import type { ProductResult } from '../Optimization/OptimizationContainer'
 
@@ -24,7 +24,7 @@ const Spacer = styled.div`
 `
 
 interface SolutionDataProps {
-  optimizationData: any
+  optimizationData: OptimizationData
   products: Products
 }
 
@@ -111,7 +111,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       </Spacer>
       <Spacer>
         <Typography variant="h6">Optimal blend:</Typography>
-        <Densities products={products} productResults={optimizationData.products} />
+        <Densities products={products} productResults={Object.values(optimizationData.products)} />
       </Spacer>
       <Typography variant="h6">Performance:</Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -127,7 +127,7 @@ export const CombinationCard = ({
     updateCombination(newCombination)
   }
 
-  function togglePlot(e: any) {
+  function togglePlot(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
       updateCombination(combination)
     } else {
@@ -148,13 +148,13 @@ export const CombinationCard = ({
             id={`${combination.name}`}
             value={combinationName}
             readOnly={!isHeaderEditable}
-            onChange={(event: any) => {
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setCombinationName(event.target.value)
             }}
             onBlur={() => {
               renameCombination(combinationName, combination.name)
             }}
-            onKeyPress={(event: any) => {
+            onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
               if (event.key === 'Enter') {
                 // @ts-ignore
                 document.activeElement.blur()
@@ -227,7 +227,7 @@ export const CombinationCard = ({
             enabledProducts={enabledProducts}
             setEnabledProducts={updateEnabledProductsAndCombination}
           />
-          <Switch label="Plot" onChange={(e: any) => togglePlot(e)} checked={enabledPlot} size="small" />
+          <Switch label="Plot" onChange={(e: React.ChangeEvent<HTMLInputElement>) => togglePlot(e)} checked={enabledPlot} size="small" />
         </div>
       </div>
     </Card>

@@ -6,9 +6,10 @@ import {
   RadarChart,
   // @ts-ignore
 } from 'recharts'
+import { OptimizationData } from '../../Types'
 
 interface IPerformanceRadar {
-  optimizationData: any
+  optimizationData: OptimizationData
 }
 
 export const PerformanceRadar = ({ optimizationData }: IPerformanceRadar) => {
