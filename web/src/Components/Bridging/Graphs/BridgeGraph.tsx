@@ -15,8 +15,6 @@ type BridgeGraphProps = {
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    console.log(payload)
-    console.log(label)
     return (
       <div
         style={{

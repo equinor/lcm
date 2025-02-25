@@ -1,20 +1,20 @@
 FROM node:23-alpine AS base
-ENV REACT_APP_APPLICATION_OWNER=ovbra@equinor.com
-ENV REACT_APP_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
-ENV REACT_APP_SCOPES="api://lost-circulation-material-api/Optimization.All.All"
+ENV VITE_APPLICATION_OWNER=ovbra@equinor.com
+ENV VITE_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
+ENV VITE_SCOPES="api://lost-circulation-material-api/Optimization.All.All"
 ARG UID=1000
 
 WORKDIR /code
-ADD package.json yarn.lock /code/
-RUN yarn install
+ADD package.json package-lock.json /code/
+RUN npm install
 ADD ./ /code/
 
 FROM base AS development
 USER 1000:1000
-CMD ["yarn", "start"]
+CMD ["npm","run", "start"]
 
 FROM base AS build
-RUN yarn build
+RUN npm run build
 
 FROM node:23-alpine AS prod
 RUN npm install -g serve
