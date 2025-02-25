@@ -21,7 +21,7 @@ export const OptimizationContainer = ({
   addCombinationsFromOptimization,
   value,
 }: OptimizationContainerProps): ReactElement => {
-  const [densityOptimizationData, setDensityOptimizationData] = useState<any>(undefined)
+  const [densityOptimizationData, setDensityOptimizationData] = useState<OptimizationData>(undefined)
 
   const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
     let sackProducts: ProductsInCombination = {}

@@ -6,7 +6,7 @@ import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 // @ts-ignore
 import styled from 'styled-components'
 import { FractionsAPI } from '../../Api'
-import type { Bridge, Combination, Combinations } from '../../Types'
+import type { Bridge, Combination, Combinations, Products } from '../../Types'
 import { ErrorToast } from '../Common/Toast'
 import CombinationCard from './CombinationCard'
 export const Card = styled.div`
@@ -38,8 +38,8 @@ export const CombinationTableValues = styled.div`
 `
 
 interface CardContainerProps {
-  sacks: any
-  products: any
+  sacks: boolean
+  products: Products
   combinations: Combinations
   updateCombination: (c: Combination) => void
   renameCombination: (id: string, name: string) => void
@@ -49,7 +49,7 @@ interface CardContainerProps {
   bridges: Bridge
 }
 
-const createCombinationName = (sacks: any, combinationMap: Combinations): string => {
+const createCombinationName = (sacks: boolean, combinationMap: Combinations): string => {
   const combinationNames: Array<string> = Object.keys(combinationMap).map((id) => combinationMap[id].name)
 
   let i = 1

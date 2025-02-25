@@ -1,4 +1,4 @@
-import type { Products } from '../../Types'
+import {OptimizationData, Products} from '../../Types'
 import SolutionData from '../Solution/SolutionData'
 import SolutionVisualisations from '../Solution/SolutionVisualisations'
 
@@ -6,7 +6,7 @@ interface OptimizationResultProps {
   products: Products
   mode: string
   value: number
-  optimizationData: any
+  optimizationData: OptimizationData
 }
 
 export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps) => {

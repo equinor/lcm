@@ -39,7 +39,7 @@ export const SelectProducts = ({
   const productList: Array<Product> = sortProducts(Object.values(allProducts))
   // Create set to only keep unique suppliers, then back to array to map them.
   // @ts-ignore
-  const suppliers: Array<string> = [...new Set(productList.map((p: any) => p.supplier))]
+  const suppliers: Array<string> = [...new Set(productList.map((p: Product) => p.supplier))]
   // @ts-ignore
   const [selectedSuppliers, setSelectedSuppliers] = useLocalStorage<T>('selectedSuppliers', suppliers)
 
@@ -58,8 +58,8 @@ export const SelectProducts = ({
     }
   }
 
-  function handleProductToggle(event: any, id: string) {
-    if (event.target.checked) {
+  function handleProductToggle(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+    if ((event.target as HTMLInputElement).checked) {
       setEnabledProducts({ ...enabledProducts, [id]: allProducts[id] })
     } else {
       delete enabledProducts[id]
@@ -67,8 +67,8 @@ export const SelectProducts = ({
     }
   }
 
-  function handleAllToggle(event: any) {
-    if (event.target.checked) {
+  function handleAllToggle(event: React.MouseEvent<HTMLInputElement>) {
+    if ((event.target as HTMLInputElement).checked) {
       let newEnabledProducts: Products = {}
       productList.forEach((product) => {
         if (selectedSuppliers.includes(product.supplier) && product.cumulative !== null) {
@@ -108,7 +108,7 @@ export const SelectProducts = ({
             )
           })}
         </ChipBox>
-        <Switch label="Select all" onClick={(e: any) => handleAllToggle(e)} />
+        <Switch label="Select all" onClick={(e: React.MouseEvent<HTMLInputElement>) => handleAllToggle(e)} />
       </div>
       {/* If some of the displayed products have missing PSD data, show a small notice*/}
       {productList.find((p: Product) => p.cumulative === null && selectedSuppliers.includes(p.supplier)) && (
@@ -142,8 +142,7 @@ export const SelectProducts = ({
               >
                 <Checkbox
                   checked={isChecked}
-                  // @ts-ignore
-                  onChange={(event: Event) => handleProductToggle(event, product.id)}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleProductToggle(event, product.id)}
                   label={product.title}
                   disabled={disabled}
                   name="multiple"

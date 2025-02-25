@@ -65,13 +65,12 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             value={bridge}
             min={1}
             max={10}
-            onChange={(_: any, value: number | number[]) => {
+            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number | number[]) => {
               setWeight({
                 ...weight,
                 bridge: getSliderValue(value),
               })
             }}
-            ariaLabelledby={''}
           />
         </Wrapper>
         <Wrapper>
@@ -82,13 +81,12 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             min={1}
             max={10}
             // @ts-ignore
-            onChange={(_: any, value: number) => {
+            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number) => {
               setWeight({
                 ...weight,
                 mass: getSliderValue(value),
               })
             }}
-            ariaLabelledby={''}
           />
         </Wrapper>
         <Wrapper>
@@ -99,13 +97,12 @@ export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactE
             min={1}
             max={10}
             // @ts-ignore
-            onChange={(_: any, value: number) => {
+            onChange={(_: React.ChangeEvent<HTMLInputElement>, value: number) => {
               setWeight({
                 ...weight,
                 products: getSliderValue(value),
               })
             }}
-            ariaLabelledby={''}
           />
         </Wrapper>
       </div>

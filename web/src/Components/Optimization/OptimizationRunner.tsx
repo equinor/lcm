@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { OptimizerAPI } from '../../Api'
 import { ParticleSizeContext } from '../../Context'
 import useLocalStorage from '../../Hooks'
-import type { Products } from '../../Types'
+import type { OptimizationData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
 import { ErrorToast } from '../Common/Toast'
 import { Tooltip } from '../Common/Tooltip'
@@ -22,7 +22,7 @@ interface OptimizationContainerProps {
   allProducts: Products
   mode: string
   value: number
-  handleUpdate: (data: any) => void
+  handleUpdate: (densityOptimizationData: OptimizationData) => void
 }
 
 const Wrapper = styled.div`
@@ -61,7 +61,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   })
   const particleRange = useContext(ParticleSizeContext)
 
-  const [products, setProducts] = useLocalStorage<any>('optimizerProducts', {})
+  const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
 
   const handleOptimize = () => {
     setLoading(true)
@@ -171,7 +171,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                   padding: '4px',
                 }}
               >
-                {Object.values(products).map((product: any) => {
+                {Object.values(products).map((product: Product) => {
                   return (
                     <Typography key={product.id} variant="body_short">
                       {product.title}
@@ -215,7 +215,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           label="Number of iterations"
                           id="interations"
                           value={iterations.toString()}
-                          onChange={(event: any) => {
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             if (event.target.value === '') setIterations(0)
                             const newValue = Number.parseInt(event.target.value)
                             if (Math.sign(newValue) >= 0) setIterations(newValue)
@@ -233,7 +233,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           label="Max number of products"
                           id="maxProducts"
                           value={maxProducts.toString()}
-                          onChange={(event: any) => {
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             if (event.target.value === '') setMaxProducts(0)
                             const newValue = Number.parseInt(event.target.value)
                             if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
@@ -257,7 +257,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                               label="From"
                               meta="μm"
                               value={from.toString()}
-                              onChange={(event: any) => {
+                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 if (event.target.value === '') setRange([0, to])
                                 const newValue = Number.parseFloat(event.target.value)
                                 if (Math.sign(newValue) >= 0) setRange([newValue, to])
@@ -272,7 +272,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                               label="To"
                               meta="μm"
                               value={to.toString()}
-                              onChange={(event: any) => {
+                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 if (event.target.value === '') setRange([from, 0])
                                 const newValue = Number.parseFloat(event.target.value)
                                 if (Math.sign(newValue) >= 0) setRange([from, newValue])

@@ -1,7 +1,8 @@
 import { PureComponent } from 'react'
 // @ts-ignore
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
-import type { Products } from '../../Types'
+import type { OptimizationData, Products } from '../../Types'
+import { ProductResult } from '../Optimization/OptimizationContainer'
 
 class CustomizedAxisTick extends PureComponent {
   render() {
@@ -26,12 +27,12 @@ class CustomizedAxisTick extends PureComponent {
 
 interface SolutionBarChartProps {
   products: Products
-  optimizationData: any
+  optimizationData: OptimizationData
 }
 
 export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChartProps) => {
   const graphData = () => {
-    return Object.values(optimizationData.products).map((productResult: any) => {
+    return Object.values(optimizationData.products).map((productResult: ProductResult) => {
       return {
         name: products[productResult.id].title,
         sacks: productResult.value,

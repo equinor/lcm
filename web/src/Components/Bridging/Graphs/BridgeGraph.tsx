@@ -26,10 +26,10 @@ const CustomTooltip = ({ active, payload, label }) => {
       >
         <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
         <div style={{ marginTop: '15px' }}>
-          {payload.map((graphData: any) => (
+          {payload.map((graphData: GraphData) => (
             <div
               key={graphData.name}
-              style={{ color: graphData.color }}
+              style={{ color: graphData.color.toString() }}
             >{`${graphData.name}: ${graphData.value}%`}</div>
           ))}
         </div>

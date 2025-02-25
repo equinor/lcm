@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import type { Products } from '../../Types'
+import type { OptimizationData, Products } from '../../Types'
 import PerformanceRadar from './PerformanceRadar'
 import SolutionBarChart from './SolutionBarChart'
 
@@ -15,7 +15,7 @@ const Grid = styled.div`
 `
 
 interface SolutionVisualisationsProps {
-  optimizationData: any
+  optimizationData: OptimizationData
   products: Products
 }
 

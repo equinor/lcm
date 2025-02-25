@@ -26,7 +26,7 @@ export interface MainBodyProps {
 export default ({ products }: MainBodyProps): ReactElement => {
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
-  const [combinations, setCombinations] = useLocalStorage<any>('combinations', {})
+  const [combinations, setCombinations] = useLocalStorage<Combinations>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const { token }: IAuthContext = useContext(AuthContext)
 
@@ -46,7 +46,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
       })
   }, [bridgeValue, mode, token])
 
-  async function fetchBridges(_combinations: Combinations): Promise<any> {
+  async function fetchBridges(_combinations: Combinations): Promise<Bridge[]> {
     return await Promise.all(
       // @ts-ignore
       Object.values(_combinations).map(async (c: Combination) => {
@@ -58,9 +58,9 @@ export default ({ products }: MainBodyProps): ReactElement => {
 
   // Create bridges from stored combinations
   useEffect(() => {
-    fetchBridges(combinations).then((storedBridges) => {
+    fetchBridges(combinations as Combinations).then((storedBridges) => {
       let newBridges: Bridge = {}
-      storedBridges.forEach((b: any) => {
+      storedBridges.forEach((b: Bridge) => {
         newBridges = { ...newBridges, ...b }
       })
 
@@ -112,7 +112,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
       }
       await fetchBridges(optimizationCombinations).then((_bridges) => {
         let newBridges: Bridge = {}
-        _bridges.forEach((b: any) => {
+        _bridges.forEach((b: Bridge) => {
           newBridges = { ...newBridges, ...b }
         })
         setBridges({ ...bridges, ...newBridges })
