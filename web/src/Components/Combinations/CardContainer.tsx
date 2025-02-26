@@ -24,7 +24,7 @@ export const CombinationTableHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: self-end;
-  padding: 0px 10px;
+  padding: 0 10px;
   background-color: #f7f7f7;
   border-bottom: #bfbfbf 2px solid;
 `
@@ -118,7 +118,7 @@ export const CardContainer = ({
               name: createCombinationName(sacks, combinations),
               sacks: sacks,
               values: {},
-              cumulative: null,
+              cumulative: [],
             })
           }}
         >
