@@ -65,7 +65,7 @@ export const CombinationTable = ({
       name: combinationName,
       sacks: sacks,
       values: newValuesWithPercentage,
-      cumulative: null,
+      cumulative: [],
     })
   }
   return (
