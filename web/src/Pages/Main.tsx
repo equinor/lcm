@@ -4,6 +4,7 @@ import type { IAuthContext } from 'react-oauth2-code-pkce'
 
 import styled from 'styled-components'
 
+import { useAppInsightsContext } from '@microsoft/applicationinsights-react-js'
 import { ProductsAPI } from '../Api'
 import { ErrorToast } from '../Components/Common/Toast'
 import Body from '../Components/MainBody'
@@ -21,6 +22,12 @@ const BodyWrapper = styled.div`
 export default (): ReactElement => {
   const [products, setProducts] = useState<Products>({})
   const { token }: IAuthContext = useContext(AuthContext)
+
+  const appInsights = useAppInsightsContext()
+
+  useEffect(() => {
+    appInsights.trackEvent(AuthContext)
+    }, [appInsights])
 
   // On first render, fetch all products
   useEffect(() => {
