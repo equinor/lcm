@@ -16,13 +16,41 @@ spec:
       ports:
         - name: http
           port: 3000
-
     - name: api
       src: ./api
+      resources:
+        requests:
+          memory: '800Mi'
+          cpu: '100m'
+        limits:
+          cpu: '4000m'
       environmentConfig:
         - environment: prod
           variables:
             ENVIRONMENT: production
+          horizontalScaling:
+            minReplicas: 1
+            maxReplicas: 8
+            triggers:
+            - name: cpu
+              cpu:
+                value: 85
+            - name: memory
+              cpu:
+                value: 75
+        - environment: test
+          variables:
+            ENVIRONMENT: test
+          horizontalScaling:
+            minReplicas: 1
+            maxReplicas: 4
+            triggers:
+            - name: cpu
+              cpu:
+                value: 85
+            - name: memory
+              cpu:
+                value: 75
       ports:
         - name: flask
           port: 5000

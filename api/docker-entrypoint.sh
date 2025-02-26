@@ -10,7 +10,7 @@ if [ "$1" = 'api' ]; then
             --enable-stdio-inheritance \
             --access-logfile=- \
             --log-file=- \
-            --workers 4 \
+            --workers 1 \
             --timeout 60 \
             src.app:app
     fi
