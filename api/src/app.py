@@ -1,3 +1,5 @@
+import logging
+import os
 import traceback
 
 from flask import Flask, Response, request, send_file
@@ -12,15 +14,36 @@ from controllers.report import create_report
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
 
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from azure.monitor.opentelemetry import configure_azure_monitor
+
+APPINSIGHTS_CONSTRING="InstrumentationKey=a87d0118-2cee-4e7b-814e-e2579059aa3a;IngestionEndpoint=https://norwayeast-0.in.applicationinsights.azure.com/;LiveEndpoint=https://norwayeast.livediagnostics.monitor.azure.com/;ApplicationId=0f27fd28-c81c-4064-ae41-d4a0e377d7ae"
+def init_logging():
+    try:
+        logger = logging.getLogger("API")
+        if logger.hasHandlers():
+            logger.handlers.clear()
+        logger.setLevel("INFO")
+        formatter = logging.Formatter("%(levelname)s:%(asctime)s %(message)s")
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        handler.setLevel("INFO")
+        logger.addHandler(handler)
+        logger.info("Logger is configured")
+    except Exception as e:
+        print("init logging")
+        traceback.print_exc()
 
 def init_api():
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
+    init_logging()
+    if os.getenv("FLASK_DEBUG") is None:
+        FlaskInstrumentor.instrument_app(flask_app)
+        configure_azure_monitor(connection_string=APPINSIGHTS_CONSTRING, logger_name="API")
     return flask_app
 
-
 app = init_api()
-
 
 @app.route("/api/products", methods=["GET"])
 @authorize
