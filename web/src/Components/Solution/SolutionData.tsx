@@ -84,8 +84,8 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       totalMass: optimizationData.totalMass,
       products: optimizationData.products,
       weighting: optimizationData.weighting,
-      email: tokenData.upn || 'none',
-      user: tokenData.name,
+      email: tokenData?.upn || 'none',
+      user: tokenData?.name,
     }
     setLoading(true)
     ReportAPI.postReportApi(token, reportRequest)
