@@ -1,38 +1,56 @@
-server {
-    listen 8080;
-    server_name localhost;
-    client_max_body_size 2G;
+pid                         /var/run/nginx.pid;
+worker_processes            auto;
 
-    access_log /dev/stdout combined;
-    error_log /dev/stdout;
+events {
+    multi_accept            on;
+    worker_connections      1024;
+}
 
-    location /api {
-        proxy_pass http://api:5000/api;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection upgrade;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header X-Request-Start $msec;
-        proxy_read_timeout 180;
-    }
-    location / {
-        proxy_read_timeout 180;
-        proxy_pass http://web:3000/;
-        # Passthrough for websocket
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
+# temp paths
+http {
+    proxy_temp_path         /tmp/nginx/proxy_temp;
+    client_body_temp_path   /tmp/nginx/client_temp;
+    fastcgi_temp_path       /tmp/nginx/fastcgi_temp;
+    uwsgi_temp_path         /tmp/nginx/uwsgi_temp;
+    scgi_temp_path          /tmp/nginx/scgi_temp;
 
-        # security headers
-        add_header X-XSS-Protection "1; mode=block" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header Referrer-Policy "no-referrer-when-downgrade" always;
-        add_header Permissions-Policy "interest-cohort=()" always;
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdn.eds.equinor.com/font/equinor-font.css 'unsafe-inline'; img-src 'self' data: ; font-src 'self' https://*.equinor.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; connect-src 'self' ws: https://*.microsoftonline.com ;" always;
+
+    server {
+        listen 8080;
+        server_name localhost;
+        client_max_body_size 2G;
+
+        access_log /dev/stdout combined;
+        error_log /dev/stdout;
+
+        location /api {
+            proxy_pass http://api:5000/api;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection upgrade;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Forwarded-Port $server_port;
+            proxy_set_header X-Request-Start $msec;
+            proxy_read_timeout 180;
+        }
+        location / {
+            proxy_read_timeout 180;
+            proxy_pass http://web:3000/;
+            # Passthrough for websocket
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+
+            # security headers
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Referrer-Policy "no-referrer-when-downgrade" always;
+            add_header Permissions-Policy "interest-cohort=()" always;
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+            add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdn.eds.equinor.com/font/equinor-font.css 'unsafe-inline'; img-src 'self' data: ; font-src 'self' https://*.equinor.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; connect-src 'self' ws: https://*.microsoftonline.com ;" always;
+        }
     }
 }
