@@ -48,7 +48,9 @@ export function findDValue(graphData: GraphData[], goalYValue: number, bridgeNam
     }
     return false
   })
-  if (!indexOfClosestHigherYValue) throw new Error('Failed to find D-value of bridge')
+  if (!indexOfClosestHigherYValue) {
+    return -1
+  }
 
   // interpolate the values to get an approx value for the exact D requested
   return linearInterpolation(
