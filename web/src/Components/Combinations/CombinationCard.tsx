@@ -1,4 +1,4 @@
-import { Button, Icon, Input, Switch, Tooltip } from '@equinor/eds-core-react'
+import { Button, Icon, Input, Switch, Tooltip, Typography } from '@equinor/eds-core-react'
 import { delete_to_trash, edit } from '@equinor/eds-icons'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
@@ -184,15 +184,15 @@ export const CombinationCard = ({
           <div style={{ borderTop: '1px solid', paddingTop: '3px' }}>
             <DValues>
               <div>D10</div>
-              <div>{D10}</div>
+              <div>{D10 === -1 ? <Typography style={{ color: 'red' }}>Can not compute values</Typography> : D10}</div>
             </DValues>
             <DValues>
               <div>D50</div>
-              <div>{D50}</div>
+              <div>{D50 === -1 ? <Typography style={{ color: 'red' }}>Can not compute values</Typography> : D50}</div>
             </DValues>
             <DValues>
               <div>D90</div>
-              <div>{D90}</div>
+              <div>{D90 === -1 ? <Typography style={{ color: 'red' }}>Can not compute values</Typography> : D90}</div>
             </DValues>
           </div>
         ) : (

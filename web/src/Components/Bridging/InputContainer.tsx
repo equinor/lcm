@@ -139,10 +139,26 @@ const InputContainer = ({
           <Typography variant="h3">Optimal Bridge:</Typography>
           <div style={{ marginInlineStart: '0.5rem' }}>
             {[10, 50, 90].map((d) => (
-              <p key={d}>
-                D{d}: {findDValue(optimalBridgeGraphData, d, 'Bridge')}
-                {'\u00B5m'}
-              </p>
+              <div key={d} style={{ display: 'flex', flexDirection: 'row' }}>
+                D{d}: {(() => {
+                  const value = findDValue(optimalBridgeGraphData, d, 'Bridge')
+                  return value === -1 ? (
+                    <span
+                      style={{
+                        paddingLeft: '0.5rem',
+                        color: 'red',
+                      }}
+                    >
+                      Input too big
+                    </span>
+                  ) : (
+                    <span style={{ paddingLeft: '0.5rem' }}>
+                      {value}
+                      {'\u00B5m'}
+                    </span>
+                  )
+                })()}
+              </div>
             ))}
           </div>
         </div>
