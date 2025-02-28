@@ -50,7 +50,6 @@ http {
             add_header Referrer-Policy "no-referrer-when-downgrade" always;
             add_header Permissions-Policy "interest-cohort=()" always;
             add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-            add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://cdn.eds.equinor.com/font/equinor-font.css 'unsafe-inline'; img-src 'self' data: ; font-src 'self' https://*.equinor.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; connect-src 'self' ws: https://*.microsoftonline.com ;" always;
         }
     }
 }
