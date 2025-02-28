@@ -24,7 +24,7 @@ services:
   web:
     build:
       context: ./web
-      # target: development
+      target: development
       args:
         APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
     restart: unless-stopped
