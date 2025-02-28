@@ -26,8 +26,8 @@ export default (): ReactElement => {
   const appInsights = useAppInsightsContext()
 
   useEffect(() => {
-    appInsights.trackEvent(AuthContext)
-    }, [appInsights])
+    appInsights.trackEvent({ name: 'Main page load', properties: {} })
+  }, [appInsights])
 
   // On first render, fetch all products
   useEffect(() => {

@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import Main from './Pages/Main'
 
 import 'react-toastify/dist/ReactToastify.css'
-import {AppInsightsContext} from '@microsoft/applicationinsights-react-js'
+import { AppInsightsContext } from '@microsoft/applicationinsights-react-js'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import { ToastContainer } from 'react-toastify'
 import { ParticleSizeContext } from './Context'
