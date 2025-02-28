@@ -12,16 +12,11 @@ export default defineConfig({
       },
       policy: {
         'default-src': ["'self'"],
-        'script-src': ["'self'"],
-        'style-src': ["'self'", 'https://cdn.eds.equinor.com/font/equinor-font.css', "'unsafe-inline'"],
+        'style-src': ["'self'", 'https://*.equinor.com', "'unsafe-inline'"],
         'img-src': ["'self'", 'data:'],
         'object-src': ["'none'"],
-        'base-uri': ["'self'"],
-        'form-action': ["'self'"],
-        'frame-ancestors': ["'self'"],
-        'frame-src': ["'self'"],
         'font-src': ["'self'", 'https://*.equinor.com'],
-        'connect-src': ["'self'", 'https://*.microsoftonline.com', 'ws:'],
+        'connect-src': ["'self'", 'https://*.microsoftonline.com'],
       },
       build: {
         sri: true,
