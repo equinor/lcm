@@ -15,6 +15,7 @@ services:
       ENVIRONMENT: development
       FLASK_DEBUG: "true"
       TABLE_KEY: ${TABLE_KEY}
+      APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
     ports:
       - "5000:5000"
     volumes:
@@ -23,9 +24,10 @@ services:
   web:
     build:
       context: ./web
-      target: development
+      # target: development
+      args:
+        APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
     restart: unless-stopped
     stdin_open: true
     volumes:
       - ./web/src:/code/src
-      
