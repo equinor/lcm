@@ -6,10 +6,18 @@ spec:
   environments:
     - name: prod
       build:
+        useBuildKit: true
+        useBuildCache: true
         from: prod
+        secrets:
+          - APPINSIGHTS_CON_STRING
     - name: test
       build:
+        useBuildKit: true
+        useBuildCache: true
         from: master
+        secrets:
+          - APPINSIGHTS_CON_STRING
   components:
     - name: web
       src: ./web
@@ -57,7 +65,6 @@ spec:
       publicPort: flask
       secrets:
         - TABLE_KEY
-        - APPINSIGHTS_CON_STRING
 
     - name: proxy
       src: ./nginx/
