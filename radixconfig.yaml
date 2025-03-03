@@ -7,6 +7,13 @@ spec:
     useBuildKit: false
     secrets:
       - APPINSIGHTS_CON_STRING
+  environments:
+    - name: prod
+      build:
+        from: prod
+    - name: test
+      build:
+        from: master
   components:
     - name: web
       src: ./web
