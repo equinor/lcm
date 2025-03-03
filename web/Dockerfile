@@ -13,6 +13,7 @@ FROM base AS development
 CMD ["npm","run", "start"]
 
 FROM base AS build
+ARG APPINSIGHTS_CON_STRING
 RUN export VITE_APPINSIGHTS_CON_STRING=$(echo $APPINSIGHTS_CON_STRING|base64 -d) && npm run build
 
 FROM node:23-alpine AS prod
