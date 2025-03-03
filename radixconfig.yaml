@@ -3,19 +3,10 @@ kind: RadixApplication
 metadata:
   name: lost-circulation-material
 spec:
-  environments:
-    - name: prod
-      build:
-        useBuildKit: false
-        from: prod
-        secrets:
-          - APPINSIGHTS_CON_STRING
-    - name: test
-      build:
-        useBuildKit: false
-        from: master
-        secrets:
-          - APPINSIGHTS_CON_STRING
+  build:
+    useBuildKit: false
+    secrets:
+      - APPINSIGHTS_CON_STRING
   components:
     - name: web
       src: ./web

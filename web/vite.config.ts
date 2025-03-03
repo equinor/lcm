@@ -16,7 +16,7 @@ export default defineConfig({
         'img-src': ["'self'", 'data:'],
         'object-src': ["'none'"],
         'font-src': ["'self'", 'https://*.equinor.com'],
-        'connect-src': ["'self'", 'https://*.microsoftonline.com'],
+        'connect-src': ["'self'", 'https://*.microsoftonline.com', 'https://*.applicationinsights.azure.com', 'https://*.monitor.azure.com'],
       },
       build: {
         sri: true,
