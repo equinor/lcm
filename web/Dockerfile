@@ -10,6 +10,8 @@ RUN npm install
 ADD ./ /code/
 
 FROM base AS development
+
+ENV VITE_APPINSIGHTS_CON_STRING=$APPINSIGHTS_CON_STRING
 CMD ["npm","run", "start"]
 
 FROM base AS build
