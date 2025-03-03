@@ -6,15 +6,13 @@ spec:
   environments:
     - name: prod
       build:
-        useBuildKit: true
-        useBuildCache: true
+        useBuildKit: false
         from: prod
         secrets:
           - APPINSIGHTS_CON_STRING
     - name: test
       build:
-        useBuildKit: true
-        useBuildCache: true
+        useBuildKit: false
         from: master
         secrets:
           - APPINSIGHTS_CON_STRING
