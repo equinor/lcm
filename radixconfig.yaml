@@ -11,9 +11,13 @@ spec:
     - name: prod
       build:
         from: prod
+        secrets:
+          - APPINSIGHTS_CON_STRING
     - name: test
       build:
         from: master
+        secrets:
+          - APPINSIGHTS_CON_STRING
   components:
     - name: web
       src: ./web
