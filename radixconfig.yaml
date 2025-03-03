@@ -65,7 +65,7 @@ spec:
       publicPort: flask
       secrets:
         - TABLE_KEY
-
+        - APPINSIGHTS_CON_STRING
     - name: proxy
       src: ./nginx/
       ports:
