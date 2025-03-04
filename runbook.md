@@ -180,3 +180,10 @@ You need poetry installed.
 cd api
 poetry update
 ```
+
+### Logging
+
+This application is setup with App Insights in Azure. 
+
+* Frontend is limited to tracking loading of the Main.tsx page, these logs are found by querying the itemType: "customEvents" in Application Insights logs.
+* From the backend, every request is being logged. These can easily be read by querying for "requests" with optional additional parameters.

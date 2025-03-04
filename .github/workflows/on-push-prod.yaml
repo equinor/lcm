@@ -19,4 +19,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: algorithm-report
-          path: api/test_report.png
+          path: api/src/test_report.png

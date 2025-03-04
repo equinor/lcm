@@ -6,6 +6,7 @@ from pathlib import Path
 class Config:
     TABLE_ACCOUNT_NAME = os.getenv("TABLE_ACCOUNT_NAME", "lcmdevstorage")
     TABLE_KEY = os.getenv("TABLE_KEY")
+    APPINSIGHTS_CON_STRING = os.getenv("APPINSIGHTS_CON_STRING")
     BLOB_CONTAINER_NAME = "lcm-file-blobs"
     LOAD_TEST_DATA = ast.literal_eval(os.getenv("LOAD_TEST_DATA", "False"))
     SYNC_BLOBS_APP_URL = os.getenv(

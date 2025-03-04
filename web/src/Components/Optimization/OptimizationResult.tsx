@@ -6,7 +6,7 @@ interface OptimizationResultProps {
   products: Products
   mode: string
   value: number
-  optimizationData: OptimizationData
+  optimizationData: OptimizationData | undefined
 }
 
 export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps) => {

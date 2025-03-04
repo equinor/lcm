@@ -1,6 +1,16 @@
 import { Typography } from '@equinor/eds-core-react'
-import { useContext, useEffect, useState } from 'react'
-import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { type ReactElement, useContext, useEffect, useState } from 'react'
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  type TooltipProps,
+  XAxis,
+  YAxis,
+} from 'recharts'
 import { ParticleSizeContext } from '../../../Context'
 import type { Bridge, GraphData } from '../../../Types'
 import { bridgeColor, graphColors } from '../styles'
@@ -9,11 +19,11 @@ type BridgeGraphProps = {
   title: string
   graphData: GraphData[]
   sizeFractions: number[]
-  bridges: Bridge | undefined
+  bridges: Bridge
   showBridge?: boolean
 }
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>): ReactElement | false => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -26,10 +36,10 @@ const CustomTooltip = ({ active, payload, label }) => {
       >
         <div style={{ opacity: '50%' }}>{`Particle size : ${label}µm`}</div>
         <div style={{ marginTop: '15px' }}>
-          {payload.map((graphData: GraphData) => (
+          {payload.map((graphData) => (
             <div
               key={graphData.name}
-              style={{ color: graphData.color.toString() }}
+              style={{ color: graphData.color }}
             >{`${graphData.name}: ${graphData.value}%`}</div>
           ))}
         </div>
@@ -37,7 +47,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     )
   }
 
-  return null
+  return false
 }
 
 export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBridge = true }: BridgeGraphProps) {

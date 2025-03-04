@@ -3,13 +3,21 @@ kind: RadixApplication
 metadata:
   name: lost-circulation-material
 spec:
+  build:
+    useBuildKit: false
+    secrets:
+      - APPINSIGHTS_CON_STRING
   environments:
     - name: prod
       build:
         from: prod
+        secrets:
+          - APPINSIGHTS_CON_STRING
     - name: test
       build:
         from: master
+        secrets:
+          - APPINSIGHTS_CON_STRING
   components:
     - name: web
       src: ./web
@@ -57,7 +65,7 @@ spec:
       publicPort: flask
       secrets:
         - TABLE_KEY
-
+        - APPINSIGHTS_CON_STRING
     - name: proxy
       src: ./nginx/
       ports:

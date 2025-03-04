@@ -14,7 +14,7 @@ type InputContainerProps = {
   unit: string
   bridgeValue: number
   bridgeValueVariant: Variants | undefined
-  bridgeValueHelperText: string
+  bridgeValueHelperText: string | undefined
 }
 
 const InputLabels: { [key in BridgingOption]: string } = {
@@ -117,7 +117,7 @@ const InputContainer = ({
                 id="textfield-number"
                 meta={unit}
                 value={bridgeValue || 0}
-                onChange={(event) => onBridgeValueChange(event.target.value)}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => onBridgeValueChange(event.target.value)}
                 variant={bridgeValueVariant}
                 helperText={bridgeValueHelperText}
               />
