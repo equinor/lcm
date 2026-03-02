@@ -31,7 +31,7 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
 
   const handleChange = (type: string, value: string) => {
     let newValue = 0
-    if (value !== '') newValue = Number.parseInt(value)
+    if (value !== '') newValue = Number(value)
 
     if (Math.sign(newValue) <= 0) {
       type === PillInputType.VOLUME && setInvalidVolume(true)

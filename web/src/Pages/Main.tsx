@@ -1,10 +1,8 @@
-import { type ReactElement, useContext, useEffect, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import type { IAuthContext } from 'react-oauth2-code-pkce'
-
-import styled from 'styled-components'
-
 import { useAppInsightsContext } from '@microsoft/applicationinsights-react-js'
+import { type ReactElement, useContext, useEffect, useState } from 'react'
+import type { IAuthContext } from 'react-oauth2-code-pkce'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import styled from 'styled-components'
 import { ProductsAPI } from '../Api'
 import { ErrorToast } from '../Components/Common/Toast'
 import Body from '../Components/MainBody'

@@ -25,7 +25,7 @@ export const OptimizationContainer = ({
 
   const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
     let sackProducts: ProductsInCombination = {}
-    Object.values(densityOptimizationData.products).map((product) => {
+    for (const product of Object.values(densityOptimizationData.products)) {
       const SACK_KG: number = 25
       const sackValue: number = Math.round((product.value * densityOptimizationData.chosenVolume) / SACK_KG)
       if (sackValue > 0) {
@@ -34,16 +34,15 @@ export const OptimizationContainer = ({
           [product.id]: { id: product.id, value: sackValue, percentage: 0 },
         }
       }
-    })
+    }
 
     let totalNumberOfSacks = 0
-    Object.values(sackProducts).map((product) => {
+    for (const product of Object.values(sackProducts)) {
       totalNumberOfSacks += product.value
-    })
-
-    Object.values(sackProducts).map((product) => {
+    }
+    for (const product of Object.values(sackProducts)) {
       sackProducts[product.id].percentage = (product.value / totalNumberOfSacks) * 100
-    })
+    }
 
     //NOTE: since densities can be rounded down to 0 sacks, number of products in optimization for density and sacks can differ
     return sackProducts

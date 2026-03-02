@@ -5,8 +5,8 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import { OptimizerAPI } from '../../Api'
 import { ParticleSizeContext } from '../../Context'
-import type { OptimizationData, Product, Products } from '../../Types'
 import useLocalStorage from '../../lib/hooks/useLocalStorage'
+import type { OptimizationData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
 import { ErrorToast } from '../Common/Toast'
 import { Tooltip } from '../Common/Tooltip'
@@ -216,7 +216,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           value={iterations.toString()}
                           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             if (event.target.value === '') setIterations(0)
-                            const newValue = Number.parseInt(event.target.value)
+                            const newValue = Number(event.target.value)
                             if (Math.sign(newValue) >= 0) setIterations(newValue)
                           }}
                           disabled={loading}
@@ -234,7 +234,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                           value={maxProducts.toString()}
                           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             if (event.target.value === '') setMaxProducts(0)
-                            const newValue = Number.parseInt(event.target.value)
+                            const newValue = Number(event.target.value)
                             if (Math.sign(newValue) >= 0) setMaxProducts(newValue)
                           }}
                           disabled={loading}

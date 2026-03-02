@@ -49,7 +49,7 @@ export const CombinationTable = ({
     }
     let formattedValue: number
     if (sacks) {
-      formattedValue = Number.parseInt(value)
+      formattedValue = Number(value)
     } else {
       formattedValue = Number.parseFloat(value)
     }
