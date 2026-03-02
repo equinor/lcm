@@ -106,7 +106,7 @@ class Optimizer:
                     used_id_list.append(id)
 
                 for id in used_id_list:
-                    combo_dict[id] = round(random.uniform(0, max_initial_density), 2)
+                    combo_dict[id] = int(round(random.uniform(0, max_initial_density), 2))
 
                 population.append(combo_dict)
 

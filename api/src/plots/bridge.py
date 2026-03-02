@@ -23,8 +23,9 @@ def bridge_plot(products: dict, mode, value) -> str:
     bridgeplot.set_xticks([0.1, 1, 10, 100, 1000])
     bridgeplot.xaxis.set_major_formatter(ScalarFormatter())
     bridgeplot.plot(SIZE_STEPS, bridge, color="black", label="Ideal")
-    bridgeplot.axes.set_ylim([0, 100])
-    bridgeplot.axes.set_xlim([0.01, 10000])
+    if bridgeplot.axes:
+        bridgeplot.axes.set_ylim((0, 100))
+        bridgeplot.axes.set_xlim((0.01, 10000))
 
     products_class = []
     all_products = products_get()

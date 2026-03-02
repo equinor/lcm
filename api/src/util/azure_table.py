@@ -2,7 +2,7 @@ import csv
 import json
 from datetime import datetime, timedelta
 from time import sleep
-from typing import io
+from typing import TextIO
 
 from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableService
@@ -51,7 +51,7 @@ def get_service():
     return TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
 
 
-def process_meta_blob(meta_file: io.TextIO) -> list[dict]:
+def process_meta_blob(meta_file: TextIO) -> list[dict]:
     reader = csv.DictReader(meta_file)
 
     products = []
