@@ -1,5 +1,6 @@
 import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
-import { BridgingOption, CeramicDiscsValues } from '../../Enums'
+import { BridgingOption } from '../../Enums'
+import { ceramicDiscSizes } from '../../lib/constants/ceramicDiscSizes'
 import { colors } from '../../lib/constants/colors'
 import type { GraphData } from '../../Types'
 import { findDValue } from '../../Utils'
@@ -99,7 +100,7 @@ const InputContainer = ({
                   label={'Disk Size'}
                   meta={'microns'}
                 >
-                  {CeramicDiscsValues.map((value, index) => {
+                  {ceramicDiscSizes.map((value, index) => {
                     return (
                       <option value={value} key={index + value}>
                         {value}
