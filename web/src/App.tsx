@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import Main from './Pages/Main'
+import Home from './Pages/Home'
 
 import 'react-toastify/dist/ReactToastify.css'
 import { AppInsightsContext } from '@microsoft/applicationinsights-react-js'
@@ -18,7 +18,7 @@ function App() {
     <>
       <ParticleSizeContextProvider>
         <AppInsightsContext value={reactPlugin}>
-          <Main />
+          <Home />
         </AppInsightsContext>
       </ParticleSizeContextProvider>
       <ToastContainer />
