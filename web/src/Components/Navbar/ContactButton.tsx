@@ -2,7 +2,7 @@ import { Button, Dialog, Icon } from '@equinor/eds-core-react'
 import { comment_important } from '@equinor/eds-icons'
 import { useState } from 'react'
 
-export const ContactButton = () => {
+export function ContactButton() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
 
   return (
