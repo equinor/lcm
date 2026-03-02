@@ -1,6 +1,6 @@
 import { type Id, toast } from 'react-toastify'
 
-export const ErrorToast = (msg: string, code?: number): Id => {
+export function ErrorToast(msg: string, code?: number): Id {
   const title = <p>Error</p>
   const config = { autoClose: 7000 }
 

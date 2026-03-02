@@ -42,7 +42,7 @@ export function CombinationTable({
     setValues(setPercentages(productsInCombination, allProducts))
   }, [productsInCombination, allProducts])
 
-  const handleValueChange = (productId: string, newValue: string) => {
+  function handleValueChange(productId: string, newValue: string) {
     let value = newValue
     if (!value) {
       value = '0'
