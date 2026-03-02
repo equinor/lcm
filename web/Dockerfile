@@ -1,4 +1,4 @@
-FROM node:23-alpine AS base
+FROM node:25-alpine3.23 AS base
 ENV VITE_APPLICATION_OWNER=ovbra@equinor.com
 ENV VITE_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
 ENV VITE_SCOPES="api://lost-circulation-material-api/Optimization.All.All"
@@ -18,7 +18,7 @@ FROM base AS build
 ARG APPINSIGHTS_CON_STRING
 RUN export VITE_APPINSIGHTS_CON_STRING=$(echo $APPINSIGHTS_CON_STRING|base64 -d) && npm run build
 
-FROM node:23-alpine AS prod
+FROM node:25-alpine3.23  AS prod
 RUN npm install -g serve
 COPY --from=build /code/build /code/build
 EXPOSE 3000

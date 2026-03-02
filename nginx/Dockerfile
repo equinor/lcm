@@ -1,4 +1,4 @@
-FROM nginx:1.27.2-alpine AS server
+FROM nginx:1.29.5-alpine AS server
 
 RUN apk upgrade --update-cache
 
