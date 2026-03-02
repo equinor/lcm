@@ -14,13 +14,13 @@ jobs:
   test-report:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: "Create report"
         run: docker compose build api && docker compose run -u 0 api python src/tests/optimizer_test.py
 
       - name: Archive results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: algorithm-report
           path: api/src/test_report.png
