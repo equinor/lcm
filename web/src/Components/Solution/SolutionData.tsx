@@ -67,7 +67,7 @@ const Densities = ({ products, productResults }: DensitiesProps): ReactElement =
 const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
   const { tokenData } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
-  const { postReport } = useApi()
+  const { createReport: postReport } = useApi()
 
   useEffect(() => {
     window.scrollTo(0, 999999)

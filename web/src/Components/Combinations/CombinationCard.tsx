@@ -62,7 +62,7 @@ export const CombinationCard = ({
   const [D50, setD50] = useState<number>(0)
   const [D90, setD90] = useState<number>(0)
   const [isHeaderEditable, setIsHeaderEditable] = useState<boolean>(false)
-  const { postCombination } = useApi()
+  const { calculateBridgeFromCombination: postCombination } = useApi()
 
   // On first render with products, set enabledProducts from saved combinations
   useEffect(() => {

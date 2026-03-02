@@ -58,7 +58,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   })
   const { range, from, to, setFrom, setTo } = useParticleSizeContext()
   const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
-  const { postOptimizer } = useApi()
+  const { runOptimizer: postOptimizer } = useApi()
 
   const handleOptimize = () => {
     setLoading(true)
