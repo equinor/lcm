@@ -18,23 +18,23 @@ export function useApi() {
     })
   }
 
-  function postOptimizer(data: OptimizationApiData) {
+  function runOptimizer(data: OptimizationApiData) {
     return apiPost('optimizer', data)
   }
 
-  function postCombination(data: ProductValues[]) {
+  function calculateBridgeFromCombination(data: ProductValues[]) {
     return apiPost('combination', data)
   }
 
-  function postReport(data: ReportApiRequest) {
+  function createReport(data: ReportApiRequest) {
     return apiPost('report', data, { responseType: 'blob' })
   }
 
-  function postBridge(data: BridgeApiRequest) {
+  function calculateOptimalBridge(data: BridgeApiRequest) {
     return apiPost('bridge', data)
   }
 
-  function postSync() {
+  function synchronizeSharepoint() {
     return apiPost('sync', {})
   }
 
@@ -47,11 +47,11 @@ export function useApi() {
   }
 
   return {
-    postOptimizer,
-    postCombination,
-    postReport,
-    postBridge,
-    postSync,
+    runOptimizer,
+    calculateBridgeFromCombination,
+    createReport,
+    calculateOptimalBridge,
+    synchronizeSharepoint,
     getProducts,
     getFractions,
   }

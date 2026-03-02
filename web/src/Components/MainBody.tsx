@@ -27,7 +27,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
   const [combinations, setCombinations] = useLocalStorage<Combinations>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const { token }: IAuthContext = useContext(AuthContext)
-  const { postBridge, postCombination } = useApi()
+  const { calculateOptimalBridge: postBridge, calculateBridgeFromCombination: postCombination } = useApi()
 
   // Update optimal bridge
   useEffect(() => {

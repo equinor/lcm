@@ -14,7 +14,7 @@ const ButtonWrapper = styled.div`
 export const RefreshButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { postSync } = useApi()
+  const { synchronizeSharepoint: postSync } = useApi()
 
   const syncSharePoint = () => {
     postSync()
