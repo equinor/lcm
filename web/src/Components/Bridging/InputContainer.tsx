@@ -1,5 +1,4 @@
 import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
-import type { Variants } from '@equinor/eds-core-react/dist/types/components/types'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
 import type { GraphData } from '../../Types'
 import { findDValue } from '../../Utils'
@@ -13,7 +12,7 @@ type InputContainerProps = {
   optimalBridgeGraphData: GraphData[]
   unit: string
   bridgeValue: number
-  bridgeValueVariant: Variants | undefined
+  bridgeValueVariant: 'error' | undefined
   bridgeValueHelperText: string | undefined
 }
 
