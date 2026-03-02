@@ -6,6 +6,10 @@ on:
     branches:
       - prod
 
+permissions:
+  contents: read
+  actions: write  
+
 jobs:
   test-report:
     runs-on: ubuntu-latest
