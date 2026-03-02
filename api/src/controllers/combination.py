@@ -4,11 +4,11 @@
 
 from calculators.bridge import calculate_blend_cumulative
 from classes.product import Product
-from controllers.products import products_get
+from controllers.products import retrieve_products
 
 
 def bridge_from_combination(combination: list[dict]):
-    all_products = products_get()
+    all_products = retrieve_products()
     sum_sacks = sum([p["value"] for p in combination])
     product_list = []
     for p in combination:

@@ -7,7 +7,7 @@ from util.enums import BridgeOption
 
 
 @cached(cache=LFUCache(2048))
-def theoretical_bridge(mode: str, value: int):
+def theoretical_bridge(mode: str, value: int) -> list[float]:
     bridge_list = []
     d_value = 50
     bridge_input = value
@@ -32,7 +32,7 @@ def theoretical_bridge(mode: str, value: int):
     return bridge_list
 
 
-def calculate_blend_cumulative(product_list: list[Product]):
+def calculate_blend_cumulative(product_list: list[Product]) -> list[float]:
     cumulative_curve: list[float] = [0.0 for _ in SIZE_STEPS]
 
     for product in product_list:

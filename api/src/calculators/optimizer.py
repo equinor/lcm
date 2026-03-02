@@ -29,7 +29,7 @@ class Optimizer:
     def __init__(
         self,
         bridge: list[float],
-        products: list[dict] | None = None,
+        products: list[dict],
         density_goal: int = 350,
         volume: int = 10,
         max_iterations: int = 500,

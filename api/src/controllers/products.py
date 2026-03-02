@@ -5,15 +5,14 @@ from config import Config
 from util.azure_table import get_service
 
 
-def sort_products(products: dict[str, dict]):
+def sort_products(products: dict[str, dict]) -> dict[str, dict]:
     values = list(products.values())
     values.sort(key=lambda p: (p["supplier"], p["id"]))
 
     return {v["id"]: v for v in values}
 
 
-@cached(cache=TTLCache(maxsize=128, ttl=300))
-def products_get():
+def retrieve_products() -> dict[str, dict]:
     products = get_service().query_entities(Config.PRODUCT_TABLE_NAME)
 
     products_response = {}
@@ -31,8 +30,18 @@ def products_get():
         )
         products_response[p.RowKey]["cumulative"] = cumulative
 
-    if not len(products_response):
-        return Response("Failed to fetch products from storage", 500)
-
     sorted_products = sort_products(products_response)
+
+    if not len(sorted_products):
+        raise ValueError("No products found in storage")
+
     return sorted_products
+
+
+@cached(cache=TTLCache(maxsize=128, ttl=300))
+def products_get():
+    try:
+        products_response = retrieve_products()
+        return products_response
+    except ValueError:
+        return Response("Failed to fetch products from storage", 500)
