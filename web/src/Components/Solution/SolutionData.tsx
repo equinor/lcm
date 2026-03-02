@@ -3,7 +3,7 @@ import { save } from '@equinor/eds-icons'
 import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
-import { ReportAPI } from '../../Api'
+import { useApi } from '../../lib/hooks/useApi'
 import type { OptimizationData, Products } from '../../Types'
 import { ErrorToast } from '../Common/Toast'
 import type { ProductResult } from '../Optimization/OptimizationContainer'
@@ -65,8 +65,9 @@ const Densities = ({ products, productResults }: DensitiesProps): ReactElement =
 }
 
 const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
-  const { tokenData, token } = useContext(AuthContext)
+  const { tokenData } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
+  const { postReport } = useApi()
 
   useEffect(() => {
     window.scrollTo(0, 999999)
@@ -88,7 +89,7 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
       user: tokenData?.name,
     }
     setLoading(true)
-    ReportAPI.postReportApi(token, reportRequest)
+    postReport(reportRequest)
       .then((res) => {
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(res.data)
