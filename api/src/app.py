@@ -59,7 +59,7 @@ def bridge():
 def sync_sharepoint():
     try:
         sync_all()
-    except Exception as error:
+    except Exception:
         traceback.print_exc()
         return Response("An internal error occurred. Please contact support.", 500)
     return "ok"
