@@ -1,10 +1,9 @@
 import { Accordion, Button, CircularProgress, Dialog, Icon, TextField, Typography } from '@equinor/eds-core-react'
 import { info_circle, play } from '@equinor/eds-icons'
-import { type ReactElement, useContext, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { type ReactElement, useState } from 'react'
 import styled from 'styled-components'
-import { OptimizerAPI } from '../../Api'
 import { useParticleSizeContext } from '../../lib/contexts/particle-size'
+import { useApi } from '../../lib/hooks/useApi'
 import useLocalStorage from '../../lib/hooks/useLocalStorage'
 import type { OptimizationData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
@@ -45,7 +44,6 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
   const [failedRun, setFailedRun] = useState<boolean>(false)
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { token } = useContext(AuthContext)
   const [iterations, setIterations] = useState<number>(2000)
   const [maxProducts, setMaxProducts] = useState<number>(5)
   const [pill, setPill] = useState<Pill>({
@@ -59,12 +57,12 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
     products: 5,
   })
   const { range, from, to, setFrom, setTo } = useParticleSizeContext()
-
   const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
+  const { postOptimizer } = useApi()
 
   const handleOptimize = () => {
     setLoading(true)
-    OptimizerAPI.postOptimizerApi(token, {
+    postOptimizer({
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,

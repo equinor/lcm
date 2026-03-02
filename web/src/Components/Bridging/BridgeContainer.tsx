@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { FractionsAPI } from '../../Api'
+import { useEffect, useState } from 'react'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
+import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, GraphData } from '../../Types'
 import { findGraphData } from '../../Utils'
 import { ErrorToast } from '../Common/Toast'
@@ -25,11 +24,11 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState<GraphData[]>([])
   const [volumeData, setVolumeData] = useState<GraphData[]>([])
   const [cumulativeVolumeData, setCumulativeVolumeData] = useState<GraphData[]>([])
-  const { token } = useContext(AuthContext)
+  const { getFractions } = useApi()
 
   // Load size fractions once on first render
   useEffect(() => {
-    FractionsAPI.getFractionsApi(token)
+    getFractions()
       .then((response) => {
         setSizeFractions(response.data.size_fractions)
       })

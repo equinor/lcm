@@ -3,11 +3,11 @@ import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
 import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
-import { BridgeAPI, CombinationAPI } from '../Api'
-import { BridgingOption } from '../Enums'
-import type { Bridge, Combination, Combinations, Products } from '../Types'
 import { colors } from '../colors'
+import { BridgingOption } from '../Enums'
+import { useApi } from '../lib/hooks/useApi'
 import useLocalStorage from '../lib/hooks/useLocalStorage'
+import type { Bridge, Combination, Combinations, Products } from '../Types'
 import BridgeContainer from './Bridging/BridgeContainer'
 import CardContainer from './Combinations/CardContainer'
 import { ErrorToast } from './Common/Toast'
@@ -27,11 +27,12 @@ export default ({ products }: MainBodyProps): ReactElement => {
   const [combinations, setCombinations] = useLocalStorage<Combinations>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
   const { token }: IAuthContext = useContext(AuthContext)
+  const { postBridge, postCombination } = useApi()
 
   // Update optimal bridge
   useEffect(() => {
     if (!(bridgeValue >= 1)) return
-    BridgeAPI.postBridgeApi(token, {
+    postBridge({
       option: mode,
       value: bridgeValue,
     })
@@ -47,7 +48,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
   async function fetchBridges(_combinations: Combinations): Promise<Bridge[]> {
     return await Promise.all(
       Object.values(_combinations).map(async (c: Combination) => {
-        const res = await CombinationAPI.postCombinationApi(token, Object.values(c.values))
+        const res = await postCombination(Object.values(c.values))
         return { [c.name]: res.data.bridge }
       })
     )
@@ -61,7 +62,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
         newBridges = { ...newBridges, ...b }
       })
 
-      BridgeAPI.postBridgeApi(token, {
+      postBridge({
         option: mode,
         value: bridgeValue,
       }).then((response) => {
@@ -73,7 +74,7 @@ export default ({ products }: MainBodyProps): ReactElement => {
   function updateCombinationAndFetchBridge(combination: Combination) {
     // Don't fetch with empty values if combination does not exist
     if (!Object.values(combination.values).length && !Object.keys(bridges).includes(combination.name)) return
-    CombinationAPI.postCombinationApi(token, Object.values(combination.values))
+    postCombination(Object.values(combination.values))
       .then((response) => {
         setBridges({ ...bridges, [combination.name]: response.data.bridge })
       })

@@ -1,9 +1,8 @@
 import { Button, Icon, Input, Switch, Tooltip, Typography } from '@equinor/eds-core-react'
 import { delete_to_trash, edit } from '@equinor/eds-icons'
-import { useContext, useEffect, useState } from 'react'
-import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { CombinationAPI } from '../../Api'
+import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, Combination, GraphData, Product, Products } from '../../Types'
 import { findDValue, findGraphData } from '../../Utils'
 import EditProducts from '../Common/EditProducts'
@@ -58,12 +57,12 @@ export const CombinationCard = ({
   const [totalMass, setTotalMass] = useState<number>(0)
   const [totalDensity, setTotalDensity] = useState<number>(0)
   const [enabledProducts, setEnabledProducts] = useState<Products>({})
-  const { token }: IAuthContext = useContext(AuthContext)
   const [bridge, setBridge] = useState<Bridge>()
   const [D10, setD10] = useState<number>(0)
   const [D50, setD50] = useState<number>(0)
   const [D90, setD90] = useState<number>(0)
   const [isHeaderEditable, setIsHeaderEditable] = useState<boolean>(false)
+  const { postCombination } = useApi()
 
   // On first render with products, set enabledProducts from saved combinations
   useEffect(() => {
@@ -93,7 +92,7 @@ export const CombinationCard = ({
       setTotalDensity(Math.round(newDensity * 10) / 10)
     }
 
-    CombinationAPI.postCombinationApi(token, Object.values(combination.values))
+    postCombination(Object.values(combination.values))
       .then((response) => {
         const newBridge: Bridge = {
           ...bridge,

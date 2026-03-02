@@ -1,11 +1,8 @@
 import { Button, CircularProgress, Dialog, Icon } from '@equinor/eds-core-react'
-import { useContext, useState } from 'react'
-
 import { refresh } from '@equinor/eds-icons'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import type { IAuthContext } from 'react-oauth2-code-pkce'
+import { useState } from 'react'
 import styled from 'styled-components'
-import { SyncAPI } from '../../Api'
+import { useApi } from '../../lib/hooks/useApi'
 import { ErrorToast } from '../Common/Toast'
 
 const ButtonWrapper = styled.div`
@@ -17,10 +14,10 @@ const ButtonWrapper = styled.div`
 export const RefreshButton = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { token }: IAuthContext = useContext(AuthContext)
+  const { postSync } = useApi()
 
   const syncSharePoint = () => {
-    SyncAPI.postSyncApi(token)
+    postSync()
       .then(() => {
         setLoading(false)
         window.location.reload()

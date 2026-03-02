@@ -1,12 +1,10 @@
 import { useAppInsightsContext } from '@microsoft/applicationinsights-react-js'
-import { type ReactElement, useContext, useEffect, useState } from 'react'
-import type { IAuthContext } from 'react-oauth2-code-pkce'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { type ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ProductsAPI } from '../Api'
 import { ErrorToast } from '../Components/Common/Toast'
 import Body from '../Components/MainBody'
 import Navbar from '../Components/Navbar/Navbar'
+import { useApi } from '../lib/hooks/useApi'
 import type { Products } from '../Types'
 
 const BodyWrapper = styled.div`
@@ -19,9 +17,8 @@ const BodyWrapper = styled.div`
 
 export default (): ReactElement => {
   const [products, setProducts] = useState<Products>({})
-  const { token }: IAuthContext = useContext(AuthContext)
-
   const appInsights = useAppInsightsContext()
+  const { getProducts } = useApi()
 
   useEffect(() => {
     appInsights.trackEvent({ name: 'Main page load', properties: {} })
@@ -29,7 +26,7 @@ export default (): ReactElement => {
 
   // On first render, fetch all products
   useEffect(() => {
-    ProductsAPI.getProductsApi(token)
+    getProducts()
       .then((response) => {
         setProducts(response.data)
       })
