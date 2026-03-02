@@ -61,7 +61,7 @@ def sync_sharepoint():
         sync_all()
     except Exception as error:
         traceback.print_exc()
-        return Response(str(error), 500)
+        return Response("An internal error occurred. Please contact support.", 500)
     return "ok"
 
 
