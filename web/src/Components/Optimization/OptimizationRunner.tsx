@@ -4,7 +4,7 @@ import { type ReactElement, useContext, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import { OptimizerAPI } from '../../Api'
-import { ParticleSizeContext } from '../../Context'
+import { useParticleSizeContext } from '../../lib/contexts/particle-size'
 import useLocalStorage from '../../lib/hooks/useLocalStorage'
 import type { OptimizationData, Product, Products } from '../../Types'
 import EditProducts from '../Common/EditProducts'
@@ -58,7 +58,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
     mass: 5,
     products: 5,
   })
-  const particleRange = useContext(ParticleSizeContext)
+  const { range, from, to, setFrom, setTo } = useParticleSizeContext()
 
   const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
 
@@ -68,7 +68,7 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
-      particleRange: [particleRange.from, particleRange.to],
+      particleRange: range,
       maxProducts: maxProducts,
       value: value,
       option: mode,
@@ -246,42 +246,38 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
                         <Typography variant="body_short">Particle sizes to consider</Typography>
                       </Tooltip>
                     </div>
-                    <ParticleSizeContext.Consumer>
-                      {({ from, to, setRange }) => (
-                        <div style={{ display: 'flex' }}>
-                          <div style={{ padding: '0 15px', width: '100px' }}>
-                            <TextField
-                              id="part-from"
-                              type="number"
-                              label="From"
-                              meta="μm"
-                              value={from.toString()}
-                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                if (event.target.value === '') setRange([0, to])
-                                const newValue = Number.parseFloat(event.target.value)
-                                if (Math.sign(newValue) >= 0) setRange([newValue, to])
-                              }}
-                              disabled={loading}
-                            />
-                          </div>
-                          <div style={{ padding: '0 15px', width: '100px' }}>
-                            <TextField
-                              id="part-to"
-                              type="number"
-                              label="To"
-                              meta="μm"
-                              value={to.toString()}
-                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                if (event.target.value === '') setRange([from, 0])
-                                const newValue = Number.parseFloat(event.target.value)
-                                if (Math.sign(newValue) >= 0) setRange([from, newValue])
-                              }}
-                              disabled={loading}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </ParticleSizeContext.Consumer>
+                    <div style={{ display: 'flex' }}>
+                      <div style={{ padding: '0 15px', width: '100px' }}>
+                        <TextField
+                          id="part-from"
+                          type="number"
+                          label="From"
+                          meta="μm"
+                          value={from.toString()}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            if (event.target.value === '') setFrom(0)
+                            const newValue = Number.parseFloat(event.target.value)
+                            if (Math.sign(newValue) >= 0) setFrom(newValue)
+                          }}
+                          disabled={loading}
+                        />
+                      </div>
+                      <div style={{ padding: '0 15px', width: '100px' }}>
+                        <TextField
+                          id="part-to"
+                          type="number"
+                          label="To"
+                          meta="μm"
+                          value={to.toString()}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            if (event.target.value === '') setTo(0)
+                            const newValue = Number.parseFloat(event.target.value)
+                            if (Math.sign(newValue) >= 0) setTo(newValue)
+                          }}
+                          disabled={loading}
+                        />
+                      </div>
+                    </div>
                   </div>
                   <WeightOptions weight={weight} setWeight={setWeight} />
                 </div>

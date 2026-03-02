@@ -1,5 +1,5 @@
 import { Typography } from '@equinor/eds-core-react'
-import { type ReactElement, useContext, useEffect, useState } from 'react'
+import { type ReactElement, useEffect, useState } from 'react'
 import {
   Area,
   AreaChart,
@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { ParticleSizeContext } from '../../../Context'
+import { useParticleSizeContext } from '../../../lib/contexts/particle-size'
 import type { Bridge, GraphData } from '../../../Types'
 import { bridgeColor, graphColors } from '../styles'
 
@@ -53,16 +53,16 @@ const CustomTooltip = ({ active, payload, label }: TooltipContentProps<number, s
 export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBridge = true }: BridgeGraphProps) {
   const [particleFromPercentage, setParticleFromPercentage] = useState<string>('0%')
   const [particleToPercentage, setParticleToPercentage] = useState<string>('100%')
-  const particleRange = useContext(ParticleSizeContext)
+  const { from, to } = useParticleSizeContext()
 
   useEffect(() => {
-    setParticleFromPercentage(particleSizeOffsetPercentage(particleRange.from))
-    if (particleRange.to > sizeFractions[sizeFractions.length - 1]) {
+    setParticleFromPercentage(particleSizeOffsetPercentage(from))
+    if (to > sizeFractions[sizeFractions.length - 1]) {
       setParticleToPercentage(`${sizeFractions[sizeFractions.length - 1]}%`)
     } else {
-      setParticleToPercentage(particleSizeOffsetPercentage(particleRange.to))
+      setParticleToPercentage(particleSizeOffsetPercentage(to))
     }
-  }, [particleRange, sizeFractions])
+  }, [from, to, sizeFractions])
 
   function particleSizeOffsetPercentage(offsetSize: number) {
     const index = sizeFractions.findIndex((size) => size > offsetSize)
