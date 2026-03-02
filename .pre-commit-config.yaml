@@ -27,5 +27,5 @@ repos:
       - id: biome-check
         name: "Lint: biome (js/ts)"
         files: ^web/.*\.(ts|tsx|js|css|html|json)$
-        additional_dependencies: ["@biomejs/biome@1.9.4"]
-        args: ["--config-path", "web"]
+        additional_dependencies: ["@biomejs/biome@2.4.4"]
+        args: ["--config-path", "."]

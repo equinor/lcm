@@ -63,7 +63,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
       case BridgingOption.CERAMIC_DISCS:
         setMode(BridgingOption.CERAMIC_DISCS)
         setUnit('microns')
-        setValue(Number.parseInt(CeramicDiscsValues[0]))
+        setValue(Number(CeramicDiscsValues[0]))
         break
       default:
         return
@@ -71,7 +71,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   }
 
   function onBridgeValueChange(value: string) {
-    const newBridgeValue = Number.parseInt(value)
+    const newBridgeValue = Number(value)
     // TODO: Setting invalid values on parent is not good
     setValue(newBridgeValue)
 
