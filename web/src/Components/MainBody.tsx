@@ -1,17 +1,17 @@
 import { Accordion, Button, Icon, Typography } from '@equinor/eds-core-react'
 import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
-import { type ReactElement, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import { colors } from '../lib/constants/colors'
 import { BridgingOption } from '../lib/enums/BridgingOption'
 import { useApi } from '../lib/hooks/useApi'
-import useLocalStorage from '../lib/hooks/useLocalStorage'
+import { useLocalStorage } from '../lib/hooks/useLocalStorage'
 import type { Bridge, Combination, Combinations, Products } from '../lib/types'
-import BridgeContainer from './Bridging/BridgeContainer'
-import CardContainer from './Combinations/CardContainer'
+import { BridgeContainer } from './Bridging/BridgeContainer'
+import { CardContainer } from './Combinations/CardContainer'
 import { ErrorToast } from './Common/Toast'
-import OptimizationContainer from './Optimization/OptimizationContainer'
+import { OptimizationContainer } from './Optimization/OptimizationContainer'
 
 const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
@@ -21,7 +21,7 @@ export interface MainBodyProps {
   products: Products
 }
 
-export default ({ products }: MainBodyProps): ReactElement => {
+export function MainBody({ products }: MainBodyProps) {
   const [mode, setMode] = useState<BridgingOption>(BridgingOption.PERMEABILITY)
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useLocalStorage<Combinations>('combinations', {})

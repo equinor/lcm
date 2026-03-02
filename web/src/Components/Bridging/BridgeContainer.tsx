@@ -5,8 +5,8 @@ import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, GraphData } from '../../lib/types'
 import { findGraphData } from '../../lib/utils/findGraphData'
 import { ErrorToast } from '../Common/Toast'
-import BridgeGraph from './Graphs/BridgeGraph'
-import InputContainer from './InputContainer'
+import { BridgeGraph } from './Graphs/BridgeGraph'
+import { InputContainer } from './InputContainer'
 import { differentiateArrayObjects } from './utils'
 
 type BridgeContainerProps = {
@@ -17,7 +17,7 @@ type BridgeContainerProps = {
   setValue: (value: number) => void
 }
 
-export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContainerProps) => {
+export function BridgeContainer({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContainerProps) {
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState<string>()

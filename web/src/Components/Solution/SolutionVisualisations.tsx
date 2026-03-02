@@ -1,8 +1,8 @@
 import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import type { OptimizationData, Products } from '../../lib/types'
-import PerformanceRadar from './PerformanceRadar'
-import SolutionBarChart from './SolutionBarChart'
+import { PerformanceRadar } from './PerformanceRadar'
+import { SolutionBarChart } from './SolutionBarChart'
 
 const Grid = styled.div`
   height: auto;
@@ -18,7 +18,7 @@ interface SolutionVisualisationsProps {
   products: Products
 }
 
-export const SolutionVisualisations = ({ optimizationData, products }: SolutionVisualisationsProps) => {
+export function SolutionVisualisations({ optimizationData, products }: SolutionVisualisationsProps) {
   return (
     <div
       style={{
@@ -47,5 +47,3 @@ export const SolutionVisualisations = ({ optimizationData, products }: SolutionV
     </div>
   )
 }
-
-export default SolutionVisualisations

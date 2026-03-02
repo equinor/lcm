@@ -24,7 +24,7 @@ const InputLabels: { [key in BridgingOption]: string } = {
   [BridgingOption.CERAMIC_DISCS]: 'Disk Size',
 }
 
-const InputContainer = ({
+export function InputContainer({
   mode,
   onBridgeOptionChange,
   onBridgeValueChange,
@@ -33,7 +33,7 @@ const InputContainer = ({
   bridgeValue,
   bridgeValueVariant,
   bridgeValueHelperText,
-}: InputContainerProps) => {
+}: InputContainerProps) {
   return (
     <div
       style={{
@@ -166,5 +166,3 @@ const InputContainer = ({
     </div>
   )
 }
-
-export default InputContainer

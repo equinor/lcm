@@ -1,6 +1,6 @@
 import type { OptimizationData, Products } from '../../lib/types'
-import SolutionData from '../Solution/SolutionData'
-import SolutionVisualisations from '../Solution/SolutionVisualisations'
+import { SolutionData } from '../Solution/SolutionData'
+import { SolutionVisualisations } from '../Solution/SolutionVisualisations'
 
 interface OptimizationResultProps {
   products: Products
@@ -9,7 +9,7 @@ interface OptimizationResultProps {
   optimizationData: OptimizationData | undefined
 }
 
-export const OptimizationResult = ({ products, optimizationData }: OptimizationResultProps) => {
+export function OptimizationResult({ products, optimizationData }: OptimizationResultProps) {
   if (!optimizationData) return null
 
   return (
@@ -21,5 +21,3 @@ export const OptimizationResult = ({ products, optimizationData }: OptimizationR
     </div>
   )
 }
-
-export default OptimizationResult

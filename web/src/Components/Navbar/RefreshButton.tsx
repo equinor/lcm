@@ -11,7 +11,7 @@ const ButtonWrapper = styled.div`
   width: 100%;
 `
 
-export const RefreshButton = () => {
+export function RefreshButton() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const { synchronizeSharepoint: postSync } = useApi()
@@ -79,5 +79,3 @@ export const RefreshButton = () => {
     </>
   )
 }
-
-export default RefreshButton

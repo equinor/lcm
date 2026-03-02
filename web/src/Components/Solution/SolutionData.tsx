@@ -32,7 +32,7 @@ interface DensitiesProps {
   productResults: Array<ProductResult>
 }
 
-const Densities = ({ products, productResults }: DensitiesProps): ReactElement => {
+function Densities({ products, productResults }: DensitiesProps): ReactElement {
   const getSumOfDensities = () => {
     let sum = 0
     Object.values(productResults).forEach((result) => {
@@ -64,7 +64,7 @@ const Densities = ({ products, productResults }: DensitiesProps): ReactElement =
   )
 }
 
-const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
+export function SolutionData({ products, optimizationData }: SolutionDataProps) {
   const { tokenData } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
   const { createReport: postReport } = useApi()
@@ -135,5 +135,3 @@ const SolutionData = ({ products, optimizationData }: SolutionDataProps) => {
     </div>
   )
 }
-
-export default SolutionData

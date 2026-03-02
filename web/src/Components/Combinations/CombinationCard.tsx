@@ -6,10 +6,10 @@ import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, Combination, GraphData, Product, Products } from '../../lib/types'
 import { findDValue } from '../../lib/utils/findDValue'
 import { findGraphData } from '../../lib/utils/findGraphData'
-import EditProducts from '../Common/EditProducts'
+import { EditProducts } from '../Common/EditProducts'
 import { ErrorToast } from '../Common/Toast'
 import { Card } from './CardContainer'
-import CombinationTable from './CombinationTable'
+import { CombinationTable } from './CombinationTable'
 
 const CardHeader = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ interface CombinationCardProps {
   sizeFractions: number[]
 }
 
-export const CombinationCard = ({
+export function CombinationCard({
   sacks,
   allProducts,
   combination,
@@ -53,7 +53,7 @@ export const CombinationCard = ({
   removeBridge,
   enabledPlot,
   sizeFractions,
-}: CombinationCardProps) => {
+}: CombinationCardProps) {
   const [combinationName, setCombinationName] = useState<string>(combination.name)
   const [totalMass, setTotalMass] = useState<number>(0)
   const [totalDensity, setTotalDensity] = useState<number>(0)
@@ -236,5 +236,3 @@ export const CombinationCard = ({
     </Card>
   )
 }
-
-export default CombinationCard

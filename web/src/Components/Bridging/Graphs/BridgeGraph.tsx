@@ -135,5 +135,3 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
     </div>
   )
 }
-
-export default BridgeGraph

@@ -1,7 +1,7 @@
 import { Button, Dialog } from '@equinor/eds-core-react'
 import { type ReactElement, useEffect, useState } from 'react'
 import type { Products } from '../../lib/types'
-import SelectProducts from './SelectProducts'
+import { SelectProducts } from './SelectProducts'
 
 interface AddProductsProps {
   allProducts: Products
@@ -9,7 +9,7 @@ interface AddProductsProps {
   setEnabledProducts: (products: Products) => void
 }
 
-export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts }: AddProductsProps): ReactElement => {
+export function EditProducts({ allProducts, enabledProducts, setEnabledProducts }: AddProductsProps): ReactElement {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [selectedProducts, setSelectedProducts] = useState<Products>(enabledProducts)
 
@@ -54,5 +54,3 @@ export const EditProducts = ({ allProducts, enabledProducts, setEnabledProducts 
     </>
   )
 }
-
-export default EditProducts

@@ -1,7 +1,7 @@
-import { type ReactElement, useState } from 'react'
+import { useState } from 'react'
 import type { Combination, OptimizationData, Products, ProductsInCombination } from '../../lib/types'
-import OptimizationResult from './OptimizationResult'
-import OptimizationRunner from './OptimizationRunner'
+import { OptimizationResult } from './OptimizationResult'
+import { OptimizationRunner } from './OptimizationRunner'
 
 interface OptimizationContainerProps {
   products: Products
@@ -15,12 +15,12 @@ export interface ProductResult {
   value: number
 }
 
-export const OptimizationContainer = ({
+export function OptimizationContainer({
   products,
   mode,
   addCombinationsFromOptimization,
   value,
-}: OptimizationContainerProps): ReactElement => {
+}: OptimizationContainerProps) {
   const [densityOptimizationData, setDensityOptimizationData] = useState<OptimizationData>()
 
   const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
@@ -88,5 +88,3 @@ export const OptimizationContainer = ({
     </div>
   )
 }
-
-export default OptimizationContainer

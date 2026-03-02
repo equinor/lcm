@@ -1,8 +1,7 @@
 import { Checkbox, Chip, Switch, Typography } from '@equinor/eds-core-react'
-import type { ReactElement } from 'react'
 
 import styled from 'styled-components'
-import useLocalStorage from '../../lib/hooks/useLocalStorage'
+import { useLocalStorage } from '../../lib/hooks/useLocalStorage'
 import type { Product, Products } from '../../lib/types'
 import { sortProducts } from '../../lib/utils/sortProducts'
 
@@ -30,11 +29,7 @@ interface SelectProductsProps {
 
 type ChipBoxStates = 'default' | 'active'
 
-export const SelectProducts = ({
-  allProducts,
-  enabledProducts,
-  setEnabledProducts,
-}: SelectProductsProps): ReactElement => {
+export function SelectProducts({ allProducts, enabledProducts, setEnabledProducts }: SelectProductsProps) {
   const productList: Array<Product> = sortProducts(Object.values(allProducts))
   // Create set to only keep unique suppliers, then back to array to map them.
 
@@ -167,5 +162,3 @@ export const SelectProducts = ({
     </>
   )
 }
-
-export default SelectProducts
