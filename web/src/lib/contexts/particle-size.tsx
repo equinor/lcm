@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-interface ParticleSizeContextType {
+type ParticleSizeContextType = {
   from: number
   to: number
   range: [number, number]

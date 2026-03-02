@@ -3,14 +3,14 @@ import type { Combination, OptimizationData, Products, ProductsInCombination } f
 import { OptimizationResult } from './OptimizationResult'
 import { OptimizationRunner } from './OptimizationRunner'
 
-interface OptimizationContainerProps {
+type OptimizationContainerProps = {
   products: Products
   addCombinationsFromOptimization: (sackCombination: Combination, densityCombination: Combination) => void
   mode: string
   value: number
 }
 
-export interface ProductResult {
+export type ProductResult = {
   id: string
   value: number
 }

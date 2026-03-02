@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'rec
 import type { OptimizationData, Products } from '../../lib/types'
 import type { ProductResult } from '../Optimization/OptimizationContainer'
 
-interface CustomizedAxisTickProps {
+type CustomizedAxisTickProps = {
   x: number
   y: number
   payload: { value: number }
@@ -23,7 +23,7 @@ class CustomizedAxisTick extends PureComponent<CustomizedAxisTickProps> {
   }
 }
 
-interface SolutionBarChartProps {
+type SolutionBarChartProps = {
   products: Products
   optimizationData: OptimizationData
 }

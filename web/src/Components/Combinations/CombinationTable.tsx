@@ -20,7 +20,7 @@ function setPercentages(newValues: ProductsInCombination, allProducts: Products)
   return newValues
 }
 
-interface CombinationTableProps {
+type CombinationTableProps = {
   allProducts: Products
   sacks: boolean
   updateCombination: (c: Combination) => void

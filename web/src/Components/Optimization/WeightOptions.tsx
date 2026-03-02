@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   border-radius: 10px;
 `
 
-export interface Weight {
+export type Weight = {
   bridge: number
   mass: number
   products: number
@@ -25,7 +25,7 @@ export enum Environmental {
   BLACK = 'BLACK',
 }
 
-interface WeightOptionsProps {
+type WeightOptionsProps = {
   weight: Weight
   setWeight: (weight: Weight) => void
 }

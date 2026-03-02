@@ -17,7 +17,7 @@ const TooltipWrapper = styled.div`
   align-items: center;
 `
 
-interface TooltipProps {
+type TooltipProps = {
   text: string
   children: ReactElement
 }

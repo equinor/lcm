@@ -2,7 +2,7 @@ import type { OptimizationData, Products } from '../../lib/types'
 import { SolutionData } from '../Solution/SolutionData'
 import { SolutionVisualisations } from '../Solution/SolutionVisualisations'
 
-interface OptimizationResultProps {
+type OptimizationResultProps = {
   products: Products
   mode: string
   value: number

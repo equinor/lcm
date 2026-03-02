@@ -13,7 +13,7 @@ const Grid = styled.div`
   align-items: center;
 `
 
-interface SolutionVisualisationsProps {
+type SolutionVisualisationsProps = {
   optimizationData: OptimizationData
   products: Products
 }
