@@ -2,9 +2,9 @@ import { Checkbox, Chip, Switch, Typography } from '@equinor/eds-core-react'
 import type { ReactElement } from 'react'
 
 import styled from 'styled-components'
-import useLocalStorage from '../../Hooks'
 import type { Product, Products } from '../../Types'
 import { sortProducts } from '../../Utils'
+import useLocalStorage from '../../lib/hooks/useLocalStorage'
 
 const ChipBox = styled.div`
   display: flex;
