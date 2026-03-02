@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
-import type { OptimizationData, Products } from '../../Types'
+import type { OptimizationData, Products } from '../../lib/types'
 import type { ProductResult } from '../Optimization/OptimizationContainer'
 
 interface CustomizedAxisTickProps {

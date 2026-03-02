@@ -12,7 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useParticleSizeContext } from '../../../lib/contexts/particle-size'
-import type { Bridge, GraphData } from '../../../Types'
+import type { Bridge, GraphData } from '../../../lib/types'
 import { bridgeColor, graphColors } from '../styles'
 
 type BridgeGraphProps = {

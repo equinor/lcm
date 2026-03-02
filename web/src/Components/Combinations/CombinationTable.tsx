@@ -1,6 +1,6 @@
 import { TextField } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
-import type { Combination, Products, ProductsInCombination } from '../../Types'
+import type { Combination, Products, ProductsInCombination } from '../../lib/types'
 import { CombinationTableHeader, CombinationTableValues } from './CardContainer'
 
 function setPercentages(newValues: ProductsInCombination, allProducts: Products): ProductsInCombination {

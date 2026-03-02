@@ -1,6 +1,6 @@
 import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import type { OptimizationData, Products } from '../../Types'
+import type { OptimizationData, Products } from '../../lib/types'
 import PerformanceRadar from './PerformanceRadar'
 import SolutionBarChart from './SolutionBarChart'
 

@@ -5,7 +5,7 @@ import { ErrorToast } from '../Components/Common/Toast'
 import Body from '../Components/MainBody'
 import Navbar from '../Components/Navbar/Navbar'
 import { useApi } from '../lib/hooks/useApi'
-import type { Products } from '../Types'
+import type { Products } from '../lib/types'
 
 const BodyWrapper = styled.div`
   display: flex;

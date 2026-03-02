@@ -2,7 +2,7 @@ import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/ed
 import { ceramicDiscSizes } from '../../lib/constants/ceramicDiscSizes'
 import { colors } from '../../lib/constants/colors'
 import { BridgingOption } from '../../lib/enums/BridgingOption'
-import type { GraphData } from '../../Types'
+import type { GraphData } from '../../lib/types'
 import { findDValue } from '../../Utils'
 import { InputWrapper, RadioWrapper } from './styles'
 

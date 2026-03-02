@@ -1,4 +1,4 @@
-import type { Bridge, GraphData, Product } from './Types'
+import type { Bridge, GraphData, Product } from './lib/types'
 
 export function sortProducts(products: Array<Product>): Array<Product> {
   return products.sort((a, b) => {
