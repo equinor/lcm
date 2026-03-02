@@ -3,7 +3,7 @@ from flask import Response
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer
 from classes.product import Product
-from controllers.products import products_get
+from controllers.products import retrieve_products
 
 
 def optimizer_request_handler(
@@ -37,7 +37,7 @@ def optimizer_request_handler(
 
     print(f"Started optimization request with {int_iterations} maximum iterations...")
     bridge = theoretical_bridge(option, value)
-    selected_products = [p for p in products_get().values() if p["id"] in products]
+    selected_products = [p for p in retrieve_products().values() if p["id"] in products]
     if len(selected_products) < 2:
         return Response("Can not run the optimizer with less than two products", 400)
 

@@ -6,7 +6,7 @@ from matplotlib.ticker import ScalarFormatter
 
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative, theoretical_bridge
 from classes.product import Product
-from controllers.products import products_get
+from controllers.products import retrieve_products
 
 
 def bridge_plot(products: dict, mode, value) -> str:
@@ -28,7 +28,7 @@ def bridge_plot(products: dict, mode, value) -> str:
         bridgeplot.axes.set_xlim((0.01, 10000))
 
     products_class = []
-    all_products = products_get()
+    all_products = retrieve_products()
     for id, values in products.items():
         products_class.append(
             Product(product_id=id, share=(values["percentage"] / 100), cumulative=all_products[id]["cumulative"])

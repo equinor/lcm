@@ -41,7 +41,9 @@ def fraction_interpolator(x: list[float], y: list[float], z: list[float]) -> lis
 def from_csv_to_csv():
     with open("test_data/interpolate_input.csv") as csvfile:
         reader = csv.DictReader(csvfile)
-        fields_copy = copy(reader.fieldnames)
+        if reader.fieldnames is None:
+            raise ValueError("CSV file must have at least one field")
+        fields_copy = list(copy(reader.fieldnames))
         fields_copy.pop(0)
         products = {name: [] for name in fields_copy}
         a_x = []

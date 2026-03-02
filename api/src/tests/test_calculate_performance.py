@@ -133,6 +133,7 @@ class CalcPerfTest(unittest.TestCase):
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
+            products=[],
             max_products=products_goal,
             density_goal=density_goal,
             particle_range=particle_range,
@@ -249,6 +250,7 @@ class CalcPerfTest(unittest.TestCase):
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
+            products=[],
             max_products=products_goal,
             density_goal=density_goal,
             particle_range=particle_range,
@@ -365,6 +367,7 @@ class CalcPerfTest(unittest.TestCase):
 
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
+            products=[],
             max_products=products_goal,
             density_goal=density_goal,
             particle_range=particle_range,
@@ -378,6 +381,7 @@ class CalcPerfTest(unittest.TestCase):
         particle_range = (1.01, 100.0)
         performance = Optimizer(
             bridge=theoretical_bridge(BridgeOption.PERMEABILITY, 500),
+            products=[],
             max_products=products_goal,
             density_goal=density_goal,
             particle_range=particle_range,
