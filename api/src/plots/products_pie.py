@@ -32,7 +32,7 @@ def products_pie(products: dict) -> str:
     fig, ax = plt.subplots()
     ax.set_title("Product distribution in blend")
 
-    wedges, text, auto_texts = ax.pie(
+    wedges, _text, _auto_texts = ax.pie(
         product_values,
         autopct="%1.1f%%",
         startangle=90,

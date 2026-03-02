@@ -96,7 +96,7 @@ class Optimizer:
             id_list = [p["id"] for p in self.products]
 
             for _ in range(self.POPULATION_SIZE):
-                combo_dict = {id: 0 for id in id_list}
+                combo_dict = dict.fromkeys(id_list, 0)
                 used_id_list = []
 
                 for _ in range(self.max_products):
@@ -180,7 +180,7 @@ class Optimizer:
             score, exp_bridge = self.fitness_score(pickle.dumps(combination))
             results.append({"score": score, "combination": combination, "bridge": exp_bridge})
 
-        results.sort(key=lambda r: (r["score"]))
+        results.sort(key=lambda r: r["score"])
         return results[0]["score"], results[0]["combination"], results[0]["bridge"]
 
     def crossover(self, parents, children):

@@ -50,7 +50,7 @@ src = ["src"]
 target-version = "py310"
 line-length = 120  # This is the prefered line-length. ruff will _try_ to make this
 
-select = [
+lint.select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "F",  # pyflakes
@@ -62,7 +62,7 @@ select = [
     "RUF", # ruff specific rules
 ]
 
-ignore = [
+lint.ignore = [
     "W191", # conflict with ruff formatter
     "B008",  # do not perform function calls in argument defaults
     "E501",  # line too long (ruff formater is doing the best it can. Fix them yourself if you dont like the line length)

@@ -1,34 +1,32 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-    - id: check-ast
-      language_version: python3.12
-    - id: check-merge-conflict
-    - id: check-json
-    - id: check-yaml
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-ast
+        language_version: python3.12
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.15.4"
+    hooks:
+      - id: ruff-format
+        name: Code formatting
+        files: ^api/.*\.py$
 
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 'v0.9.7'
-  hooks:
-    - id: ruff-format
-      name: Code formatting
-      files: ^api/.*\.py$
+      - id: ruff
+        name: Code linting
+        files: ^api/.*\.py$
+        args:
+          - --fix
+          - --unsafe-fixes
 
-    - id: ruff
-      name: Code linting
-      files: ^api/.*\.py$
-      args:
-        - --fix
-        - --unsafe-fixes
-
-
-- repo: https://github.com/biomejs/pre-commit
-  rev: "v0.6.1"
-  hooks:
-    - id: biome-check
-      name: "Lint: biome (js/ts)"
-      files: ^web/.*\.(ts|tsx|js|css|html|json)$
-      additional_dependencies: ["@biomejs/biome@1.9.4"]
-      args: ["--config-path", "web"]
+  - repo: https://github.com/biomejs/pre-commit
+    rev: "v2.4.4"
+    hooks:
+      - id: biome-check
+        name: "Lint: biome (js/ts)"
+        files: ^web/.*\.(ts|tsx|js|css|html|json)$
+        additional_dependencies: ["@biomejs/biome@1.9.4"]
+        args: ["--config-path", "web"]
