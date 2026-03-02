@@ -2,7 +2,7 @@ import { Tooltip as EDSTooltip, Icon } from '@equinor/eds-core-react'
 import { help_outline } from '@equinor/eds-icons'
 import type { ReactElement } from 'react'
 import styled from 'styled-components'
-import { colors } from '../../colors'
+import { colors } from '../../lib/constants/colors'
 
 const Wrapper = styled.div`
   justify-content: center;
