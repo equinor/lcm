@@ -30,12 +30,12 @@ type WeightOptionsProps = {
   setWeight: (weight: Weight) => void
 }
 
-export const WeightOptions = ({ weight, setWeight }: WeightOptionsProps): ReactElement => {
+export function WeightOptions({ weight, setWeight }: WeightOptionsProps): ReactElement {
   const { bridge, mass, products } = weight
 
   // after a recent update, the Slider component from equinor/eds is meant to be used for a range of numbers.
   // This function lets us use the Slider component for a single number instead
-  const getSliderValue = (value: number | number[]): number => {
+  function getSliderValue(value: number | number[]): number {
     if (typeof value === 'number') {
       return value
     }

@@ -22,7 +22,7 @@ type TooltipProps = {
   children: ReactElement
 }
 
-export const Tooltip = ({ text, children }: TooltipProps): ReactElement => {
+export function Tooltip({ text, children }: TooltipProps): ReactElement {
   return (
     <TooltipWrapper>
       {children}

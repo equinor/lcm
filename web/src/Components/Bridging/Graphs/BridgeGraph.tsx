@@ -23,7 +23,7 @@ type BridgeGraphProps = {
   showBridge?: boolean
 }
 
-const CustomTooltip = ({ active, payload, label }: TooltipContentProps<number, string>): ReactElement | false => {
+function CustomTooltip({ active, payload, label }: TooltipContentProps<number, string>): ReactElement | false {
   if (active && payload && payload.length) {
     return (
       <div

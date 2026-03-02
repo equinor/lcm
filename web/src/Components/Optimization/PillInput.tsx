@@ -29,7 +29,7 @@ export function PillInput({ pill, setPill, isLoading, setInvalidInput }: PillInp
     } else setInvalidInput(false)
   }, [invalidDensity, invalidVolume])
 
-  const handleChange = (type: string, value: string) => {
+  function handleChange(type: string, value: string) {
     let newValue = 0
     if (value !== '') newValue = Number(value)
 

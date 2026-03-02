@@ -23,7 +23,7 @@ export function OptimizationContainer({
 }: OptimizationContainerProps) {
   const [densityOptimizationData, setDensityOptimizationData] = useState<OptimizationData>()
 
-  const convertDensityOptimizationToSacks = (densityOptimizationData: OptimizationData): ProductsInCombination => {
+  function convertDensityOptimizationToSacks(densityOptimizationData: OptimizationData): ProductsInCombination {
     let sackProducts: ProductsInCombination = {}
     for (const product of Object.values(densityOptimizationData.products)) {
       const SACK_KG: number = 25
@@ -48,7 +48,7 @@ export function OptimizationContainer({
     return sackProducts
   }
 
-  const handleUpdate = (densityOptimizationData: OptimizationData) => {
+  function handleUpdate(densityOptimizationData: OptimizationData) {
     if (Object.keys(densityOptimizationData.products).length === 0) {
       alert('Could not find a solution. Try changing some parameters')
       return
