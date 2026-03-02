@@ -11,9 +11,3 @@ export const ParticleSizeContext = createContext<ParticleRange>({
   to: 1000,
   setRange: () => {},
 })
-
-export interface User {
-  token: string
-  email: string
-  name: string
-}
