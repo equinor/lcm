@@ -1,8 +1,8 @@
 import { NativeSelect, Radio, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
 import { BridgingOption, CeramicDiscsValues } from '../../Enums'
+import { colors } from '../../lib/constants/colors'
 import type { GraphData } from '../../Types'
 import { findDValue } from '../../Utils'
-import { colors } from '../../colors'
 import { InputWrapper, RadioWrapper } from './styles'
 
 type InputContainerProps = {
