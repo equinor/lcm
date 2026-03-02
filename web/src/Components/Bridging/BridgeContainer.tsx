@@ -1,4 +1,3 @@
-import type { Variants } from '@equinor/eds-core-react/dist/types/components/types'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { FractionsAPI } from '../../Api'
@@ -22,7 +21,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
   const [sizeFractions, setSizeFractions] = useState([])
   const [unit, setUnit] = useState('mD')
   const [bridgeValueHelperText, setBridgeValueHelperText] = useState<string>()
-  const [bridgeValueVariant, setBridgeValueVariant] = useState<Variants>()
+  const [bridgeValueVariant, setBridgeValueVariant] = useState<'error' | undefined>()
   const [optimalBridgeGraphData, setOptimalBridgeGraphData] = useState<GraphData[]>([])
   const [volumeData, setVolumeData] = useState<GraphData[]>([])
   const [cumulativeVolumeData, setCumulativeVolumeData] = useState<GraphData[]>([])

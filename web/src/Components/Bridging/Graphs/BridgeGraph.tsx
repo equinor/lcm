@@ -7,7 +7,7 @@ import {
   Legend,
   ResponsiveContainer,
   Tooltip,
-  type TooltipProps,
+  type TooltipContentProps,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -23,7 +23,7 @@ type BridgeGraphProps = {
   showBridge?: boolean
 }
 
-const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>): ReactElement | false => {
+const CustomTooltip = ({ active, payload, label }: TooltipContentProps<number, string>): ReactElement | false => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -114,7 +114,7 @@ export function BridgeGraph({ title, graphData, sizeFractions, bridges, showBrid
             }}
             height={70}
           />
-          <YAxis type="number" allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: '270' }} />
+          <YAxis type="number" allowDataOverflow width={75} label={{ value: 'Volume (%)', angle: 270 }} />
           <Tooltip content={CustomTooltip} />
           <Legend verticalAlign="bottom" align="center" height={legendHeight} />
           {Object.entries(bridges).map(([name, _], index) => (
