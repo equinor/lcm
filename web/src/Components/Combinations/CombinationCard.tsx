@@ -31,7 +31,7 @@ const DValues = styled.div`
   padding: 3px 5px 0 10px;
 `
 
-interface CombinationCardProps {
+type CombinationCardProps = {
   sacks: boolean
   combination: Combination
   updateCombination: (c: Combination) => void

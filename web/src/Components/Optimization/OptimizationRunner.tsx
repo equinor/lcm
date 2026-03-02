@@ -16,7 +16,7 @@ import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
 import { type Pill, PillInput } from './PillInput'
 import { type Weight, WeightOptions } from './WeightOptions'
 
-interface OptimizationContainerProps {
+type OptimizationContainerProps = {
   allProducts: Products
   mode: string
   value: number

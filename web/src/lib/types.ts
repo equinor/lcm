@@ -1,6 +1,6 @@
 import type { Weight } from '../Components/Optimization/WeightOptions'
 
-export interface Product {
+export type Product = {
   id: string
   title: string
   supplier: string
@@ -13,53 +13,53 @@ export interface Product {
   cumulative: Array<number> | null
 }
 
-export interface Products {
+export type Products = {
   [id: string]: Product
 }
 
-export interface ProductValues {
+export type ProductValues = {
   id: string
   value: number
   percentage: number
 }
 
-export interface ProductsInCombination {
+export type ProductsInCombination = {
   [id: string]: ProductValues
 }
 
-export interface Combination {
+export type Combination = {
   name: string
   sacks: boolean
   values: ProductsInCombination
   cumulative: Array<number>
 }
 
-export interface Combinations {
+export type Combinations = {
   [name: string]: Combination
 }
 
-export interface Bridge {
+export type Bridge = {
   [name: string]: Array<number>
 }
 
-export interface GraphData {
+export type GraphData = {
   size: number
   [name: string]: number
 }
 
-export interface Performance {
+export type Performance = {
   bridge: number
   mass: number
   products: number
 }
 
-export interface Config {
+export type Config = {
   iterations: number
   mode: string
   value: number
 }
 
-export interface OptimizationData {
+export type OptimizationData = {
   bridgeScore: number
   chosenMass: number
   chosenVolume: number
@@ -77,7 +77,7 @@ export interface OptimizationData {
   weighting: Weight
 }
 
-export interface OptimizationApiData {
+export type OptimizationApiData = {
   request: string
   name: string
   iterations: number
@@ -91,7 +91,7 @@ export interface OptimizationApiData {
   weights: Weight
 }
 
-export interface ReportApiRequest {
+export type ReportApiRequest = {
   fitness: number
   curve: Array<number>
   pillVolume: number
@@ -106,7 +106,7 @@ export interface ReportApiRequest {
   user: string
 }
 
-export interface BridgeApiRequest {
+export type BridgeApiRequest = {
   option: string
   value: number
 }

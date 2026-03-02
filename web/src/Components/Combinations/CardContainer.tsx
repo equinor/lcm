@@ -35,7 +35,7 @@ export const CombinationTableValues = styled.div`
   padding-right: 10px;
 `
 
-interface CardContainerProps {
+type CardContainerProps = {
   sacks: boolean
   products: Products
   combinations: Combinations

@@ -6,13 +6,13 @@ enum PillInputType {
   DENSITY = 'density',
 }
 
-export interface Pill {
+export type Pill = {
   volume: number
   density: number
   mass: number
 }
 
-interface PillInputProps {
+type PillInputProps = {
   isLoading: boolean
   pill: Pill
   setPill: (pill: Pill) => void

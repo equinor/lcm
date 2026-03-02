@@ -21,7 +21,7 @@ const ProductBox = styled.div`
   padding: 0 10px 0 0;
 `
 
-interface SelectProductsProps {
+type SelectProductsProps = {
   allProducts: Products
   enabledProducts: Products
   setEnabledProducts: (p: Products) => void

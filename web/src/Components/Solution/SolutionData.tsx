@@ -22,12 +22,12 @@ const Spacer = styled.div`
   padding-bottom: 32px;
 `
 
-interface SolutionDataProps {
+type SolutionDataProps = {
   optimizationData: OptimizationData
   products: Products
 }
 
-interface DensitiesProps {
+type DensitiesProps = {
   products: Products
   productResults: Array<ProductResult>
 }
