@@ -4,16 +4,16 @@ import { type ReactElement, useState } from 'react'
 import styled from 'styled-components'
 import { useParticleSizeContext } from '../../lib/contexts/particle-size'
 import { useApi } from '../../lib/hooks/useApi'
-import useLocalStorage from '../../lib/hooks/useLocalStorage'
+import { useLocalStorage } from '../../lib/hooks/useLocalStorage'
 import type { OptimizationData, Product, Products } from '../../lib/types'
-import EditProducts from '../Common/EditProducts'
+import { EditProducts } from '../Common/EditProducts'
 import { ErrorToast } from '../Common/Toast'
 import { Tooltip } from '../Common/Tooltip'
 import BridgeFitnessFormulaImg from './FormulaPictures/BridgeFitnessFormula.png'
 import MassFitnessFormulaImg from './FormulaPictures/MassFitnessFormula.png'
 import numberOfProductsFitnessFormulaImg from './FormulaPictures/NumberOfProductsFitnessFormula.png'
 import totalFitnessFormulaImg from './FormulaPictures/TotalFitnessFormula.png'
-import PillInput, { type Pill } from './PillInput'
+import { type Pill, PillInput } from './PillInput'
 import { type Weight, WeightOptions } from './WeightOptions'
 
 interface OptimizationContainerProps {
@@ -39,7 +39,12 @@ const InputWrapper = styled.div`
   margin: 0 15px 0 0;
 `
 
-const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: OptimizationContainerProps): ReactElement => {
+export function OptimizationRunner({
+  mode,
+  value,
+  handleUpdate,
+  allProducts,
+}: OptimizationContainerProps): ReactElement {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [failedRun, setFailedRun] = useState<boolean>(false)
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
@@ -289,5 +294,3 @@ const OptimizationRunner = ({ mode, value, handleUpdate, allProducts }: Optimiza
     </Wrapper>
   )
 }
-
-export default OptimizationRunner

@@ -5,7 +5,7 @@ interface IPerformanceRadar {
   optimizationData: OptimizationData
 }
 
-export const PerformanceRadar = ({ optimizationData }: IPerformanceRadar) => {
+export function PerformanceRadar({ optimizationData }: IPerformanceRadar) {
   const performanceData = optimizationData.performance
   const graphData = [
     {
@@ -33,5 +33,3 @@ export const PerformanceRadar = ({ optimizationData }: IPerformanceRadar) => {
     </RadarChart>
   )
 }
-
-export default PerformanceRadar

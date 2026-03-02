@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, Combination, Combinations, Products } from '../../lib/types'
 import { ErrorToast } from '../Common/Toast'
-import CombinationCard from './CombinationCard'
+import { CombinationCard } from './CombinationCard'
 export const Card = styled.div`
   margin: 10px;
   padding: 10px;
@@ -47,7 +47,7 @@ interface CardContainerProps {
   bridges: Bridge
 }
 
-const createCombinationName = (sacks: boolean, combinationMap: Combinations): string => {
+function createCombinationName(sacks: boolean, combinationMap: Combinations): string {
   const combinationNames: Array<string> = Object.keys(combinationMap).map((id) => combinationMap[id].name)
 
   let i = 1
@@ -62,7 +62,7 @@ const createCombinationName = (sacks: boolean, combinationMap: Combinations): st
   return 'Error name....'
 }
 
-export const CardContainer = ({
+export function CardContainer({
   sacks,
   products,
   combinations,
@@ -72,7 +72,7 @@ export const CardContainer = ({
   addCombination,
   removeBridge,
   bridges,
-}: CardContainerProps) => {
+}: CardContainerProps) {
   const { getFractions } = useApi()
   const [sizeFractions, setSizeFractions] = useState<number[]>([])
 
@@ -128,5 +128,3 @@ export const CardContainer = ({
     </>
   )
 }
-
-export default CardContainer

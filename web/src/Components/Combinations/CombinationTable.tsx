@@ -28,13 +28,13 @@ interface CombinationTableProps {
   combinationName: string
 }
 
-export const CombinationTable = ({
+export function CombinationTable({
   allProducts,
   sacks,
   updateCombination,
   productsInCombination,
   combinationName,
-}: CombinationTableProps) => {
+}: CombinationTableProps) {
   const [values, setValues] = useState<ProductsInCombination>({})
   const alternatingColor = ['white', '#F5F5F5']
 
@@ -117,5 +117,3 @@ export const CombinationTable = ({
     </div>
   )
 }
-
-export default CombinationTable

@@ -1,9 +1,9 @@
 import { useAppInsightsContext } from '@microsoft/applicationinsights-react-js'
-import { type ReactElement, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ErrorToast } from '../Components/Common/Toast'
-import Body from '../Components/MainBody'
-import Navbar from '../Components/Navbar/Navbar'
+import { MainBody } from '../Components/MainBody'
+import { Navbar } from '../Components/Navbar/Navbar'
 import { useApi } from '../lib/hooks/useApi'
 import type { Products } from '../lib/types'
 
@@ -15,7 +15,7 @@ const BodyWrapper = styled.div`
   font-family: 'Equinor';
 `
 
-export default (): ReactElement => {
+export function Home() {
   const [products, setProducts] = useState<Products>({})
   const appInsights = useAppInsightsContext()
   const { getProducts } = useApi()
@@ -40,7 +40,7 @@ export default (): ReactElement => {
     <>
       <Navbar />
       <BodyWrapper>
-        <Body products={products} />
+        <MainBody products={products} />
       </BodyWrapper>
     </>
   )

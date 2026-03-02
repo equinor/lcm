@@ -28,7 +28,7 @@ interface SolutionBarChartProps {
   optimizationData: OptimizationData
 }
 
-export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChartProps) => {
+export function SolutionBarChart({ optimizationData, products }: SolutionBarChartProps) {
   const graphData = () => {
     return Object.values(optimizationData.products).map((productResult: ProductResult) => {
       return {
@@ -64,4 +64,3 @@ export const SolutionBarChart = ({ optimizationData, products }: SolutionBarChar
     </BarChart>
   )
 }
-export default SolutionBarChart

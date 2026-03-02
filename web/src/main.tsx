@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { AuthProvider, type TAuthConfig } from 'react-oauth2-code-pkce'
-import App from './App'
+import { App } from './App'
 
 const authConfig: TAuthConfig = {
   clientId: import.meta.env.VITE_CLIENT_ID || '',

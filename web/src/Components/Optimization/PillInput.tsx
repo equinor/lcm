@@ -19,7 +19,7 @@ interface PillInputProps {
   setInvalidInput: (value: boolean) => void
 }
 
-const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps): ReactElement => {
+export function PillInput({ pill, setPill, isLoading, setInvalidInput }: PillInputProps): ReactElement {
   const [invalidVolume, setInvalidVolume] = useState<boolean>(false)
   const [invalidDensity, setInvalidDensity] = useState<boolean>(false)
 
@@ -90,5 +90,3 @@ const PillInput = ({ pill, setPill, isLoading, setInvalidInput }: PillInputProps
     </div>
   )
 }
-
-export default PillInput

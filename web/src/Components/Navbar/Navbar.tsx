@@ -1,10 +1,10 @@
 import { Button, Icon, TopBar, Typography } from '@equinor/eds-core-react'
 import { info_circle } from '@equinor/eds-icons'
 import { ContactButton } from './ContactButton'
-import RefreshButton from './RefreshButton'
+import { RefreshButton } from './RefreshButton'
 import { StyledLink } from './styles'
 
-const Navbar = () => {
+export function Navbar() {
   return (
     <TopBar>
       <TopBar.Header>
@@ -39,5 +39,3 @@ const Navbar = () => {
     </TopBar>
   )
 }
-
-export default Navbar
