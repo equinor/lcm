@@ -1,6 +1,5 @@
-import unittest
 from pathlib import Path
-from unittest import skip
+from unittest import TestCase, skip
 
 from controllers.report import create_report
 
@@ -328,7 +327,7 @@ request = {
 
 
 @skip("No time to fix")
-class ReportTest(unittest.TestCase):
+class ReportTest(TestCase):
     @staticmethod
     def test_create_report():
         result = Path(create_report(request, bridge=False))
