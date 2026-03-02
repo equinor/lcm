@@ -4,7 +4,7 @@ import { type ReactElement, useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import { useApi } from '../../lib/hooks/useApi'
-import type { OptimizationData, Products } from '../../Types'
+import type { OptimizationData, Products } from '../../lib/types'
 import { ErrorToast } from '../Common/Toast'
 import type { ProductResult } from '../Optimization/OptimizationContainer'
 

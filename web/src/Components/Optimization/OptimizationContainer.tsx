@@ -1,5 +1,5 @@
 import { type ReactElement, useState } from 'react'
-import type { Combination, OptimizationData, Products, ProductsInCombination } from '../../Types'
+import type { Combination, OptimizationData, Products, ProductsInCombination } from '../../lib/types'
 import OptimizationResult from './OptimizationResult'
 import OptimizationRunner from './OptimizationRunner'
 

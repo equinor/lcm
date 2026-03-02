@@ -1,6 +1,6 @@
 import { Button, Dialog } from '@equinor/eds-core-react'
 import { type ReactElement, useEffect, useState } from 'react'
-import type { Products } from '../../Types'
+import type { Products } from '../../lib/types'
 import SelectProducts from './SelectProducts'
 
 interface AddProductsProps {

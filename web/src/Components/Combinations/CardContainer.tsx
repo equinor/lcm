@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 import { useApi } from '../../lib/hooks/useApi'
-import type { Bridge, Combination, Combinations, Products } from '../../Types'
+import type { Bridge, Combination, Combinations, Products } from '../../lib/types'
 import { ErrorToast } from '../Common/Toast'
 import CombinationCard from './CombinationCard'
 export const Card = styled.div`

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useAuthContext } from 'react-oauth2-code-pkce'
-import type { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from '../../Types'
+import type { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from '../types'
 
 export function useApi() {
   const BASE_PATH = '/api'

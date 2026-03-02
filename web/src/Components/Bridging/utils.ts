@@ -1,4 +1,4 @@
-import type { GraphData } from '../../Types'
+import type { GraphData } from '../../lib/types'
 
 export function differentiateArrayObjects(arr: GraphData[]): GraphData[] {
   return arr.map((currentObj, index, array) => {
