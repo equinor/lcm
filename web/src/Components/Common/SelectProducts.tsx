@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import styled from 'styled-components'
 import useLocalStorage from '../../lib/hooks/useLocalStorage'
 import type { Product, Products } from '../../lib/types'
-import { sortProducts } from '../../Utils'
+import { sortProducts } from '../../lib/utils/sortProducts'
 
 const ChipBox = styled.div`
   display: flex;

@@ -3,7 +3,7 @@ import { ceramicDiscSizes } from '../../lib/constants/ceramicDiscSizes'
 import { colors } from '../../lib/constants/colors'
 import { BridgingOption } from '../../lib/enums/BridgingOption'
 import type { GraphData } from '../../lib/types'
-import { findDValue } from '../../Utils'
+import { findDValue } from '../../lib/utils/findDValue'
 import { InputWrapper, RadioWrapper } from './styles'
 
 type InputContainerProps = {
