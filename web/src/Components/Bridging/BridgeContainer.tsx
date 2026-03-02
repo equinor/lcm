@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { BridgingOption } from '../../Enums'
 import { ceramicDiscSizes } from '../../lib/constants/ceramicDiscSizes'
+import { BridgingOption } from '../../lib/enums/BridgingOption'
 import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, GraphData } from '../../Types'
 import { findGraphData } from '../../Utils'
