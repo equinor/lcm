@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { BridgingOption, CeramicDiscsValues } from '../../Enums'
+import { BridgingOption } from '../../Enums'
+import { ceramicDiscSizes } from '../../lib/constants/ceramicDiscSizes'
 import { useApi } from '../../lib/hooks/useApi'
 import type { Bridge, GraphData } from '../../Types'
 import { findGraphData } from '../../Utils'
@@ -62,7 +63,7 @@ export default ({ bridges, mode, setMode, bridgeValue, setValue }: BridgeContain
       case BridgingOption.CERAMIC_DISCS:
         setMode(BridgingOption.CERAMIC_DISCS)
         setUnit('microns')
-        setValue(Number(CeramicDiscsValues[0]))
+        setValue(Number(ceramicDiscSizes[0]))
         break
       default:
         return
