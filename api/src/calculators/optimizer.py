@@ -66,8 +66,6 @@ class Optimizer:
             children = self.execute_mutation(children)
             population = parents + children
             score, fittest_combo, experimental_bridge = self.optimal(population)
-            # for i, _ in enumerate(products):
-            #     combination_progress[i].append(list(fittest_combo.values())[i])
             score_progress.append(score)
 
         bridge_score = self.bridge_score(experimental_bridge)  # standard deviaton

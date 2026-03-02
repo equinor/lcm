@@ -22,7 +22,7 @@ def delete_all_entries_in_table(table_service, table_name):
     try:
         entities = table_service.query_entities(table_name)
     except AzureMissingResourceHttpError:
-        pass
+        print(f"Table '{table_name}' does not exist, skipping deletion")
     for t in entities:
         table_service.delete_entity(table_name, table_name, t.RowKey)
     print(f"Deleted all rows in '{table_name}' table")
