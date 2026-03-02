@@ -16,7 +16,7 @@ export function RefreshButton() {
   const [loading, setLoading] = useState<boolean>(false)
   const { synchronizeSharepoint: postSync } = useApi()
 
-  const syncSharePoint = () => {
+  function syncSharePoint() {
     postSync()
       .then(() => {
         setLoading(false)

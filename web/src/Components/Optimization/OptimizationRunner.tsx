@@ -65,7 +65,7 @@ export function OptimizationRunner({
   const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
   const { runOptimizer: postOptimizer } = useApi()
 
-  const handleOptimize = () => {
+  function handleOptimize() {
     setLoading(true)
     postOptimizer({
       request: 'OPTIMAL_MIX',

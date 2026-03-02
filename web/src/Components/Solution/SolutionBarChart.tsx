@@ -29,7 +29,7 @@ interface SolutionBarChartProps {
 }
 
 export function SolutionBarChart({ optimizationData, products }: SolutionBarChartProps) {
-  const graphData = () => {
+  function getGraphData() {
     return Object.values(optimizationData.products).map((productResult: ProductResult) => {
       return {
         name: products[productResult.id].title,
@@ -39,7 +39,7 @@ export function SolutionBarChart({ optimizationData, products }: SolutionBarChar
   }
 
   return (
-    <BarChart width={400} height={300} data={graphData()} margin={{ top: 15, right: 15 }} barSize={10}>
+    <BarChart width={400} height={300} data={getGraphData()} margin={{ top: 15, right: 15 }} barSize={10}>
       <XAxis
         dataKey="name"
         scale="point"
