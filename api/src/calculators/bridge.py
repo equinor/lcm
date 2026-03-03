@@ -4,6 +4,7 @@ from cachetools import LFUCache, cached
 
 from classes.product import Product
 from util.enums import BridgeOption
+from util.exceptions import ValidationException
 
 
 @cached(cache=LFUCache(2048))
@@ -19,7 +20,7 @@ def theoretical_bridge(mode: str, value: int) -> list[float]:
     elif mode in (BridgeOption.AVERAGE_PORESIZE, BridgeOption.CERAMIC_DISCS):
         pass
     else:
-        raise ValueError(f"Invalid bridge mode string '{mode}'")
+        raise ValidationException(f"Invalid bridge mode string '{mode}'")
 
     result = 100 * (sqrt(bridge_input) / d_value)
 

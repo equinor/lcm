@@ -7,6 +7,7 @@ from matplotlib.ticker import ScalarFormatter
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative, theoretical_bridge
 from classes.product import Product
 from use_cases.get_products import retrieve_products
+from util.exceptions import InternalErrorException
 
 
 def bridge_plot(products: dict, mode, value) -> str:
@@ -32,7 +33,7 @@ def bridge_plot(products: dict, mode, value) -> str:
     for id, values in products.items():
         product_dto = all_products[id]
         if product_dto.cumulative is None:
-            raise ValueError(f"Product {id} does not have cumulative distribution data")
+            raise InternalErrorException(f"Product {id} does not have cumulative distribution data")
         products_class.append(
             Product(product_id=id, share=(values["percentage"] / 100), cumulative=product_dto.cumulative)
         )

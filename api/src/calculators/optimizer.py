@@ -10,7 +10,7 @@ from cachetools.keys import hashkey
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
 from use_cases.get_products import ProductDTO
-from util.exceptions import ValidationException
+from util.exceptions import InternalErrorException, ValidationException
 
 
 def hash_combination(self, combination: dict[str, float]):
@@ -166,7 +166,7 @@ class Optimizer:
 
     def bridge_score(self, experimental_bridge):
         if len(self.bridge) != len(experimental_bridge):
-            raise ValueError("The experimental bridge has a different size than the theoretical")
+            raise InternalErrorException("The experimental bridge has a different size than the theoretical")
         diff_list = []
         i = 0
         for theo, blend in zip(self.bridge, experimental_bridge, strict=False):
@@ -184,7 +184,7 @@ class Optimizer:
         for p in self.products:
             if combination[p.id] > 0:
                 if p.cumulative is None:
-                    raise ValueError(f"Product {p.id} does not have cumulative distribution data")
+                    raise InternalErrorException(f"Product {p.id} does not have cumulative distribution data")
                 products.append(
                     Product(
                         product_id=p.id,
