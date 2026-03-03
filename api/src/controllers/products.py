@@ -1,6 +1,7 @@
 import json
 
 from cachetools import TTLCache, cached
+from flask import abort
 
 from config import Config
 from util.azure_table import get_service
@@ -29,7 +30,7 @@ def products_get():
         products_response[p.RowKey]["cumulative"] = cumulative
 
     if not products_response:
-        raise RuntimeError("Failed to fetch products from storage")
+        abort(500, "Failed to fetch products from storage")
 
     sorted_products = sort_products(products_response)
     return sorted_products

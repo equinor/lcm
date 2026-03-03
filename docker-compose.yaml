@@ -29,5 +29,8 @@ services:
         APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
     restart: unless-stopped
     stdin_open: true
+    environment:
+      HMR_CLIENT_PORT: ${HMR_CLIENT_PORT:-}
+      USE_POLLING: ${USE_POLLING:-false}
     volumes:
       - ./web/src:/code/src

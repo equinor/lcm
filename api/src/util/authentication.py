@@ -39,9 +39,10 @@ def decode_jwt(token):
         # If no secret provided, fallback to RSA based token signing.
         else:
             cert = get_cert(jwt.get_unverified_header(token)["kid"])
-            decoded_token = jwt.decode(
-                token, cert, algorithms=["RS256"], audience=Config.AUTH_JWT_AUDIENCE, issuer=Config.AUTH_JWT_ISSUER
-            )
+            decode_options = {"algorithms": ["RS256"], "audience": Config.AUTH_JWT_AUDIENCE}
+            if Config.AUTH_JWT_ISSUER:
+                decode_options["issuer"] = Config.AUTH_JWT_ISSUER
+            decoded_token = jwt.decode(token, cert, **decode_options)
         return decoded_token
     except Exception as e:
         raise AuthenticationException(str(e)) from e
