@@ -1,6 +1,7 @@
 import os
 import traceback
 
+from api.src.controllers.bridge_from_combination import bridge_from_combination
 from azure.monitor.opentelemetry import configure_azure_monitor
 from flask import Flask, Response, request, send_file
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -8,7 +9,6 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
 from config import Config
-from controllers.combination import bridge_from_combination
 from controllers.optimal_bridge import bridge_request_handler
 from controllers.optimizer import optimizer_request_handler
 from controllers.products import products_get
