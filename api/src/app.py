@@ -1,7 +1,6 @@
 import os
 import traceback
 
-from api.src.controllers.bridge_from_combination import bridge_from_combination
 from azure.monitor.opentelemetry import configure_azure_monitor
 from flask import Flask, Response, request, send_file
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -9,12 +8,14 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
 from config import Config
+from controllers.bridge_from_combination import bridge_from_combination
 from controllers.optimal_bridge import optimal_bridge
-from controllers.optimizer import optimizer_request_handler
+from controllers.optimizer import run_optimizer
 from controllers.products import products_get
 from controllers.report import create_report
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
+from util.utils import convert_keys_camel_to_underscore, convert_keys_underscore_to_camel
 
 
 def init_api():
@@ -74,17 +75,5 @@ def size_fractions():
 @app.route("/api/optimizer", methods=["POST"])
 @authorize
 def optimizer():
-    value = request.json.get("value")
-    name = request.json.get("name")
-    products = request.json.get("products")
-    density = request.json.get("density")
-    volume = request.json.get("volume")
-    option = request.json.get("option")
-    iterations = request.json.get("iterations")
-    max_products = request.json.get("maxProducts")
-    particle_range = request.json.get("particleRange")
-    weights = request.json.get("weights")
-
-    return optimizer_request_handler(
-        value, name, products, density, volume, option, iterations, max_products, particle_range, weights
-    )
+    response_dict = run_optimizer(convert_keys_camel_to_underscore(request.json))
+    return convert_keys_underscore_to_camel(response_dict)

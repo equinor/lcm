@@ -7,5 +7,5 @@ class Product:
     share: float
     cumulative: list[float]
     name: str = ""
-    sacks: int = 0
+    sacks: float = 0.0
     mass: float = 0.0
