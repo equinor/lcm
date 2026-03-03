@@ -4,7 +4,7 @@ from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer, OptimizerWeights
 from classes.product import Product
 from use_cases.get_products import retrieve_products
-from util.exceptions import ValidationExpection
+from util.exceptions import ValidationException
 
 
 @dataclass
@@ -35,9 +35,9 @@ class OptimizerParameters:
 
     def __post_init__(self):
         if self.iterations <= 0:
-            raise ValidationExpection("Number of iterations must be a positive integer")
+            raise ValidationException("Number of iterations must be a positive integer")
         if self.particle_range[0] >= self.particle_range[1]:
-            raise ValidationExpection("Particle size 'from' must be smaller than 'to'")
+            raise ValidationException("Particle size 'from' must be smaller than 'to'")
         if self.max_products == 0:
             self.max_products = 999
         if type(self.weights) is dict:
@@ -79,7 +79,7 @@ def run_optimizer(parameter_dict: dict) -> dict:
     bridge = theoretical_bridge(parameters.option, parameters.value)
     selected_products = [p for p in retrieve_products().values() if p.id in parameters.products]
     if len(selected_products) < 2:
-        raise ValidationExpection("Can not run the optimizer with less than two products")
+        raise ValidationException("Can not run the optimizer with less than two products")
 
     optimizer = Optimizer(
         bridge=bridge,
