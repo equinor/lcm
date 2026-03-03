@@ -1,58 +1,98 @@
-from flask import Response
+from dataclasses import asdict, dataclass, field
 
 from calculators.bridge import theoretical_bridge
-from calculators.optimizer import Optimizer
+from calculators.optimizer import Optimizer, OptimizerWeights
 from classes.product import Product
 from controllers.products import retrieve_products
+from util.exceptions import ValidationExpection
 
 
-def optimizer_request_handler(
-    value,
-    blend_name,
-    products,
-    density_goal,
-    volume,
-    option="AVERAGE_PORESIZE",
-    iterations: int = 500,
-    max_products: int = 999,
-    particle_range: tuple[float, float] = (1.0, 100),
-    weights: dict | None = None,
-):
-    int_iterations = int(iterations)
-    if int_iterations <= 0:
-        return Response("Number of iterations must be a positiv integer", 400)
+@dataclass
+class OptimizerParameterProduct:
+    id: str
+    title: str
+    supplier: str
+    environmental: str
+    sack_size: int
+    co2: int
+    cost: int
+    cumulative: list[float]
 
-    if particle_range[0] >= particle_range[1]:
-        return Response("Particle size 'from' must be smaller than 'to'", 400)
 
-    if max_products == 0:
-        max_products = 999
+@dataclass
+class OptimizerParameters:
+    request: str
+    name: str
+    value: float
+    products: dict[str, OptimizerParameterProduct]
+    density: float
+    volume: float
+    option: str = "AVERAGE_PORESIZE"
+    iterations: int = 500
+    max_products: int = 999
+    particle_range: tuple[float, float] = (1.0, 100)
+    weights: OptimizerWeights = field(default_factory=lambda: OptimizerWeights(bridge=5, mass=5, products=5))
 
-    if not weights:
-        weights = {"bridge": 5, "mass": 5, "products": 5}
-    else:
-        for i in weights.values():
-            if not 0 <= i <= 10:
-                return Response("Weighting values must be between 1 and 10", 400)
+    def __post_init__(self):
+        if self.iterations <= 0:
+            raise ValidationExpection("Number of iterations must be a positive integer")
+        if self.particle_range[0] >= self.particle_range[1]:
+            raise ValidationExpection("Particle size 'from' must be smaller than 'to'")
+        if self.max_products == 0:
+            self.max_products = 999
+        if type(self.weights) is dict:
+            self.weights = OptimizerWeights(**self.weights)
 
-    print(f"Started optimization request with {int_iterations} maximum iterations...")
-    bridge = theoretical_bridge(option, value)
-    selected_products = [p for p in retrieve_products().values() if p["id"] in products]
+
+@dataclass
+class OptimizerResultConfiguration:
+    iterations: int
+    value: float
+    mode: str
+
+
+@dataclass
+class OptimizerResultProduct:
+    id: str
+    value: float
+
+
+@dataclass
+class OptimizerResult:
+    name: str
+    config: OptimizerResultConfiguration
+    products: dict[str, OptimizerResultProduct]
+    performance: dict
+    totalMass: float
+    cumulative: list[float]
+    executionTime: int
+    fitness: float
+    weighting: OptimizerWeights
+    curve: list[float]
+    bridgeScore: float
+
+
+def run_optimizer(parameter_dict: dict) -> dict:
+    parameters = OptimizerParameters(**parameter_dict)
+
+    print(f"Started optimization request with {parameters.iterations} maximum iterations...")
+    bridge = theoretical_bridge(parameters.option, parameters.value)
+    selected_products = [p for p in retrieve_products().values() if p["id"] in parameters.products]
     if len(selected_products) < 2:
-        return Response("Can not run the optimizer with less than two products", 400)
+        raise ValidationExpection("Can not run the optimizer with less than two products")
 
     optimizer = Optimizer(
-        products=selected_products,
         bridge=bridge,
-        density_goal=density_goal,
-        volume=volume,
-        max_iterations=int_iterations,
-        max_products=max_products,
-        particle_range=particle_range,
-        weights=weights,
+        products=selected_products,
+        density_goal=parameters.density,
+        volume=parameters.volume,
+        max_iterations=parameters.iterations,
+        max_products=parameters.max_products,
+        particle_range=parameters.particle_range,
+        weights=parameters.weights,
     )
     optimizer_result = optimizer.optimize()
-    combination = optimizer_result["combination"]
+    combination = optimizer_result.combination
 
     products_result: list[Product] = []
     for p in selected_products:
@@ -63,27 +103,27 @@ def optimizer_request_handler(
                     share=combination[p["id"]] / sum(combination.values()),
                     cumulative=p["cumulative"],
                     sacks=combination[p["id"]],
-                    mass=(combination[p["id"]] * volume),
+                    mass=(combination[p["id"]] * parameters.volume),
                 )
             )
 
-    return {
-        "name": blend_name,
-        "config": {"iterations": optimizer_result["iterations"], "value": value, "mode": option},
-        "products": {id: {"id": id, "value": combination[id]} for id in combination},
-        "performance": optimizer.calculate_performance(
-            experimental_bridge=optimizer_result["cumulative_bridge"],
-            products_result=products_result,
-        ),
-        "totalMass": round(sum([p.mass for p in products_result]), 1),
-        "cumulative": optimizer_result["cumulative_bridge"],
-        "executionTime": int(optimizer_result["execution_time"].microseconds / 1000),
-        "fitness": optimizer_result["score"],
-        "weighting": {
-            "bridge": weights["bridge"],
-            "mass": weights["mass"],
-            "products": weights["products"],
-        },
-        "curve": optimizer_result["curve"],
-        "bridgeScore": optimizer_result["bridge_score"],
-    }
+    return asdict(
+        OptimizerResult(
+            name=parameters.name,
+            config=OptimizerResultConfiguration(
+                iterations=optimizer_result.iterations, value=parameters.value, mode=parameters.option
+            ),
+            products={id: OptimizerResultProduct(id=id, value=combination[id]) for id in combination},
+            performance=optimizer.calculate_performance(
+                experimental_bridge=optimizer_result.cumulative_bridge,
+                products_result=products_result,
+            ),
+            totalMass=round(sum([p.mass for p in products_result]), 1),
+            cumulative=optimizer_result.cumulative_bridge,
+            executionTime=int(optimizer_result.execution_time.microseconds / 1000),
+            fitness=optimizer_result.score,
+            weighting=parameters.weights,
+            curve=optimizer_result.curve,
+            bridgeScore=optimizer_result.bridge_score,
+        )
+    )

@@ -2745,7 +2745,7 @@ class OptimizerTest(unittest.TestCase):
         for _i in range(2):
             result = Optimizer(theoretical_bridge, product_data, density, max_iterations, max_products).optimize()
             result_list.append(result)
-        fitness = [run["score"] for run in result_list]
+        fitness = [result.score for result in result_list]
         values_within_deviation(fitness, 15)
 
     def test_deviation_short_permeability(self):
@@ -2777,7 +2777,7 @@ def show_plot():
         result = Optimizer(
             products=product_data, bridge=bridge, density_goal=350, max_iterations=1000, particle_range=(10, 100)
         ).optimize()
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
+        bridgeplot.plot(SIZE_STEPS, result.cumulative_bridge)
         result_list.append(result)
 
     fig.show()
@@ -2819,12 +2819,12 @@ def create_algorithm_report():
     for i in range(runs):
         result = Optimizer(permeability_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
-        label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
-        permeability.plot(result["curve"], label=label)
+        label = f"{i}-{round(result.score, 1)}"
+        bridgeplot.plot(SIZE_STEPS, result.cumulative_bridge)
+        permeability.plot(result.curve, label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
-    fitness = [run["score"] for run in result_list]
+    fitness = [run.score for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)
     permeability.text(
         0.975,
@@ -2876,12 +2876,12 @@ def create_algorithm_report():
     for i in range(runs):
         result = Optimizer(m_pore_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
-        label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
-        m_poresize.plot(result["curve"], label=label)
+        label = f"{i}-{round(result.score, 1)}"
+        bridgeplot.plot(SIZE_STEPS, result.cumulative_bridge)
+        m_poresize.plot(result.curve, label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
-    fitness = [run["score"] for run in result_list]
+    fitness = [run.score for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)
     m_poresize.text(
         0.975,
@@ -2933,12 +2933,12 @@ def create_algorithm_report():
     for i in range(runs):
         result = Optimizer(avg_pore_bridge, product_data, density, max_iterations).optimize()
         result_list.append(result)
-        label = f"{i}-{round(result['score'], 1)}"
-        bridgeplot.plot(SIZE_STEPS, result["cumulative_bridge"])
-        avg_poresize.plot(result["curve"], label=label)
+        label = f"{i}-{round(result.score, 1)}"
+        bridgeplot.plot(SIZE_STEPS, result.cumulative_bridge)
+        avg_poresize.plot(result.curve, label=label)
         print(f"{i + 1} of {runs} runs complete...")
 
-    fitness = [run["score"] for run in result_list]
+    fitness = [run.score for run in result_list]
     standard_deviation = round(float(np.std(fitness)), 4)
     avg_poresize.text(
         0.975,

@@ -1,16 +1,47 @@
 # ruff: noqa: S311
-import pickle  # nosec
 import random
-from datetime import datetime
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 
 import numpy as np
 from cachetools import LFUCache, cached
+from cachetools.keys import hashkey
 
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
+from util.exceptions import ValidationExpection
 
 
+def hash_combination(self, combination: dict[str, float]):
+    return hashkey(frozenset(combination.items()))
+
+
+@dataclass
+class OptimizerWeights:
+    bridge: int
+    mass: int
+    products: int
+
+    def __post_init__(self):
+        for i in self.__dict__.values():
+            if not 0 <= i <= 10:
+                raise ValidationExpection("Weighting values must be between 1 and 10")
+
+
+@dataclass
+class OptimizationResult:
+    combination: dict[str, float]
+    cumulative_bridge: list[float]
+    curve: list[float]
+    execution_time: timedelta
+    iterations: int
+    score: float
+    bridge_score: float
+
+
+@dataclass
 class Optimizer:
+    # constants
     POPULATION_SIZE = 20
     NUMBER_OF_CHILDREN = 18  # must be a multiple of 2
     NUMBER_OF_PARENTS = 2
@@ -26,33 +57,29 @@ class Optimizer:
     MASS_IMPORTANCE = 10
     NUMBER_OF_PRODUCTS_IMPORTANCE = 40
 
-    def __init__(
-        self,
-        bridge: list[float],
-        products: list[dict],
-        density_goal: int = 350,
-        volume: int = 10,
-        max_iterations: int = 500,
-        max_products: int = 999,
-        particle_range=None,
-        weights: dict | None = None,
-    ):
-        self.products = products
-        self.bridge = bridge
-        self.mass_goal = density_goal * volume
-        self.density_goal = density_goal
-        self.volume = volume
-        self.max_iterations = max_iterations
-        self.max_products = max_products
-        if particle_range is None:
-            particle_range = [1.0, 100]
-        if particle_range[1] <= 0:
-            particle_range[1] = 10000
-        self.particle_range = particle_range
-        self.weights = weights if weights else {"bridge": 10, "mass": 1, "products": 1}
-        self.sum_weights = sum(self.weights.values())
+    # parameters
+    bridge: list[float]
+    products: list[dict]
+    density_goal: float = 350
+    volume: float = 10
+    max_iterations: int = 500
+    max_products: int = 999
+    particle_range: tuple[float, float] = (1.0, 100)
+    weights: OptimizerWeights = field(default_factory=lambda: OptimizerWeights(bridge=5, mass=5, products=5))
 
-    def optimize(self):
+    def __post_init__(self):
+        if self.particle_range[1] <= 0:
+            self.particle_range = (self.particle_range[0], 10000)
+
+    @property
+    def mass_goal(self):
+        return self.density_goal * self.volume
+
+    @property
+    def sum_weights(self):
+        return self.weights.bridge + self.weights.mass + self.weights.products
+
+    def optimize(self) -> OptimizationResult:
         start = datetime.now()
         max_initial_density = self.density_goal // min(self.max_products, len(self.products))
 
@@ -69,20 +96,21 @@ class Optimizer:
             score_progress.append(score)
 
         bridge_score = self.bridge_score(experimental_bridge)  # standard deviaton
-        return {
-            "combination": {k: v for k, v in fittest_combo.items() if v > 0},
-            "cumulative_bridge": experimental_bridge,
-            "curve": score_progress,
-            "execution_time": (datetime.now() - start),
-            "iterations": iterations,
-            "score": score,
-            "bridge_score": bridge_score,
-        }
+
+        return OptimizationResult(
+            combination={k: v for k, v in fittest_combo.items() if v > 0},
+            cumulative_bridge=experimental_bridge,
+            curve=score_progress,
+            execution_time=(datetime.now() - start),
+            iterations=iterations,
+            score=score,
+            bridge_score=bridge_score,
+        )
 
     def calculate_performance(self, experimental_bridge: list, products_result: list[Product]) -> dict:
         bridge_fitness = 100 - self.bridge_score(experimental_bridge)
         mass_score = 100 - self.mass_score(products_result, squash=False)
-        products_score = 100 - (self.n_products_score(products_result, squash=False))
+        products_score = 100 - self.n_products_score(products_result, squash=False)
 
         return {"bridge": bridge_fitness, "mass": mass_score, "products": products_score}
 
@@ -125,7 +153,7 @@ class Optimizer:
         fit_dict = {}
 
         for combination in population:
-            score, _ = self.fitness_score(pickle.dumps(combination))
+            score, _ = self.fitness_score(combination)
             fitness.append(score)
             fit_dict[score] = combination
 
@@ -147,12 +175,10 @@ class Optimizer:
 
         _mean = np.mean(diff_list)
         score = np.sqrt(_mean)
-        return score
+        return float(score)
 
-    @cached(cache=LFUCache(8192))
-    def fitness_score(self, pickled_combination: bytes):
-        combination = pickle.loads(pickled_combination)  # noqa: S301
-
+    @cached(cache=LFUCache(8192), key=hash_combination)
+    def fitness_score(self, combination: dict[str, float]):
         products: list[Product] = []
         for p in self.products:
             if combination[p["id"]] > 0:
@@ -167,15 +193,15 @@ class Optimizer:
                 )
 
         experimental_bridge = calculate_blend_cumulative(products)
-        _bridge_score = self.bridge_score(experimental_bridge) * (self.weights["bridge"] / self.sum_weights)
-        mass_score = self.mass_score(products) * (self.weights["mass"] / self.sum_weights)
-        number_of_products_score = self.n_products_score(products) * (self.weights["products"] / self.sum_weights)
+        _bridge_score = self.bridge_score(experimental_bridge) * (self.weights.bridge / self.sum_weights)
+        mass_score = self.mass_score(products) * (self.weights.mass / self.sum_weights)
+        number_of_products_score = self.n_products_score(products) * (self.weights.products / self.sum_weights)
         return _bridge_score + mass_score + number_of_products_score, experimental_bridge
 
     def optimal(self, population):
         results = []
         for combination in population:
-            score, exp_bridge = self.fitness_score(pickle.dumps(combination))
+            score, exp_bridge = self.fitness_score(combination)
             results.append({"score": score, "combination": combination, "bridge": exp_bridge})
 
         results.sort(key=lambda r: r["score"])
