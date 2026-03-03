@@ -5,19 +5,13 @@ metadata:
 spec:
   build:
     useBuildKit: false
-    secrets:
-      - APPINSIGHTS_CON_STRING
   environments:
     - name: prod
       build:
         from: prod
-        secrets:
-          - APPINSIGHTS_CON_STRING
     - name: test
       build:
         from: master
-        secrets:
-          - APPINSIGHTS_CON_STRING
   components:
     - name: web
       src: ./web
@@ -34,6 +28,8 @@ spec:
           cpu: '4000m'
       environmentConfig:
         - environment: prod
+          secrets:
+            - AUTH_JWT_ISSUER
           variables:
             ENVIRONMENT: production
           horizontalScaling:
@@ -66,6 +62,7 @@ spec:
       secrets:
         - TABLE_KEY
         - APPINSIGHTS_CON_STRING
+        - SYNC_BLOBS_APP_URL
     - name: proxy
       src: ./nginx/
       ports:
