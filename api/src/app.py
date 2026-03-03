@@ -1,8 +1,7 @@
 import os
-import traceback
 
 from azure.monitor.opentelemetry import configure_azure_monitor
-from flask import Flask, Response, request, send_file
+from flask import Flask, request, send_file
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 import util.logging as logging
@@ -13,8 +12,8 @@ from use_cases.calculate_optimal_bridge import calculate_optimal_bridge
 from use_cases.create_report import create_report
 from use_cases.get_products import get_products
 from use_cases.run_optimizer import run_optimizer
+from use_cases.synchronize_with_sharepoint import synchronize_with_sharepoint
 from util.authentication import authorize
-from util.sync_share_point_az import sync_all
 from util.utils import convert_keys_camel_to_underscore, convert_keys_underscore_to_camel
 
 
@@ -58,12 +57,7 @@ def bridge():
 @app.route("/api/sync", methods=["POST"])
 @authorize
 def sync_sharepoint():
-    try:
-        sync_all()
-    except Exception:
-        traceback.print_exc()
-        return Response("An internal error occurred. Please contact support.", 500)
-    return "ok"
+    return synchronize_with_sharepoint()
 
 
 @app.route("/api/fractions", methods=["GET"])
