@@ -9,6 +9,6 @@ class AuthenticationException(CustomException):
         super().__init__(message=message)
 
 
-class ValidationExpection(CustomException):
+class ValidationException(CustomException):
     def __init__(self, message):
         super().__init__(message=message)

@@ -10,7 +10,7 @@ from cachetools.keys import hashkey
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
 from use_cases.get_products import ProductDTO
-from util.exceptions import ValidationExpection
+from util.exceptions import ValidationException
 
 
 def hash_combination(self, combination: dict[str, float]):
@@ -26,7 +26,7 @@ class OptimizerWeights:
     def __post_init__(self):
         for i in self.__dict__.values():
             if not 0 <= i <= 10:
-                raise ValidationExpection("Weighting values must be between 1 and 10")
+                raise ValidationException("Weighting values must be between 1 and 10")
 
 
 @dataclass
