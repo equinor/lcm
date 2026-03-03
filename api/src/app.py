@@ -8,11 +8,11 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
 from config import Config
-from controllers.bridge_from_combination import bridge_from_combination
-from controllers.optimal_bridge import optimal_bridge
-from controllers.optimizer import run_optimizer
-from controllers.products import products_get
-from controllers.report import create_report
+from use_cases.bridge_from_combination import bridge_from_combination
+from use_cases.optimal_bridge import optimal_bridge
+from use_cases.optimizer import run_optimizer
+from use_cases.products import products_get
+from use_cases.report import create_report
 from util.authentication import authorize
 from util.sync_share_point_az import sync_all
 from util.utils import convert_keys_camel_to_underscore, convert_keys_underscore_to_camel
