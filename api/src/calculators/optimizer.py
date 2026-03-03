@@ -9,7 +9,7 @@ from cachetools.keys import hashkey
 
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
-from use_cases.products import ProductDTO
+from use_cases.get_products import ProductDTO
 from util.exceptions import ValidationExpection
 
 
