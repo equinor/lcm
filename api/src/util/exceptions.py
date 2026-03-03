@@ -12,3 +12,8 @@ class AuthenticationException(CustomException):
 class ValidationException(CustomException):
     def __init__(self, message):
         super().__init__(message=message)
+
+
+class InternalErrorException(CustomException):
+    def __init__(self, message):
+        super().__init__(message=message)
