@@ -33,10 +33,10 @@ export default defineConfig({
     port: 3000,
     host: true,
     watch: {
-      usePolling: true,
+      usePolling: process.env.USE_POLLING === 'true',
     },
     hmr: {
-      clientPort: 80,
+      clientPort: process.env.HMR_CLIENT_PORT ? Number(process.env.HMR_CLIENT_PORT) : undefined,
     },
   },
   build: {

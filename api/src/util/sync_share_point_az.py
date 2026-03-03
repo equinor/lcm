@@ -15,17 +15,19 @@ _logger = logging.getLogger("API")
 
 
 def sync_sharepoint_and_az_blobs():
+    if not Config.SYNC_BLOBS_APP_URL:
+        raise RuntimeError("SYNC_BLOBS_APP_URL is not configured")
     request = requests.get(Config.SYNC_BLOBS_APP_URL, timeout=30)
     request.raise_for_status()
     _logger.info("Triggered Logic App sync")
 
 
 def delete_all_entries_in_table(table_service, table_name):
-    entities = []
     try:
-        entities = table_service.query_entities(table_name)
+        entities = list(table_service.query_entities(table_name))
     except AzureMissingResourceHttpError:
         _logger.info("Table '%s' does not exist, skipping deletion", table_name)
+        return
     for t in entities:
         table_service.delete_entity(table_name, table_name, t.RowKey)
     _logger.info("Deleted all rows in '%s' table", table_name)
