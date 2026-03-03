@@ -73,7 +73,7 @@ def size_fractions():
 
 @app.route("/api/optimizer", methods=["POST"])
 @authorize
-def main():
+def optimizer():
     value = request.json.get("value")
     name = request.json.get("name")
     products = request.json.get("products")
