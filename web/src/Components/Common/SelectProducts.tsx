@@ -76,7 +76,7 @@ export function SelectProducts({ allProducts, enabledProducts, setEnabledProduct
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       <div
         style={{
           display: 'flex',
@@ -115,8 +115,7 @@ export function SelectProducts({ allProducts, enabledProducts, setEnabledProduct
           paddingRight: '15px',
           display: 'flex',
           flexFlow: 'column wrap',
-          maxHeight: '600px',
-          width: '800px',
+          minWidth: '55vw',
           overflow: 'auto',
         }}
       >
@@ -159,6 +158,6 @@ export function SelectProducts({ allProducts, enabledProducts, setEnabledProduct
           )
         })}
       </div>
-    </>
+    </div>
   )
 }
