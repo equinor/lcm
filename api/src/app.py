@@ -56,7 +56,7 @@ def combination():
 @authorize
 @handle_exceptions
 def bridge():
-    return calculate_optimal_bridge(request.json.get("option"), int(request.json.get("value")))
+    return calculate_optimal_bridge(request.json.get("option"), request.json.get("value"))
 
 
 @app.route("/api/sync", methods=["POST"])
