@@ -1,4 +1,7 @@
-class BridgeOption:
+from enum import StrEnum
+
+
+class BridgeOption(StrEnum):
     MAXIMUM_PORESIZE = "MAXIMUM_PORESIZE"
     AVERAGE_PORESIZE = "AVERAGE_PORESIZE"
     PERMEABILITY = "PERMEABILITY"
