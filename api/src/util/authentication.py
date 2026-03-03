@@ -36,7 +36,7 @@ def decode_jwt(token):
             cert = get_cert(jwt.get_unverified_header(token)["kid"])
             decoded_token = jwt.decode(token, cert, algorithms="RS256", audience=Config.AUTH_JWT_AUDIENCE)
         # Add a user object to the global flask context
-        g.user = User(**decoded_token)
+        g.user = User.from_jwt(decoded_token)
         return decoded_token
     except Exception as e:
         raise AuthenticationException(str(e)) from e
