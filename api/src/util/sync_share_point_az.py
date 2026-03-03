@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from time import sleep
 
@@ -10,11 +11,13 @@ from config import Config
 from util.azure_blobs import get_metadata_blob_data, get_product_blobs_data
 from util.azure_table import create_table
 
+_logger = logging.getLogger("API")
+
 
 def sync_sharepoint_and_az_blobs():
     request = requests.get(Config.SYNC_BLOBS_APP_URL, timeout=30)
     request.raise_for_status()
-    print(f"Triggered Logic App by HTTP request for url; {Config.SYNC_BLOBS_APP_URL}")
+    _logger.info("Triggered Logic App sync")
 
 
 def delete_all_entries_in_table(table_service, table_name):
@@ -22,10 +25,10 @@ def delete_all_entries_in_table(table_service, table_name):
     try:
         entities = table_service.query_entities(table_name)
     except AzureMissingResourceHttpError:
-        print(f"Table '{table_name}' does not exist, skipping deletion")
+        _logger.info("Table '%s' does not exist, skipping deletion", table_name)
     for t in entities:
         table_service.delete_entity(table_name, table_name, t.RowKey)
-    print(f"Deleted all rows in '{table_name}' table")
+    _logger.info("Deleted all rows in '%s' table", table_name)
 
 
 def sync_excel_blobs_and_az_tables():
@@ -46,12 +49,11 @@ def sync_excel_blobs_and_az_tables():
         batch.insert_entity(p)
     try:
         table_service.commit_batch(table_name=Config.PRODUCT_TABLE_NAME, batch=batch)
-        print(
-            f"Uploaded products data to '{Config.PRODUCT_TABLE_NAME}' table in '{Config.TABLE_ACCOUNT_NAME}' storage account"
+        _logger.info(
+            "Uploaded products to '%s' in storage account '%s'", Config.PRODUCT_TABLE_NAME, Config.TABLE_ACCOUNT_NAME
         )
-
     except HeaderParsingError as e:
-        print(e)
+        _logger.warning("HeaderParsingError during batch commit: %s", e)
 
 
 def sync_all():
@@ -61,4 +63,4 @@ def sync_all():
     sleep(50)
     sync_excel_blobs_and_az_tables()
     end = datetime.now() - start
-    print(f"The sync took {end.seconds} seconds")
+    _logger.info("Sync completed in %s seconds", end.total_seconds())

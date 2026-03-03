@@ -5,10 +5,8 @@ def init_logging():
     logger = logging.getLogger("API")
     if logger.hasHandlers():
         logger.handlers.clear()
-    logger.setLevel("INFO")
-    formatter = logging.Formatter("%(levelname)s:%(asctime)s %(message)s")
+    logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    handler.setLevel("INFO")
+    handler.setFormatter(logging.Formatter("%(levelname)s: %(asctime)s %(message)s"))
     logger.addHandler(handler)
     logger.info("Logger is configured")
