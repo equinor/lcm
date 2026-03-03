@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 from datetime import datetime, timedelta
 from time import sleep
 from typing import TextIO
@@ -9,6 +10,8 @@ from azure.cosmosdb.table.tableservice import TableService
 
 from config import Config
 
+_logger = logging.getLogger("API")
+
 
 def _wait_for_table_to_be_created(table_service: TableService, table_name: str) -> bool:
     timer = datetime.now()
@@ -17,15 +20,12 @@ def _wait_for_table_to_be_created(table_service: TableService, table_name: str) 
         try:
             table_service.create_table(table_name, fail_on_exist=True)
             is_created = True
-            print(f"Created table '{table_name}'")
+            _logger.info("Created table '%s'", table_name)
         except AzureConflictHttpError as e:
             if datetime.now() - timer > timedelta(minutes=5):
-                print(e)
-                print(f"Could not crate {table_name} in 5 minutes")
-                print("Giving up")
-                print("Could not create Azure Table!")
+                _logger.error("Could not create table '%s' within 5 minutes: %s", table_name, e)
                 break
-            print("Retrying in 5 seconds...")
+            _logger.info("Table '%s' not ready yet, retrying in 5 seconds...", table_name)
             sleep(5)
     return is_created
 
@@ -39,7 +39,7 @@ def create_table(table_service: TableService, table_name: str):
         Note that deleting a table is likely to take at least 40 seconds to complete.
         """
         table_service.delete_table(table_name)
-        print(f"Deleted table '{table_name}'")
+        _logger.info("Deleted table '%s'", table_name)
     _wait_for_table_to_be_created(table_service, table_name)
 
 
@@ -62,7 +62,7 @@ def process_meta_blob(meta_file: TextIO) -> list[dict]:
                 "RowKey": sanitize_row_key(row["title"]),
                 "id": sanitize_row_key(row["title"]),
                 **row,
-                "supplier": row["supplier"] if row["supplier"] in Config.named_supplier else "Other",
+                "supplier": row["supplier"] if row["supplier"] in Config.NAMED_SUPPLIERS else "Other",
                 # TODO: Prod data is missing co2 impact
                 "co2": row["co2"] if row["co2"] else 1000,
                 # TODO: Prod data is missing cost
