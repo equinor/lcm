@@ -4,7 +4,8 @@
   "python.analysis.logLevel": "Trace",
   "python.analysis.typeCheckingMode": "basic",
 
-  "python.testing.pytestArgs": ["api", "--rootdir=api"],
+  "python.testing.pytestArgs": ["."],
+  "python.testing.cwd": "api/src",
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
   "python.analysis.extraPaths": ["api/src"]
