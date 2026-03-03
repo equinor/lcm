@@ -18,25 +18,23 @@ class Weighting:
 
 
 class Report:
-    score: float = None
-    curve: list[float] = None
-    pill_volume: int = None
-    pill_density: int = None
-    bridging_mode: str = None
-    bridging_value: int = None
-    total_mass: int = None
-    products: dict = None
-    weighting: Weighting = None
-    email: str = None
-    user: str = None
+    score: float
+    curve: list[float]
+    pill_volume: int
+    pill_density: int
+    bridging_mode: str
+    bridging_value: int
+    total_mass: int
+    products: dict
+    weighting: Weighting
+    email: str
+    user: str
 
     @classmethod
     def from_dict(cls, _dict: dict):
         instance = cls()
         instance.score = _dict["fitness"]
         instance.curve = _dict["curve"]
-        instance.email = _dict["email"]
-        instance.user = _dict["user"]
         instance.pill_volume = _dict["pillVolume"]
         instance.pill_density = _dict["pillDensity"]
         instance.bridging_mode = _dict["bridgingMode"]
@@ -46,6 +44,8 @@ class Report:
         instance.weighting = Weighting(
             _dict["weighting"]["bridge"], _dict["weighting"]["mass"], _dict["weighting"]["products"], None, None, None
         )
+        instance.email = _dict["email"]
+        instance.user = _dict["user"]
 
         return instance
 
@@ -56,7 +56,8 @@ def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
 
     combinations = ""
     for p in report.products.values():
-        combinations += f"""<tr>
+        combinations += f"""
+        <tr>
             <td>{p["id"]}</td>
             <td>{p["value"]}</td>
             <td style='padding-left:50px;'>{round(p["percentage"], 2)}%</td>
