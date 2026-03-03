@@ -10,14 +10,16 @@ products_result: list[Product] = []
 volume = 10
 combination = {"1b": 10, "1l": 20, "1s": 1}
 for p in product_data:
-    if p["id"] in combination:
+    if p.id in combination:
+        if p.cumulative is None:
+            raise ValueError(f"Product {p.id} does not have cumulative distribution data")
         products_result.append(
             Product(
-                product_id=p["id"],
-                share=(combination[p["id"]] / sum(combination.values())) * 100,
-                cumulative=p["cumulative"],
-                sacks=combination[p["id"]],
-                mass=(combination[p["id"]] * volume),
+                product_id=p.id,
+                share=(combination[p.id] / sum(combination.values())) * 100,
+                cumulative=p.cumulative,
+                sacks=combination[p.id],
+                mass=(combination[p.id] * volume),
             )
         )
 
