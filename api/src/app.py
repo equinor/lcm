@@ -9,7 +9,7 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
 from config import Config
-from controllers.optimal_bridge import bridge_request_handler
+from controllers.optimal_bridge import optimal_bridge
 from controllers.optimizer import optimizer_request_handler
 from controllers.products import products_get
 from controllers.report import create_report
@@ -51,7 +51,7 @@ def combination():
 @app.route("/api/bridge", methods=["POST"])
 @authorize
 def bridge():
-    return bridge_request_handler(request.json.get("option"), int(request.json.get("value")))
+    return optimal_bridge(request.json.get("option"), int(request.json.get("value")))
 
 
 @app.route("/api/sync", methods=["POST"])
