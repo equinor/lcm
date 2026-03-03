@@ -14,6 +14,7 @@ def handle_exceptions(func):
         except ValidationException as e:
             return Response(f"Validation error: {e.message}", status=400)
         except InternalErrorException as e:
+            logging.getLogger("API").exception("Internal error occurred", exc_info=e)
             return Response(f"Internal error: {e.message}", status=500)
         except Exception as e:
             logging.getLogger("API").exception("Unexpected error occurred", exc_info=e)
