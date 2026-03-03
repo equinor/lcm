@@ -4,7 +4,7 @@ from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer, OptimizerWeights
 from classes.product import Product
 from use_cases.get_products import retrieve_products
-from util.exceptions import ValidationException
+from util.exceptions import InternalErrorException, ValidationException
 
 
 @dataclass
@@ -98,7 +98,7 @@ def run_optimizer(parameter_dict: dict) -> dict:
     for p in selected_products:
         if p.id in combination.keys():
             if p.cumulative is None:
-                raise ValueError(f"Product {p.id} does not have cumulative distribution data")
+                raise InternalErrorException(f"Product {p.id} does not have cumulative distribution data")
             products_result.append(
                 Product(
                     product_id=p.id,

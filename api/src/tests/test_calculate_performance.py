@@ -5,6 +5,7 @@ from calculators.optimizer import Optimizer
 from classes.product import Product
 from tests.optimizer_test import product_data
 from util.enums import BridgeOption
+from util.exceptions import InternalErrorException
 
 products_result: list[Product] = []
 volume = 10
@@ -12,7 +13,7 @@ combination = {"1b": 10, "1l": 20, "1s": 1}
 for p in product_data:
     if p.id in combination:
         if p.cumulative is None:
-            raise ValueError(f"Product {p.id} does not have cumulative distribution data")
+            raise InternalErrorException(f"Product {p.id} does not have cumulative distribution data")
         products_result.append(
             Product(
                 product_id=p.id,

@@ -5,6 +5,7 @@
 from calculators.bridge import calculate_blend_cumulative
 from classes.product import Product
 from use_cases.get_products import retrieve_products
+from util.exceptions import InternalErrorException
 
 
 def bridge_from_combination(combination: list[dict]):
@@ -16,7 +17,7 @@ def bridge_from_combination(combination: list[dict]):
             continue
         product_dto = all_products[p["id"]]
         if product_dto.cumulative is None:
-            raise ValueError(f"Product {p['id']} does not have cumulative distribution data")
+            raise InternalErrorException(f"Product {p['id']} does not have cumulative distribution data")
         product_list.append(
             Product(
                 product_id=p["id"],
