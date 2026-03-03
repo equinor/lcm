@@ -2,10 +2,10 @@ import json
 from dataclasses import asdict, dataclass
 
 from cachetools import TTLCache, cached
-from flask import Response
 
 from config import Config
 from util.azure_table import get_service
+from util.exceptions import InternalErrorException
 
 
 @dataclass
@@ -52,15 +52,12 @@ def retrieve_products() -> dict[str, ProductDTO]:
     sorted_products = _sort_product_dict(products_response)
 
     if not len(sorted_products):
-        raise ValueError("No products found in storage")
+        raise InternalErrorException("No products found in storage")
 
     return sorted_products
 
 
 @cached(cache=TTLCache(maxsize=128, ttl=300))
 def get_products():
-    try:
-        products_response = retrieve_products()
-        return {k: asdict(v) for k, v in products_response.items()}
-    except ValueError:
-        return Response("Failed to fetch products from storage", 500)
+    products_response = retrieve_products()
+    return {k: asdict(v) for k, v in products_response.items()}
