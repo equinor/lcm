@@ -34,7 +34,7 @@ class ProductDTO:
         )
 
 
-def sort_product_dict(products: dict[str, ProductDTO]) -> dict[str, ProductDTO]:
+def _sort_product_dict(products: dict[str, ProductDTO]) -> dict[str, ProductDTO]:
     values = list(products.values())
     values.sort(key=lambda p: (p.supplier, p.id))
 
@@ -49,7 +49,7 @@ def retrieve_products() -> dict[str, ProductDTO]:
         product_dto = ProductDTO.from_db_entity(p)
         products_response[p.RowKey] = product_dto
 
-    sorted_products = sort_product_dict(products_response)
+    sorted_products = _sort_product_dict(products_response)
 
     if not len(sorted_products):
         raise ValueError("No products found in storage")
@@ -58,7 +58,7 @@ def retrieve_products() -> dict[str, ProductDTO]:
 
 
 @cached(cache=TTLCache(maxsize=128, ttl=300))
-def products_get():
+def get_products():
     try:
         products_response = retrieve_products()
         return {k: asdict(v) for k, v in products_response.items()}

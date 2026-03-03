@@ -4,7 +4,7 @@
 
 from calculators.bridge import calculate_blend_cumulative
 from classes.product import Product
-from use_cases.products import retrieve_products
+from use_cases.get_products import retrieve_products
 
 
 def bridge_from_combination(combination: list[dict]):

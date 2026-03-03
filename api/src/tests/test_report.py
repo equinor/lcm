@@ -1,7 +1,7 @@
 from pathlib import Path
 from unittest import TestCase, skip
 
-from use_cases.report import create_report
+from use_cases.create_report import create_report
 
 request = {
     "fitness": 4.4,
