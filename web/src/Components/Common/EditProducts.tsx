@@ -22,11 +22,16 @@ export function EditProducts({ allProducts, enabledProducts, setEnabledProducts 
       <Button variant="outlined" onClick={() => setDialogOpen(true)}>
         Select products
       </Button>
-      <Dialog style={{ width: 'min-content' }} open={dialogOpen}>
+      <Dialog
+        style={{ width: 'min-content', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}
+        open={dialogOpen}
+      >
         <Dialog.Header>
           <Dialog.Title>Select products in blend</Dialog.Title>
         </Dialog.Header>
-        <Dialog.CustomContent style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+        <Dialog.CustomContent
+          style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+        >
           <SelectProducts
             allProducts={allProducts}
             enabledProducts={selectedProducts}
