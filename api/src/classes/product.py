@@ -8,4 +8,4 @@ class Product:
     cumulative: list[float]
     name: str = ""
     sacks: int = 0
-    mass: int = 0
+    mass: float = 0.0
