@@ -1,0 +1,11 @@
+{
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.indexing": true,
+  "python.analysis.logLevel": "Trace",
+  "python.analysis.typeCheckingMode": "basic",
+
+  "python.testing.pytestArgs": ["api", "--rootdir=api"],
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.analysis.extraPaths": ["api/src"]
+}
