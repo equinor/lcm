@@ -12,7 +12,7 @@ type ParticleSizeContextType = {
 export const ParticleSizeContext = createContext<ParticleSizeContextType | undefined>(undefined)
 
 export function ParticleSizeContextProvider({ children }: { children: React.ReactNode }) {
-  const [from, setFrom] = useState(1)
+  const [from, setFrom] = useState(1.01)
   const [to, setTo] = useState(1000)
 
   const range = [from, to] as [number, number]
