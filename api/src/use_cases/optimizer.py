@@ -77,7 +77,7 @@ def run_optimizer(parameter_dict: dict) -> dict:
 
     print(f"Started optimization request with {parameters.iterations} maximum iterations...")
     bridge = theoretical_bridge(parameters.option, parameters.value)
-    selected_products = [p for p in retrieve_products().values() if p["id"] in parameters.products]
+    selected_products = [p for p in retrieve_products().values() if p.id in parameters.products]
     if len(selected_products) < 2:
         raise ValidationExpection("Can not run the optimizer with less than two products")
 
@@ -96,14 +96,16 @@ def run_optimizer(parameter_dict: dict) -> dict:
 
     products_result: list[Product] = []
     for p in selected_products:
-        if p["id"] in combination.keys():
+        if p.id in combination.keys():
+            if p.cumulative is None:
+                raise ValueError(f"Product {p.id} does not have cumulative distribution data")
             products_result.append(
                 Product(
-                    product_id=p["id"],
-                    share=combination[p["id"]] / sum(combination.values()),
-                    cumulative=p["cumulative"],
-                    sacks=combination[p["id"]],
-                    mass=(combination[p["id"]] * parameters.volume),
+                    product_id=p.id,
+                    share=combination[p.id] / sum(combination.values()),
+                    cumulative=p.cumulative,
+                    sacks=combination[p.id],
+                    mass=(combination[p.id] * parameters.volume),
                 )
             )
 

@@ -9,6 +9,7 @@ from cachetools.keys import hashkey
 
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative
 from classes.product import Product
+from use_cases.products import ProductDTO
 from util.exceptions import ValidationExpection
 
 
@@ -59,7 +60,7 @@ class Optimizer:
 
     # parameters
     bridge: list[float]
-    products: list[dict]
+    products: list[ProductDTO]
     density_goal: float = 350
     volume: float = 10
     max_iterations: int = 500
@@ -119,7 +120,7 @@ class Optimizer:
         children = []
 
         if self.max_products < len(self.products):
-            id_list = [p["id"] for p in self.products]
+            id_list = [p.id for p in self.products]
 
             for _ in range(self.POPULATION_SIZE):
                 combo_dict = dict.fromkeys(id_list, 0)
@@ -140,7 +141,7 @@ class Optimizer:
             for _i in range(self.POPULATION_SIZE):
                 combo_dict = {}
                 for j in range(len(self.products)):
-                    combo_dict[self.products[j]["id"]] = round(random.uniform(0, max_initial_density), 2)
+                    combo_dict[self.products[j].id] = round(random.uniform(0, max_initial_density), 2)
                 population.append(combo_dict)
 
         for _i in range(self.NUMBER_OF_CHILDREN):
@@ -181,14 +182,16 @@ class Optimizer:
     def fitness_score(self, combination: dict[str, float]):
         products: list[Product] = []
         for p in self.products:
-            if combination[p["id"]] > 0:
+            if combination[p.id] > 0:
+                if p.cumulative is None:
+                    raise ValueError(f"Product {p.id} does not have cumulative distribution data")
                 products.append(
                     Product(
-                        product_id=p["id"],
-                        share=combination[p["id"]] / sum(combination.values()),
-                        cumulative=p["cumulative"],
-                        sacks=combination[p["id"]],
-                        mass=(combination[p["id"]] * self.volume),
+                        product_id=p.id,
+                        share=combination[p.id] / sum(combination.values()),
+                        cumulative=p.cumulative,
+                        sacks=combination[p.id],
+                        mass=(combination[p.id] * self.volume),
                     )
                 )
 

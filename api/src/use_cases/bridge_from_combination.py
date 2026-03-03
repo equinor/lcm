@@ -14,11 +14,14 @@ def bridge_from_combination(combination: list[dict]):
     for p in combination:
         if p["value"] <= 0:
             continue
+        product_dto = all_products[p["id"]]
+        if product_dto.cumulative is None:
+            raise ValueError(f"Product {p['id']} does not have cumulative distribution data")
         product_list.append(
             Product(
                 product_id=p["id"],
                 share=(100 / sum_sacks * p["value"]) / 100,
-                cumulative=all_products[p["id"]]["cumulative"],
+                cumulative=product_dto.cumulative,
             )
         )
     bridge = calculate_blend_cumulative(product_list)

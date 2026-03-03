@@ -30,8 +30,11 @@ def bridge_plot(products: dict, mode, value) -> str:
     products_class = []
     all_products = retrieve_products()
     for id, values in products.items():
+        product_dto = all_products[id]
+        if product_dto.cumulative is None:
+            raise ValueError(f"Product {id} does not have cumulative distribution data")
         products_class.append(
-            Product(product_id=id, share=(values["percentage"] / 100), cumulative=all_products[id]["cumulative"])
+            Product(product_id=id, share=(values["percentage"] / 100), cumulative=product_dto.cumulative)
         )
     bridgeplot.plot(SIZE_STEPS, calculate_blend_cumulative(products_class), color="red", label="Blend")
 
