@@ -6,7 +6,7 @@ from matplotlib.ticker import ScalarFormatter
 
 from calculators.bridge import SIZE_STEPS, calculate_blend_cumulative, theoretical_bridge
 from classes.product import Product
-from controllers.products import retrieve_products
+from use_cases.products import retrieve_products
 
 
 def bridge_plot(products: dict, mode, value) -> str:

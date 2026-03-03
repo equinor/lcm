@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass, field
 from calculators.bridge import theoretical_bridge
 from calculators.optimizer import Optimizer, OptimizerWeights
 from classes.product import Product
-from controllers.products import retrieve_products
+from use_cases.products import retrieve_products
 from util.exceptions import ValidationExpection
 
 
