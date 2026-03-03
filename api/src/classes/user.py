@@ -1,5 +1,8 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
 class User:
-    def __init__(self, name, oid, roles=None, **kwargs):
-        self.name = name
-        self.oid = oid
-        self.roles = roles if roles else []
+    name: str
+    oid: str
+    roles: list[str] = field(default_factory=list)
