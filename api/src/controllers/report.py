@@ -103,6 +103,7 @@ def create_report(request: dict, bridge: bool = True):
 
     with tempfile.NamedTemporaryFile("w") as html_file:
         html_file.write(html)
+        html_file.flush()
         try:
             subprocess.run(  # noqa: S602
                 [f"pandoc {html_file.name} -f html -o {OUT_PDF}"],
