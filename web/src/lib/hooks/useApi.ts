@@ -6,15 +6,16 @@ export function useApi() {
   const BASE_PATH = '/api'
   const { token } = useAuthContext()
 
-  function apiPost<T>(endpoint: string, data: T, extraHeaders?: Record<string, string>) {
+  function apiPost<T>(endpoint: string, data: T, responseType: 'blob' | 'json' = 'json') {
     return axios.post(`${BASE_PATH}/${endpoint}`, data, {
-      headers: { Authorization: `Bearer ${token}`, ...extraHeaders },
+      headers: { Authorization: `Bearer ${token}` },
+      responseType,
     })
   }
 
-  function apiGet(endpoint: string, extraHeaders?: Record<string, string>) {
+  function apiGet(endpoint: string) {
     return axios.get(`${BASE_PATH}/${endpoint}`, {
-      headers: { Authorization: `Bearer ${token}`, ...extraHeaders },
+      headers: { Authorization: `Bearer ${token}` },
     })
   }
 
@@ -27,7 +28,7 @@ export function useApi() {
   }
 
   function createReport(data: ReportApiRequest) {
-    return apiPost('report', data, { responseType: 'blob' })
+    return apiPost('report', data, 'blob')
   }
 
   function calculateOptimalBridge(data: BridgeApiRequest) {
