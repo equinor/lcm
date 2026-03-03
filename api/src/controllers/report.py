@@ -1,5 +1,6 @@
 import subprocess
 import tempfile
+from dataclasses import dataclass
 from datetime import datetime
 
 from plots.bridge import bridge_plot
@@ -7,16 +8,17 @@ from plots.evolution import evolution_plot
 from plots.products_pie import products_pie
 
 
+@dataclass
 class Weighting:
-    def __init__(self, fit: int, mass: int, products: int, cost: int, co2: int, environmental: int):
-        self.fit = fit
-        self.mass = mass
-        self.products = products
-        self.cost = cost
-        self.co2 = co2
-        self.environmental = environmental
+    fit: int
+    mass: int
+    products: int
+    cost: int | None
+    co2: int | None
+    environmental: int | None
 
 
+@dataclass
 class Report:
     score: float
     curve: list[float]
@@ -31,23 +33,27 @@ class Report:
     user: str
 
     @classmethod
-    def from_dict(cls, _dict: dict):
-        instance = cls()
-        instance.score = _dict["fitness"]
-        instance.curve = _dict["curve"]
-        instance.pill_volume = _dict["pillVolume"]
-        instance.pill_density = _dict["pillDensity"]
-        instance.bridging_mode = _dict["bridgingMode"]
-        instance.bridging_value = _dict["bridgingValue"]
-        instance.total_mass = _dict["totalMass"]
-        instance.products = _dict["products"]
-        instance.weighting = Weighting(
-            _dict["weighting"]["bridge"], _dict["weighting"]["mass"], _dict["weighting"]["products"], None, None, None
+    def from_request_dict(cls, request: dict) -> "Report":
+        return cls(
+            score=request["fitness"],
+            curve=request["curve"],
+            pill_volume=request["pillVolume"],
+            pill_density=request["pillDensity"],
+            bridging_mode=request["bridgingMode"],
+            bridging_value=request["bridgingValue"],
+            total_mass=request["totalMass"],
+            products=request["products"],
+            weighting=Weighting(
+                request["weighting"]["bridge"],
+                request["weighting"]["mass"],
+                request["weighting"]["products"],
+                None,
+                None,
+                None,
+            ),
+            email=request["email"],
+            user=request["user"],
         )
-        instance.email = _dict["email"]
-        instance.user = _dict["user"]
-
-        return instance
 
 
 def as_html(report: Report, pie_chart, bridge_graph, fitness_plot) -> str:
@@ -96,7 +102,7 @@ OUT_PDF = "/tmp/report.pdf"  # noqa: S108
 
 
 def create_report(request: dict, bridge: bool = True):
-    report: Report = Report().from_dict(request)
+    report = Report.from_request_dict(request)
     pie_chart = products_pie(report.products)
     bridge_graph = bridge_plot(report.products, report.bridging_mode, report.bridging_value) if bridge else ""
     fitness_plot = evolution_plot(report.curve)
