@@ -9,7 +9,7 @@ import util.logging as logging
 from calculators.bridge import SIZE_STEPS
 from config import Config
 from controllers.combination import bridge_from_combination
-from controllers.optimal_bridge import bridgeRequestHandler
+from controllers.optimal_bridge import bridge_request_handler
 from controllers.optimizer import optimizer_request_handler
 from controllers.products import products_get
 from controllers.report import create_report
@@ -51,7 +51,7 @@ def combination():
 @app.route("/api/bridge", methods=["POST"])
 @authorize
 def bridge():
-    return bridgeRequestHandler(request.json.get("option"), int(request.json.get("value")))
+    return bridge_request_handler(request.json.get("option"), int(request.json.get("value")))
 
 
 @app.route("/api/sync", methods=["POST"])
