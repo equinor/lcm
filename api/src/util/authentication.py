@@ -1,4 +1,5 @@
 import json
+import logging
 from functools import wraps
 
 import jwt
@@ -10,6 +11,8 @@ from jwt.algorithms import RSAAlgorithm
 from classes.user import User
 from config import Config
 from util.exceptions import AuthenticationException
+
+_logger = logging.getLogger("API")
 
 
 @cached(cache=TTLCache(maxsize=128, ttl=86400))
@@ -30,13 +33,15 @@ def decode_jwt(token):
     try:
         # If Auth is configured with a secret, we use that to decode the token
         if Config.AUTH_SECRET:
-            decoded_token = jwt.decode(token, Config.AUTH_SECRET, algorithms="HS256", audience=Config.AUTH_JWT_AUDIENCE)
+            decoded_token = jwt.decode(
+                token, Config.AUTH_SECRET, algorithms=["HS256"], audience=Config.AUTH_JWT_AUDIENCE
+            )
         # If no secret provided, fallback to RSA based token signing.
         else:
             cert = get_cert(jwt.get_unverified_header(token)["kid"])
-            decoded_token = jwt.decode(token, cert, algorithms="RS256", audience=Config.AUTH_JWT_AUDIENCE)
-        # Add a user object to the global flask context
-        g.user = User.from_jwt(decoded_token)
+            decoded_token = jwt.decode(
+                token, cert, algorithms=["RS256"], audience=Config.AUTH_JWT_AUDIENCE, issuer=Config.AUTH_JWT_ISSUER
+            )
         return decoded_token
     except Exception as e:
         raise AuthenticationException(str(e)) from e
@@ -49,10 +54,9 @@ def authorize(f):
             abort(401, "Missing 'Authorization' header")
         try:
             token = request.headers["Authorization"].split(" ", 1)[1]
-            decode_jwt(token)
-        except (AuthenticationException, IndexError, Exception) as e:
-            print(f"AUTH ERROR: {e}")
-            # Return a generic auth error, no specifics
+            g.user = User(**decode_jwt(token))
+        except Exception as e:
+            _logger.warning("Auth failure: %s", e)
             abort(401, "Failed to authorize the request")
 
         return f(*args, **kwargs)
