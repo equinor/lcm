@@ -3,7 +3,7 @@ from flask import Response
 from calculators.bridge import theoretical_bridge
 
 
-def bridgeRequestHandler(option: str, value: int):
+def bridge_request_handler(option: str, value: int):
     if not value or not option:
         return Response("No options or value given!", 400)
     bridge = theoretical_bridge(option, value)
