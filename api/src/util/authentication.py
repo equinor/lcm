@@ -55,7 +55,7 @@ def authorize(f):
             abort(401, "Missing 'Authorization' header")
         try:
             token = request.headers["Authorization"].split(" ", 1)[1]
-            g.user = User(**decode_jwt(token))
+            g.user = User.from_jwt(decode_jwt(token))
         except Exception as e:
             _logger.warning("Auth failure: %s", e)
             abort(401, "Failed to authorize the request")
