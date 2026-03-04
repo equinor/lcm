@@ -16,6 +16,7 @@ export default defineConfig({
         'img-src': ["'self'", 'data:'],
         'object-src': ["'none'"],
         'font-src': ["'self'", 'https://*.equinor.com'],
+        'frame-ancestors': ["'none'"],
         'connect-src': [
           "'self'",
           'https://*.microsoftonline.com',
