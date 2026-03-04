@@ -1,5 +1,6 @@
 import { ReactPlugin, useAppInsightsContext } from '@microsoft/applicationinsights-react-js'
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { useRef } from 'react'
 import { useAuthContext } from 'react-oauth2-code-pkce'
 
 const connectionString = import.meta.env.VITE_APPINSIGHTS_CON_STRING || ''
@@ -20,15 +21,15 @@ if (connectionString) {
   console.error('Application Insights connection string is not defined')
 }
 
-let hasTrackedInitialPageView = false
 export function useAppInsights() {
-  const appInsights = useAppInsightsContext()
+  const hasTrackedInitialPageView = useRef(false)
+  const reactAppInsights = useAppInsightsContext()
   const { tokenData } = useAuthContext()
 
   if (!connectionString || !tokenData) return
-  if (!hasTrackedInitialPageView) {
-    appInsights.trackPageView({ isLoggedIn: true })
-    appInsights.trackEvent({ name: 'Main page load', properties: {} })
-    hasTrackedInitialPageView = true
+  if (!hasTrackedInitialPageView.current) {
+    reactAppInsights.trackPageView({ isLoggedIn: true })
+    reactAppInsights.trackEvent({ name: 'Main page load', properties: {} })
+    hasTrackedInitialPageView.current = true
   }
 }
