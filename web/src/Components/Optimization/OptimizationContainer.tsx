@@ -24,15 +24,12 @@ export function OptimizationContainer({
   const [densityOptimizationData, setDensityOptimizationData] = useState<OptimizationData>()
 
   function convertDensityOptimizationToSacks(densityOptimizationData: OptimizationData): ProductsInCombination {
-    let sackProducts: ProductsInCombination = {}
+    const sackProducts: ProductsInCombination = {}
     for (const product of Object.values(densityOptimizationData.products)) {
       const SACK_KG: number = 25
       const sackValue: number = Math.round((product.value * densityOptimizationData.chosenVolume) / SACK_KG)
       if (sackValue > 0) {
-        sackProducts = {
-          ...sackProducts,
-          [product.id]: { id: product.id, value: sackValue, percentage: 0 },
-        }
+        sackProducts[product.id] = { id: product.id, value: sackValue, percentage: 0 }
       }
     }
 
@@ -56,11 +53,7 @@ export function OptimizationContainer({
     const sackOptimizationValues = convertDensityOptimizationToSacks(densityOptimizationData)
     setDensityOptimizationData(densityOptimizationData)
 
-    const datetime = new Date()
-    const timeString = `${datetime.getHours().toString().padStart(2, '0')}:${datetime
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}:${datetime.getSeconds().toString().padStart(2, '0')}`
+    const timeString = new Date().toLocaleTimeString('nb-NO')
     const sackResultName = `Optimized at ${timeString} (sacks)`
     const densityResultName = `Optimized at ${timeString} (theoretical)`
 
