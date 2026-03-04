@@ -63,11 +63,11 @@ export function OptimizationRunner({
   })
   const { range, from, to, setFrom, setTo } = useParticleSizeContext()
   const [products, setProducts] = useLocalStorage<Products>('optimizerProducts', {})
-  const { runOptimizer: postOptimizer } = useApi()
+  const { runOptimizer } = useApi()
 
   function handleOptimize() {
     setLoading(true)
-    postOptimizer({
+    runOptimizer({
       request: 'OPTIMAL_MIX',
       name: 'Optimal Blend',
       iterations: iterations,
