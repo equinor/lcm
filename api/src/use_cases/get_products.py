@@ -6,6 +6,7 @@ from cachetools import TTLCache, cached
 from config import Config
 from util.azure_table import get_service
 from util.exceptions import InternalErrorException
+from util.utils import convert_keys_underscore_to_camel
 
 
 @dataclass
@@ -60,4 +61,4 @@ def retrieve_products() -> dict[str, ProductDTO]:
 @cached(cache=TTLCache(maxsize=128, ttl=300))
 def get_products():
     products_response = retrieve_products()
-    return {k: asdict(v) for k, v in products_response.items()}
+    return convert_keys_underscore_to_camel({k: asdict(v) for k, v in products_response.items()})
