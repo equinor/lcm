@@ -1,4 +1,3 @@
-import ast
 import os
 from pathlib import Path
 
@@ -8,7 +7,6 @@ class Config:
     TABLE_KEY = os.getenv("TABLE_KEY")
     APPINSIGHTS_CON_STRING = os.getenv("APPINSIGHTS_CON_STRING")
     BLOB_CONTAINER_NAME = "lcm-file-blobs"
-    LOAD_TEST_DATA = ast.literal_eval(os.getenv("LOAD_TEST_DATA", "False"))
     SYNC_BLOBS_APP_URL = os.getenv("SYNC_BLOBS_APP_URL")
     AUTH_SECRET = os.getenv("AUTH_SECRET")
     AUTH_JWT_AUDIENCE = os.getenv("AUTH_JWT_AUDIENCE", "api://lost-circulation-material-api")
