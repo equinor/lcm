@@ -13,3 +13,5 @@ api/src/tests/products_data.py
 /api/.coverage
 /api/src/test_data/interpolate_input.csv
 .python-version
+secrets/
+!secrets/.gitkeep

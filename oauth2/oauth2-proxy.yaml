@@ -1,0 +1,44 @@
+injectResponseHeaders:
+  - name: X-Auth-Request-Access-Token
+    values:
+      - claimSource:
+          claim: access_token
+  - name: Authorization
+    values:
+      - claimSource:
+          claim: id_token
+          prefix: "Bearer "
+
+providers:
+  - provider: oidc
+    id: Microsoft Entra ID
+    clientID: ${OAUTH_CLIENT_ID}
+    clientSecret: ${CLIENT_SECRET}
+    clientSecretFile: ${CLIENT_SECRET_FILE}
+    scope: openid profile offline_access email
+    oidcConfig:
+      emailClaim: email
+      groupsClaim: groups
+      audienceClaims:
+        - aud
+      insecureAllowUnverifiedEmail: true
+      issuerURL: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/v2.0"
+      # By default, oauth2-proxy discovers the userinfo URL, and then fails to log
+      # in as it can't fetch the groups list from there.  We don't care about AAD
+      # group memberships, so instead we must disable discovery and manually
+      # configure the other URLs that would normally be discovered but leave the
+      # profileURL blank.  This way it doesn't attempt to fetch groups at all.
+      skipDiscovery: true
+      jwksURL: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/discovery/v2.0/keys"
+    loginURL: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/authorize"
+    redeemURL: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/token"
+    code_challenge_method: S256
+
+server:
+  BindAddress: 0.0.0.0:8081
+
+upstreamConfig:
+  upstreams:
+    - id: nginx
+      path: /
+      uri: http://nginx:8080/
