@@ -1,0 +1,32 @@
+site_name: Lost Circulation Material (LCM) Docs
+repo_url: https://github.com/equinor/lost-circulation-material
+site_description: Documentation for the Lost Circulation Material (LCM) application
+site_url: https://lost-circulation-material.app.radix.equinor.com
+docs_dir: docs
+theme:
+  name: material
+plugins:
+  - techdocs-core
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.details
+nav:
+  - Home: index.md
+  - LCM Developers:
+    - Overview: developers/guide/index.md
+    - Setup: developers/guide/setup.md
+    - Running: developers/guide/running.md
+    - Testing: developers/guide/testing.md
+    - Upgrading: developers/guide/upgrading.md
+  - LCM Operators:
+    - Overview: operators/runbook/index.md
+    - Authentication: operators/runbook/authentication.md
+    - Architecture: operators/runbook/architecture.md
+    - Configuration: operators/runbook/configuration.md
+    - Deployment: operators/runbook/deployment.md
+    - Operations: operators/runbook/operations.md
+    - Security: operators/runbook/security.md

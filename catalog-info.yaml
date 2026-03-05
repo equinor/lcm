@@ -1,0 +1,129 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: lcm
+  title: Lost Circulation Material
+  description: Web application for creating, comparing, and optimize blending of lost circulation material used to bridge fractures and stop losses in rock formations during petroleum drilling.
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-ref: dir:.
+    equinor.com/techdocs-builder: host
+  links:
+    - url: "https://lost-circulation-material.app.radix.equinor.com/"
+      title: "Production environment"
+      icon: star
+    - url: "https://proxy-lost-circulation-material-test.radix.equinor.com/"
+      title: "Test environment"
+      icon: unstarred
+    - url: "https://console.radix.equinor.com/applications/lost-circulation-material"
+      title: "Radix console"
+      icon: dashboard
+    - url: "https://statoilsrm.sharepoint.com/sites/LCMlibrary/Lists/Product"
+      title: "LCM library in SharePoint"
+      icon: library
+spec:
+  type: product
+  lifecycle: production
+  owner: team-hermes
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: lcm-api
+  title: LCM API
+  description: Flask backend for LCM application.
+  tags:
+    - backend
+    - api
+    - flask
+    - python
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-entity: system:default/lcm
+
+spec:
+  type: service
+  lifecycle: production
+  owner: team-hermes
+  system: system:default/lcm
+  providesApis:
+    - lcm-api
+  dependsOn:
+    - resource:default/lcm-database
+    - resource:default/lcm-blob-storage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: lcm-frontend
+  title: LCM Frontend
+  description: React frontend application for LCM.
+  tags:
+    - frontend
+    - react
+    - typescript
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-entity: system:default/lcm
+  links:
+    - url: "https://lost-circulation-material.app.radix.equinor.com/"
+      title: "LCM Application"
+      icon: app
+spec:
+  type: website
+  lifecycle: production
+  owner: team-hermes
+  system: system:default/lcm
+  consumesApis:
+    - lcm-api
+  dependsOn:
+    - component:default/lcm-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: lcm-database
+  title: LCM Database
+  description: Azure Tables database for LCM.
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-entity: system:default/lcm
+spec:
+  type: database
+  lifecycle: production
+  owner: team-hermes
+  system: system:default/lcm
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: lcm-blob-storage
+  title: LCM Blob Storage
+  description: Azure Blob Storage for LCM.
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-entity: system:default/lcm
+spec:
+  type: database
+  lifecycle: production
+  owner: team-hermes
+  system: system:default/lcm
+  dependsOn:
+    - resource:default/lcm-sharepoint
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: lcm-sharepoint
+  title: LCM SharePoint
+  description: SharePoint storage for LCM.
+  annotations:
+    github.com/project-slug: equinor/lcm
+    backstage.io/techdocs-entity: system:default/lcm
+spec:
+  type: database
+  lifecycle: production
+  owner: Equinor
+  system: system:default/lcm
+---
