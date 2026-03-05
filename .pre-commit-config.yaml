@@ -6,6 +6,7 @@ repos:
       - id: check-merge-conflict
       - id: check-json
       - id: check-yaml
+        exclude: (mkdocs\.ya?ml|catalog-info\.yaml)$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.15.4"
