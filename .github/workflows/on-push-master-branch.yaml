@@ -1,17 +1,19 @@
-name: Algorithm-Report
-
+name: "Push to master branch"
 on:
   workflow_dispatch:
   push:
     branches:
-      - prod
+      - master
 
 permissions:
   contents: read
-  actions: write  
+  actions: write
 
 jobs:
-  test-report:
+  tests:
+    uses: ./.github/workflows/tests.yaml
+
+  build-test-report:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
