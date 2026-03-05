@@ -17,7 +17,7 @@ jobs:
         run: docker build --tag api-development ./api
 
       - name: "API UnitTests"
-        run: docker run --rm -e TABEL_KEY="${{ secrets.TABEL_KEY }}" api-development pytest src/tests
+        run: docker run --rm api-development pytest src/tests
 
   test-web:
     runs-on: ubuntu-latest
