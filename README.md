@@ -1,4 +1,5 @@
 # Lost Circulation Material Optimizer
+[![License][license-badge]][license]
 
 ![CI](https://github.com/equinor/lcm/workflows/CI/badge.svg)
 
@@ -11,29 +12,6 @@ This repository is the result from the merger of the two summer intern projects 
 
 ![plot](doc/bridge-plot.png)
 
-Deployed environments:
- - [Test](https://proxy-lost-circulation-material-test.radix.equinor.com)
- - [Production](https://lost-circulation-material.app.radix.equinor.com)
-
-## Requirements
-
-- docker
-- docker-compose
-
-## Running
-
-1. Create a copy of `.env-template` called `.env` and populate it with values.
-2. Build the containers
-
-    ```sh
-    docker compose build
-    ```
-
-3. Start the project
-
-    ```sh
-    docker compose up
-    ```
 
 ## Contributing
 
@@ -41,10 +19,11 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
-## Operational runbook
+<a id="development"></a>
+## Development
 
-[RUNBOOK](runbook.md)
+See the [docs](https://varia.equinor.com/docs/default/system/lcm) if you want to start developing.
 
-## License
 
-[MIT](LICENSE)
+[license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
+[license]: https://github.com/equinor/lcm/blob/master/LICENSE.md
