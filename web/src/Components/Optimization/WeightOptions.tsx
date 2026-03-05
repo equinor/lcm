@@ -15,14 +15,6 @@ export type Weight = {
   bridge: number
   mass: number
   products: number
-  environmental?: Array<Environmental>
-}
-
-export enum Environmental {
-  GREEN = 'GREEN',
-  YELLOW = 'YELLOW',
-  RED = 'RED',
-  BLACK = 'BLACK',
 }
 
 type WeightOptionsProps = {

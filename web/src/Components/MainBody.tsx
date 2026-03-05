@@ -17,7 +17,7 @@ const MainComponentsWrapper = styled.div`
   padding: 16px 0 16px 0;
 `
 
-export type MainBodyProps = {
+type MainBodyProps = {
   products: Products
 }
 
