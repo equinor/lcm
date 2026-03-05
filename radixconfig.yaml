@@ -13,6 +13,18 @@ spec:
       build:
         from: master
   components:
+    - name: redis
+      image: dhi.io/redis:7.4.7-debian13-compat
+      secrets:
+        - REDIS_PASSWORD
+    - name: oauth2-proxy
+      src: ./oauth2
+      environment:
+        CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
+      secrets:
+        - OAUTH2_PROXY_COOKIE_SECRET
+        - REDIS_PASSWORD
+        - CLIENT_SECRET
     - name: web
       src: ./web
       ports:
@@ -22,10 +34,10 @@ spec:
       src: ./api
       resources:
         requests:
-          memory: '800Mi'
-          cpu: '100m'
+          memory: "800Mi"
+          cpu: "100m"
         limits:
-          cpu: '4000m'
+          cpu: "4000m"
       environmentConfig:
         - environment: prod
           secrets:
@@ -36,12 +48,12 @@ spec:
             minReplicas: 1
             maxReplicas: 8
             triggers:
-            - name: cpu
-              cpu:
-                value: 85
-            - name: memory
-              cpu:
-                value: 75
+              - name: cpu
+                cpu:
+                  value: 85
+              - name: memory
+                cpu:
+                  value: 75
         - environment: test
           variables:
             ENVIRONMENT: test
@@ -49,12 +61,12 @@ spec:
             minReplicas: 1
             maxReplicas: 4
             triggers:
-            - name: cpu
-              cpu:
-                value: 85
-            - name: memory
-              cpu:
-                value: 75
+              - name: cpu
+                cpu:
+                  value: 85
+              - name: memory
+                cpu:
+                  value: 75
       ports:
         - name: flask
           port: 5000
