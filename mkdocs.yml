@@ -1,5 +1,5 @@
 site_name: Lost Circulation Material (LCM) Docs
-repo_url: https://github.com/equinor/lost-circulation-material
+repo_url: https://github.com/equinor/lcm
 site_description: Documentation for the Lost Circulation Material (LCM) application
 site_url: https://lost-circulation-material.app.radix.equinor.com
 docs_dir: docs
