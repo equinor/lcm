@@ -6,6 +6,7 @@ services:
       - "80:8080"
     depends_on:
       - web
+      - oauth2-proxy
 
   redis:
     image: dhi.io/redis:7.4.7-debian13-compat
@@ -16,7 +17,7 @@ services:
     environment:
       REDIS_PASSWORD: 'very secret'
       OAUTH2_PROXY_COOKIE_SECRET: 'secure cookie'
-      CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
+      OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
     secrets: 
       - client_secret
   api:

@@ -25,7 +25,7 @@ cookie_csrf_per_request_limit = 20
 
 ## Cookie storage
 session_store_type = "redis"
-redis_connection_url = "redis://cookie-cache:6379"
+redis_connection_url = "redis://redis:6379"
 
 ## mark paths as API routes to get HTTP Status code 401 instead of redirect to login page
 api_routes = [
