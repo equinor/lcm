@@ -1,10 +1,10 @@
 # Security Management
 
-# Security Incidents
+## Security Incidents
 
 > _Describe how information security incidents are handled._
 
-Security Incidents should be reported at [Equinor's Computer Security Incident Response Team](www.equinor.com/about-us/csirt) as soon as identified.
+Security Incidents should be reported at [Equinor's Computer Security Incident Response Team](https://www.equinor.com/about-us/csirt) as soon as identified.
 
 ## Security Checks
 
@@ -32,3 +32,5 @@ We use [GitHub Advanced Security][ghas] for:
 * **Dependency Scanning (SCA)**: Detects and updates vulnerable third-party dependencies via the Dependency Graph.
 * **Code Scanning (SAST)**: Analyzes source code for security and quality issues using CodeQL before deployment.
 * **Secret Scanning**: Alerts on exposed secrets in the codebase to prevent leaks.
+
+[ghas]: https://docs.github.com/en/code-security/github-advanced-security
