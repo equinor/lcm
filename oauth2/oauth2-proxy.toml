@@ -1,0 +1,33 @@
+# Below are the configurations that are not (yet) supported in the alpha config
+
+# Profider information
+## These are required
+email_domains = [
+    "example.com",
+    "equinor.com",
+    "statoilsrm.onmicrosoft.com",
+]
+
+## These are _thechnically_ not required, but we need to nonetheless
+reverse_proxy = true
+
+## Automatic redirect
+skip_provider_button = true
+
+# Cookie settings
+cookie_samesite = "lax"
+cookie_secure = true
+cookie_httponly = true
+cookie_refresh = "15m"
+cookie_expire = "1h"
+cookie_csrf_per_request = true
+cookie_csrf_per_request_limit = 20
+
+## Cookie storage
+session_store_type = "redis"
+redis_connection_url = "redis://redis:6379"
+
+## mark paths as API routes to get HTTP Status code 401 instead of redirect to login page
+api_routes = [
+   "^/api/.*"
+]
