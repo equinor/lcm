@@ -66,7 +66,7 @@ _This document provides operational and administrative details for managing the 
 
 - [Slack: Project Channel][slack-project-channel]
 
-
+[azure-subscription]: https://portal.azure.com/#@StatoilSRM.onmicrosoft.com/resource/subscriptions/0a78ee8b-9e26-4088-9f6d-8de5fc5cd0ae/overview
 [lcm-radix-console]: https://console.radix.equinor.com/applications/lost-circulation-material
 [radix-admin-group]: https://portal.azure.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/13b319d8-ee25-4b6b-97db-74bad07d2057
 [github-repository]: https://github.com/equinor/lost-circulation-material
