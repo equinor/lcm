@@ -1,22 +1,17 @@
 import axios from 'axios'
-import { useAuthContext } from 'react-oauth2-code-pkce'
 import type { BridgeApiRequest, OptimizationApiData, ProductValues, ReportApiRequest } from '../types'
 
 export function useApi() {
   const BASE_PATH = '/api'
-  const { token } = useAuthContext()
 
   function apiPost<T>(endpoint: string, data: T, responseType: 'blob' | 'json' = 'json') {
     return axios.post(`${BASE_PATH}/${endpoint}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
       responseType,
     })
   }
 
   function apiGet(endpoint: string) {
-    return axios.get(`${BASE_PATH}/${endpoint}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    return axios.get(`${BASE_PATH}/${endpoint}`)
   }
 
   function runOptimizer(data: OptimizationApiData) {

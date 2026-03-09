@@ -1,27 +1,21 @@
-import { useContext } from 'react'
-
 import { Home } from './Pages/Home'
 
 import 'react-toastify/dist/ReactToastify.css'
 import { AppInsightsContext } from '@microsoft/applicationinsights-react-js'
-import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
 import { ToastContainer } from 'react-toastify'
 import { reactPlugin } from './lib/applicationInsights'
 import { ParticleSizeContextProvider } from './lib/contexts/particle-size'
+import { UserContextProvider } from './lib/contexts/user'
 
 export function App() {
-  const { tokenData }: IAuthContext = useContext(AuthContext)
-
-  if (!tokenData) return null
-
   return (
-    <>
+    <UserContextProvider>
       <ParticleSizeContextProvider>
         <AppInsightsContext value={reactPlugin}>
           <Home />
         </AppInsightsContext>
       </ParticleSizeContextProvider>
       <ToastContainer />
-    </>
+    </UserContextProvider>
   )
 }

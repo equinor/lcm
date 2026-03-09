@@ -9,15 +9,21 @@ services:
       - oauth2-proxy
 
   redis:
-    image: dhi.io/redis:7.4.7-debian13-compat
+    build: ./redis
+    restart: unless-stopped
     environment:
       REDIS_PASSWORD: 'very secret'
   oauth2-proxy:
     build: ./oauth2
+    depends_on:
+      redis:
+        condition: service_healthy
     environment:
-      REDIS_PASSWORD: 'very secret'
-      OAUTH2_PROXY_COOKIE_SECRET: 'secure cookie'
+      OAUTH2_PROXY_REDIS_PASSWORD: 'very secret'
+      OAUTH2_PROXY_COOKIE_SECRET: 'vry secure cokie' #  cookie_secret must be 16, 24, or 32 bytes
       OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
+      OAUTH2_PROXY_REDIRECT_URL: http://localhost/oauth2/callback
+      CLIENT_SECRET_FILE: /run/secrets/client_secret
     secrets: 
       - client_secret
   api:
@@ -29,8 +35,6 @@ services:
       FLASK_DEBUG: "true"
       TABLE_KEY: ${TABLE_KEY}
       APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
-    ports:
-      - "5000:5000"
     volumes:
       - ./api/src:/app/src
 

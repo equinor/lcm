@@ -1,7 +1,6 @@
 import { Accordion, Button, Icon, Typography } from '@equinor/eds-core-react'
 import { delete_to_trash, visibility_off } from '@equinor/eds-icons'
-import { useContext, useEffect, useState } from 'react'
-import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { colors } from '../lib/constants/colors'
 import { BridgingOption } from '../lib/enums/BridgingOption'
@@ -26,7 +25,6 @@ export function MainBody({ products }: MainBodyProps) {
   const [bridgeValue, setBridgeValue] = useState<number>(500)
   const [combinations, setCombinations] = useLocalStorage<Combinations>('combinations', {})
   const [bridges, setBridges] = useState<Bridge>({ Bridge: [] })
-  const { token }: IAuthContext = useContext(AuthContext)
   const { calculateOptimalBridge: postBridge, calculateBridgeFromCombination: postCombination } = useApi()
 
   // Update optimal bridge
@@ -43,7 +41,7 @@ export function MainBody({ products }: MainBodyProps) {
         ErrorToast(`${error.response.data}`, error.response.status)
         console.error(`fetch error ${error}`)
       })
-  }, [bridgeValue, mode, token])
+  }, [bridgeValue, mode])
 
   async function fetchBridges(_combinations: Combinations): Promise<Bridge[]> {
     return await Promise.all(

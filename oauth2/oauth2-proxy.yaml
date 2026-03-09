@@ -15,10 +15,9 @@ providers:
     clientID: ${OAUTH_CLIENT_ID}
     clientSecret: ${CLIENT_SECRET}
     clientSecretFile: ${CLIENT_SECRET_FILE}
-    scope: openid profile offline_access email
+    scope: openid profile email
     oidcConfig:
       emailClaim: email
-      groupsClaim: groups
       audienceClaims:
         - aud
       insecureAllowUnverifiedEmail: true
