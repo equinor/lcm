@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, g, request, send_file
 
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
@@ -22,6 +22,13 @@ def init_api():
 
 
 app = init_api()
+
+
+@app.route("/api/me", methods=["GET"])
+@authorize
+@handle_exceptions
+def me():
+    return {"name": g.user.name, "email": g.user.email, "oid": g.user.oid}
 
 
 @app.route("/api/products", methods=["GET"])

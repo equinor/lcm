@@ -1,14 +1,13 @@
 # Below are the configurations that are not (yet) supported in the alpha config
 
-# Profider information
+# Provider information
 ## These are required
 email_domains = [
-    "example.com",
     "equinor.com",
     "statoilsrm.onmicrosoft.com",
 ]
 
-## These are _thechnically_ not required, but we need to nonetheless
+## These are _technically_ not required, but we need to nonetheless
 reverse_proxy = true
 
 ## Automatic redirect

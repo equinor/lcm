@@ -9,11 +9,14 @@ class Config:
     BLOB_CONTAINER_NAME = "lcm-file-blobs"
     SYNC_BLOBS_APP_URL = os.getenv("SYNC_BLOBS_APP_URL")
     AUTH_SECRET = os.getenv("AUTH_SECRET")
-    AUTH_JWT_AUDIENCE = os.getenv("AUTH_JWT_AUDIENCE", "api://lost-circulation-material-api")
+    AUTH_JWT_AUDIENCES = os.getenv(
+        "AUTH_JWT_AUDIENCES", "api://lost-circulation-material-api,1dbc1e96-268d-41ad-894a-92a9fb85f954"
+    ).split(",")
     AUTH_JWT_ISSUER = os.getenv("AUTH_JWT_ISSUER")
-    AUTH_JWK_URL = os.getenv("AUTH_JWK_URL", "https://login.microsoftonline.com/common/discovery/v2.0/keys")
-    ROUNDING_DECIMALS = 3
-    DEFAULT_MAX_ITERATIONS = 100
+    AUTH_OIDC_WELL_KNOWN = os.getenv(
+        "AUTH_OIDC_WELL_KNOWN",
+        "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/v2.0/.well-known/openid-configuration",
+    )
     HOME_DIR = str(Path(__file__).parent.absolute())
     PRODUCT_TABLE_NAME = "products"
     NAMED_SUPPLIERS: tuple[str, ...] = ("Baker Hughes", "Halliburton", "Schlumberger")

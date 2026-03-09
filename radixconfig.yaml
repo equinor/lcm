@@ -14,16 +14,16 @@ spec:
         from: master
   components:
     - name: redis
-      image: dhi.io/redis:7.4.7-debian13-compat
+      src: ./redis
       secrets:
         - REDIS_PASSWORD
     - name: oauth2-proxy
       src: ./oauth2
       environment:
-        CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
+        OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
       secrets:
         - OAUTH2_PROXY_COOKIE_SECRET
-        - REDIS_PASSWORD
+        - OAUTH2_PROXY_REDIS_PASSWORD
         - CLIENT_SECRET
     - name: web
       src: ./web
@@ -40,8 +40,6 @@ spec:
           cpu: "4000m"
       environmentConfig:
         - environment: prod
-          secrets:
-            - AUTH_JWT_ISSUER
           variables:
             ENVIRONMENT: production
           horizontalScaling:
@@ -52,7 +50,7 @@ spec:
                 cpu:
                   value: 85
               - name: memory
-                cpu:
+                memory:
                   value: 75
         - environment: test
           variables:
@@ -65,17 +63,16 @@ spec:
                 cpu:
                   value: 85
               - name: memory
-                cpu:
+                memory:
                   value: 75
       ports:
         - name: flask
           port: 5000
-      publicPort: flask
       secrets:
         - TABLE_KEY
         - APPINSIGHTS_CON_STRING
         - SYNC_BLOBS_APP_URL
-    - name: proxy
+    - name: nginx
       src: ./nginx/
       ports:
         - name: nginx
@@ -84,4 +81,4 @@ spec:
 
   dnsAppAlias:
     environment: prod
-    component: proxy
+    component: nginx

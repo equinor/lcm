@@ -1,4 +1,3 @@
-import json
 import logging
 from functools import wraps
 
@@ -6,7 +5,6 @@ import jwt
 import requests
 from cachetools import TTLCache, cached
 from flask import abort, g, request
-from jwt.algorithms import RSAAlgorithm
 
 from classes.user import User
 from config import Config
@@ -15,35 +13,25 @@ from util.exceptions import AuthenticationException
 _logger = logging.getLogger("API")
 
 
-@cached(cache=TTLCache(maxsize=128, ttl=86400))
-def get_cert(key_id):
-    """
-    Fetches JSON-Web-Keys from the env AUTH_JWK_URL url
-    Returns a RSA PEM byte object from the key with the same 'kid' as the token.
-    Time-To-Live cache that expires every 24h
-    """
+@cached(cache=TTLCache(maxsize=1, ttl=86400))
+def _get_jwk_client() -> jwt.PyJWKClient:
     try:
-        jwks = requests.get(Config.AUTH_JWK_URL, timeout=30).json()["keys"]
-        return next(RSAAlgorithm.from_jwk(json.dumps(key)) for key in jwks if key["kid"] == key_id)
+        oid_conf = requests.get(Config.AUTH_OIDC_WELL_KNOWN, timeout=30).json()
+        return jwt.PyJWKClient(oid_conf["jwks_uri"])
     except requests.RequestException as error:
+        _logger.error(f"Failed to fetch OpenId Connect configuration for '{Config.AUTH_OIDC_WELL_KNOWN}': {error}")
         raise AuthenticationException(str(error)) from error
 
 
-def decode_jwt(token):
+def decode_jwt(token: str) -> dict:
     try:
-        # If Auth is configured with a secret, we use that to decode the token
         if Config.AUTH_SECRET:
-            decoded_token = jwt.decode(
-                token, Config.AUTH_SECRET, algorithms=["HS256"], audience=Config.AUTH_JWT_AUDIENCE
-            )
-        # If no secret provided, fallback to RSA based token signing.
-        else:
-            cert = get_cert(jwt.get_unverified_header(token)["kid"])
-            decode_options = {"algorithms": ["RS256"], "audience": Config.AUTH_JWT_AUDIENCE}
-            if Config.AUTH_JWT_ISSUER:
-                decode_options["issuer"] = Config.AUTH_JWT_ISSUER
-            decoded_token = jwt.decode(token, cert, **decode_options)
-        return decoded_token
+            return jwt.decode(token, Config.AUTH_SECRET, algorithms=["HS256"], audience=Config.AUTH_JWT_AUDIENCES)
+        signing_key = _get_jwk_client().get_signing_key_from_jwt(token).key
+        options = {"algorithms": ["RS256"], "audience": Config.AUTH_JWT_AUDIENCES}
+        if Config.AUTH_JWT_ISSUER:
+            options["issuer"] = Config.AUTH_JWT_ISSUER
+        return jwt.decode(token, signing_key, **options)
     except Exception as e:
         raise AuthenticationException(str(e)) from e
 

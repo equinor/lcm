@@ -1,7 +1,5 @@
 FROM node:25-alpine3.23 AS base
 ENV VITE_APPLICATION_OWNER=ovbra@equinor.com
-ENV VITE_CLIENT_ID=1dbc1e96-268d-41ad-894a-92a9fb85f954
-ENV VITE_SCOPES="api://lost-circulation-material-api/Optimization.All.All"
 ARG APPINSIGHTS_CON_STRING
 
 WORKDIR /code

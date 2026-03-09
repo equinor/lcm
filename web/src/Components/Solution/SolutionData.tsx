@@ -1,8 +1,8 @@
 import { Button, CircularProgress, Icon, Typography } from '@equinor/eds-core-react'
 import { save } from '@equinor/eds-icons'
-import { type ReactElement, useContext, useEffect, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { type ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useUserContext } from '../../lib/contexts/user'
 import { useApi } from '../../lib/hooks/useApi'
 import type { OptimizationData, Products } from '../../lib/types'
 import { ErrorToast } from '../Common/Toast'
@@ -65,9 +65,9 @@ function Densities({ products, productResults }: DensitiesProps): ReactElement {
 }
 
 export function SolutionData({ products, optimizationData }: SolutionDataProps) {
-  const { tokenData } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false)
   const { createReport: postReport } = useApi()
+  const { user } = useUserContext()
 
   useEffect(() => {
     window.scrollTo(0, 999999)
@@ -85,8 +85,8 @@ export function SolutionData({ products, optimizationData }: SolutionDataProps) 
       totalMass: optimizationData.totalMass,
       products: optimizationData.products,
       weighting: optimizationData.weighting,
-      email: tokenData?.upn || 'none',
-      user: tokenData?.name,
+      email: user?.email ?? '',
+      user: user?.name ?? '',
     }
     setLoading(true)
     postReport(reportRequest)
