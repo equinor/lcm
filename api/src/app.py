@@ -1,8 +1,4 @@
-import os
-
-from azure.monitor.opentelemetry import configure_azure_monitor
 from flask import Flask, request, send_file
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
@@ -21,10 +17,7 @@ from util.utils import convert_keys_camel_to_underscore, convert_keys_underscore
 def init_api():
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
-    logging.init_logging()
-    if os.getenv("FLASK_DEBUG") is None:
-        FlaskInstrumentor.instrument_app(flask_app)
-        configure_azure_monitor(connection_string=Config.APPINSIGHTS_CON_STRING, logger_name="API")
+    logging.init_logging(flask_app)
     return flask_app
 
 
