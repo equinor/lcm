@@ -46,12 +46,12 @@ spec:
             minReplicas: 1
             maxReplicas: 8
             triggers:
-              - name: cpu
-                cpu:
-                  value: 85
-              - name: memory
-                memory:
-                  value: 75
+            - name: cpu
+              cpu:
+                value: 85
+            - name: memory
+              memory:
+                value: 75
         - environment: test
           variables:
             ENVIRONMENT: test
@@ -59,12 +59,12 @@ spec:
             minReplicas: 1
             maxReplicas: 4
             triggers:
-              - name: cpu
-                cpu:
-                  value: 85
-              - name: memory
-                memory:
-                  value: 75
+            - name: cpu
+              cpu:
+                value: 85
+            - name: memory
+              memory:
+                value: 75
       ports:
         - name: flask
           port: 5000
