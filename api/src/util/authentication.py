@@ -1,5 +1,4 @@
 import logging
-from functools import wraps
 
 import jwt
 import requests
@@ -36,18 +35,12 @@ def decode_jwt(token: str) -> dict:
         raise AuthenticationException(str(e)) from e
 
 
-def authorize(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "Authorization" not in request.headers:
-            abort(401, "Missing 'Authorization' header")
-        try:
-            token = request.headers["Authorization"].split(" ", 1)[1]
-            g.user = User.from_jwt(decode_jwt(token))
-        except Exception as e:
-            _logger.warning("Auth failure: %s", e)
-            abort(401, "Failed to authorize the request")
-
-        return f(*args, **kwargs)
-
-    return wrap
+def authenticate_request() -> None:
+    if "Authorization" not in request.headers:
+        abort(401, "Missing 'Authorization' header")
+    try:
+        token = request.headers["Authorization"].split(" ", 1)[1]
+        g.user = User.from_jwt(decode_jwt(token))
+    except Exception as e:
+        _logger.warning("Auth failure: %s", e)
+        abort(401, "Failed to authorize the request")
