@@ -14,7 +14,6 @@ providers:
     id: Microsoft Entra ID
     clientID: ${OAUTH_CLIENT_ID}
     clientSecret: ${CLIENT_SECRET}
-    clientSecretFile: ${CLIENT_SECRET_FILE}
     scope: openid profile email
     oidcConfig:
       emailClaim: email
