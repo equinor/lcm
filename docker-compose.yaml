@@ -23,9 +23,8 @@ services:
       OAUTH2_PROXY_COOKIE_SECRET: 'vry secure cokie' #  cookie_secret must be 16, 24, or 32 bytes
       OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
       OAUTH2_PROXY_REDIRECT_URL: http://localhost/oauth2/callback
-      CLIENT_SECRET_FILE: /run/secrets/client_secret
-    secrets: 
-      - client_secret
+      CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
+
   api:
     build:
       context: ./api
@@ -51,7 +50,3 @@ services:
       USE_POLLING: ${USE_POLLING:-false}
     volumes:
       - ./web/src:/code/src
-secrets:
-  client_secret:
-    file: ./secrets/client_secret.txt
-    
