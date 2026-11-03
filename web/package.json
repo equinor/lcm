@@ -24,7 +24,7 @@
     "@types/styled-components": "^5.1.36",
     "@vitejs/plugin-react": "^5.2.0",
     "globals": "^17.4.0",
-    "typescript": "~5.9.3",
+    "typescript": "~7.0.2",
     "vite": "^8.3.5"
   },
   "scripts": {
