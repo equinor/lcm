@@ -46,7 +46,7 @@ repos:
           - --unsafe-fixes
 
   - repo: https://github.com/biomejs/pre-commit
-    rev: "v2.4.4"
+    rev: "v2.6.3"
     hooks:
       - id: biome-check
         name: "Lint: biome (js/ts)"
