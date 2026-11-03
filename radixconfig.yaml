@@ -82,3 +82,9 @@ spec:
   dnsAppAlias:
     environment: prod
     component: nginx
+
+  privateImageHubs:
+    ghcr.io:
+      # Github PAT from this user, with scope "read:packages"
+      username: mheggelund
+      email: maohe@equinor.com
