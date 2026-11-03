@@ -13,7 +13,7 @@ http {
     fastcgi_temp_path       /tmp/nginx/fastcgi_temp;
     uwsgi_temp_path         /tmp/nginx/uwsgi_temp;
     scgi_temp_path          /tmp/nginx/scgi_temp;
-    
+
     # These parameters fix too 'large headers' from Entra Tokens.
     proxy_buffer_size       128k;  # Adjust as needed
     proxy_buffers           4 256k; # Adjust as needed
@@ -60,7 +60,7 @@ http {
             proxy_set_header X-Forwarded-Port   $server_port;
             proxy_set_header Host               $host;
             proxy_set_header X-Request-Start    $msec;
-            
+
             auth_request                                /oauth2/auth;
 
             # if you enabled --pass-access-token, this will pass the token to the backend
@@ -101,7 +101,7 @@ http {
 
             auth_request_set $access_token              $upstream_http_x_auth_request_access_token;
             proxy_set_header X-Forwarded-Access-Token   $access_token;
-            
+
             # security headers
             add_header X-Content-Type-Options "nosniff" always;
             add_header Referrer-Policy "strict-origin-when-cross-origin" always;
