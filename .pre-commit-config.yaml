@@ -1,12 +1,35 @@
+default_stages: [pre-commit]
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        name: "Check: conventional formatted commit message"
+        stages: [commit-msg]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
+      - id: no-commit-to-branch
+        name: "Check: no commit to main or master"
+        args: [--branch, main, --branch, master]
+        stages: [commit-msg]
       - id: check-ast
       - id: check-merge-conflict
       - id: check-json
+      - id: check-toml
       - id: check-yaml
         exclude: (mkdocs\.ya?ml|catalog-info\.yaml)$
+      - id: check-case-conflict
+      - id: trailing-whitespace
+        exclude: ^.*\.lock$
+      - id: end-of-file-fixer
+        exclude: ^.*\.lock$
+      - id: mixed-line-ending
+        exclude: ^.*\.lock$
+      - id: detect-private-key
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.15.4"

@@ -67,4 +67,3 @@ The dev server starts on `http://localhost:3000`.
 | `VITE_SCOPES` | OAuth2 scopes requested by the frontend |
 | `VITE_APPINSIGHTS_CON_STRING` | Application Insights connection string |
 | `VITE_APPLICATION_OWNER` | Contact email shown in the application |
-

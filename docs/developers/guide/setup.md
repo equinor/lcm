@@ -1,5 +1,36 @@
 # Setting up the project
 
+## Install Git hooks
+
+With `pre-commit` installed, enable the repository's commit hooks in your clone:
+
+```sh
+pre-commit install
+```
+
+Each developer must run this once per clone (or rerun it after pulling this hook
+configuration update) to install both `pre-commit` and `commit-msg` hooks.
+The `no-commit-to-branch` hook runs at the `commit-msg` stage and blocks
+commits on `master` and `main`, including commits with no files to check.
+Create a feature branch before committing:
+
+```sh
+git switch -c chore/my-change
+```
+
+Commit messages must follow Conventional Commits, for example:
+
+```text
+chore: improve Git hooks
+fix: handle missing telemetry configuration
+```
+
+The pre-commit checks include Python and frontend linting, file syntax checks,
+whitespace and line-ending normalization, case conflicts, and private-key detection.
+
+This is a local guardrail, not a replacement for GitHub branch protection.
+`git commit --no-verify` bypasses the local hooks.
+
 
 ## Configure environment variables
 
