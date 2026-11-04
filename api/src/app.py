@@ -25,6 +25,16 @@ def init_api():
 app = init_api()
 
 
+@app.route("/api/health", methods=["GET"])
+def health():
+    return {"status": "ok"}
+
+
+@app.route("/api/about", methods=["GET"])
+def about():
+    return {"latestCommitHash": config.GIT_COMMIT_HASH, "version": config.GIT_TAG}
+
+
 @app.route("/api/me", methods=["GET"])
 @handle_exceptions
 def me():
