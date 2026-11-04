@@ -16,7 +16,7 @@ Security Incidents should be reported at [Equinor's Computer Security Incident R
 
 Tasks to perform:
 
-* Update passwords and certificates where applicable (Key Vault secrets).
+* Update passwords and certificates where applicable (Radix secrets in the Radix web console).
 * Review users and admin access in:
   * App registration and Enterprise application (roles and assignments).
   * Azure subscription role assignments (Owners/Contributors).

@@ -38,7 +38,7 @@ flowchart TB
 
     subgraph CICD["CI/CD"]
         GitHub["GitHub Actions<br/>Federated Identity"]
-        KeyVault["Azure Key Vault<br/>lcm-{env}-vault"]
+        RadixSecrets["Radix secrets<br/>(set in Radix console)"]
     end
 
     Browser -->|"1. Request"| NGINX
@@ -51,8 +51,8 @@ flowchart TB
     API -->|"5. Validate JWT"| JWKS
 
     GitHub -->|"Workload Identity Federation"| EntraID
-    KeyVault -->|"Secrets"| OAuth2Proxy
-    KeyVault -->|"Secrets"| API
+    RadixSecrets -->|"Secrets"| OAuth2Proxy
+    RadixSecrets -->|"Secrets"| API
 
     style EntraID fill:#0078d4,color:#fff
     style Roles fill:#ffd700,color:#000
