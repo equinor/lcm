@@ -25,8 +25,8 @@ This starts three containers:
 
 ```sh
 cd api
-poetry install # First time only
-poetry run flask run --host=0.0.0.0
+uv sync # First time only
+PYTHONPATH=src uv run flask --app src/app.py run --host=0.0.0.0
 ```
 
 The API starts on `http://localhost:5000`.

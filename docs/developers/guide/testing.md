@@ -11,12 +11,12 @@ The API uses [pytest](https://docs.pytest.org/) as its test framework. Tests are
 With Docker:
 
 ```sh
-docker compose exec api poetry run pytest
+docker compose exec api pytest
 ```
 
 Without Docker:
 
 ```sh
 cd api
-poetry run pytest
+PYTHONPATH=src uv run pytest src/tests
 ```

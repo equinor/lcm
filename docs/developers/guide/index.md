@@ -27,7 +27,7 @@ Before you begin, make sure you have the following tools installed:
 | Tool | Version | Purpose |
 |------|---------|---------|
 | [Python](https://www.python.org/) | ≥ 3.12 | API development |
-| [Poetry](https://python-poetry.org/) | ≥ 2.0 | Python dependency management |
+| [uv](https://docs.astral.sh/uv/) | Latest | Python dependency management |
 | [Node.js](https://nodejs.org/) | ≥ 25.x | Frontend development |
 | [npm](https://docs.npmjs.com/) | Bundled with Node.js | Frontend package management |
 

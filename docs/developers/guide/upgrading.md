@@ -29,27 +29,29 @@ npm outdated
 
 ## API dependencies
 
-The API uses **Poetry** for dependency management. The configuration is in `api/pyproject.toml`.
+The API uses **uv** for dependency management. The configuration is in `api/pyproject.toml`.
 
 ### Update all packages
 
 ```sh
 cd api
-poetry update
+uv lock --upgrade
+uv sync
 ```
 
 ### Update a specific package
 
 ```sh
 cd api
-poetry update <package-name>
+uv lock --upgrade-package <package-name>
+uv sync
 ```
 
 ### Check for outdated packages
 
 ```sh
 cd api
-poetry show --outdated
+uv tree --outdated --depth 1
 ```
 
 ### Add a new dependency
@@ -57,8 +59,8 @@ poetry show --outdated
 ```sh
 cd api
 # Runtime dependency
-poetry add <package-name>
+uv add <package-name>
 
 # Development-only dependency
-poetry add --group dev <package-name>
+uv add --dev <package-name>
 ```
