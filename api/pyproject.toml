@@ -22,7 +22,9 @@ dependencies = [
     "opentelemetry-api~=1.39",
     "opentelemetry-sdk~=1.39",
     "opentelemetry-instrumentation-flask~=0.60b0",
-    "azure-monitor-opentelemetry~=1.8.6"
+    "azure-monitor-opentelemetry~=1.8.6",
+    "pydantic~=2.14.2",
+    "pydantic-settings~=2.16.2"
 ]
 
 

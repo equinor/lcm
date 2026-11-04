@@ -5,15 +5,15 @@ from pathlib import Path
 from azure.storage.blob import BlobProperties, ContainerClient
 from pandas import DataFrame, read_excel
 
-from config import Config
+from config import config
 from util.azure_table import process_meta_blob, sanitize_row_key
 
 
 def get_container_client() -> ContainerClient:
     return ContainerClient(
-        account_url=f"{Config.TABLE_ACCOUNT_NAME}.blob.core.windows.net",
-        credential=Config.TABLE_KEY,
-        container_name=Config.BLOB_CONTAINER_NAME,
+        account_url=f"{config.TABLE_ACCOUNT_NAME}.blob.core.windows.net",
+        credential=config.TABLE_KEY,
+        container_name=config.BLOB_CONTAINER_NAME,
     )
 
 
