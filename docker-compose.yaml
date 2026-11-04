@@ -28,6 +28,7 @@ services:
   api:
     build:
       context: ./api
+      target: dev
     restart: unless-stopped
     environment:
       ENVIRONMENT: development
