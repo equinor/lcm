@@ -8,6 +8,7 @@ RUN adduser --disabled-password --no-create-home --gecos "" --uid 1000  nginx
 
 # Copy configs
 COPY default.nginx /etc/nginx/nginx.conf
+COPY config/ /etc/nginx/config/
 
 # Create log directory if not present, set permissions
 RUN mkdir -p /var/log/nginx && \

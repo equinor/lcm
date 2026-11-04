@@ -1,3 +1,5 @@
+# Local development reverse proxy (docker-compose). Proxies "/" to the Vite dev server.
+# The production image (web/Dockerfile, target prod) uses nginx.prod.conf instead.
 pid                         /var/run/nginx.pid;
 worker_processes            auto;
 
@@ -13,7 +15,7 @@ http {
     fastcgi_temp_path       /tmp/nginx/fastcgi_temp;
     uwsgi_temp_path         /tmp/nginx/uwsgi_temp;
     scgi_temp_path          /tmp/nginx/scgi_temp;
-
+    
     # These parameters fix too 'large headers' from Entra Tokens.
     proxy_buffer_size       128k;  # Adjust as needed
     proxy_buffers           4 256k; # Adjust as needed
@@ -27,56 +29,8 @@ http {
         access_log /dev/stdout combined;
         error_log /dev/stdout;
 
-        location /oauth2 {
-            proxy_pass          http://oauth2-proxy:8081;
-            proxy_set_header Host                    $host;
-            proxy_set_header X-Real-IP               $remote_addr;
-            proxy_set_header X-Auth-Request-Redirect $request_uri;
-            proxy_set_header X-Scheme                $scheme;
-        }
-
-        location = /oauth2/auth {
-            proxy_pass          http://oauth2-proxy:8081;
-            proxy_set_header Host             $host;
-            proxy_set_header X-Real-IP        $remote_addr;
-            proxy_set_header X-Forwarded-Uri  $request_uri;
-            proxy_set_header X-Scheme         $scheme;
-            # nginx auth_request includes headers but not body
-            proxy_set_header Content-Length   "";
-            proxy_pass_request_body           off;
-        }
-
-
-        location /api {
-            proxy_pass http://api:5000/api;
-            proxy_http_version                  1.1;
-            add_header Last-Modified            $date_gmt;
-            proxy_set_header Upgrade            $http_upgrade;
-            proxy_set_header Connection         "upgrade";
-            proxy_set_header X-Forwarded-Host   $host;
-            proxy_set_header X-Real-IP          $remote_addr;
-            proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto  $scheme;
-            proxy_set_header X-Forwarded-Port   $server_port;
-            proxy_set_header Host               $host;
-            proxy_set_header X-Request-Start    $msec;
-
-            auth_request                                /oauth2/auth;
-
-            # if you enabled --pass-access-token, this will pass the token to the backend
-            auth_request_set $token                     $upstream_http_authorization;
-            proxy_set_header Authorization              $token;
-
-            auth_request_set $access_token              $upstream_http_x_auth_request_access_token;
-            proxy_set_header X-Forwarded-Access-Token   $access_token;
-
-            proxy_read_timeout                  180;
-            error_page                          401 = @api_unauthorized;
-        }
-
-        location @api_unauthorized {
-            return 401;
-        }
+        include /etc/nginx/config/oauth2.conf;
+        include /etc/nginx/config/api.conf;
 
         location / {
             proxy_pass http://web:3000/;
@@ -101,15 +55,8 @@ http {
 
             auth_request_set $access_token              $upstream_http_x_auth_request_access_token;
             proxy_set_header X-Forwarded-Access-Token   $access_token;
-
-            # security headers
-            add_header X-Content-Type-Options "nosniff" always;
-            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-            add_header X-Frame-Options "DENY" always;
-            # Single source of truth for the app's CSP
-            # The script-src hash only allows the inline React Refresh preamble injected by the Vite dev server (local development)
-            add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk='; style-src 'self' https://*.equinor.com 'unsafe-inline'; img-src 'self' data:; object-src 'none'; font-src 'self' https://*.equinor.com; connect-src 'self' https://*.microsoftonline.com https://*.applicationinsights.azure.com https://*.monitor.azure.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
+            
+            include /etc/nginx/config/security-headers.conf;
             error_page 401 =    /oauth2/sign_in;
         }
     }
