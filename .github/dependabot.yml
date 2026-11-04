@@ -1,8 +1,7 @@
 version: 2
 
 updates:
-  # Python / Poetry uses the pip ecosystem.
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /api
     schedule:
       interval: monthly
