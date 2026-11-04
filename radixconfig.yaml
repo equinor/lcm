@@ -3,81 +3,134 @@ kind: RadixApplication
 metadata:
   name: lost-circulation-material
 spec:
-  build:
-    useBuildKit: false
+  # Images are built and published by GitHub Actions and deployed with `rx create pipeline-job deploy`,
+  # so no `build.from` is set (Radix should not build on push).
   environments:
     - name: prod
-      build:
-        from: prod
-    - name: test
-      build:
-        from: master
+    - name: dev
   components:
-    - name: redis
-      src: ./redis
-      secrets:
-        - REDIS_PASSWORD
-    - name: oauth2-proxy
-      src: ./oauth2
-      environment:
-        OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
-      secrets:
-        - OAUTH2_PROXY_COOKIE_SECRET
-        - OAUTH2_PROXY_REDIS_PASSWORD
-        - CLIENT_SECRET
-    - name: web
-      src: ./web
+    - name: api
+      image: ghcr.io/equinor/lcm/api:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      healthChecks:
+        startupProbe:
+          httpGet: &api-health-http
+            port: 5000
+            path: /api/health
+          failureThreshold: 30
+          periodSeconds: 2
+        readinessProbe:
+          httpGet: *api-health-http
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet: *api-health-http
+          periodSeconds: 30
+          failureThreshold: 3
+          timeoutSeconds: 5
       ports:
         - name: http
-          port: 3000
-    - name: api
-      src: ./api
+          port: 5000
       resources:
         requests:
           memory: "800Mi"
           cpu: "100m"
         limits:
           cpu: "4000m"
+      # Values are set per environment in the Radix web console
+      secrets:
+        - TABLE_KEY
+        - APPINSIGHTS_CON_STRING
+        - SYNC_BLOBS_APP_URL
       environmentConfig:
         - environment: prod
+          imageTagName: production
           variables:
             ENVIRONMENT: production
           horizontalScaling:
             minReplicas: 1
             maxReplicas: 8
-            triggers:
-            - name: cpu
-              cpu:
-                value: 85
-            - name: memory
-              memory:
-                value: 75
-        - environment: test
+            triggers: &api-hpa-triggers
+              - name: cpu
+                cpu:
+                  value: 85
+              - name: memory
+                memory:
+                  value: 75
+        - environment: dev
+          imageTagName: latest
           variables:
-            ENVIRONMENT: test
+            ENVIRONMENT: dev
           horizontalScaling:
             minReplicas: 1
             maxReplicas: 4
-            triggers:
-            - name: cpu
-              cpu:
-                value: 85
-            - name: memory
-              memory:
-                value: 75
-      ports:
-        - name: flask
-          port: 5000
-      secrets:
-        - TABLE_KEY
-        - APPINSIGHTS_CON_STRING
-        - SYNC_BLOBS_APP_URL
+            triggers: *api-hpa-triggers
+
+    # Serves the built SPA and reverse-proxies /api and /oauth2 (image built from web/Dockerfile, target prod)
     - name: nginx
-      src: ./nginx/
+      image: ghcr.io/equinor/lcm/nginx:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      readOnlyFileSystem: true
+      runAsUser: 101 # nginx-unprivileged
+      volumeMounts:
+        - name: nginx-cache
+          path: /var/cache/nginx
+          emptyDir:
+            sizeLimit: 10M
+        - name: nginx-tmp
+          path: /tmp
+          emptyDir:
+            sizeLimit: 64M
       ports:
-        - name: nginx
+        - name: http
           port: 8080
-      publicPort: nginx
+      publicPort: http
+      environmentConfig:
+        - environment: prod
+          imageTagName: production
+        - environment: dev
+          imageTagName: latest
+
+    - name: oauth2-proxy
+      image: ghcr.io/equinor/lcm/oauth2-proxy:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      runAsUser: 65532 # nonroot
+      environmentConfig:
+        - environment: prod
+          imageTagName: production
+          variables:
+            OAUTH2_PROXY_REDIRECT_URL: https://lost-circulation-material.app.radix.equinor.com/oauth2/callback
+        - environment: dev
+          imageTagName: latest
+          variables:
+            OAUTH2_PROXY_REDIRECT_URL: https://nginx-lost-circulation-material-dev.radix.equinor.com/oauth2/callback
+      variables:
+        OAUTH_CLIENT_ID: "1dbc1e96-268d-41ad-894a-92a9fb85f954"
+      # Values are set per environment in the Radix web console.
+      # OAUTH2_PROXY_REDIS_PASSWORD must equal REDIS_PASSWORD on the redis component.
+      secrets:
+        - CLIENT_SECRET
+        - OAUTH2_PROXY_COOKIE_SECRET
+        - OAUTH2_PROXY_REDIS_PASSWORD
+      ports:
+        - name: http
+          port: 8081
+
+    - name: redis
+      image: ghcr.io/equinor/lcm/redis:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      runAsUser: 65532 # nonroot
+      secrets:
+        - REDIS_PASSWORD
+      environmentConfig:
+        - environment: prod
+          imageTagName: production
+        - environment: dev
+          imageTagName: latest
+      ports:
+        - name: redis
+          port: 6379
 
   dnsAppAlias:
     environment: prod
