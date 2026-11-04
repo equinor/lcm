@@ -42,11 +42,10 @@ jobs:
 
       - name: Run pre-commit
         run: pre-commit run --all-files --verbose
-  
+
   validate-radix-config:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: equinor/radix-github-actions@e80f8b60d4b433cf7e7b207765cd8df61ce0f73a # v2.0.3
       - run: rx validate radix-config
-

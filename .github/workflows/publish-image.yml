@@ -30,7 +30,7 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-        
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
@@ -59,7 +59,7 @@ jobs:
             GIT_TAG=${{ inputs.release-tag || inputs.environment-tag }}
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api
-    
+
   build-and-publish-oauth2:
     runs-on: ubuntu-latest
     steps:
@@ -92,7 +92,7 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha,scope=oauth2
           cache-to: type=gha,mode=max,scope=oauth2
-    
+
   build-and-publish-redis:
     runs-on: ubuntu-latest
     steps:
@@ -125,7 +125,7 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha,scope=redis
           cache-to: type=gha,mode=max,scope=redis
-    
+
   build-and-publish-nginx:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment-tag == 'production' && 'production' || 'dev' }}
