@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: "Build web"
-        run: docker build --tag web-development ./web
+        run: docker build --target build --tag web-development ./web
 
   pre-commit:
     runs-on: ubuntu-latest
