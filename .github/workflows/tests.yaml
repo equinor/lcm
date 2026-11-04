@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: "Build API test image"
-        run: docker build --tag api-development ./api
+        run: docker build --target dev --tag api-development ./api
 
       - name: "API UnitTests"
         run: docker run --rm api-development pytest src/tests

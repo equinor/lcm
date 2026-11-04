@@ -19,10 +19,13 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: "Create report"
-        run: docker compose build api && docker compose run -u 0 api python src/tests/optimizer_test.py
+        run: |
+          docker build --target dev --tag api-development ./api
+          docker run --name algorithm-report api-development python src/tests/optimizer_test.py
+          docker cp algorithm-report:/app/src/test_report.png test_report.png
 
       - name: Archive results
         uses: actions/upload-artifact@v7
         with:
           name: algorithm-report
-          path: api/src/test_report.png
+          path: test_report.png
