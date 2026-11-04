@@ -49,6 +49,8 @@ updates:
       - /api
       - /web
       - /nginx
+      - /oauth2
+      - /redis
     schedule:
       interval: monthly
     cooldown:
