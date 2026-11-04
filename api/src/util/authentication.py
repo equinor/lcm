@@ -11,6 +11,8 @@ from util.exceptions import AuthenticationException
 
 _logger = logging.getLogger("API")
 
+PUBLIC_PATHS = frozenset({"/api/health", "/api/about"})
+
 
 @cached(cache=TTLCache(maxsize=1, ttl=86400))
 def _get_jwk_client() -> jwt.PyJWKClient:
@@ -36,6 +38,8 @@ def decode_jwt(token: str) -> dict:
 
 
 def authenticate_request() -> None:
+    if request.path in PUBLIC_PATHS:
+        return
     if "Authorization" not in request.headers:
         abort(401, "Missing 'Authorization' header")
     try:
