@@ -1,0 +1,55 @@
+name: "w: Deploy release"
+on:
+  workflow_dispatch:
+    inputs:
+      release-tag:
+        description: "GitHub release tag to deploy (e.g. v1.2.3). Select the same tag in 'Use workflow from', the images are rebuilt from the selected ref and tagged with this value."
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      release-tag: # Use input from previous call in release-please.yml
+        description: "GitHub release tag"
+        required: true
+        type: string
+
+permissions:
+  contents: read # read repo contents
+  packages: write # push images/artifacts to github container registry
+  id-token: write # enable OIDC federated identity, for deploying to cloud without storing secrets
+
+jobs:
+  # Images are built from the checked-out ref but tagged with release-tag. On manual runs, refuse to
+  # continue unless the selected ref is that tag, so an existing release tag is never overwritten
+  # with images built from another commit. When called from release-please.yml the ref is the
+  # release commit itself, so no check is needed.
+  verify-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify that the selected ref is the release tag
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          RELEASE_TAG: ${{ inputs.release-tag }}
+          REF: ${{ github.ref }}
+        run: |
+          if [[ "$REF" != "refs/tags/$RELEASE_TAG" ]]; then
+            >&2 echo "Refusing to build release '$RELEASE_TAG' from '$REF'. Select the tag '$RELEASE_TAG' in 'Use workflow from' and run again."
+            exit 1
+          fi
+
+  tests:
+    needs: verify-ref
+    uses: ./.github/workflows/tests.yaml
+
+  publish-prod-tag:
+    needs: tests
+    uses: ./.github/workflows/publish-image.yml
+    with:
+      environment-tag: production
+      release-tag: ${{ inputs.release-tag }}
+
+  deploy:
+    needs: publish-prod-tag
+    uses: ./.github/workflows/deploy_to_radix.yml
+    with:
+      radix-environment: "prod"
