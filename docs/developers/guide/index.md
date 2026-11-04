@@ -35,8 +35,7 @@ Before you begin, make sure you have the following tools installed:
 
 | Tool | Scope | Purpose |
 |------|-------|---------|
-| [Ruff](https://docs.astral.sh/ruff/) | API | Python linter |
-| [Black](https://black.readthedocs.io/) | API | Python code formatter |
+| [Ruff](https://docs.astral.sh/ruff/) | API | Python linter and formatter |
 | [Bandit](https://bandit.readthedocs.io/) | API | Python security linter |
 | [Biome](https://biomejs.dev/) | Web | TypeScript/JavaScript linter and formatter |
 

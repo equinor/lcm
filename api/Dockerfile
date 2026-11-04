@@ -20,24 +20,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # =============================================================================
-# Poetry: only used to resolve and install dependencies, never shipped in prod
+# uv: only used to resolve and install dependencies, never shipped in prod
 # =============================================================================
-FROM base AS poetry
-ENV POETRY_NO_INTERACTION=1
-ENV POETRY_VIRTUALENVS_IN_PROJECT=true
-ENV POETRY_CACHE_DIR=/tmp/poetry-cache
-RUN pip install --no-cache-dir "poetry~=2.2"
-COPY pyproject.toml poetry.lock ./
+FROM base AS uv
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /uvx /bin/
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+# Use the base image's Python so the venv copied into prod points at an interpreter that exists there
+ENV UV_PYTHON_PREFERENCE=only-system
+ENV UV_PYTHON_DOWNLOADS=never
+COPY pyproject.toml uv.lock ./
 
-FROM poetry AS deps
-RUN poetry install --no-root --only main --compile && rm -rf "$POETRY_CACHE_DIR"
+FROM uv AS deps
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-dev
 
 # =============================================================================
-# Development / test image: includes dev dependencies (pytest, ruff, ...) and Poetry.
+# Development / test image: includes dev dependencies (pytest, ruff, ...) and uv.
 # Used by docker-compose and the test workflow.
 # =============================================================================
-FROM poetry AS dev
-RUN poetry install --no-root --compile && rm -rf "$POETRY_CACHE_DIR"
+FROM uv AS dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project
 COPY src ./src
 RUN chown -R 1000:1000 /app
 USER 1000:1000

@@ -27,19 +27,16 @@ dependencies = [
     "pydantic-settings~=2.16.2"
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1,<10",
+    "bandit>=1.9.4,<2",
+    "ruff>=0.17.3,<0.18",
+    "coverage>=7.17.0,<8",
+]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-package-mode = false
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^9.0.3"
-bandit = "^1.8.3"
-ruff = "^0.9.7"
-coverage = "^7.6.12"
+[tool.uv]
+package = false
 
 [tool.ruff]
 
