@@ -71,13 +71,7 @@ The SharePoint site is the main data provider for the application. Product metad
 
 ### Secrets (Radix)
 
-The following secrets must be configured in the Radix console:
-
-| Secret | Used by | Description |
-|--------|---------|-------------|
-| `TABLE_KEY` | API | Azure Table Storage access key |
-| `APPINSIGHTS_CON_STRING` | API, Web (build) | Application Insights connection string |
-
+Secrets are stored as Radix secrets and set per environment in the Radix web console. See [Deployment](deployment.md#secrets) for the full list.
 
 ## Updating data
 

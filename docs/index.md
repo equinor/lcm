@@ -34,8 +34,8 @@ The application consists of three main components, all deployed on [Equinor's Om
 
 | Environment | URL | Branch |
 |-------------|-----|--------|
-| Test | <https://proxy-lost-circulation-material-test.radix.equinor.com> | `master` |
-| Production | <https://lost-circulation-material.app.radix.equinor.com> | `prod` |
+| Dev | <https://nginx-lost-circulation-material-dev.radix.equinor.com> | `master` |
+| Production | <https://lost-circulation-material.app.radix.equinor.com> | `release tag on master` |
 
 ## Further reading
 
