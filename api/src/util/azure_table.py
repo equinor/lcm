@@ -8,7 +8,7 @@ from typing import TextIO
 from azure.common import AzureConflictHttpError
 from azure.cosmosdb.table.tableservice import TableService
 
-from config import Config
+from config import config
 
 _logger = logging.getLogger("API")
 
@@ -48,7 +48,7 @@ def sanitize_row_key(value: str) -> str:
 
 
 def get_service():
-    return TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
+    return TableService(account_name=config.TABLE_ACCOUNT_NAME, account_key=config.TABLE_KEY)
 
 
 def process_meta_blob(meta_file: TextIO) -> list[dict]:
@@ -58,11 +58,11 @@ def process_meta_blob(meta_file: TextIO) -> list[dict]:
     for row in reader:
         products.append(
             {
-                "PartitionKey": Config.PRODUCT_TABLE_NAME,
+                "PartitionKey": config.PRODUCT_TABLE_NAME,
                 "RowKey": sanitize_row_key(row["title"]),
                 "id": sanitize_row_key(row["title"]),
                 **row,
-                "supplier": row["supplier"] if row["supplier"] in Config.NAMED_SUPPLIERS else "Other",
+                "supplier": row["supplier"] if row["supplier"] in config.NAMED_SUPPLIERS else "Other",
                 # TODO: Prod data is missing co2 impact
                 "co2": row["co2"] if row["co2"] else 1000,
                 # TODO: Prod data is missing cost

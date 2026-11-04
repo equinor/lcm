@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass
 
 from cachetools import TTLCache, cached
 
-from config import Config
+from config import config
 from util.azure_table import get_service
 from util.exceptions import InternalErrorException
 from util.utils import convert_keys_underscore_to_camel
@@ -43,7 +43,7 @@ def _sort_product_dict(products: dict[str, ProductDTO]) -> dict[str, ProductDTO]
 
 
 def retrieve_products() -> dict[str, ProductDTO]:
-    products = get_service().query_entities(Config.PRODUCT_TABLE_NAME)
+    products = get_service().query_entities(config.PRODUCT_TABLE_NAME)
 
     products_response = {}
     for p in products:

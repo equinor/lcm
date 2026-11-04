@@ -7,7 +7,7 @@ from azure.common import AzureMissingResourceHttpError
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
 from urllib3.exceptions import HeaderParsingError
 
-from config import Config
+from config import config
 from util.azure_blobs import get_metadata_blob_data, get_product_blobs_data
 from util.azure_table import create_table
 from util.exceptions import InternalErrorException
@@ -16,9 +16,9 @@ _logger = logging.getLogger("API")
 
 
 def sync_sharepoint_and_az_blobs():
-    if not Config.SYNC_BLOBS_APP_URL:
+    if not config.SYNC_BLOBS_APP_URL:
         raise InternalErrorException("SYNC_BLOBS_APP_URL is not configured")
-    request = requests.get(Config.SYNC_BLOBS_APP_URL, timeout=30)
+    request = requests.get(config.SYNC_BLOBS_APP_URL, timeout=30)
     request.raise_for_status()
     _logger.info("Triggered Logic App sync")
 
@@ -35,11 +35,11 @@ def delete_all_entries_in_table(table_service, table_name):
 
 
 def sync_excel_blobs_and_az_tables():
-    table_service = TableService(account_name=Config.TABLE_ACCOUNT_NAME, account_key=Config.TABLE_KEY)
-    if not table_service.exists(Config.PRODUCT_TABLE_NAME):
-        create_table(table_service, Config.PRODUCT_TABLE_NAME)
+    table_service = TableService(account_name=config.TABLE_ACCOUNT_NAME, account_key=config.TABLE_KEY)
+    if not table_service.exists(config.PRODUCT_TABLE_NAME):
+        create_table(table_service, config.PRODUCT_TABLE_NAME)
     # TODO: Consider insert_or_merge_entity() here instead https://docs.microsoft.com/en-us/python/api/azure-cosmosdb-table/azure.cosmosdb.table.tableservice.tableservice?view=azure-python
-    delete_all_entries_in_table(table_service, Config.PRODUCT_TABLE_NAME)
+    delete_all_entries_in_table(table_service, config.PRODUCT_TABLE_NAME)
     batch = TableBatch()
 
     table_data = get_metadata_blob_data()
@@ -51,9 +51,9 @@ def sync_excel_blobs_and_az_tables():
             p["cumulative"] = None
         batch.insert_entity(p)
     try:
-        table_service.commit_batch(table_name=Config.PRODUCT_TABLE_NAME, batch=batch)
+        table_service.commit_batch(table_name=config.PRODUCT_TABLE_NAME, batch=batch)
         _logger.info(
-            f"Uploaded products data to '{Config.PRODUCT_TABLE_NAME}' table in '{Config.TABLE_ACCOUNT_NAME}' storage account"
+            f"Uploaded products data to '{config.PRODUCT_TABLE_NAME}' table in '{config.TABLE_ACCOUNT_NAME}' storage account"
         )
 
     except HeaderParsingError as e:

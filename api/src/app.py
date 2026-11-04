@@ -2,7 +2,7 @@ from flask import Flask, g, request, send_file
 
 import util.logging as logging
 from calculators.bridge import SIZE_STEPS
-from config import Config
+from config import config
 from use_cases.bridge_from_combination import bridge_from_combination
 from use_cases.calculate_optimal_bridge import calculate_optimal_bridge
 from use_cases.create_report import create_report
@@ -16,7 +16,7 @@ from util.utils import convert_keys_camel_to_underscore, convert_keys_underscore
 
 def init_api():
     flask_app = Flask(__name__)
-    flask_app.config.from_object(Config)
+    flask_app.config.from_object(config)
     logging.init_logging(flask_app)
     flask_app.before_request(authenticate_request)
     return flask_app

@@ -6,7 +6,7 @@ from matplotlib.ticker import ScalarFormatter
 
 from calculators.bridge import SIZE_STEPS, theoretical_bridge
 from calculators.optimizer import Optimizer
-from config import Config
+from config import config
 from use_cases.get_products import ProductDTO
 from util.enums import BridgeOption
 
@@ -2960,7 +2960,7 @@ def create_algorithm_report():
     )
 
     plt.tight_layout()
-    fig.savefig(f"{Config.HOME_DIR}/test_report.png", format="png")
+    fig.savefig(f"{config.HOME_DIR}/test_report.png", format="png")
 
 
 if __name__ == "__main__":

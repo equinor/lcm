@@ -5,7 +5,7 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from flask import Flask
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
-from config import Config
+from config import config
 
 
 def init_logging(flask_app: Flask):
@@ -18,6 +18,6 @@ def init_logging(flask_app: Flask):
     logger.addHandler(handler)
     if os.getenv("FLASK_DEBUG") is None:
         FlaskInstrumentor.instrument_app(flask_app)
-        configure_azure_monitor(connection_string=Config.APPINSIGHTS_CON_STRING, logger_name="API")
+        configure_azure_monitor(connection_string=config.APPINSIGHTS_CON_STRING, logger_name="API")
 
     logger.info("Logger is configured")
