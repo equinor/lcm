@@ -14,12 +14,13 @@ CMD ["npm","run", "start"]
 
 FROM base AS build
 ARG APPINSIGHTS_CON_STRING
-RUN export VITE_APPINSIGHTS_CON_STRING=$(echo $APPINSIGHTS_CON_STRING|base64 -d) && npm run build
+RUN VITE_APPINSIGHTS_CON_STRING=$APPINSIGHTS_CON_STRING npm run build
 
-FROM node:25-alpine3.23  AS prod
-RUN npm install -g serve
-COPY --from=build /code/build /code/build
-EXPOSE 3000
-
-USER 1000:1000
-CMD ["serve", "--single", "/code/build", "--listen", "3000"]
+# Production image (published as ghcr.io/equinor/lcm/nginx): serves the built SPA and
+# reverse-proxies /api and /oauth2. Requires the build context `repository` pointing at the
+# repo root, e.g. `docker build --build-context repository=. --target prod ./web`.
+FROM nginxinc/nginx-unprivileged:1.31.7-alpine AS prod
+COPY --from=repository nginx/config/ /etc/nginx/config/
+COPY --from=repository nginx/nginx.prod.conf /etc/nginx/nginx.conf
+COPY --from=build /code/build /usr/share/nginx/html
+EXPOSE 8080
