@@ -1,0 +1,50 @@
+name: "Release Please"
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write # allows the workflow to push commits/tags.
+  pull-requests: write # allows creating/updating PRs.
+  issues: write
+
+# Concurrency allows 1 cycle at a time to avoid multiple simultaneous releases
+concurrency:
+  group: on-push-master-release-please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # A GitHub App token is used instead of GITHUB_TOKEN so that the release PR and the
+      # release tag trigger other workflows (tests on the PR, deploy on release).
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+
+  deploy-prod: # Only runs if a new release is created.
+    if: ${{ needs.release-please.outputs.release_created }}
+    needs: release-please
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/on-release.yml
+    with:
+      release-tag: ${{ needs.release-please.outputs.tag_name }}
+    secrets: inherit
