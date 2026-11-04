@@ -16,7 +16,11 @@ def init_logging(flask_app: Flask):
     handler = logging.StreamHandler()
     handler.setFormatter(logging.Formatter("%(levelname)s: %(asctime)s %(message)s"))
     logger.addHandler(handler)
-    if os.getenv("FLASK_DEBUG") is None:
+    if os.getenv("FLASK_DEBUG") is not None:
+        logger.info("FLASK_DEBUG is set, Application Insights is disabled")
+    elif not config.APPINSIGHTS_CON_STRING:
+        logger.warning("APPINSIGHTS_CON_STRING is not set, Application Insights is disabled")
+    else:
         FlaskInstrumentor.instrument_app(flask_app)
         configure_azure_monitor(connection_string=config.APPINSIGHTS_CON_STRING, logger_name="API")
 
