@@ -1,0 +1,61 @@
+#Deploy to radix and check deployment
+name: "w: Deploy to Radix"
+on:
+  workflow_dispatch:
+    inputs:
+      radix-environment:
+        description: "Which radix environment to deploy into"
+        default: "dev"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+  workflow_call: # Workflow is meant to be called from another workflow
+    inputs:
+      radix-environment:
+        description: "Which radix environment to deploy into (dev or prod)"
+        required: true
+        type: string # workflow_call does not support type choice
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-on-radix:
+    runs-on: ubuntu-latest
+    environment: deploy-to-radix
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Radix CLI (RX)
+        uses: equinor/radix-github-actions@e80f8b60d4b433cf7e7b207765cd8df61ce0f73a # v2.0.3
+        with:
+          azure_client_id: ${{ vars.AZURE_CLIENT_ID }} # Identity with federated credential for this repo, registered as Radix app admin
+
+      - name: Create pipeline job
+        # --commitID links the pipeline job to the commit in the Radix console
+        run: rx create pipeline-job deploy --environment ${{ inputs.radix-environment }} --commitID ${{ github.sha }} --follow --from-config
+
+  check-deployment:
+    # Will run 5 minutes after deploy-on-radix if deploy-on-radix completes successfully due to environment protection rule
+    needs: deploy-on-radix
+    runs-on: ubuntu-latest
+    environment: check-radix-deployment
+    steps:
+      - name: Check deployed commit hash
+        run: |
+          ABOUT_PATH="/api/about"
+
+          DEPLOY_URL="${{ vars.PROD_DEPLOY_URL || 'https://lost-circulation-material.app.radix.equinor.com' }}$ABOUT_PATH"
+          if [[ "${{ inputs.radix-environment }}" == 'dev' ]]
+          then
+            DEPLOY_URL="${{ vars.DEV_DEPLOY_URL || 'https://nginx-lost-circulation-material-dev.radix.equinor.com' }}$ABOUT_PATH"
+          fi
+
+          DEPLOYED_API_HASH=$(curl -fsS "$DEPLOY_URL" | jq --raw-output .latestCommitHash)
+          if [[ "${{ github.sha }}" != "$DEPLOYED_API_HASH" ]]; then
+            >&2 echo "Expected hash (${{ github.sha }}) to be deployed, found ($DEPLOYED_API_HASH)"
+            exit 1
+          fi

@@ -1,0 +1,167 @@
+name: "workflow: Publish container images"
+on:
+  workflow_call: # Workflow is meant to be called from another workflow, with the image tag as input
+    inputs:
+      environment-tag:
+        description: "Environment tag for the images (e.g., latest, production)."
+        required: true
+        type: string
+      release-tag:
+        description: "Release tag to give the images (e.g., v1.0.0)."
+        required: false
+        type: string
+
+env:
+  IMAGE_REGISTRY: ghcr.io
+  API_IMAGE: ghcr.io/equinor/lcm/api
+  NGINX_IMAGE: ghcr.io/equinor/lcm/nginx
+  OAUTH2_PROXY_IMAGE: ghcr.io/equinor/lcm/oauth2-proxy
+  REDIS_IMAGE: ghcr.io/equinor/lcm/redis
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  build-and-publish-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          TAGS="${{ env.API_IMAGE }}:${{ inputs.environment-tag }}"
+          if [[ -n "${{ inputs.release-tag }}" ]]; then
+            TAGS="${TAGS},${{ env.API_IMAGE }}:${{ inputs.release-tag }}"
+          fi
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      - name: Build and push API image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./api
+          target: prod
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+            GIT_TAG=${{ inputs.release-tag || inputs.environment-tag }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+    
+  build-and-publish-oauth2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          TAGS="${{ env.OAUTH2_PROXY_IMAGE }}:${{ inputs.environment-tag }}"
+          if [[ -n "${{ inputs.release-tag }}" ]]; then
+            TAGS="${TAGS},${{ env.OAUTH2_PROXY_IMAGE }}:${{ inputs.release-tag }}"
+          fi
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      - name: Build and push OAuth2 Proxy image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./oauth2
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha,scope=oauth2
+          cache-to: type=gha,mode=max,scope=oauth2
+    
+  build-and-publish-redis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          TAGS="${{ env.REDIS_IMAGE }}:${{ inputs.environment-tag }}"
+          if [[ -n "${{ inputs.release-tag }}" ]]; then
+            TAGS="${TAGS},${{ env.REDIS_IMAGE }}:${{ inputs.release-tag }}"
+          fi
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Redis image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./redis
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha,scope=redis
+          cache-to: type=gha,mode=max,scope=redis
+    
+  build-and-publish-nginx:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment-tag == 'production' && 'production' || 'dev' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: tags
+        run: |
+          TAGS="${{ env.NGINX_IMAGE }}:${{ inputs.environment-tag }}"
+          if [[ -n "${{ inputs.release-tag }}" ]]; then
+            TAGS="${TAGS},${{ env.NGINX_IMAGE }}:${{ inputs.release-tag }}"
+          fi
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      # SPA build + nginx (web/Dockerfile, target prod); nginx config is read from the repo root via the `repository` context
+      - name: Build and push Nginx image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./web
+          target: prod
+          build-contexts: |
+            repository=.
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: |
+            APPINSIGHTS_CON_STRING=${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+          cache-from: type=gha,scope=nginx
+          cache-to: type=gha,mode=max,scope=nginx
