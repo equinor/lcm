@@ -16,6 +16,8 @@ The application is deployed on [Omnia Radix](https://www.radix.equinor.com), Equ
 | `dev` | `latest` | Automatically on every push to `master` | `https://nginx-lost-circulation-material-dev.radix.equinor.com` |
 | `prod` | `production` | Automatically when a GitHub release is created by release-please (see [Releasing](#releasing)) | `https://lost-circulation-material.app.radix.equinor.com` |
 
+The old test URL `https://proxy-lost-circulation-material-test.radix.equinor.com` is kept as a Radix `dnsAlias` on the `dev` nginx component, and nginx answers it with a 301 redirect to the dev URL.
+
 ### Radix components
 
 | Component | Image | Port | Description |
