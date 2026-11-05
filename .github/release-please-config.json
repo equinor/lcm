@@ -20,6 +20,11 @@
     "extra-files": [
         "api/pyproject.toml",
         {
+            "type": "toml",
+            "path": "api/uv.lock",
+            "jsonpath": "$.package[?(@.name.value=='lcm')].version"
+        },
+        {
             "type": "json",
             "path": "web/package.json",
             "jsonpath": "$.version"
