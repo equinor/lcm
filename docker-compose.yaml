@@ -35,6 +35,7 @@ services:
       FLASK_DEBUG: "true"
       TABLE_KEY: ${TABLE_KEY}
       APPINSIGHTS_CON_STRING: ${APPINSIGHTS_CON_STRING}
+      SYNC_BLOBS_APP_URL: ${SYNC_BLOBS_APP_URL:-}
     volumes:
       - ./api/src:/app/src
 

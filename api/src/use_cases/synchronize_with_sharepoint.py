@@ -3,13 +3,10 @@ from datetime import datetime
 from time import sleep
 
 import requests
-from azure.common import AzureMissingResourceHttpError
 from azure.cosmosdb.table.tableservice import TableBatch, TableService
-from urllib3.exceptions import HeaderParsingError
 
 from config import config
 from util.azure_blobs import get_metadata_blob_data, get_product_blobs_data
-from util.azure_table import create_table
 from util.exceptions import InternalErrorException
 
 _logger = logging.getLogger("API")
@@ -23,41 +20,44 @@ def sync_sharepoint_and_az_blobs():
     _logger.info("Triggered Logic App sync")
 
 
-def delete_all_entries_in_table(table_service, table_name):
-    entities = []
-    try:
-        entities = list(table_service.query_entities(table_name))
-    except AzureMissingResourceHttpError:
-        _logger.info(f"Table '{table_name}' does not exist, skipping deletion")
-    for t in entities:
-        table_service.delete_entity(table_name, table_name, t.RowKey)
-    _logger.info(f"Deleted all rows in '{table_name}' table")
-
-
 def sync_excel_blobs_and_az_tables():
-    table_service = TableService(account_name=config.TABLE_ACCOUNT_NAME, account_key=config.TABLE_KEY)
-    if not table_service.exists(config.PRODUCT_TABLE_NAME):
-        create_table(table_service, config.PRODUCT_TABLE_NAME)
-    # TODO: Consider insert_or_merge_entity() here instead https://docs.microsoft.com/en-us/python/api/azure-cosmosdb-table/azure.cosmosdb.table.tableservice.tableservice?view=azure-python
-    delete_all_entries_in_table(table_service, config.PRODUCT_TABLE_NAME)
-    batch = TableBatch()
-
     table_data = get_metadata_blob_data()
+    if not table_data:
+        raise InternalErrorException("Synchronization aborted: product metadata is empty")
+
     products_data = get_product_blobs_data()
+    row_keys = set()
     for p in table_data:
+        if p["PartitionKey"] != config.PRODUCT_TABLE_NAME or p["RowKey"] in row_keys:
+            raise InternalErrorException("Synchronization aborted: invalid or duplicate product keys")
+        row_keys.add(p["RowKey"])
         try:
             p["cumulative"] = str(products_data[p["id"]]["cumulative"])
         except KeyError:
             p["cumulative"] = None
-        batch.insert_entity(p)
-    try:
-        table_service.commit_batch(table_name=config.PRODUCT_TABLE_NAME, batch=batch)
-        _logger.info(
-            f"Uploaded products data to '{config.PRODUCT_TABLE_NAME}' table in '{config.TABLE_ACCOUNT_NAME}' storage account"
-        )
 
-    except HeaderParsingError as e:
-        _logger.warning(f"HeaderParsingError during batch commit: {e}")
+    table_service = TableService(account_name=config.TABLE_ACCOUNT_NAME, account_key=config.TABLE_KEY)
+    table_exists = table_service.exists(config.PRODUCT_TABLE_NAME)
+    existing = list(table_service.query_entities(config.PRODUCT_TABLE_NAME)) if table_exists else []
+    if any(entity.PartitionKey != config.PRODUCT_TABLE_NAME for entity in existing):
+        raise InternalErrorException("Synchronization aborted: unexpected product partition")
+    obsolete = [entity for entity in existing if entity.RowKey not in row_keys]
+    # One partition and at most 100 operations keep the replacement atomic.
+    if len(table_data) + len(obsolete) > 100:
+        raise InternalErrorException("Synchronization aborted: replacement exceeds the 100-operation transaction limit")
+
+    batch = TableBatch()
+    for product in table_data:
+        batch.insert_or_replace_entity(product)
+    for entity in obsolete:
+        batch.delete_entity(entity.PartitionKey, entity.RowKey)
+
+    if not table_exists:
+        table_service.create_table(config.PRODUCT_TABLE_NAME)
+    table_service.commit_batch(table_name=config.PRODUCT_TABLE_NAME, batch=batch)
+    _logger.info(
+        f"Uploaded products data to '{config.PRODUCT_TABLE_NAME}' table in '{config.TABLE_ACCOUNT_NAME}' storage account"
+    )
 
 
 def synchronize_with_sharepoint():
