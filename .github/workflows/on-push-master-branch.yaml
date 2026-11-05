@@ -39,6 +39,9 @@ jobs:
     uses: ./.github/workflows/publish-image.yml
     with:
       environment-tag: latest
+    secrets:
+      DHI_USERNAME: ${{ secrets.DHI_USERNAME }}
+      DHI_PASSWORD: ${{ secrets.DHI_PASSWORD }}
 
   deploy:
     needs: publish-latest

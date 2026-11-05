@@ -10,6 +10,13 @@ on:
         description: "Release tag to give the images (e.g., v1.0.0)."
         required: false
         type: string
+    secrets:
+      DHI_USERNAME:
+        description: "Docker Hub username, used to pull Docker Hardened Images (dhi.io) base images."
+        required: true
+      DHI_PASSWORD:
+        description: "Docker Hub access token (read-only) for the DHI_USERNAME account."
+        required: true
 
 env:
   IMAGE_REGISTRY: ghcr.io
@@ -68,6 +75,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
+      - name: Login to DHI Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: dhi.io
+          username: ${{secrets.DHI_USERNAME}}
+          password: ${{secrets.DHI_PASSWORD}}
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
@@ -100,6 +114,13 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Login to DHI Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: dhi.io
+          username: ${{secrets.DHI_USERNAME}}
+          password: ${{secrets.DHI_PASSWORD}}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
