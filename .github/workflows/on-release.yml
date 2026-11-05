@@ -1,59 +1,61 @@
 name: "w: Deploy release"
 on:
+  release:
+    types: [published] # Fired by release-please.yml (uses a GitHub App token, so the event triggers workflows)
   workflow_dispatch:
     inputs:
       release-tag:
         description: "GitHub release tag to deploy (e.g. v1.2.3). Select the same tag in 'Use workflow from', the images are rebuilt from the selected ref and tagged with this value."
         required: true
         type: string
-  workflow_call:
-    inputs:
-      release-tag: # Use input from previous call in release-please.yml
-        description: "GitHub release tag"
-        required: true
-        type: string
-    secrets:
-      DHI_USERNAME:
-        description: "Docker Hub username, forwarded to publish-image.yml for dhi.io base image pulls."
-        required: true
-      DHI_PASSWORD:
-        description: "Docker Hub access token for the DHI_USERNAME account."
-        required: true
 
 permissions:
   contents: read # read repo contents
   packages: write # push images/artifacts to github container registry
   id-token: write # enable OIDC federated identity, for deploying to cloud without storing secrets
 
+# Queue (never cancel) production deploys, so automatic and manual runs can't interleave and
+# publish-image.yml's parallel jobs never leave the production tags pointing at mixed releases.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
-  # Images are built from the checked-out ref but tagged with release-tag. On manual runs, refuse to
-  # continue unless the selected ref is that tag, so an existing release tag is never overwritten
-  # with images built from another commit. When called from release-please.yml the ref is the
-  # release commit itself, so no check is needed.
+  # Images are built from the checked-out ref (github.sha) but tagged with the release tag. Refuse to
+  # continue unless the ref *is* that tag, so an existing release is never overwritten with images built
+  # from another commit. On the release event GitHub sets the ref to the tag; on manual runs the user
+  # must select the tag in 'Use workflow from'.
   verify-ref:
     runs-on: ubuntu-latest
+    outputs:
+      release-tag: ${{ steps.resolve.outputs.release-tag }}
     steps:
-      - name: Verify that the selected ref is the release tag
-        if: github.event_name == 'workflow_dispatch'
+      - name: Resolve release tag and verify that the ref matches it
+        id: resolve
         env:
-          RELEASE_TAG: ${{ inputs.release-tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release-tag }}
           REF: ${{ github.ref }}
         run: |
+          if [[ -z "$RELEASE_TAG" ]]; then
+            >&2 echo "No release tag found in the event payload or workflow inputs."
+            exit 1
+          fi
           if [[ "$REF" != "refs/tags/$RELEASE_TAG" ]]; then
             >&2 echo "Refusing to build release '$RELEASE_TAG' from '$REF'. Select the tag '$RELEASE_TAG' in 'Use workflow from' and run again."
             exit 1
           fi
+          echo "release-tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
   tests:
     needs: verify-ref
     uses: ./.github/workflows/tests.yaml
 
   publish-prod-tag:
-    needs: tests
+    needs: [verify-ref, tests]
     uses: ./.github/workflows/publish-image.yml
     with:
       environment-tag: production
-      release-tag: ${{ inputs.release-tag }}
+      release-tag: ${{ needs.verify-ref.outputs.release-tag }}
     secrets:
       DHI_USERNAME: ${{ secrets.DHI_USERNAME }}
       DHI_PASSWORD: ${{ secrets.DHI_PASSWORD }}
