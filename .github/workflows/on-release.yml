@@ -12,6 +12,13 @@ on:
         description: "GitHub release tag"
         required: true
         type: string
+    secrets:
+      DHI_USERNAME:
+        description: "Docker Hub username, forwarded to publish-image.yml for dhi.io base image pulls."
+        required: true
+      DHI_PASSWORD:
+        description: "Docker Hub access token for the DHI_USERNAME account."
+        required: true
 
 permissions:
   contents: read # read repo contents
@@ -47,6 +54,9 @@ jobs:
     with:
       environment-tag: production
       release-tag: ${{ inputs.release-tag }}
+    secrets:
+      DHI_USERNAME: ${{ secrets.DHI_USERNAME }}
+      DHI_PASSWORD: ${{ secrets.DHI_PASSWORD }}
 
   deploy:
     needs: publish-prod-tag
