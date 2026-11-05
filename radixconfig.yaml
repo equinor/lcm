@@ -136,6 +136,12 @@ spec:
     environment: prod
     component: nginx
 
+  # Keeps the old "test" URL alive; nginx answers this host with a 301 to the dev URL
+  dnsAlias:
+    - alias: proxy-lost-circulation-material-test
+      environment: dev
+      component: nginx
+
   privateImageHubs:
     ghcr.io:
       # Github PAT from this user, with scope "read:packages"
