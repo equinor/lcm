@@ -1,4 +1,4 @@
-FROM node:25-alpine3.23 AS base
+FROM node:26-alpine3.23 AS base
 ENV VITE_APPLICATION_OWNER=ovbra@equinor.com
 ARG APPINSIGHTS_CON_STRING
 
