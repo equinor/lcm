@@ -54,11 +54,11 @@ The Logic App uses two API connections:
 
 | Connection | Purpose | Authentication |
 |------------|---------|----------------|
-| `sharepointonline` | Access to the SharePoint site | Equinor credentials (function user `f_lcm_blend@statoil.net`) |
-| `azureblob` | Access to the Storage Account | Storage Account access key |
+| `sharepointonline` | Access to the SharePoint site | Equinor account with read access to the product list and document folders (function user `f_lcm_blend@statoil.net`) |
+| `azureblob-2` | Upload metadata and PSD files to Storage | Storage Account access key for `lcmdevstorage` |
 
-> **Troubleshooting**: If the Logic App returns "unauthorized" errors, the API connection tokens may have expired. See the [Reauthorizing Logic App connections](#reauthorizing-logic-app-connections) section below.
-
+> **Troubleshooting**: See [Troubleshooting Logic App synchronization](#troubleshooting-logic-app-synchronization)
+> for permissions, connection credentials, upload conflicts, and verification.
 
 ### SharePoint
 The SharePoint site is the main data provider for the application. Product metadata and product Particle Size Distribution (PSD) data is stored and updated here.
@@ -72,6 +72,9 @@ The SharePoint site is the main data provider for the application. Product metad
 ### Secrets (Radix)
 
 Secrets are stored as Radix secrets and set per environment in the Radix web console. See [Deployment](deployment.md#secrets) for the full list.
+
+The local API (`.env`), the deployed API (Radix secrets), and the Logic App connection (`azureblob-2`) hold credentials separately.
+Updating one does not update the others. Never commit access keys or signed trigger URLs, or include them in shared logs.
 
 ## Updating data
 
@@ -94,9 +97,20 @@ To synchronize product data between SharePoint and Azure:
 
 ## Reauthorizing Logic App connections
 
-If the Logic App returns "unauthorized" errors, the API connection tokens have likely expired. To fix:
+### SharePoint connection and permissions
 
-1. Go to the `TransferDocsToBlob` resource in the Azure Portal.
-2. Go to **API connections**.
-3. Click on **`sharepointonline`** → **Edit API connection** → **Authorize**. Log in with Equinor credentials.
-4. Click on **`azureblob`** → **Edit API connection** → **Authorize**. Paste the Azure Storage Account access key (found in `lcmdevstorage` → **Access keys**).
+1. Open `TransferDocsToBlob` in the Azure Portal, then **API connections**.
+2. Select `sharepointonline` → **Edit API connection** → **Authorize**.
+3. Sign in with your Equinor credentials (make sure you have access to the Sharepoint folder). To check access,
+open the exact site, list, and folder from the action's inputs in a browser signed in as that account.
+If access is denied, request it from the site owner, explaining that it is needed for LCM application synchronization.
+
+### Azure Blob connection access key
+
+1. Open **Storage accounts → lcmdevstorage → Security + networking → Access keys**.
+2. Copy one existing **Key** value (`key1` or `key2`), not the connection string.
+3. Open **Resource group lcm-dev → azureblob-2 → Edit API connection**, or navigate
+   there through the Logic App's **API connections**.
+4. Set **Authentication Type** to **Access Key**, the account name to
+   `lcmdevstorage`, and paste the key into **Azure Storage Account Access Key**.
+5. Save, and confirm both upload actions use this connection.
