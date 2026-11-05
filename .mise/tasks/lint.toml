@@ -1,0 +1,27 @@
+["lint:pre-commit"]
+description = "Run pre-commit hooks on all files"
+depends = ["install-dependencies"]
+run = "pre-commit run --all-files"
+
+["lint:ruff"]
+description = "Run ruff linter and formatter on the api"
+depends = ["install-dependencies:api"]
+dir = "{{ config_root }}/api"
+run = ["uv run ruff check --fix", "uv run ruff format"]
+
+["lint:biome"]
+description = "Run biome linter and formatter on the web"
+depends = ["install-dependencies:web"]
+run = "biome check --write web"
+
+["lint:typescript-typecheck"]
+description = "Ensure typescript code compiles without errors"
+depends = ["install-dependencies:web"]
+dir = "{{ config_root }}/web"
+run = "npx tsc --noEmit"
+
+[lint]
+description = "Run all linters"
+# lint:pre-commit already runs ruff and biome via the pre-commit hooks.
+depends = ["lint:pre-commit", "lint:typescript-typecheck"]
+run = "mise fmt"

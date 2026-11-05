@@ -1,0 +1,16 @@
+[serve]
+description = "Serve the full stack in docker"
+run = "docker compose up --build"
+
+["serve:api"]
+description = "Serve the api locally with hot reloading on changes"
+dir = "{{ config_root }}/api"
+depends = "install-dependencies:api"
+env = { PYTHONPATH = "src", FLASK_DEBUG = "true", ENVIRONMENT = "development" }
+run = "uv run flask --app src/app.py run --host=0.0.0.0"
+
+["serve:web"]
+description = "Serve the web application with live preview on changes"
+dir = "{{ config_root }}/web"
+depends = "install-dependencies:web"
+run = "npm run start"

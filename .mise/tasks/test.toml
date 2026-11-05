@@ -1,0 +1,9 @@
+["test:api"]
+description = "Run api tests"
+dir = "{{ config_root }}/api"
+env = { PYTHONPATH = "src" }
+run = "uv run pytest src/tests"
+
+[test]
+description = "Run all tests in the project"
+run = "mise run test:api"

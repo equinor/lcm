@@ -1,0 +1,40 @@
+["install-dependencies:api"]
+description = "Install API dependencies with uv"
+dir = "{{ config_root }}/api"
+# No sources/outputs: mise recreates an empty api/.venv on its own, so a freshness check
+# could skip the install. `uv sync` is a fast no-op when the venv is up to date.
+run = "uv sync --all-groups"
+
+["install-dependencies:api:locked"]
+description = "Install API dependencies and require a matching lockfile"
+dir = "{{ config_root }}/api"
+run = "uv sync --locked --all-groups"
+
+["install-dependencies:web"]
+description = "Install web dependencies with npm"
+dir = "{{ config_root }}/web"
+sources = ["package.json", "package-lock.json"]
+# Written by npm on every install, so a missing or stale node_modules triggers a reinstall.
+outputs = ["node_modules/.package-lock.json"]
+run = "npm install"
+
+["install-dependencies:web:locked"]
+description = "Install web dependencies and require a matching lockfile"
+dir = "{{ config_root }}/web"
+run = "npm ci"
+
+[install-dependencies]
+description = "Install all dependencies"
+depends = ["install-dependencies:api", "install-dependencies:web"]
+
+["install-dependencies:locked"]
+description = "Install all dependencies and require matching lockfiles"
+depends = ["install-dependencies:api:locked", "install-dependencies:web:locked"]
+
+[install-git-hooks]
+description = "Install the pre-commit git hooks"
+run = "pre-commit install"
+
+[setup]
+description = "Bootstrap the dev environment: install dependencies and git hooks"
+depends = ["install-dependencies", "install-git-hooks"]

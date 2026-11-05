@@ -1,0 +1,27 @@
+[tools]
+uv = "0.13.7" # keep in sync with api/Dockerfile
+# Git hook manager used by `mise run setup` and `mise run lint`.
+pre-commit = "4.7.0"
+# Radix CLI (`rx`) for validating radixconfig.yaml.
+"github:equinor/radix-cli" = "1.39.1"
+# python comes from .python-version, node comes from .node-version
+# (see settings.idiomatic_version_file_enable_tools below)
+
+[env]
+_.file = '.env'
+_.path = ["{{ config_root }}/web/node_modules/.bin"]
+_.python.venv = { path = "api/.venv", create = true, uv_create_args = [
+  "--prompt",
+  "lcm",
+] }
+
+[settings]
+idiomatic_version_file_enable_tools = ["python", "node"]
+# Pin exact tool versions + checksums in .mise/mise.lock. Refresh with `mise lock`.
+lockfile = true
+
+[settings.python]
+uv_venv_auto = true
+
+[task_config]
+includes = [".mise/tasks/*.toml"]

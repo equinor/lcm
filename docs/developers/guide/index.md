@@ -20,7 +20,7 @@ Before you begin, make sure you have the following tools installed:
 | [Docker](https://docs.docker.com/get-docker/) | Containerized builds and local development | [docs.docker.com](https://docs.docker.com/get-docker/) |
 | [Docker Compose](https://docs.docker.com/compose/install/) | Multi-container orchestration | Included with Docker Desktop |
 | [Git](https://git-scm.com/) | Version control | [git-scm.com](https://git-scm.com/downloads) |
-| [pre-commit](https://pre-commit.com/) | Git hook manager for code quality checks | [pre-commit.com](https://pre-commit.com/#install) |
+| [pre-commit](https://pre-commit.com/) | Git hook manager for code quality checks | Installed by `mise install`, or see [pre-commit.com](https://pre-commit.com/#install) |
 
 ### Recommended (for working outside Docker)
 
