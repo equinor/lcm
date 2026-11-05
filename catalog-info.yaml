@@ -12,8 +12,8 @@ metadata:
     - url: "https://lost-circulation-material.app.radix.equinor.com/"
       title: "Production environment"
       icon: star
-    - url: "https://proxy-lost-circulation-material-test.radix.equinor.com/"
-      title: "Test environment"
+    - url: "https://nginx-lost-circulation-material-dev.radix.equinor.com/"
+      title: "Dev environment"
       icon: unstarred
     - url: "https://console.radix.equinor.com/applications/lost-circulation-material"
       title: "Radix console"
