@@ -48,6 +48,8 @@ Configuration lives in `.github/release-please-config.json` and `.github/.releas
 
 To redeploy an existing release manually, run `w: Deploy release` with the release tag as input **and select the same tag under "Use workflow from"**. The images are rebuilt from the selected ref and tagged with the given release tag, so the workflow refuses to run if the two do not match.
 
+To redeploy the current images without rebuilding them (for example after changing a secret in the Radix console), run `w: Deploy to Radix` manually. It does not build anything, but it still verifies that `/api/about` returns the commit of the selected ref, so select the ref the images were built from under "Use workflow from": `master` for `dev`, the release tag for `prod`.
+
 ## Secrets
 
 Secrets are stored in Radix (no Key Vault). They are set per environment on each component page in the Radix web console, followed by a restart of the component.
