@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       radix-environment:
-        description: "Which radix environment to deploy into"
+        description: "Which radix environment to deploy into. Images are not rebuilt; under 'Use workflow from', select the ref the deployed images were built from (master for dev, the release tag for prod), otherwise the commit check fails."
         default: "dev"
         required: true
         type: choice
