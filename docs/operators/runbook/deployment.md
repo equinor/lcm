@@ -31,8 +31,8 @@ The application is deployed on [Omnia Radix](https://www.radix.equinor.com), Equ
 |----------|---------|--------------|
 | `On PR updated` | Pull request | Runs `Test` (API unit tests, web build, pre-commit) |
 | `Push to master branch` | Push to `master` | Runs tests, builds the optimizer report artifact, publishes images tagged `latest`, deploys to Radix `dev` |
-| `Release Please` | Push to `master` | Maintains the release PR; when it is merged, creates the GitHub release and tag and calls `w: Deploy release` |
-| `w: Deploy release` | Called by `Release Please`, or manually | Runs tests, publishes images tagged `production` and `vX.Y.Z`, deploys to Radix `prod` |
+| `Release Please` | Push to `master` | Maintains the release PR; when it is merged, creates the GitHub release and tag |
+| `w: Deploy release` | GitHub release published, or manually | Runs tests, publishes images tagged `production` and `vX.Y.Z` from the tagged commit, deploys to Radix `prod`. Runs are queued, never cancelled |
 | `w: Deploy to Radix` | Called by the workflows above, or manually | `rx create pipeline-job deploy --environment <env>`, then verifies that `/api/about` returns the deployed commit hash |
 | `workflow: Publish container images` | Called by the workflows above | Builds and pushes `api`, `nginx`, `oauth2-proxy` and `redis` images to `ghcr.io/equinor/lcm` |
 
@@ -42,7 +42,7 @@ Releases are managed by [release-please](https://github.com/googleapis/release-p
 
 1. On every push to `master`, release-please creates or updates a PR named `chore(master): release X.Y.Z`. The PR bumps the version in `version.txt`, `api/pyproject.toml` and `web/package.json`, and updates `CHANGELOG.md`.
 2. Review and merge the release PR when you want to release.
-3. release-please creates the tag `vX.Y.Z` and the GitHub release, and `w: Deploy release` publishes the `production` images and deploys them to Radix `prod`.
+3. release-please creates the tag `vX.Y.Z` and the GitHub release. Publishing the release triggers `w: Deploy release`, which builds the `production` images from the tagged commit and deploys them to Radix `prod`.
 
 Configuration lives in `.github/release-please-config.json` and `.github/.release-please-manifest.json`. To force a specific version, add a `Release-As: X.Y.Z` footer to a commit message on `master`.
 
