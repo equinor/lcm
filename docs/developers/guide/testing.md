@@ -8,6 +8,12 @@ The API uses [pytest](https://docs.pytest.org/) as its test framework. Tests are
 
 ### Running tests
 
+With mise:
+
+```sh
+mise run test:api
+```
+
 With Docker:
 
 ```sh

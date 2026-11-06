@@ -1,5 +1,17 @@
 # Setting up the project
 
+## Setup with mise
+
+The pinned tools, dependencies and Git hooks can be installed with [mise](https://mise.jdx.dev/):
+
+```sh
+mise trust
+mise install
+mise run setup
+```
+
+This runs `pre-commit install` for you, so you can skip the next section.
+
 ## Install Git hooks
 
 With `pre-commit` installed, enable the repository's commit hooks in your clone:
