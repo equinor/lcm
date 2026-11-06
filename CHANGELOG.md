@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.0.2](https://github.com/equinor/lcm/compare/v1.0.1...v1.0.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* make SharePoint product sync work and replace products atomically ([f66701c](https://github.com/equinor/lcm/commit/f66701cc1748115f7adc3c5584ef7b18fb530a52))
+
+
+### Documentation
+
+* replace poetry commands with uv in developer guide ([33193f2](https://github.com/equinor/lcm/commit/33193f2d41dab4fa7db455fb195e7c407c5af85e))
+* update runbook with mise commands ([78e1e2b](https://github.com/equinor/lcm/commit/78e1e2b5f4f01692447166dbca9087e3ba5fa819))
+
+
+### Miscellaneous Chores
+
+* add mise setup ([07c4ae4](https://github.com/equinor/lcm/commit/07c4ae43a22f4260476a7024dfb08c841da32fad))
+* **deps:** bump @biomejs/biome ([50a7255](https://github.com/equinor/lcm/commit/50a7255f48cf47956bec38dd5992d9c611ccc521))
+* **deps:** bump gunicorn from 25.1.0 to 26.2.0 in /api ([9d276c7](https://github.com/equinor/lcm/commit/9d276c76d3fd4134f99e535a8518bee564d79c47))
+* **deps:** bump https://github.com/biomejs/pre-commit ([0c45923](https://github.com/equinor/lcm/commit/0c4592396e989c17ddead9228932d93a4d567b2e))
+* **deps:** bump https://github.com/compilerla/conventional-pre-commit ([8b8539e](https://github.com/equinor/lcm/commit/8b8539e93a47aa1c0a0a89a8f36050ca6c768996))
+* **deps:** bump the npm-minor-patch group across 1 directory with 3 updates ([5252768](https://github.com/equinor/lcm/commit/525276855b429c0b724fc1fb25ac8189e8934a7e))
+* **deps:** bump the python-minor-patch group across 1 directory with 5 updates ([81341a0](https://github.com/equinor/lcm/commit/81341a07158e13536a969be1b672a6fd0c30c012))
+
+
+### Build System
+
+* migrate api from poetry to uv ([c4a5179](https://github.com/equinor/lcm/commit/c4a5179f1a9006b9641c7520b147da05a2c3e3f9))
+
+
+### Continuous Integration
+
+* bump uv.lock version in release-please ([7bb6a00](https://github.com/equinor/lcm/commit/7bb6a0081716bf2fbc3c3d47fc0e292197cf6944))
+
 ## [1.0.1](https://github.com/equinor/lcm/compare/v1.0.0...v1.0.1) (2026-11-05)
 
 

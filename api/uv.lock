@@ -890,7 +890,7 @@ wheels = [
 
 [[package]]
 name = "lcm"
-version = "1.0.1"
+version = "1.0.2"
 source = { virtual = "." }
 dependencies = [
     { name = "azure-cosmosdb-table" },
