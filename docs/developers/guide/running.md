@@ -1,8 +1,27 @@
 # Running the project
 
-## Running with Docker Compose (recommended)
+## Running with mise (recommended)
 
-The simplest way to run the entire stack locally is with Docker Compose.
+The simplest way to run the app locally is with [mise](https://mise.jdx.dev/). The repository defines mise tasks in `.mise/tasks/`. mise installs the pinned tool versions (Python, Node, uv, etc.), creates `api/.venv` and loads `.env` automatically.
+
+Before running for the first time, follow [Setup with mise](setup.md#setup-with-mise).
+
+### Common tasks
+
+| Command | Description |
+|---------|-------------|
+| `mise run serve` | Serve the full stack in Docker (`docker compose up --build`) |
+| `mise run serve:api` | Serve the API locally on port 5000 (without Docker) |
+| `mise run serve:web` | Serve the web app locally on port 3000 (without Docker) |
+| `mise run test` | Run all tests |
+| `mise run lint` | Run all linters, formatters and the TypeScript type check |
+| `mise run install-dependencies` | Install API and web dependencies |
+
+Run `mise tasks` to list all available tasks.
+
+## Running with Docker Compose
+
+To run the entire stack in containers, use Docker Compose. `mise run serve` runs `docker compose up --build`, which rebuilds the images and streams logs in the terminal, but Docker containers can also be started directly.
 
 ### Start all services
 
