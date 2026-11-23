@@ -57,6 +57,7 @@ http {
             proxy_set_header X-Forwarded-Access-Token   $access_token;
 
             include /etc/nginx/config/security-headers.conf;
+            include /etc/nginx/config/csp.conf;
             error_page 401 =    /oauth2/sign_in;
         }
     }
