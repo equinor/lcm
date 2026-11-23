@@ -21,6 +21,11 @@ http {
     proxy_buffers           4 256k; # Adjust as needed
     proxy_busy_buffers_size 256k; # Adjust as needed
 
+    # Allows the inline React Refresh preamble injected by the Vite dev server (used in config/csp.conf)
+    map "" $csp_dev_script_src {
+        default " 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk='";
+    }
+
     server {
         listen 8080;
         server_name localhost;
@@ -29,6 +34,7 @@ http {
         access_log /dev/stdout combined;
         error_log /dev/stdout;
 
+        include /etc/nginx/config/security-headers.conf;
         include /etc/nginx/config/oauth2.conf;
         include /etc/nginx/config/api.conf;
 
@@ -57,6 +63,7 @@ http {
             proxy_set_header X-Forwarded-Access-Token   $access_token;
 
             include /etc/nginx/config/security-headers.conf;
+            include /etc/nginx/config/csp.conf;
             error_page 401 =    /oauth2/sign_in;
         }
     }
