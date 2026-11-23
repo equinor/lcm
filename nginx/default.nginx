@@ -21,6 +21,11 @@ http {
     proxy_buffers           4 256k; # Adjust as needed
     proxy_busy_buffers_size 256k; # Adjust as needed
 
+    # Allows the inline React Refresh preamble injected by the Vite dev server (used in config/csp.conf)
+    map "" $csp_dev_script_src {
+        default " 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk='";
+    }
+
     server {
         listen 8080;
         server_name localhost;
